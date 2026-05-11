@@ -1,0 +1,17 @@
+{
+  "niches": [
+    { "niche": "barbers", "cities": ["Manchester", "Birmingham", "Leeds", "Liverpool", "Sheffield", "Bristol", "Edinburgh", "Glasgow", "Newcastle", "Nottingham"] },
+    { "niche": "plumbers", "cities": ["Manchester", "Birmingham", "Leeds", "Liverpool", "Sheffield", "Bristol", "Edinburgh", "Glasgow", "Newcastle", "Nottingham"] },
+    { "niche": "electricians", "cities": ["Manchester", "Birmingham", "Leeds", "Liverpool", "Sheffield"] },
+    { "niche": "photographers", "cities": ["London", "Manchester", "Birmingham", "Edinburgh", "Bristol"] },
+    { "niche": "personal trainers", "cities": ["Manchester", "Birmingham", "Leeds", "London", "Bristol"] },
+    { "niche": "dog groomers", "cities": ["Manchester", "Birmingham", "Leeds", "Liverpool", "Sheffield"] },
+    { "niche": "cleaning companies", "cities": ["Manchester", "Birmingham", "Leeds", "Liverpool", "Sheffield"] },
+    { "niche": "driving instructors", "cities": ["Manchester", "Birmingham", "Leeds", "Liverpool", "Sheffield"] }
+  ],
+  "dailyLimit": 40,
+  "delayMinMs": 60000,
+  "delayMaxMs": 150000,
+  "followUpAfterDays": 5,
+  "maxContactsPerLead": 2
+}

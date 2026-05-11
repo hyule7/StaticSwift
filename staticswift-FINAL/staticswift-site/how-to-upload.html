@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Upload Your Website — StaticSwift</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#07090f;color:#f0f2f8;font-family:'DM Sans',sans-serif;line-height:1.7}
+header{background:rgba(7,9,15,0.95);border-bottom:1px solid rgba(255,255,255,0.07);padding:20px 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;text-decoration:none;color:#f0f2f8}
+.logo span{color:#00C8E0}
+.back{color:#00C8E0;text-decoration:none;font-size:14px;font-weight:600}
+.support-bar{background:rgba(0,200,224,0.08);border-bottom:1px solid rgba(0,200,224,0.15);padding:12px 24px;text-align:center;font-size:14px;color:#8890a8}
+.support-bar a{color:#00C8E0;font-weight:600}
+.content{max-width:720px;margin:0 auto;padding:60px 24px}
+h1{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;margin-bottom:16px;letter-spacing:-0.02em}
+.intro{font-size:17px;color:#8890a8;margin-bottom:48px;line-height:1.7}
+.faq-item{border-bottom:1px solid rgba(255,255,255,0.07);padding:28px 0}
+.faq-item:last-child{border-bottom:none}
+h2{font-family:'Syne',sans-serif;font-size:19px;font-weight:700;margin-bottom:12px}
+p{color:#8890a8;font-size:15px;margin-bottom:10px}
+p:last-child{margin-bottom:0}
+ol,ul{color:#8890a8;padding-left:20px;font-size:15px}
+ol li,ul li{margin-bottom:8px}
+a{color:#00C8E0}
+.highlight{background:rgba(0,200,224,0.08);border:1px solid rgba(0,200,224,0.2);border-radius:10px;padding:16px 20px;margin-top:12px;font-size:14px;color:#8890a8}
+footer{border-top:1px solid rgba(255,255,255,0.07);padding:32px 24px;text-align:center;font-size:13px;color:#4a5068}
+</style>
+</head>
+<body>
+<header>
+  <a href="/" class="logo">STATIC<span>SWIFT</span></a>
+  <a href="/" class="back">← Back to site</a>
+</header>
+<div class="support-bar">Need help? Email <a href="mailto:support@staticswift.co.uk">support@staticswift.co.uk</a> — always free, always a real person.</div>
+<div class="content">
+  <h1>How to get your website live</h1>
+  <p class="intro">Your StaticSwift website is a single HTML file. It works on any hosting platform and you can get it live in under 3 minutes for free. This guide covers everything.</p>
+
+  <div class="faq-item">
+    <h2>How do I get my website live?</h2>
+    <p>The simplest free option is Netlify. Here is how:</p>
+    <ol>
+      <li>Go to <a href="https://app.netlify.com" target="_blank">app.netlify.com</a> and create a free account (takes 2 minutes)</li>
+      <li>Click "Add New Site" then "Deploy Manually"</li>
+      <li>Drag and drop your HTML file into the upload area</li>
+      <li>Your site is live instantly at a free Netlify URL (e.g. your-site.netlify.app)</li>
+    </ol>
+    <div class="highlight">You can upgrade to a custom domain at any time from the Netlify dashboard — it takes about 5 minutes and only requires adding a DNS record with your domain registrar.</div>
+  </div>
+
+  <div class="faq-item">
+    <h2>Can I use my own domain name?</h2>
+    <p>Yes. In Netlify, go to Site Settings, then Domain Management, then Add Custom Domain. Enter your domain name and Netlify will give you DNS records to add with your domain registrar (e.g. Namecheap, GoDaddy, Cloudflare).</p>
+    <p>If you are not sure how to do this, email <a href="mailto:support@staticswift.co.uk">support@staticswift.co.uk</a> and we will walk you through it.</p>
+  </div>
+
+  <div class="faq-item">
+    <h2>What if I already have hosting?</h2>
+    <p>Your file works on any hosting platform. Upload it via your host's file manager or FTP client and rename it index.html if it is not already named that. Platforms it works on include:</p>
+    <ul>
+      <li>cPanel hosting (SiteGround, Hostinger, Bluehost, etc.) — upload via File Manager</li>
+      <li>Cloudflare Pages — connect your GitHub repo or drag and drop</li>
+      <li>GitHub Pages — push to a repo, enable Pages in settings</li>
+      <li>Vercel — drag and drop or connect GitHub</li>
+      <li>Any standard web host that supports static HTML</li>
+    </ul>
+  </div>
+
+  <div class="faq-item">
+    <h2>Do I need to renew anything?</h2>
+    <p>No. The HTML file never expires and never requires renewal. Your only ongoing cost is your domain name, typically £10 to £15 per year for a .co.uk domain.</p>
+    <p>Netlify hosting is free indefinitely for static sites. There are no hidden costs.</p>
+  </div>
+
+  <div class="faq-item">
+    <h2>Can I edit the site myself?</h2>
+    <p>Yes. The file is standard HTML and opens in any text editor — Notepad on Windows, TextEdit on Mac, or a free code editor like VS Code. You can search for any text on the page and change it directly.</p>
+    <p>If you prefer, just email <a href="mailto:support@staticswift.co.uk">support@staticswift.co.uk</a> with what you want changed and we will do it for you free of charge.</p>
+  </div>
+
+  <div class="faq-item">
+    <h2>What if something stops working?</h2>
+    <p>Static HTML sites almost never break — there is no database, no server, no software to update. The file you received will work exactly the same in 10 years as it does today.</p>
+    <p>If you ever run into any issue, email <a href="mailto:support@staticswift.co.uk">support@staticswift.co.uk</a> and we will fix it at no cost.</p>
+  </div>
+
+  <div class="faq-item">
+    <h2>Can I add more pages later?</h2>
+    <p>Yes. Email <a href="mailto:support@staticswift.co.uk">support@staticswift.co.uk</a> and we will quote for any additions. Existing clients always get priority and discounted rates on additional work.</p>
+  </div>
+
+  <div class="faq-item">
+    <h2>How do I connect a contact form?</h2>
+    <p>If your site is hosted on Netlify, the contact form works automatically with no setup required. Netlify handles form submissions and sends them to your email address.</p>
+    <p>On other hosts, we can integrate Formspree (free tier covers most small businesses). Email <a href="mailto:support@staticswift.co.uk">support@staticswift.co.uk</a> and we will set it up for you.</p>
+  </div>
+</div>
+<footer>StaticSwift — staticswift.co.uk &nbsp;|&nbsp; hello@staticswift.co.uk &nbsp;|&nbsp; support@staticswift.co.uk</footer>
+</body>
+</html>

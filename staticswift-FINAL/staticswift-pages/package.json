@@ -1,0 +1,12 @@
+{
+  "name": "staticswift-pages",
+  "version": "1.0.0",
+  "description": "StaticSwift programmatic SEO page generator — 32,510 Google-safe landing pages",
+  "private": true,
+  "scripts": {
+    "generate": "node generate.js",
+    "batch": "node publish-batch.js"
+  },
+  "dependencies": {},
+  "engines": { "node": ">=18.0.0" }
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Confirmed — StaticSwift</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#07090f;color:#f0f2f8;font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
+.wrap{max-width:520px}
+.icon{width:80px;height:80px;background:rgba(34,197,94,0.12);border:2px solid rgba(34,197,94,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 28px}
+h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,48px);font-weight:800;letter-spacing:-0.02em;margin-bottom:14px}
+.sub{font-size:17px;color:#8890a8;margin-bottom:36px;line-height:1.7}
+.card{background:#12151f;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:28px;margin-bottom:28px;text-align:left}
+.card h3{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:16px}
+.step{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;font-size:14px;color:#8890a8;line-height:1.5}
+.step-num{background:#00C8E0;color:#07090f;font-weight:700;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:1px}
+.support{background:rgba(0,200,224,0.08);border:1px solid rgba(0,200,224,0.2);border-radius:10px;padding:16px;font-size:14px;color:#8890a8;margin-bottom:28px}
+.support a{color:#00C8E0;font-weight:600}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-block;padding:13px 24px;border-radius:8px;font-weight:700;text-decoration:none;font-size:15px}
+.btn-p{background:#00C8E0;color:#07090f}
+.btn-o{background:transparent;color:#00C8E0;border:1.5px solid #00C8E0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="icon">
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path d="M7 18.5L14.5 26L29 9" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <h1>Payment confirmed.<br>Thank you.</h1>
+  <p class="sub">Your files will be in your inbox within the hour. Check spam if you do not see them.</p>
+  <div class="card">
+    <h3>Get your site live in 3 minutes</h3>
+    <div class="step"><span class="step-num">1</span><span>Go to <a href="https://app.netlify.com" target="_blank" style="color:#00C8E0;">app.netlify.com</a> and create a free account</span></div>
+    <div class="step"><span class="step-num">2</span><span>Click Add New Site, then Deploy Manually</span></div>
+    <div class="step"><span class="step-num">3</span><span>Drag your HTML file into the drop zone — your site is live instantly</span></div>
+    <div class="step"><span class="step-num">4</span><span>To connect your own domain: Site Settings, Domain Management, Add Custom Domain</span></div>
+  </div>
+  <div class="support">Need help? Email <a href="mailto:support@staticswift.co.uk">support@staticswift.co.uk</a> — always free, always a real person.</div>
+  <div class="btns">
+    <a href="/" class="btn btn-o">Back to Homepage</a>
+    <a href="how-to-upload.html" class="btn btn-p">Full Upload Guide</a>
+  </div>
+</div>
+</body>
+</html>
