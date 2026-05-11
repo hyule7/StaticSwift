@@ -1969,25 +1969,40 @@ document.getElementById('intake-form').addEventListener('submit', async function
   if (!validateStep(5)) return;
   const honeypot = this.querySelector('[name="bot-field"]').value;
   if (honeypot) return;
+
   const submitBtn = this.querySelector('.btn-submit');
   submitBtn.textContent = 'Sending...';
   submitBtn.disabled = true;
+
   const formData = new FormData(this);
   const clientName = formData.get('name') || '';
-  // Convert to JSON for reliable parsing
+  const clientEmail = formData.get('delivery_email') || '';
+
   const jsonData = {};
   for (const [key, value] of formData.entries()) {
     if (typeof value === 'string') jsonData[key] = value;
   }
+
   try {
     const resp = await fetch('/.netlify/functions/handle-intake', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(jsonData)
     });
-    if (!resp.ok) console.error('Intake error:', resp.status, await resp.text());
-  } catch(err) { console.error('Intake fetch error:', err); }
-  const clientEmail = jsonData.delivery_email || '';
+    const result = await resp.json();
+    if (!result.ok) {
+      // Save failed — show error, don't redirect
+      submitBtn.textContent = 'Something went wrong — please try again';
+      submitBtn.disabled = false;
+      submitBtn.style.background = '#ef4444';
+      console.error('Intake save error:', result.error);
+      return;
+    }
+  } catch(err) {
+    // Network error — still redirect, submission may have gone through
+    console.error('Intake fetch error:', err);
+  }
+
   window.location.href = '/thank-you.html?name=' + encodeURIComponent(clientName) + '&email=' + encodeURIComponent(clientEmail);
 });
 </script>

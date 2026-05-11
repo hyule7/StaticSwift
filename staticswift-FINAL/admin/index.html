@@ -193,6 +193,7 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}
     <div class="topbar-right">
       <span class="revenue-badge" id="month-revenue">£0 this month</span>
       <button class="refresh-btn" onclick="refreshData()">↻ Refresh</button>
+      <button class="refresh-btn" onclick="testSubmission()" style="border-color:#f59e0b;color:#f59e0b" title="Send a test lead to check Blobs is working">⚡ Test Submit</button>
       <button class="logout-btn" onclick="logout()">Sign out</button>
     </div>
   </div>
@@ -515,6 +516,49 @@ if (savedPw) {
 }
 
 function logout() { sessionStorage.removeItem('ss_pw'); location.reload(); }
+
+async function testSubmission() {
+  const btn = document.querySelector('[onclick="testSubmission()"]');
+  btn.textContent = '⚡ Testing...';
+  btn.disabled = true;
+  try {
+    const resp = await fetch('/.netlify/functions/handle-intake', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'Test Lead',
+        business_name: 'Test Business',
+        business_type: 'Other',
+        business_description: 'Test submission from admin panel',
+        location: 'Test Town',
+        delivery_email: 'test@staticswift.co.uk',
+        package: 'starter',
+        source: 'admin-test'
+      })
+    });
+    const data = await resp.json();
+    if (data.ok) {
+      btn.textContent = '✓ Test worked!';
+      btn.style.borderColor = '#22c55e';
+      btn.style.color = '#22c55e';
+      await refreshData();
+    } else {
+      btn.textContent = '✗ Failed: ' + (data.error || 'unknown');
+      btn.style.borderColor = '#ef4444';
+      btn.style.color = '#ef4444';
+    }
+  } catch(err) {
+    btn.textContent = '✗ Network error';
+    btn.style.borderColor = '#ef4444';
+    btn.style.color = '#ef4444';
+  }
+  setTimeout(() => {
+    btn.textContent = '⚡ Test Submit';
+    btn.style.borderColor = '#f59e0b';
+    btn.style.color = '#f59e0b';
+    btn.disabled = false;
+  }, 4000);
+}
 
 // ==========================================
 // API
