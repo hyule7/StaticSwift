@@ -1,7 +1,19 @@
+# Dependencies
 node_modules/
+netlify/functions/node_modules/
+
+# Environment
 .env
+.env.local
+
+# Netlify
 .netlify/
-*.log
+
+# System
 .DS_Store
 Thumbs.db
-dist/
+*.log
+
+# SEO pages — DO NOT ignore these. They need to be in git.
+# The /website-design-* and /*-website-design* folders ARE intentionally tracked.
+# This comment is here so you don't accidentally add them to .gitignore.

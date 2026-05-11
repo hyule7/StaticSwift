@@ -12,7 +12,9 @@ const cities = JSON.parse(fs.readFileSync('./cities.json', 'utf8'));
 const niches = JSON.parse(fs.readFileSync('./niches.json', 'utf8'));
 const contentBank = JSON.parse(fs.readFileSync('./content-bank.json', 'utf8'));
 
-const OUTPUT_DIR = './output';
+const OUTPUT_DIR = process.env.SS_OUTPUT || '../staticswift-site';
+// Override with: SS_OUTPUT=./output node generate.js (for local preview)
+// Default writes directly into the staticswift-site repo
 const START_TIME = Date.now();
 let count = 0;
 
@@ -418,12 +420,9 @@ function generateSitemapIndex() {
   <sitemap><loc>https://staticswift.co.uk/sitemap.xml</loc><lastmod>${new Date().toISOString().split('T')[0]}</lastmod></sitemap>
   <sitemap><loc>https://staticswift.co.uk/sitemap-pages.xml</loc><lastmod>${new Date().toISOString().split('T')[0]}</lastmod></sitemap>
 </sitemapindex>`;
-  // Write to staticswift-site root (one level up)
-  const siteRoot = path.join(__dirname, '..', 'staticswift-site');
-  if (fs.existsSync(siteRoot)) {
-    fs.writeFileSync(path.join(siteRoot, 'sitemap-index.xml'), xml);
-  }
   fs.writeFileSync(path.join(OUTPUT_DIR, 'sitemap-index.xml'), xml);
+  // Also update the sitemap.xml in site root to reference the index
+  console.log('sitemap-index.xml written to site root');
   console.log('sitemap-index.xml written');
 }
 

@@ -1,19 +1,44 @@
+# ============================================================
+# StaticSwift — netlify.toml
+# ============================================================
+
 [build]
-  command = "echo 'No build step required'"
+  # Static site — no build step needed.
+  # Functions install their own dependencies automatically via functions/package.json
+  command = ""
   publish = "."
   functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "18"
 
-# Scheduled Functions
+# ============================================================
+# BRANCH DEPLOYS
+# ============================================================
+
+[context.production]
+  command = ""
+
+[context.deploy-preview]
+  command = ""
+
+[context.branch-deploy]
+  command = ""
+
+# ============================================================
+# SCHEDULED FUNCTIONS
+# ============================================================
+
 [functions."daily-followup"]
   schedule = "0 9 * * 1-5"
 
 [functions."poll-support"]
   schedule = "*/5 * * * *"
 
-# Redirects
+# ============================================================
+# REDIRECTS
+# ============================================================
+
 [[redirects]]
   from = "/admin"
   to = "/admin/index.html"
@@ -25,11 +50,10 @@
   status = 200
 
 [[redirects]]
-  from = "/client/:uuid"
+  from = "/client/*"
   to = "/.netlify/functions/client-portal"
   status = 200
 
-# Force HTTPS
 [[redirects]]
   from = "http://staticswift.co.uk/*"
   to = "https://staticswift.co.uk/:splat"
@@ -42,16 +66,52 @@
   status = 301
   force = true
 
-# Custom headers
+[[redirects]]
+  from = "https://www.staticswift.co.uk/*"
+  to = "https://staticswift.co.uk/:splat"
+  status = 301
+  force = true
+
+# ============================================================
+# HEADERS
+# ============================================================
+
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options = "DENY"
+    X-Frame-Options = "SAMEORIGIN"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
 [[headers]]
   for = "/*.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/website-design-*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/*-website-design*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/staticswift-vs-*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/sitemap*.xml"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    Content-Type = "application/xml; charset=utf-8"
+
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Cache-Control = "no-store"

@@ -1,65 +1,92 @@
 #!/usr/bin/env node
 /**
  * publish-batch.js
- * Copies the next N undeployed pages from output/ into deploy/
- * Usage: node publish-batch.js 500
+ * 
+ * Tells you which pages to git add for each week's batch deployment.
+ * Run from inside the staticswift-pages/ directory.
+ * 
+ * Usage: node publish-batch.js [batch-size]
+ * Example: node publish-batch.js 500
  */
 const fs = require('fs');
 const path = require('path');
 
 const batchSize = parseInt(process.argv[2]) || 500;
-const OUTPUT_DIR = './output';
-const DEPLOY_DIR = './deploy';
-const PUBLISHED_FILE = './published.json';
+const SITE_DIR = '../staticswift-site';
+const TRACKER = './published.json';
 
-if (!fs.existsSync(OUTPUT_DIR)) { console.error('No output/ directory. Run node generate.js first.'); process.exit(1); }
+if (!fs.existsSync(SITE_DIR)) {
+  console.error('ERROR: ../staticswift-site not found. Run this from staticswift-pages/ with staticswift-site as a sibling folder.');
+  process.exit(1);
+}
+
+// Get all directories that were generated (URL slug format)
+const allGenerated = fs.readdirSync(SITE_DIR).filter(d => {
+  const full = path.join(SITE_DIR, d);
+  return fs.statSync(full).isDirectory() && (
+    d.startsWith('website-design-') ||
+    d.includes('-website-design') ||
+    d === 'staticswift-vs-wix' ||
+    d === 'staticswift-vs-squarespace' ||
+    d === 'staticswift-vs-freelancer'
+  );
+}).sort();
 
 let published = [];
-try { published = JSON.parse(fs.readFileSync(PUBLISHED_FILE, 'utf8')); } catch { published = []; }
+try { published = JSON.parse(fs.readFileSync(TRACKER, 'utf8')); } catch { published = []; }
 const publishedSet = new Set(published);
 
-// Get all generated directories
-const allDirs = fs.readdirSync(OUTPUT_DIR).filter(d => {
-  const full = path.join(OUTPUT_DIR, d);
-  return fs.statSync(full).isDirectory();
-});
-
-const unpublished = allDirs.filter(d => !publishedSet.has(d));
+const unpublished = allGenerated.filter(d => !publishedSet.has(d));
 const thisBatch = unpublished.slice(0, batchSize);
 
 if (!thisBatch.length) {
-  console.log('All pages already published. Nothing to deploy.');
+  console.log(`\nAll ${allGenerated.length} generated directories already tracked as published.`);
+  console.log('If you have not pushed yet, run: git add . && git commit -m "SEO pages" && git push');
   process.exit(0);
 }
 
-if (!fs.existsSync(DEPLOY_DIR)) fs.mkdirSync(DEPLOY_DIR, { recursive: true });
+// Update tracker
+published.push(...thisBatch);
+fs.writeFileSync(TRACKER, JSON.stringify(published, null, 2));
 
-// Copy batch to deploy/
-thisBatch.forEach(dir => {
-  const src = path.join(OUTPUT_DIR, dir);
-  const dest = path.join(DEPLOY_DIR, dir);
-  fs.mkdirSync(dest, { recursive: true });
-  const indexFile = path.join(src, 'index.html');
-  if (fs.existsSync(indexFile)) {
-    fs.copyFileSync(indexFile, path.join(dest, 'index.html'));
-  }
-  published.push(dir);
+const batchNum = Math.ceil(published.length / batchSize);
+const totalPages = allGenerated.length;
+
+console.log('\n' + '='.repeat(60));
+console.log(`BATCH ${batchNum} — ${thisBatch.length} directories`);
+console.log(`Published so far: ${published.length} / ${totalPages}`);
+console.log(`Remaining after this batch: ${totalPages - published.length}`);
+console.log('='.repeat(60));
+
+console.log('\nRun these commands from your staticswift-site directory:\n');
+console.log('  cd ../staticswift-site');
+
+// Generate the git add commands for just this batch
+// Group into chunks to avoid command line length limits
+const CHUNK = 50;
+for (let i = 0; i < thisBatch.length; i += CHUNK) {
+  const chunk = thisBatch.slice(i, i + CHUNK);
+  console.log(`  git add ${chunk.join(' ')}`);
+}
+
+console.log(`  git add sitemap-pages.xml sitemap-index.xml`);
+console.log(`  git commit -m "Add ${thisBatch.length} SEO pages (batch ${batchNum} — total ${published.length})"`);
+console.log('  git push\n');
+
+console.log('Netlify will auto-deploy within ~30 seconds of the push.');
+console.log('Submit sitemap-pages.xml to Search Console after each batch.\n');
+
+// Show publishing schedule reminder
+const scheduleMap = [
+  [500,   'Week 1:   Top 25 cities × 20 niches'],
+  [1500,  'Week 2:   Next 50 cities × 20 niches'],
+  [3500,  'Week 3-4: All city-only pages'],
+  [8500,  'Month 2:  Cities 76-500 × 20 niches'],
+  [18500, 'Month 3:  Remaining combinations pt.1'],
+  [32510, 'Month 4:  All remaining pages'],
+];
+console.log('Publishing schedule:');
+scheduleMap.forEach(([target, label]) => {
+  const done = published.length >= target ? '✓' : published.length > 0 ? '→' : ' ';
+  console.log(`  ${done} ${label} (cumulative: ${target.toLocaleString()})`);
 });
-
-// Also copy sitemaps
-['sitemap-pages.xml','sitemap-index.xml'].forEach(f => {
-  const src = path.join(OUTPUT_DIR, f);
-  if (fs.existsSync(src)) fs.copyFileSync(src, path.join(DEPLOY_DIR, f));
-});
-
-fs.writeFileSync(PUBLISHED_FILE, JSON.stringify(published, null, 2));
-
-console.log(`\nBatch ready: ${thisBatch.length} pages added to deploy/`);
-console.log(`Total published: ${published.length} / ${allDirs.length}`);
-console.log(`Remaining: ${allDirs.length - published.length}`);
-console.log('\nNow run these git commands from your staticswift-site directory:');
-console.log(`  cp -r deploy/* ../staticswift-site/`);
-console.log(`  cd ../staticswift-site`);
-console.log(`  git add .`);
-console.log(`  git commit -m "Add ${thisBatch.length} programmatic pages (batch ${Math.ceil(published.length/batchSize)})"`);
-console.log(`  git push`);
