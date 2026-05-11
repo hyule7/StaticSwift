@@ -1,10 +1,25 @@
 User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /admin/
 Disallow: /client/
 Crawl-delay: 1
 
+# Sitemaps — submit sitemap-index.xml to Search Console
+Sitemap: https://staticswift.co.uk/sitemap-index.xml
+Sitemap: https://staticswift.co.uk/sitemap.xml
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Allow AI crawlers for brand visibility
 User-agent: GPTBot
 Allow: /
 
-Sitemap: https://staticswift.co.uk/sitemap-index.xml
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /

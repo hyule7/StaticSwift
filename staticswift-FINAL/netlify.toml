@@ -12,6 +12,10 @@
 [functions."poll-support"]
   schedule = "*/5 * * * *"
 
+# Ping sitemaps after every successful deploy
+[functions."ping-sitemaps"]
+  # Called automatically via deploy hook set up in Netlify UI
+
 [[redirects]]
   from = "/admin"
   to = "/admin/index.html"

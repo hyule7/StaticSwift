@@ -7,197 +7,160 @@
 <meta name="robots" content="noindex,nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--cyan:#00C8E0;--dark:#07090f;--dark2:#0d1018;--dark3:#12151f;--surface:#181b26;--surface2:#1e2230;--text:#f0f2f8;--muted:#8890a8;--dim:#4a5068;--border:rgba(255,255,255,0.07);--green:#22c55e;--red:#ef4444;--amber:#f59e0b;--gold:#f59e0b}
+:root{--cyan:#00C8E0;--dark:#07090f;--dark2:#0d1018;--dark3:#12151f;--surface:#181b26;--surface2:#1e2230;--text:#f0f2f8;--muted:#8890a8;--dim:#4a5068;--border:rgba(255,255,255,0.07);--green:#22c55e;--red:#ef4444;--amber:#f59e0b}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:15px}
-body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
-a{color:var(--cyan);text-decoration:none}
-h1,h2,h3,h4{font-family:'Syne',sans-serif}
-input,textarea,select{font-family:'DM Sans',sans-serif}
+html{font-size:15px}body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--cyan);text-decoration:none}h1,h2,h3,h4{font-family:'Syne',sans-serif}
+input,textarea,select,button{font-family:'DM Sans',sans-serif}
 
 /* LOGIN */
-#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;background:var(--dark)}
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
 .login-card{background:var(--dark2);border:1px solid var(--border);border-radius:16px;padding:48px 40px;max-width:400px;width:100%;text-align:center}
-.login-logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:32px;display:block}
-.login-logo span{color:var(--cyan)}
+.login-logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:32px;display:block}.login-logo span{color:var(--cyan)}
 .login-card h2{font-size:20px;font-weight:700;margin-bottom:8px}
 .login-card p{color:var(--muted);font-size:14px;margin-bottom:28px}
 .login-input{width:100%;background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:13px 16px;font-size:15px;color:var(--text);outline:none;margin-bottom:14px;transition:border-color .2s}
 .login-input:focus{border-color:var(--cyan)}
-.login-btn{width:100%;background:var(--cyan);color:#07090f;font-weight:700;font-size:15px;padding:13px;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif}
+.login-btn{width:100%;background:var(--cyan);color:#07090f;font-weight:700;font-size:15px;padding:13px;border-radius:8px;border:none;cursor:pointer}
 .login-err{color:var(--red);font-size:13px;margin-top:10px;display:none}
 
-/* MAIN APP */
+/* APP */
 #app{display:none;flex-direction:column;min-height:100vh}
 
-/* TOP BAR */
-.topbar{background:var(--dark2);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
-.topbar-logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800}
-.topbar-logo span{color:var(--cyan)}
-.topbar-nav{display:flex;gap:4px}
-.nav-tab{background:none;border:none;color:var(--muted);font-size:13px;font-weight:600;padding:8px 14px;border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;white-space:nowrap}
+/* TOPBAR */
+.topbar{background:var(--dark2);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;gap:16px}
+.topbar-logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;flex-shrink:0}.topbar-logo span{color:var(--cyan)}
+.topbar-nav{display:flex;gap:4px;overflow-x:auto}
+.nav-tab{background:none;border:none;color:var(--muted);font-size:13px;font-weight:600;padding:8px 14px;border-radius:6px;cursor:pointer;transition:all .2s;white-space:nowrap}
 .nav-tab:hover{color:var(--text);background:var(--surface)}
 .nav-tab.active{color:var(--text);background:var(--surface)}
-.topbar-right{display:flex;align-items:center;gap:12px}
-.revenue-badge{font-family:'DM Mono',monospace;font-size:13px;color:var(--cyan);font-weight:600}
-.notif-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:6px 10px;border-radius:6px;cursor:pointer;font-size:12px;position:relative}
-.notif-dot{position:absolute;top:-3px;right:-3px;width:8px;height:8px;background:var(--red);border-radius:50%}
-.logout-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.revenue-badge{font-family:'DM Mono',monospace;font-size:12px;color:var(--cyan);font-weight:600;white-space:nowrap}
+.logout-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px}
+.refresh-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px;transition:all .2s}
+.refresh-btn:hover{border-color:var(--cyan);color:var(--cyan)}
 
 /* PAGES */
 .page{display:none;padding:28px 24px;max-width:1300px;margin:0 auto;width:100%}
 .page.active{display:block}
+.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.page-title{font-size:22px;font-weight:800}
+
+/* BUTTONS */
+.btn-primary{background:var(--cyan);color:#07090f;font-weight:700;font-size:14px;padding:10px 20px;border-radius:8px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:opacity .2s}
+.btn-primary:hover{opacity:.88}
+.btn-ghost{background:transparent;color:var(--text);font-weight:600;font-size:14px;padding:10px 20px;border-radius:8px;border:1px solid var(--border);cursor:pointer;transition:all .2s}
+.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
 
 /* STAT CARDS */
-.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:28px}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:28px}
 .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px}
-.stat-card .label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;font-family:'DM Mono',monospace}
+.stat-card .label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;font-family:'DM Mono',monospace}
 .stat-card .value{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;line-height:1}
 .stat-card .sub{font-size:12px;color:var(--dim);margin-top:4px}
 
-/* TODAY'S TASKS */
-.tasks-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:24px}
-.tasks-section h3{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:16px;font-family:'DM Mono',monospace}
-.task-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--dark3);border-radius:8px;margin-bottom:8px;gap:12px}
-.task-item:last-child{margin-bottom:0}
-.task-label{font-size:13px;flex:1}
-.task-urgency{font-size:11px;font-weight:700;padding:3px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:0.06em}
-.u-red{background:rgba(239,68,68,0.15);color:var(--red)}
-.u-amber{background:rgba(245,158,11,0.15);color:var(--amber)}
-.u-green{background:rgba(34,197,94,0.15);color:var(--green)}
-.task-btn{background:var(--cyan);color:#07090f;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
-
-/* PIPELINE KANBAN */
-.pipeline-wrap{overflow-x:auto;padding-bottom:8px}
+/* PIPELINE */
+.pipeline-wrap{overflow-x:auto;padding-bottom:16px}
 .pipeline{display:flex;gap:14px;min-width:max-content}
-.pipeline-col{width:220px;flex-shrink:0}
-.col-header{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:10px;padding:8px 12px;background:var(--surface);border-radius:8px;display:flex;justify-content:space-between;align-items:center;font-family:'DM Mono',monospace}
+.pipeline-col{width:230px;flex-shrink:0}
+.col-header{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px;padding:8px 12px;background:var(--surface);border-radius:8px;display:flex;justify-content:space-between;align-items:center;font-family:'DM Mono',monospace}
 .col-count{background:var(--dark3);color:var(--dim);padding:2px 7px;border-radius:100px;font-size:11px}
 .pipeline-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;cursor:pointer;transition:border-color .2s}
-.pipeline-card:hover{border-color:rgba(0,200,224,0.3)}
-.pipeline-card.urgent-red{border-left:3px solid var(--red)}
-.pipeline-card.urgent-amber{border-left:3px solid var(--amber)}
-.card-name{font-size:14px;font-weight:600;margin-bottom:6px}
-.card-badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
-.badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;text-transform:uppercase;letter-spacing:0.05em}
-.badge-starter{background:rgba(0,200,224,0.15);color:var(--cyan)}
-.badge-advanced{background:rgba(139,92,246,0.15);color:#a78bfa}
-.badge-form{background:rgba(34,197,94,0.12);color:var(--green)}
-.badge-cold{background:rgba(245,158,11,0.12);color:var(--amber)}
-.badge-referral{background:rgba(236,72,153,0.12);color:#f472b6}
-.badge-wa{background:rgba(37,211,102,0.12);color:#25D366}
+.pipeline-card:hover{border-color:rgba(0,200,224,.4)}
+.pipeline-card.urgent{border-left:3px solid var(--red)}
+.pipeline-card.warn{border-left:3px solid var(--amber)}
+.card-name{font-size:14px;font-weight:600;margin-bottom:4px}
+.card-biz{font-size:12px;color:var(--muted);margin-bottom:8px}
+.card-meta{display:flex;justify-content:space-between;align-items:center}
 .card-days{font-size:11px;color:var(--dim);font-family:'DM Mono',monospace}
-.card-value{font-family:'DM Mono',monospace;font-size:12px;color:var(--cyan);font-weight:600;float:right}
-.add-card-btn{width:100%;background:transparent;border:1px dashed var(--border);color:var(--dim);font-size:12px;padding:10px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.card-value{font-family:'DM Mono',monospace;font-size:12px;color:var(--cyan);font-weight:600}
+.badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;text-transform:uppercase;letter-spacing:.05em;display:inline-block;margin:2px 2px 4px 0}
+.badge-starter{background:rgba(0,200,224,.12);color:var(--cyan)}
+.badge-advanced{background:rgba(139,92,246,.15);color:#a78bfa}
+.badge-form{background:rgba(34,197,94,.1);color:var(--green)}
+.badge-manual{background:rgba(245,158,11,.1);color:var(--amber)}
+.add-card-btn{width:100%;background:transparent;border:1px dashed var(--border);color:var(--dim);font-size:12px;padding:10px;border-radius:8px;cursor:pointer;transition:all .2s}
 .add-card-btn:hover{border-color:var(--cyan);color:var(--cyan)}
 
-/* SLIDE-IN PANEL */
-.panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;display:none;align-items:flex-start;justify-content:flex-end}
+/* TASKS */
+.tasks-section{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
+.tasks-section h3{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:14px;font-family:'DM Mono',monospace}
+.task-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--dark3);border-radius:8px;margin-bottom:8px;gap:12px}
+.task-label{font-size:13px;flex:1;line-height:1.4}
+.urgency{font-size:10px;font-weight:700;padding:3px 8px;border-radius:100px;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0}
+.u-red{background:rgba(239,68,68,.15);color:var(--red)}
+.u-amber{background:rgba(245,158,11,.15);color:var(--amber)}
+.u-green{background:rgba(34,197,94,.12);color:var(--green)}
+.task-btn{background:var(--cyan);color:#07090f;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;border:none;cursor:pointer;white-space:nowrap}
+
+/* PANEL */
+.panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;display:none;align-items:flex-start;justify-content:flex-end}
 .panel-overlay.open{display:flex}
-.side-panel{background:var(--dark2);border-left:1px solid var(--border);width:min(680px,100vw);height:100vh;overflow-y:auto;padding:28px;display:flex;flex-direction:column;gap:20px}
+.side-panel{background:var(--dark2);border-left:1px solid var(--border);width:min(700px,100vw);height:100vh;overflow-y:auto;padding:28px;display:flex;flex-direction:column;gap:18px}
 .panel-header{display:flex;justify-content:space-between;align-items:flex-start}
 .panel-close{background:none;border:1px solid var(--border);color:var(--muted);width:32px;height:32px;border-radius:6px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .panel-title{font-size:20px;font-weight:800}
 .panel-subtitle{font-size:13px;color:var(--muted);margin-top:2px}
 .panel-section{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
-.panel-section h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:12px;font-family:'DM Mono',monospace}
-.info-row{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;gap:12px}
+.panel-section h4{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:12px;font-family:'DM Mono',monospace}
+.info-row{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;gap:12px}
 .info-row:last-child{border-bottom:none}
-.info-key{color:var(--muted);flex-shrink:0;min-width:120px}
+.info-key{color:var(--muted);flex-shrink:0;min-width:110px}
 .info-val{text-align:right;word-break:break-word}
-.stage-timeline{display:flex;gap:0;margin:4px 0}
-.stage-dot{display:flex;flex-direction:column;align-items:center;flex:1;position:relative}
+.stage-row{display:flex;gap:0;margin:4px 0;overflow-x:auto}
+.stage-dot{display:flex;flex-direction:column;align-items:center;flex:1;min-width:52px;position:relative}
 .stage-dot::before{content:'';position:absolute;top:8px;left:50%;right:-50%;height:2px;background:var(--border);z-index:0}
 .stage-dot:last-child::before{display:none}
-.dot-circle{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);background:var(--dark3);position:relative;z-index:1;transition:all .2s}
-.dot-circle.done{background:var(--cyan);border-color:var(--cyan)}
-.dot-circle.current{background:var(--dark3);border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,200,224,0.2)}
-.dot-label{font-size:9px;color:var(--dim);margin-top:5px;text-align:center;font-family:'DM Mono',monospace;letter-spacing:0.04em;max-width:52px}
-.prompt-block{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);white-space:pre-wrap;line-height:1.6;max-height:260px;overflow-y:auto}
-.copy-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:12px;font-weight:600;padding:7px 14px;border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;margin-right:8px}
+.dot-c{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);background:var(--dark3);position:relative;z-index:1;transition:all .2s}
+.dot-c.done{background:var(--cyan);border-color:var(--cyan)}
+.dot-c.current{background:var(--dark3);border-color:var(--cyan);box-shadow:0 0 0 3px rgba(0,200,224,.2)}
+.dot-lbl{font-size:8px;color:var(--dim);margin-top:5px;text-align:center;font-family:'DM Mono',monospace;max-width:52px;line-height:1.3}
+.prompt-box{background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);white-space:pre-wrap;line-height:1.6;max-height:240px;overflow-y:auto}
+.copy-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:12px;font-weight:600;padding:7px 14px;border-radius:6px;cursor:pointer;transition:all .2s}
 .copy-btn:hover{border-color:var(--cyan);color:var(--cyan)}
-.open-claude-btn{background:var(--cyan);border:none;color:#07090f;font-size:12px;font-weight:700;padding:7px 14px;border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.open-claude-btn{background:var(--cyan);border:none;color:#07090f;font-size:12px;font-weight:700;padding:7px 14px;border-radius:6px;cursor:pointer}
 .panel-actions{display:flex;flex-wrap:wrap;gap:8px}
-.action-btn{font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.action-btn{font-size:13px;font-weight:600;padding:9px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;transition:all .2s}
 .action-btn:hover{border-color:var(--cyan);color:var(--cyan)}
 .action-btn.primary{background:var(--cyan);color:#07090f;border-color:var(--cyan)}
 .action-btn.primary:hover{opacity:.88;color:#07090f}
-.action-btn.danger{border-color:rgba(239,68,68,0.4);color:var(--red)}
+.action-btn.success{background:rgba(34,197,94,.15);color:var(--green);border-color:rgba(34,197,94,.3)}
+.action-btn.danger{border-color:rgba(239,68,68,.4);color:var(--red)}
 
 /* NEW ORDER FORM */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:600px){.form-grid{grid-template-columns:1fr}}
-.field{margin-bottom:16px}
-.field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em;font-family:'DM Mono',monospace}
-.field input,.field select,.field textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-size:14px;color:var(--text);outline:none;font-family:'DM Sans',sans-serif;transition:border-color .2s}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;font-family:'DM Mono',monospace}
+.field input,.field select,.field textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:11px 14px;font-size:14px;color:var(--text);outline:none;transition:border-color .2s}
 .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--cyan)}
 .field textarea{resize:vertical;min-height:80px}
-.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238890a8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;-webkit-appearance:none;cursor:pointer}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238890a8' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;-webkit-appearance:none}
 .field select option{background:var(--dark2)}
+.success-banner{display:none;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:10px;padding:14px 16px;font-size:14px;color:var(--green);margin-top:14px}
+.error-banner{display:none;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:10px;padding:14px 16px;font-size:14px;color:var(--red);margin-top:14px}
 
-/* INVOICE TABLE */
-.data-table{width:100%;border-collapse:collapse;font-size:13px}
-.data-table th{padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;white-space:nowrap}
-.data-table td{padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:middle}
-.data-table tr:last-child td{border-bottom:none}
-.data-table tr:hover td{background:rgba(255,255,255,0.02)}
-.status-pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;text-transform:uppercase;letter-spacing:0.05em}
-.s-paid{background:rgba(34,197,94,0.15);color:var(--green)}
-.s-sent{background:rgba(0,200,224,0.12);color:var(--cyan)}
-.s-draft{background:rgba(255,255,255,0.06);color:var(--muted)}
-.s-overdue{background:rgba(239,68,68,0.15);color:var(--red)}
-.row-actions{display:flex;gap:6px}
-.row-btn{background:none;border:1px solid var(--border);color:var(--muted);font-size:11px;padding:4px 10px;border-radius:5px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;white-space:nowrap}
-.row-btn:hover{border-color:var(--cyan);color:var(--cyan)}
-
-/* SUPPORT INBOX */
-.inbox-wrap{display:grid;grid-template-columns:280px 1fr;gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;height:600px}
-.inbox-list{border-right:1px solid var(--border);overflow-y:auto}
-.inbox-header{padding:14px 16px;border-bottom:1px solid var(--border);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-family:'DM Mono',monospace}
-.inbox-item{padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
-.inbox-item:hover,.inbox-item.active{background:var(--surface)}
-.inbox-name{font-size:13px;font-weight:600;margin-bottom:3px}
-.inbox-preview{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.inbox-time{font-size:11px;color:var(--dim);font-family:'DM Mono',monospace}
-.unread-dot{display:inline-block;width:8px;height:8px;background:var(--cyan);border-radius:50%;margin-right:6px;vertical-align:middle}
-.thread-area{display:flex;flex-direction:column;overflow:hidden}
-.thread-messages{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:12px}
-.message{max-width:80%;padding:12px 16px;border-radius:10px;font-size:13px;line-height:1.6}
-.message.inbound{background:var(--surface);align-self:flex-start;border:1px solid var(--border)}
-.message.outbound{background:rgba(0,200,224,0.12);border:1px solid rgba(0,200,224,0.2);align-self:flex-end}
-.message-meta{font-size:11px;color:var(--dim);margin-top:4px;font-family:'DM Mono',monospace}
-.reply-compose{padding:16px;border-top:1px solid var(--border);display:flex;gap:10px}
-.reply-input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:13px;color:var(--text);outline:none;font-family:'DM Sans',sans-serif;resize:none;height:60px}
-.reply-input:focus{border-color:var(--cyan)}
-.send-btn{background:var(--cyan);color:#07090f;border:none;font-weight:700;font-size:13px;padding:0 20px;border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;flex-shrink:0}
-
-/* REVENUE */
-.revenue-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px}
-.r-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px}
-.r-card .lbl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;font-family:'DM Mono',monospace;margin-bottom:6px}
-.r-card .val{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--cyan)}
-.chart-area{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:24px;position:relative}
-.chart-area h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:16px;font-family:'DM Mono',monospace}
-canvas{width:100%!important}
-
-/* MISC */
-.page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px}
-.page-title{font-size:22px;font-weight:800}
-.btn-primary{background:var(--cyan);color:#07090f;font-weight:700;font-size:14px;padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;display:inline-flex;align-items:center;gap:6px}
-.btn-ghost{background:transparent;color:var(--text);font-weight:600;font-size:14px;padding:10px 20px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-family:'DM Sans',sans-serif}
-.search-input{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-size:13px;color:var(--text);outline:none;font-family:'DM Sans',sans-serif;width:220px;transition:border-color .2s}
-.search-input:focus{border-color:var(--cyan)}
-.filter-row{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
-.section-divider{height:1px;background:var(--border);margin:24px 0}
-.empty-state{text-align:center;padding:48px 24px;color:var(--muted);font-size:14px}
+/* ACTIVITY */
 .activity-feed{display:flex;flex-direction:column;gap:8px}
 .activity-item{display:flex;gap:12px;align-items:flex-start;padding:10px 14px;background:var(--surface);border-radius:8px;font-size:13px}
 .activity-dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);flex-shrink:0;margin-top:4px}
 .activity-time{font-family:'DM Mono',monospace;font-size:11px;color:var(--dim);white-space:nowrap;margin-left:auto}
+
+/* REVENUE */
+.rev-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:24px}
+.r-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px}
+.r-card .lbl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace;margin-bottom:6px}
+.r-card .val{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--cyan)}
+
+/* LOADING */
+.loading{text-align:center;padding:48px;color:var(--muted);font-size:14px}
+.loading::after{content:'';display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--cyan);border-radius:50%;animation:spin .8s linear infinite;margin-left:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:48px;color:var(--muted);font-size:14px}
+
 @media(max-width:768px){
   .topbar-nav{display:none}
-  .inbox-wrap{grid-template-columns:1fr;height:auto}
-  .inbox-list{height:200px}
+  .mob-menu-btn{display:flex}
 }
 </style>
 </head>
@@ -211,250 +174,265 @@ canvas{width:100%!important}
     <p>Enter your password to continue</p>
     <input type="password" class="login-input" id="pw-input" placeholder="Password" autocomplete="current-password">
     <button class="login-btn" onclick="tryLogin()">Sign In</button>
-    <p class="login-err" id="login-err">Incorrect password. Try again.</p>
+    <p class="login-err" id="login-err">Incorrect password.</p>
   </div>
 </div>
 
-<!-- MAIN APP -->
+<!-- APP -->
 <div id="app">
-  <!-- TOP BAR -->
   <div class="topbar">
     <div class="topbar-logo">STATIC<span>SWIFT</span></div>
     <div class="topbar-nav">
       <button class="nav-tab active" onclick="showPage('dashboard',this)">Dashboard</button>
       <button class="nav-tab" onclick="showPage('pipeline',this)">Pipeline</button>
       <button class="nav-tab" onclick="showPage('new-order',this)">+ New Order</button>
-      <button class="nav-tab" onclick="showPage('invoices',this)">Invoices</button>
-      <button class="nav-tab" onclick="showPage('support',this)">Support</button>
       <button class="nav-tab" onclick="showPage('revenue',this)">Revenue</button>
+      <button class="nav-tab" onclick="showPage('analytics',this)">Analytics</button>
       <button class="nav-tab" onclick="showPage('prompts',this)">Prompts</button>
     </div>
     <div class="topbar-right">
       <span class="revenue-badge" id="month-revenue">£0 this month</span>
-      <button class="notif-btn" onclick="showPage('support',document.querySelectorAll('.nav-tab')[4])">🔔 <span id="notif-count">0</span><span class="notif-dot" id="notif-dot" style="display:none"></span></button>
+      <button class="refresh-btn" onclick="refreshData()">↻ Refresh</button>
       <button class="logout-btn" onclick="logout()">Sign out</button>
     </div>
   </div>
 
-  <!-- DASHBOARD PAGE -->
+  <!-- DASHBOARD -->
   <div class="page active" id="page-dashboard">
     <div class="page-header">
       <h1 class="page-title">Dashboard</h1>
       <div style="display:flex;gap:8px">
-        <button class="btn-primary" onclick="showPage('new-order',document.querySelectorAll('.nav-tab')[2])">+ New Sales Order</button>
-        <button class="btn-ghost" onclick="exportExcel()">Export Excel</button>
+        <button class="btn-primary" onclick="showPage('new-order',document.querySelectorAll('.nav-tab')[2])">+ New Order</button>
+        <button class="btn-ghost" onclick="exportData()">Export Excel</button>
       </div>
     </div>
     <div class="stats-row" id="dash-stats">
-      <div class="stat-card"><div class="label">New Leads Today</div><div class="value" id="stat-leads">0</div></div>
-      <div class="stat-card"><div class="label">Active Jobs</div><div class="value" id="stat-active">0</div></div>
-      <div class="stat-card"><div class="label">Paid This Month</div><div class="value" id="stat-revenue">£0</div></div>
-      <div class="stat-card"><div class="label">Conversion Rate</div><div class="value" id="stat-cvr">0%</div></div>
+      <div class="stat-card"><div class="label">New Leads Today</div><div class="value" id="stat-leads">—</div></div>
+      <div class="stat-card"><div class="label">Active Jobs</div><div class="value" id="stat-active">—</div></div>
+      <div class="stat-card"><div class="label">Paid This Month</div><div class="value" id="stat-revenue">—</div></div>
+      <div class="stat-card"><div class="label">Total Clients</div><div class="value" id="stat-total">—</div></div>
     </div>
-    <div class="tasks-section">
-      <h3>Today's Tasks</h3>
-      <div id="tasks-list"><div class="empty-state">No urgent tasks right now.</div></div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-      <div class="tasks-section" style="margin-bottom:0">
-        <h3>Recent Activity</h3>
-        <div class="activity-feed" id="activity-feed">
-          <div class="activity-item"><div class="activity-dot"></div><span>No activity yet. Submit an intake form to get started.</span><span class="activity-time">Now</span></div>
-        </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+      <div class="tasks-section" style="margin:0">
+        <h3>Urgent Tasks</h3>
+        <div id="tasks-list"><div class="loading">Loading</div></div>
       </div>
-      <div class="tasks-section" style="margin-bottom:0">
-        <h3>Quick Stats</h3>
-        <div id="quick-stats" style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--muted)">
-          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span>Starter sites</span><span id="qs-starter" style="color:var(--text);font-weight:600">0</span></div>
-          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span>Advanced sites</span><span id="qs-advanced" style="color:var(--text);font-weight:600">0</span></div>
-          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span>Avg order value</span><span id="qs-aov" style="color:var(--cyan);font-weight:600">£0</span></div>
-          <div style="display:flex;justify-content:space-between;padding:8px 0"><span>All-time revenue</span><span id="qs-total" style="color:var(--cyan);font-weight:600">£0</span></div>
-        </div>
+      <div class="tasks-section" style="margin:0">
+        <h3>Recent Activity</h3>
+        <div class="activity-feed" id="activity-feed"><div class="loading">Loading</div></div>
       </div>
     </div>
   </div>
 
-  <!-- PIPELINE PAGE -->
+  <!-- PIPELINE -->
   <div class="page" id="page-pipeline">
     <div class="page-header">
       <h1 class="page-title">Pipeline</h1>
-      <button class="btn-primary" onclick="showPage('new-order',document.querySelectorAll('.nav-tab')[2])">+ New Sales Order</button>
+      <button class="btn-primary" onclick="showPage('new-order',document.querySelectorAll('.nav-tab')[2])">+ New Order</button>
     </div>
     <div class="pipeline-wrap">
-      <div class="pipeline" id="pipeline-board">
-        <!-- Columns generated by JS -->
-      </div>
+      <div class="pipeline" id="pipeline-board"><div class="loading">Loading pipeline</div></div>
     </div>
   </div>
 
-  <!-- NEW ORDER PAGE -->
+  <!-- NEW ORDER -->
   <div class="page" id="page-new-order">
-    <div class="page-header">
-      <h1 class="page-title">New Sales Order</h1>
-    </div>
+    <div class="page-header"><h1 class="page-title">New Sales Order</h1></div>
     <div style="max-width:760px">
       <div class="form-grid">
         <div class="field"><label>Client Name *</label><input type="text" id="no-name" placeholder="Full name"></div>
         <div class="field"><label>Business Name *</label><input type="text" id="no-bizname" placeholder="Business name"></div>
-        <div class="field"><label>Business Type</label><select id="no-biztype"><option value="">Select</option><option>Barber / Hair Salon</option><option>Plumber</option><option>Electrician</option><option>Builder / Roofer</option><option>Cleaner</option><option>Photographer</option><option>Personal Trainer</option><option>Beauty Salon</option><option>Cafe / Coffee Shop</option><option>Retailer</option><option>Other</option></select></div>
         <div class="field"><label>Email *</label><input type="email" id="no-email" placeholder="client@email.com"></div>
         <div class="field"><label>Phone</label><input type="tel" id="no-phone" placeholder="07700 000000"></div>
         <div class="field"><label>WhatsApp</label><input type="tel" id="no-wa" placeholder="07700 000000"></div>
-        <div class="field"><label>How Did They Contact You?</label><select id="no-source"><option>WhatsApp</option><option>Instagram DM</option><option>Cold email reply</option><option>In person</option><option>Referral</option><option>Other</option></select></div>
-        <div class="field"><label>Referral Name (if applicable)</label><input type="text" id="no-referral" placeholder="Who referred them?"></div>
-        <div class="field"><label>Package</label><select id="no-package"><option value="starter">Starter — £149</option><option value="advanced">Advanced — £299</option></select></div>
-        <div class="field"><label>Hosting Add-on</label><select id="no-hosting"><option value="no">No</option><option value="yes">Yes +£29</option></select></div>
+        <div class="field"><label>Business Type</label>
+          <select id="no-biztype">
+            <option value="">Select</option>
+            <option>Barber / Hair Salon</option><option>Plumber</option><option>Electrician</option>
+            <option>Builder / Roofer</option><option>Cleaner</option><option>Photographer</option>
+            <option>Personal Trainer</option><option>Beauty Salon</option><option>Cafe / Coffee Shop</option>
+            <option>Retailer</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field"><label>How Did They Contact You?</label>
+          <select id="no-source">
+            <option>WhatsApp</option><option>Instagram DM</option><option>Cold email reply</option>
+            <option>In person</option><option>Referral</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field"><label>Referral Name</label><input type="text" id="no-referral" placeholder="Who referred them?"></div>
+        <div class="field"><label>Package</label>
+          <select id="no-package">
+            <option value="starter">Starter — £149</option>
+            <option value="advanced">Advanced — £299</option>
+          </select>
+        </div>
+        <div class="field"><label>Hosting Add-on</label>
+          <select id="no-hosting"><option value="no">No</option><option value="yes">Yes +£29</option></select>
+        </div>
         <div class="field"><label>Location</label><input type="text" id="no-location" placeholder="City/Town"></div>
         <div class="field"><label>Brand Colours</label><input type="text" id="no-colours" placeholder="e.g. navy and gold"></div>
       </div>
-      <div class="field"><label>Brief (paste WhatsApp/conversation notes) *</label><textarea id="no-brief" placeholder="Paste the conversation or describe what they want..." style="min-height:120px"></textarea></div>
-      <div class="field"><label>Reference URLs</label><input type="text" id="no-refs" placeholder="Comma-separated URLs of sites they like"></div>
-      <div class="field"><label>Services / Products</label><textarea id="no-services" placeholder="List their services and prices if known..." style="min-height:80px"></textarea></div>
-      <div class="field"><label>Special Requests</label><textarea id="no-requests" placeholder="Anything specific they want..." style="min-height:80px"></textarea></div>
-      <div class="field"><label>Internal Notes</label><textarea id="no-notes" placeholder="Notes for yourself — not sent to client..." style="min-height:80px"></textarea></div>
+      <div class="field"><label>Brief (paste conversation or notes) *</label>
+        <textarea id="no-brief" placeholder="Paste WhatsApp conversation or describe what they want..." style="min-height:120px"></textarea>
+      </div>
+      <div class="field"><label>Reference URLs</label><input type="text" id="no-refs" placeholder="URLs of sites they like, comma separated"></div>
+      <div class="field"><label>Services / Products</label>
+        <textarea id="no-services" placeholder="List their services and prices..." style="min-height:70px"></textarea>
+      </div>
+      <div class="field"><label>Special Requests</label>
+        <textarea id="no-requests" placeholder="Anything specific they want..." style="min-height:70px"></textarea>
+      </div>
+      <div class="field"><label>Internal Notes</label>
+        <textarea id="no-notes" placeholder="Private notes — not sent to client..." style="min-height:70px"></textarea>
+      </div>
       <div style="display:flex;gap:12px;margin-top:8px">
         <button class="btn-primary" onclick="saveNewOrder()" style="flex:1;padding:14px;font-size:15px;justify-content:center">Save Order &amp; Generate Prompt</button>
         <button class="btn-ghost" onclick="clearNewOrder()">Clear</button>
       </div>
-      <div id="no-success" style="display:none;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.3);border-radius:10px;padding:16px;margin-top:16px;font-size:14px;color:var(--green)">Order saved. Claude prompt generated. Check the client record in the Pipeline.</div>
+      <div class="success-banner" id="no-success">Order saved to pipeline. Claude prompt generated. Opening client record...</div>
+      <div class="error-banner" id="no-error">Error saving order. Check your connection and try again.</div>
     </div>
   </div>
 
-  <!-- INVOICES PAGE -->
-  <div class="page" id="page-invoices">
+  <!-- REVENUE -->
+  <div class="page" id="page-revenue">
     <div class="page-header">
-      <h1 class="page-title">Invoices</h1>
-      <div style="display:flex;gap:8px">
-        <input type="text" class="search-input" placeholder="Search invoices...">
-        <button class="btn-ghost" onclick="exportExcel()">Export ZIP + CSV</button>
-      </div>
+      <h1 class="page-title">Revenue</h1>
+      <button class="btn-ghost" onclick="exportData()">Export Excel</button>
     </div>
-    <div class="filter-row">
-      <button class="btn-ghost" style="font-size:12px;padding:7px 14px" onclick="filterInvoices('')">All</button>
-      <button class="btn-ghost" style="font-size:12px;padding:7px 14px" onclick="filterInvoices('paid')">Paid</button>
-      <button class="btn-ghost" style="font-size:12px;padding:7px 14px" onclick="filterInvoices('sent')">Sent</button>
-      <button class="btn-ghost" style="font-size:12px;padding:7px 14px" onclick="filterInvoices('overdue')">Overdue</button>
-      <button class="btn-ghost" style="font-size:12px;padding:7px 14px" onclick="filterInvoices('draft')">Draft</button>
+    <div class="rev-grid">
+      <div class="r-card"><div class="lbl">Today</div><div class="val" id="rev-today">£0</div></div>
+      <div class="r-card"><div class="lbl">This Week</div><div class="val" id="rev-week">£0</div></div>
+      <div class="r-card"><div class="lbl">This Month</div><div class="val" id="rev-month">£0</div></div>
+      <div class="r-card"><div class="lbl">All Time</div><div class="val" id="rev-alltime">£0</div></div>
+      <div class="r-card"><div class="lbl">Starter Sites</div><div class="val" id="rev-starter">0</div></div>
+      <div class="r-card"><div class="lbl">Advanced Sites</div><div class="val" id="rev-advanced">0</div></div>
     </div>
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
-      <table class="data-table">
-        <thead><tr><th>Invoice No</th><th>Client</th><th>Amount</th><th>Issued</th><th>Status</th><th>Actions</th></tr></thead>
-        <tbody id="invoices-tbody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted)">No invoices yet.</td></tr></tbody>
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead><tr style="border-bottom:1px solid var(--border)">
+          <th style="padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace">Business</th>
+          <th style="padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace">Package</th>
+          <th style="padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace">Amount</th>
+          <th style="padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace">Date</th>
+          <th style="padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace">Status</th>
+        </tr></thead>
+        <tbody id="revenue-tbody"><tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted)">Loading...</td></tr></tbody>
       </table>
     </div>
   </div>
 
-  <!-- SUPPORT PAGE -->
-  <div class="page" id="page-support">
-    <div class="page-header">
-      <h1 class="page-title">Support Inbox</h1>
-      <span style="font-size:13px;color:var(--muted)">Syncing from support@staticswift.co.uk every 5 minutes</span>
-    </div>
-    <div class="inbox-wrap">
-      <div class="inbox-list">
-        <div class="inbox-header">Inbox</div>
-        <div id="inbox-items">
-          <div style="padding:24px;text-align:center;color:var(--muted);font-size:13px">No messages yet.</div>
-        </div>
-      </div>
-      <div class="thread-area">
-        <div class="thread-messages" id="thread-messages">
-          <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:13px">Select a conversation</div>
-        </div>
-        <div class="reply-compose">
-          <textarea class="reply-input" id="reply-text" placeholder="Type a reply..."></textarea>
-          <button class="send-btn" onclick="sendReply()">Send</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- REVENUE PAGE -->
-  <div class="page" id="page-revenue">
-    <div class="page-header">
-      <h1 class="page-title">Revenue</h1>
-      <button class="btn-ghost" onclick="exportExcel()">Export Excel</button>
-    </div>
-    <div class="revenue-grid">
-      <div class="r-card"><div class="lbl">Today</div><div class="val" id="rev-today">£0</div></div>
-      <div class="r-card"><div class="lbl">This Week</div><div class="val" id="rev-week">£0</div></div>
-      <div class="r-card"><div class="lbl">This Month</div><div class="val" id="rev-month">£0</div></div>
-      <div class="r-card"><div class="lbl">Last Month</div><div class="val" id="rev-lastmonth">£0</div></div>
-      <div class="r-card"><div class="lbl">This Quarter</div><div class="val" id="rev-quarter">£0</div></div>
-      <div class="r-card"><div class="lbl">All Time</div><div class="val" id="rev-alltime">£0</div></div>
-    </div>
-    <div class="chart-area">
-      <h4>Weekly Revenue — Last 12 Weeks</h4>
-      <canvas id="revenue-chart" height="200"></canvas>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
-      <div class="chart-area">
-        <h4>Starter vs Advanced Split</h4>
-        <canvas id="split-chart" height="200"></canvas>
-      </div>
-      <div class="chart-area">
-        <h4>Cumulative Revenue This Year</h4>
-        <canvas id="cumulative-chart" height="200"></canvas>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- PROMPTS LIBRARY PAGE -->
+  <!-- PROMPTS -->
   <div class="page" id="page-prompts">
     <div class="page-header">
       <h1 class="page-title">Niche Prompt Library</h1>
-      <button class="btn-primary" onclick="addNichePrompt()">+ Add Prompt</button>
+      <button class="btn-primary" onclick="addPrompt()">+ Add Prompt</button>
     </div>
-    <div id="prompts-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px"></div>
-    <div id="blend-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center;padding:24px" onclick="if(event.target.id==='blend-modal')document.getElementById('blend-modal').style.display='none'">
-      <div style="background:#0d1018;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:28px;max-width:900px;width:100%;max-height:90vh;overflow-y:auto">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-          <h2 style="font-size:18px;font-weight:800">Blend Niche Prompt</h2>
-          <button onclick="document.getElementById('blend-modal').style.display='none'" style="background:none;border:1px solid rgba(255,255,255,.1);color:var(--muted);width:32px;height:32px;border-radius:6px;cursor:pointer;font-size:16px">✕</button>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-          <div>
-            <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace;margin-bottom:8px">Client Intake Prompt</div>
-            <div id="blend-intake" style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);white-space:pre-wrap;height:200px;overflow-y:auto;line-height:1.6"></div>
-          </div>
-          <div>
-            <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace;margin-bottom:8px">Niche Direction</div>
-            <div id="blend-niche" style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);white-space:pre-wrap;height:200px;overflow-y:auto;line-height:1.6"></div>
-          </div>
-        </div>
-        <div style="font-size:11px;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace;margin-bottom:8px">Combined Prompt (copy this into Claude.ai)</div>
-        <div id="blend-output" style="background:var(--dark);border:1px solid rgba(0,200,224,.2);border-radius:8px;padding:14px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);white-space:pre-wrap;max-height:220px;overflow-y:auto;line-height:1.6"></div>
-        <div style="display:flex;gap:10px;margin-top:14px">
-          <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('blend-output').textContent)">Copy Combined Prompt</button>
-          <button class="open-claude-btn" onclick="window.open('https://claude.ai','_blank')">Open Claude.ai</button>
-        </div>
+    <div id="prompts-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px"></div>
+  </div>
+
+
+  <!-- ANALYTICS PAGE -->
+  <div class="page" id="page-analytics">
+    <div class="page-header">
+      <h1 class="page-title">Analytics</h1>
+      <div style="display:flex;gap:8px;align-items:center">
+        <span id="analytics-status" style="font-size:12px;color:var(--muted)">Loading...</span>
+        <button class="btn-ghost" style="font-size:12px;padding:7px 14px" onclick="loadAnalytics()">Refresh</button>
+        <button class="btn-ghost" style="font-size:12px;padding:7px 14px" onclick="pingSitemaps()">Ping Sitemaps</button>
       </div>
+    </div>
+
+    <!-- GA4 OVERVIEW -->
+    <div style="margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace;margin-bottom:12px">Google Analytics — Last 30 Days</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px" id="ga-overview">
+        <div class="stat-card"><div class="label">Sessions</div><div class="value" id="ga-sessions">—</div></div>
+        <div class="stat-card"><div class="label">Users</div><div class="value" id="ga-users">—</div></div>
+        <div class="stat-card"><div class="label">Page Views</div><div class="value" id="ga-pageviews">—</div></div>
+        <div class="stat-card"><div class="label">Avg Duration</div><div class="value" id="ga-duration">—</div></div>
+        <div class="stat-card"><div class="label">Bounce Rate</div><div class="value" id="ga-bounce">—</div></div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+      <!-- TOP PAGES -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace">Top Pages (GA4)</div>
+        <div id="ga-top-pages" style="font-size:13px"><div class="loading">Loading</div></div>
+      </div>
+      <!-- TRAFFIC SOURCES -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace">Traffic Sources (GA4)</div>
+        <div id="ga-sources" style="font-size:13px"><div class="loading">Loading</div></div>
+      </div>
+    </div>
+
+    <!-- SEARCH CONSOLE -->
+    <div style="margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace;margin-bottom:12px">Google Search Console — Last 28 Days</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px">
+        <div class="stat-card"><div class="label">Clicks</div><div class="value" id="gsc-clicks">—</div></div>
+        <div class="stat-card"><div class="label">Impressions</div><div class="value" id="gsc-impressions">—</div></div>
+        <div class="stat-card"><div class="label">Avg CTR</div><div class="value" id="gsc-ctr">—</div></div>
+        <div class="stat-card"><div class="label">Avg Position</div><div class="value" id="gsc-position">—</div></div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+      <!-- TOP QUERIES -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace">Top Search Queries</div>
+        <div id="gsc-queries" style="font-size:13px"><div class="loading">Loading</div></div>
+      </div>
+      <!-- SITEMAPS -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace">Sitemap Status</div>
+        <div id="gsc-sitemaps" style="font-size:13px"><div class="loading">Loading</div></div>
+      </div>
+    </div>
+
+    <!-- SETUP GUIDE -->
+    <div id="analytics-setup" style="display:none;background:var(--surface);border:1px solid var(--cyan-border,rgba(0,200,224,.2));border-radius:12px;padding:24px">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;color:var(--cyan)">Setup required to see live data</h3>
+      <p style="font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:16px">Add these environment variables in Netlify to connect live analytics:</p>
+      <div style="font-family:'DM Mono',monospace;font-size:12px;background:var(--dark);border:1px solid var(--border);border-radius:8px;padding:16px;line-height:2;color:var(--muted)">
+        GA4_PROPERTY_ID=<span style="color:var(--cyan)">123456789</span> <span style="color:var(--dim)"># GA4 Admin → Property Settings</span><br>
+        GSC_SITE_URL=<span style="color:var(--cyan)">https://staticswift.co.uk/</span><br>
+        GOOGLE_SA_EMAIL=<span style="color:var(--cyan)">service-account@project.iam.gserviceaccount.com</span><br>
+        GOOGLE_SA_KEY=<span style="color:var(--cyan)">base64-encoded-private-key</span> <span style="color:var(--dim)"># base64 encode your JSON key file</span>
+      </div>
+      <p style="font-size:13px;color:var(--dim);margin-top:12px">Create a Google Cloud service account, enable Analytics Data API and Search Console API, add the service account email as a viewer in GA4 and Search Console, then base64-encode the JSON key file for GOOGLE_SA_KEY.</p>
     </div>
   </div>
 
-  <!-- CLIENT DETAIL PANEL -->
-  <div class="panel-overlay" id="client-panel" onclick="closePanelIfBg(event)">
+  <!-- CLIENT PANEL -->
+  <div class="panel-overlay" id="client-panel" onclick="closePanelBg(event)">
     <div class="side-panel">
       <div class="panel-header">
         <div>
-          <div class="panel-title" id="panel-title">Client Name</div>
-          <div class="panel-subtitle" id="panel-subtitle">Starter — New Lead</div>
+          <div class="panel-title" id="panel-title">Client</div>
+          <div class="panel-subtitle" id="panel-subtitle"></div>
         </div>
         <button class="panel-close" onclick="closePanel()">✕</button>
       </div>
       <div class="panel-section">
-        <h4>Contact Details</h4>
+        <h4>Contact</h4>
         <div id="panel-contact"></div>
       </div>
       <div class="panel-section">
         <h4>Stage</h4>
-        <div class="stage-timeline" id="panel-stage"></div>
+        <div class="stage-row" id="panel-stage"></div>
       </div>
       <div class="panel-section">
-        <h4>Claude AI Prompt</h4>
-        <div class="prompt-block" id="panel-prompt">Loading...</div>
-        <div style="margin-top:10px;display:flex;gap:8px">
+        <h4>Brief</h4>
+        <div id="panel-brief" style="font-size:13px;color:var(--muted);line-height:1.7;max-height:120px;overflow-y:auto"></div>
+      </div>
+      <div class="panel-section">
+        <h4>Claude AI Build Prompt</h4>
+        <div class="prompt-box" id="panel-prompt"></div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
           <button class="copy-btn" onclick="copyPrompt()">Copy Prompt</button>
           <button class="open-claude-btn" onclick="window.open('https://claude.ai','_blank')">Open Claude.ai</button>
           <button class="copy-btn" onclick="regeneratePrompt()">Regenerate</button>
@@ -464,17 +442,17 @@ canvas{width:100%!important}
         <h4>Actions</h4>
         <div class="panel-actions">
           <button class="action-btn primary" onclick="panelAction('preview')">Send Preview</button>
-          <button class="action-btn" onclick="panelAction('invoice')">Create Invoice</button>
-          <button class="action-btn" onclick="panelAction('stage')">Move Stage</button>
-          <button class="action-btn" onclick="panelAction('email')">Send Email</button>
-          <button class="action-btn" onclick="panelAction('edit')">Edit</button>
+          <button class="action-btn" onclick="panelAction('invoice')">Send Invoice</button>
+          <button class="action-btn" onclick="panelAction('next-stage')">Next Stage →</button>
+          <button class="action-btn success" onclick="panelAction('paid')">Mark Paid</button>
           <button class="action-btn danger" onclick="panelAction('archive')">Archive</button>
         </div>
+        <div id="panel-action-msg" style="font-size:13px;margin-top:10px;display:none"></div>
       </div>
       <div class="panel-section">
         <h4>Notes</h4>
-        <textarea style="width:100%;background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:13px;color:var(--text);outline:none;font-family:'DM Sans',sans-serif;resize:vertical;min-height:80px" id="panel-notes" placeholder="Add notes..."></textarea>
-        <button class="action-btn" style="margin-top:8px;font-size:12px" onclick="saveNotes()">Save Notes</button>
+        <textarea id="panel-notes" style="width:100%;background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:80px" placeholder="Add internal notes..."></textarea>
+        <button class="copy-btn" style="margin-top:8px" onclick="saveNotes()">Save Notes</button>
       </div>
     </div>
   </div>
@@ -482,134 +460,174 @@ canvas{width:100%!important}
 
 <script>
 // ==========================================
-// AUTH — password checked client-side against env var
-// In production Netlify Edge Function handles this
+// AUTH
 // ==========================================
-const ADMIN_PW = 'staticswift2026'; // Change this — matches ADMIN_PASSWORD env var
+let ADMIN_PW = '';
 
-function tryLogin(){
+function tryLogin() {
   const val = document.getElementById('pw-input').value;
-  if(val === ADMIN_PW){
-    sessionStorage.setItem('ss_auth','1');
-    document.getElementById('login-screen').style.display='none';
-    document.getElementById('app').style.display='flex';
-    initApp();
-  } else {
-    document.getElementById('login-err').style.display='block';
-    document.getElementById('pw-input').value='';
-    document.getElementById('pw-input').focus();
-  }
+  if (!val) return;
+  // Verify against backend
+  fetch('/.netlify/functions/get-clients', {
+    headers: { 'x-admin-password': val }
+  }).then(r => {
+    if (r.ok) {
+      ADMIN_PW = val;
+      sessionStorage.setItem('ss_pw', val);
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+      initApp();
+    } else {
+      document.getElementById('login-err').style.display = 'block';
+      document.getElementById('pw-input').value = '';
+    }
+  }).catch(() => {
+    document.getElementById('login-err').textContent = 'Connection error. Check your internet.';
+    document.getElementById('login-err').style.display = 'block';
+  });
 }
-document.getElementById('pw-input').addEventListener('keydown', e => { if(e.key==='Enter') tryLogin(); });
-function logout(){ sessionStorage.removeItem('ss_auth'); location.reload(); }
 
-if(sessionStorage.getItem('ss_auth')==='1'){
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('app').style.display='flex';
+document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+const savedPw = sessionStorage.getItem('ss_pw');
+if (savedPw) {
+  ADMIN_PW = savedPw;
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
   initApp();
 }
 
-// ==========================================
-// DATA STORE (localStorage for demo, Netlify Blobs in prod)
-// ==========================================
-function getClients(){ try{ return JSON.parse(localStorage.getItem('ss_clients')||'[]'); }catch{ return []; } }
-function saveClients(c){ localStorage.setItem('ss_clients',JSON.stringify(c)); }
-function getInvoices(){ try{ return JSON.parse(localStorage.getItem('ss_invoices')||'[]'); }catch{ return []; } }
-function saveInvoices(v){ localStorage.setItem('ss_invoices',JSON.stringify(v)); }
+function logout() { sessionStorage.removeItem('ss_pw'); location.reload(); }
 
 // ==========================================
-// PAGES
+// API
 // ==========================================
-function showPage(id, btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  if(btn) btn.classList.add('active');
-  if(id==='pipeline') renderPipeline();
-  if(id==='invoices') renderInvoices();
-  if(id==='revenue') renderRevenue();
-  if(id==='dashboard') renderDashboard();
-  if(id==='prompts') renderPrompts();
+let allClients = [];
+
+async function fetchClients() {
+  const r = await fetch('/.netlify/functions/get-clients', {
+    headers: { 'x-admin-password': ADMIN_PW }
+  });
+  if (!r.ok) throw new Error('Failed to fetch clients');
+  allClients = await r.json();
+  return allClients;
+}
+
+async function updateClient(clientId, updates) {
+  const r = await fetch('/.netlify/functions/update-client', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+    body: JSON.stringify({ clientId, updates })
+  });
+  if (!r.ok) throw new Error('Failed to update client');
+  return r.json();
+}
+
+async function saveClient(data) {
+  const r = await fetch('/.netlify/functions/save-client', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+    body: JSON.stringify(data)
+  });
+  if (!r.ok) throw new Error('Failed to save client');
+  return r.json();
 }
 
 // ==========================================
 // INIT
 // ==========================================
-function initApp(){
-  renderDashboard();
-  renderPipeline();
+async function initApp() {
+  try {
+    await fetchClients();
+    renderDashboard();
+    renderPipeline();
+    renderRevenue();
+    renderPrompts();
+  } catch (err) {
+    console.error('Init error:', err);
+  }
+}
+
+async function refreshData() {
+  const btn = document.querySelector('.refresh-btn');
+  btn.textContent = '↻ Refreshing...';
+  try {
+    await fetchClients();
+    renderDashboard();
+    renderPipeline();
+    renderRevenue();
+    if (currentClientId) openClient(currentClientId);
+  } catch(e) {}
+  btn.textContent = '↻ Refresh';
+}
+
+// ==========================================
+// PAGES
+// ==========================================
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id === 'analytics') loadAnalytics();
 }
 
 // ==========================================
 // DASHBOARD
 // ==========================================
-function renderDashboard(){
-  const clients = getClients();
-  const today = new Date().toDateString();
-  const leadsToday = clients.filter(c=>new Date(c.createdAt).toDateString()===today).length;
-  const active = clients.filter(c=>!['paid','complete','archived'].includes(c.stage)).length;
-  const paidThisMonth = clients.filter(c=>c.paid && c.paidAt && new Date(c.paidAt).getMonth()===new Date().getMonth()).reduce((s,c)=>s+(c.amount||149),0);
-  const total = clients.filter(c=>c.stage==='paid').length;
-  const cvr = clients.length ? Math.round((total/clients.length)*100) : 0;
+function renderDashboard() {
+  const now = new Date();
+  const todayStr = now.toDateString();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+
+  const leadsToday = allClients.filter(c => new Date(c.createdAt).toDateString() === todayStr).length;
+  const active = allClients.filter(c => !['paid','complete','archived'].includes(c.stage)).length;
+  const paidMonth = allClients.filter(c => c.paid && c.paidAt && new Date(c.paidAt).getTime() >= monthStart)
+    .reduce((s, c) => s + (c.amount || 149), 0);
+
   document.getElementById('stat-leads').textContent = leadsToday;
   document.getElementById('stat-active').textContent = active;
-  document.getElementById('stat-revenue').textContent = '£'+paidThisMonth;
-  document.getElementById('stat-cvr').textContent = cvr+'%';
-  document.getElementById('month-revenue').textContent = '£'+paidThisMonth+' this month';
-  const starter = clients.filter(c=>c.package==='starter').length;
-  const advanced = clients.filter(c=>c.package==='advanced').length;
-  const allRevenue = clients.filter(c=>c.paid).reduce((s,c)=>s+(c.amount||149),0);
-  const aov = total ? Math.round(allRevenue/total) : 0;
-  document.getElementById('qs-starter').textContent = starter;
-  document.getElementById('qs-advanced').textContent = advanced;
-  document.getElementById('qs-aov').textContent = '£'+aov;
-  document.getElementById('qs-total').textContent = '£'+allRevenue;
-  renderTasks(clients);
-  renderActivity(clients);
-}
+  document.getElementById('stat-revenue').textContent = '£' + paidMonth;
+  document.getElementById('stat-total').textContent = allClients.length;
+  document.getElementById('month-revenue').textContent = '£' + paidMonth + ' this month';
 
-function renderTasks(clients){
-  const container = document.getElementById('tasks-list');
+  // Tasks
   const tasks = [];
-  const now = Date.now();
-  clients.forEach(c=>{
-    if(c.stage==='preview-sent' && c.previewSentAt){
-      const hrs = (now - new Date(c.previewSentAt).getTime())/3600000;
-      if(hrs>=48) tasks.push({label:`${c.business_name} — preview sent ${Math.round(hrs)}hrs ago, no payment yet`,urgency:'red',action:'Send reminder',id:c.clientId});
+  const ts = Date.now();
+  allClients.forEach(c => {
+    const hrs = c.createdAt ? (ts - new Date(c.createdAt).getTime()) / 3600000 : 0;
+    if (c.stage === 'new-lead' && hrs < 4) {
+      tasks.push({ label: `New lead: ${c.business_name || c.name} — start building`, urgency: 'green', id: c.clientId });
     }
-    if(c.stage==='invoice-sent' && c.invoiceSentAt){
-      const days = (now - new Date(c.invoiceSentAt).getTime())/86400000;
-      if(days>=5) tasks.push({label:`${c.business_name} — invoice overdue ${Math.round(days)} days`,urgency:'red',action:'Chase',id:c.clientId});
+    if (c.stage === 'preview-sent' && c.previewSentAt) {
+      const h = (ts - new Date(c.previewSentAt).getTime()) / 3600000;
+      if (h >= 48) tasks.push({ label: `${c.business_name} — preview sent ${Math.round(h)}hrs ago, no payment`, urgency: 'red', id: c.clientId });
     }
-    if(c.stage==='new-lead' && c.createdAt){
-      const hrs = (now - new Date(c.createdAt).getTime())/3600000;
-      if(hrs<2) tasks.push({label:`${c.business_name} — new lead, start building`,urgency:'green',action:'Open',id:c.clientId});
+    if (c.stage === 'invoice-sent' && c.invoiceSentAt) {
+      const d = (ts - new Date(c.invoiceSentAt).getTime()) / 86400000;
+      if (d >= 3) tasks.push({ label: `${c.business_name} — invoice ${Math.round(d)} days old`, urgency: 'amber', id: c.clientId });
     }
   });
-  if(!tasks.length){ container.innerHTML='<div class="empty-state">No urgent tasks. You are all caught up.</div>'; return; }
-  container.innerHTML = tasks.map(t=>`<div class="task-item">
-    <span class="task-label">${t.label}</span>
-    <span class="task-urgency u-${t.urgency}">${t.urgency}</span>
-    <button class="task-btn" onclick="openClient('${t.id}')">${t.action}</button>
-  </div>`).join('');
-}
 
-function renderActivity(clients){
+  const tl = document.getElementById('tasks-list');
+  tl.innerHTML = tasks.length
+    ? tasks.map(t => `<div class="task-item">
+        <span class="task-label">${t.label}</span>
+        <span class="urgency u-${t.urgency}">${t.urgency}</span>
+        <button class="task-btn" onclick="openClient('${t.id}')">Open</button>
+      </div>`).join('')
+    : '<div style="color:var(--muted);font-size:13px;padding:8px">No urgent tasks. All caught up.</div>';
+
+  // Activity
   const feed = document.getElementById('activity-feed');
-  const recent = [...clients].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,8);
-  if(!recent.length){ feed.innerHTML='<div class="activity-item"><div class="activity-dot"></div><span>No activity yet.</span></div>'; return; }
-  feed.innerHTML = recent.map(c=>{
-    const ago = timeAgo(c.createdAt);
-    return `<div class="activity-item"><div class="activity-dot"></div><span>New order: <strong>${c.business_name}</strong> (${c.package==='advanced'?'Advanced £299':'Starter £149'})</span><span class="activity-time">${ago}</span></div>`;
-  }).join('');
-}
-
-function timeAgo(iso){
-  const diff = (Date.now()-new Date(iso).getTime())/1000;
-  if(diff<60) return 'Just now';
-  if(diff<3600) return Math.round(diff/60)+'m ago';
-  if(diff<86400) return Math.round(diff/3600)+'h ago';
-  return Math.round(diff/86400)+'d ago';
+  const recent = [...allClients].slice(0, 8);
+  feed.innerHTML = recent.length
+    ? recent.map(c => `<div class="activity-item">
+        <div class="activity-dot"></div>
+        <span><strong>${c.business_name || c.name}</strong> — ${STAGE_LABELS[c.stage] || c.stage}</span>
+        <span class="activity-time">${timeAgo(c.createdAt)}</span>
+      </div>`).join('')
+    : '<div style="color:var(--muted);font-size:13px">No clients yet. Submit a test intake form at your live site.</div>';
 }
 
 // ==========================================
@@ -618,433 +636,501 @@ function timeAgo(iso){
 const STAGES = ['new-lead','building','uploaded','preview-sent','approved','invoice-sent','paid','complete'];
 const STAGE_LABELS = {'new-lead':'New Lead','building':'Building','uploaded':'Uploaded','preview-sent':'Preview Sent','approved':'Approved','invoice-sent':'Invoice Sent','paid':'Paid','complete':'Complete'};
 
-function renderPipeline(){
-  const clients = getClients();
+function renderPipeline() {
   const board = document.getElementById('pipeline-board');
-  board.innerHTML = STAGES.map(stage=>{
-    const cards = clients.filter(c=>c.stage===stage);
+  board.innerHTML = STAGES.map(stage => {
+    const cards = allClients.filter(c => c.stage === stage);
     return `<div class="pipeline-col">
       <div class="col-header">${STAGE_LABELS[stage]}<span class="col-count">${cards.length}</span></div>
-      ${cards.map(c=>renderCard(c)).join('')}
+      ${cards.map(c => renderCard(c)).join('')}
       <button class="add-card-btn" onclick="showPage('new-order',document.querySelectorAll('.nav-tab')[2])">+ Add</button>
     </div>`;
   }).join('');
 }
 
-function renderCard(c){
-  const now = Date.now();
-  const daysIn = Math.floor((now-new Date(c.createdAt).getTime())/86400000);
-  let urgencyClass = '';
-  if(daysIn>=2) urgencyClass='urgent-amber';
-  if(daysIn>=3 && ['preview-sent','invoice-sent'].includes(c.stage)) urgencyClass='urgent-red';
-  return `<div class="pipeline-card ${urgencyClass}" onclick="openClient('${c.clientId}')">
-    <div class="card-name">${c.business_name||'Unnamed'}<span class="card-value">£${c.package==='advanced'?299:149}${c.hosting_addon==='yes'?'+£29':''}</span></div>
-    <div class="card-badges">
-      <span class="badge ${c.package==='advanced'?'badge-advanced':'badge-starter'}">${c.package==='advanced'?'Advanced':'Starter'}</span>
-      <span class="badge badge-${getSourceClass(c.source)}">${c.source||'form'}</span>
-      ${c.hosting_addon==='yes'?'<span class="badge" style="background:rgba(255,255,255,0.06);color:var(--muted)">+Upload</span>':''}
+function renderCard(c) {
+  const days = Math.floor((Date.now() - new Date(c.createdAt).getTime()) / 86400000);
+  const urgentClass = days >= 3 && ['preview-sent','invoice-sent'].includes(c.stage) ? 'urgent' : days >= 2 ? 'warn' : '';
+  const amount = (c.package === 'advanced' ? 299 : 149) + (c.hosting_addon === 'yes' ? 29 : 0);
+  const src = c.source === 'intake-form' ? 'form' : 'manual';
+  return `<div class="pipeline-card ${urgentClass}" onclick="openClient('${c.clientId}')">
+    <div class="card-name">${c.name || '—'}</div>
+    <div class="card-biz">${c.business_name || '—'}</div>
+    <span class="badge ${c.package === 'advanced' ? 'badge-advanced' : 'badge-starter'}">${c.package === 'advanced' ? 'Advanced' : 'Starter'}</span>
+    <span class="badge badge-${src}">${src}</span>
+    <div class="card-meta">
+      <span class="card-days">${days === 0 ? 'Today' : days + 'd ago'}</span>
+      <span class="card-value">£${amount}</span>
     </div>
-    <div class="card-days">${daysIn===0?'Today':daysIn+'d in stage'}</div>
   </div>`;
-}
-
-function getSourceClass(s){ const m={'intake-form':'form','WhatsApp':'wa','cold-email':'cold','Referral':'referral','Instagram DM':'cold'}; return m[s]||'form'; }
-
-// ==========================================
-// NEW ORDER
-// ==========================================
-function saveNewOrder(){
-  const name = document.getElementById('no-name').value.trim();
-  const bizname = document.getElementById('no-bizname').value.trim();
-  const email = document.getElementById('no-email').value.trim();
-  const brief = document.getElementById('no-brief').value.trim();
-  if(!name||!bizname||!email||!brief){ alert('Please fill in Name, Business Name, Email, and Brief.'); return; }
-  const clientId = 'client_'+Date.now()+'_'+Math.random().toString(36).substr(2,6);
-  const pkg = document.getElementById('no-package').value;
-  const hosting = document.getElementById('no-hosting').value;
-  const client = {
-    clientId, name, business_name:bizname, delivery_email:email,
-    phone:document.getElementById('no-phone').value,
-    wa:document.getElementById('no-wa').value,
-    business_type:document.getElementById('no-biztype').value,
-    source:document.getElementById('no-source').value,
-    referral:document.getElementById('no-referral').value,
-    location:document.getElementById('no-location').value,
-    brand_colours:document.getElementById('no-colours').value,
-    brief, reference_1:document.getElementById('no-refs').value,
-    services:document.getElementById('no-services').value,
-    special_requests:document.getElementById('no-requests').value,
-    notes:document.getElementById('no-notes').value,
-    package:pkg, hosting_addon:hosting,
-    amount:(pkg==='advanced'?299:149)+(hosting==='yes'?29:0),
-    stage:'new-lead', createdAt:new Date().toISOString(),
-  };
-  client.claudePrompt = generatePrompt(client);
-  const clients = getClients();
-  clients.push(client);
-  saveClients(clients);
-  document.getElementById('no-success').style.display='block';
-  setTimeout(()=>{ document.getElementById('no-success').style.display='none'; clearNewOrder(); showPage('pipeline',document.querySelectorAll('.nav-tab')[1]); },2000);
-}
-
-function clearNewOrder(){ ['no-name','no-bizname','no-email','no-phone','no-wa','no-brief','no-refs','no-services','no-requests','no-notes','no-location','no-colours'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; }); }
-
-// ==========================================
-// PROMPT GENERATOR
-// ==========================================
-function generatePrompt(c){
-  return `=== STATICSWIFT BUILD PROMPT — ${c.business_name||'[BUSINESS]'} ===
-
-Build a complete single-file HTML website for ${c.business_name||'[BUSINESS NAME]'}, a ${c.business_type||'[BUSINESS TYPE]'} based in ${c.location||'[LOCATION]'}. Tier: ${c.package==='advanced'?'Advanced':'Starter'}.
-
-=== ABOUT ===
-Description: ${c.business_description||c.brief||'not specified'}
-Ideal customer: ${c.ideal_customer||'not specified — use best judgement for this niche'}
-USP: ${c.usp||'not specified'}
-Location: ${c.location||'not specified'}
-
-=== DESIGN ===
-Colours: ${c.brand_colours||'not specified — choose professional palette for '+( c.business_type||'this business type')}
-Theme: ${c.theme_preference||'not specified — use best judgement'}
-Personality: ${c.brand_personality||'professional, trustworthy, local'}
-Dislikes: ${c.site_dislikes||c.avoid||'none specified'}
-References: ${[c.reference_1,c.reference_2,c.reference_3].filter(Boolean).join(' | ')||'none provided — use best design judgement for this niche'}
-Logo: ${c.logo?'Provided':'Not provided'}
-Photos: ${c.photos?'Provided':'Not provided'}
-
-=== CONTENT ===
-Services: ${c.services||'not specified — use best judgement for this type of business'}
-Address: ${c.address||'not specified'}
-Hours: ${c.hours||'not specified'}
-Phone: ${c.phone||'not specified'}
-Email: ${c.enquiry_email||c.delivery_email||'not specified'}
-Social: ${c.social_links||'not specified'}
-Contact form: ${c.contact_form||'yes'}
-Requests: ${c.special_requests||'none'}
-Avoid: ${c.avoid||'none'}
-Extra: ${c.extra_info||'none'}
-
-=== BUILD ===
-Single HTML file. All CSS and JS embedded. Google Fonts CDN only. Mobile-first responsive. Sections: hero with CTA, services/products, about, contact, Google Maps if address provided, footer. SEO: meta tags, Open Graph, LocalBusiness JSON-LD schema. Animations: smooth scroll, fade-in on scroll, hover effects. Personality: ${c.brand_personality||'professional and trustworthy'}.
-${c.package==='advanced'?'ADVANCED: Add services detail pages, gallery section, testimonials, about section with team.':''}
-Footer: Site by StaticSwift.
-
-=== END PROMPT ===`;
 }
 
 // ==========================================
 // CLIENT PANEL
 // ==========================================
 let currentClientId = null;
-function openClient(id){
-  const clients = getClients();
-  const c = clients.find(x=>x.clientId===id);
-  if(!c) return;
+
+function openClient(id) {
+  const c = allClients.find(x => x.clientId === id);
+  if (!c) return;
   currentClientId = id;
-  document.getElementById('panel-title').textContent = c.business_name;
-  document.getElementById('panel-subtitle').textContent = `${c.package==='advanced'?'Advanced £299':'Starter £149'} — ${STAGE_LABELS[c.stage]||c.stage}`;
+  document.getElementById('panel-title').textContent = c.business_name || c.name || 'Client';
+  document.getElementById('panel-subtitle').textContent = `${c.package === 'advanced' ? 'Advanced £299' : 'Starter £149'} — ${STAGE_LABELS[c.stage] || c.stage}`;
   document.getElementById('panel-contact').innerHTML = `
-    <div class="info-row"><span class="info-key">Name</span><span class="info-val">${c.name||'—'}</span></div>
-    <div class="info-row"><span class="info-key">Email</span><span class="info-val"><a href="mailto:${c.delivery_email}">${c.delivery_email||'—'}</a></span></div>
-    <div class="info-row"><span class="info-key">Phone</span><span class="info-val">${c.phone||'—'}</span></div>
-    <div class="info-row"><span class="info-key">WhatsApp</span><span class="info-val">${c.wa?`<a href="https://wa.me/${c.wa.replace(/\D/g,'')}">Message</a>`:'—'}</span></div>
-    <div class="info-row"><span class="info-key">Business Type</span><span class="info-val">${c.business_type||'—'}</span></div>
-    <div class="info-row"><span class="info-key">Location</span><span class="info-val">${c.location||'—'}</span></div>
-    <div class="info-row"><span class="info-key">Source</span><span class="info-val">${c.source||'—'}</span></div>
-    <div class="info-row"><span class="info-key">Created</span><span class="info-val">${new Date(c.createdAt).toLocaleDateString('en-GB')}</span></div>
+    <div class="info-row"><span class="info-key">Name</span><span class="info-val">${c.name || '—'}</span></div>
+    <div class="info-row"><span class="info-key">Email</span><span class="info-val"><a href="mailto:${c.delivery_email}">${c.delivery_email || '—'}</a></span></div>
+    <div class="info-row"><span class="info-key">Phone</span><span class="info-val">${c.phone || '—'}</span></div>
+    <div class="info-row"><span class="info-key">WhatsApp</span><span class="info-val">${c.wa ? `<a href="https://wa.me/${c.wa.replace(/\D/g,'')}" target="_blank">Message</a>` : '—'}</span></div>
+    <div class="info-row"><span class="info-key">Business Type</span><span class="info-val">${c.business_type || '—'}</span></div>
+    <div class="info-row"><span class="info-key">Location</span><span class="info-val">${c.location || '—'}</span></div>
+    <div class="info-row"><span class="info-key">Source</span><span class="info-val">${c.source || '—'}</span></div>
+    <div class="info-row"><span class="info-key">Received</span><span class="info-val">${c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-GB') : '—'}</span></div>
   `;
   const stageIdx = STAGES.indexOf(c.stage);
-  document.getElementById('panel-stage').innerHTML = STAGES.map((s,i)=>`
-    <div class="stage-dot">
-      <div class="dot-circle ${i<stageIdx?'done':i===stageIdx?'current':''}"></div>
-      <span class="dot-label">${STAGE_LABELS[s]}</span>
+  document.getElementById('panel-stage').innerHTML = STAGES.map((s, i) =>
+    `<div class="stage-dot">
+      <div class="dot-c ${i < stageIdx ? 'done' : i === stageIdx ? 'current' : ''}"></div>
+      <span class="dot-lbl">${STAGE_LABELS[s]}</span>
     </div>`).join('');
-  document.getElementById('panel-prompt').textContent = c.claudePrompt || generatePrompt(c);
-  document.getElementById('panel-notes').value = c.notes||'';
+  document.getElementById('panel-brief').textContent = c.brief || c.business_description || 'No brief provided.';
+  const prompt = c.claudePrompt || generatePrompt(c);
+  document.getElementById('panel-prompt').textContent = prompt;
+  document.getElementById('panel-notes').value = c.notes || '';
+  document.getElementById('panel-action-msg').style.display = 'none';
   document.getElementById('client-panel').classList.add('open');
 }
 
-function closePanel(){ document.getElementById('client-panel').classList.remove('open'); currentClientId=null; }
-function closePanelIfBg(e){ if(e.target===document.getElementById('client-panel')) closePanel(); }
+function closePanel() { document.getElementById('client-panel').classList.remove('open'); currentClientId = null; }
+function closePanelBg(e) { if (e.target.id === 'client-panel') closePanel(); }
 
-function copyPrompt(){
-  const text = document.getElementById('panel-prompt').textContent;
-  navigator.clipboard.writeText(text).then(()=>{ const btn=document.querySelector('.copy-btn'); const orig=btn.textContent; btn.textContent='Copied!'; setTimeout(()=>btn.textContent=orig,2000); });
+function copyPrompt() {
+  navigator.clipboard.writeText(document.getElementById('panel-prompt').textContent)
+    .then(() => { const b = document.querySelector('[onclick="copyPrompt()"]'); b.textContent = 'Copied!'; setTimeout(() => b.textContent = 'Copy Prompt', 2000); });
 }
 
-function regeneratePrompt(){
-  if(!currentClientId) return;
-  const clients=getClients();
-  const c=clients.find(x=>x.clientId===currentClientId);
-  if(!c) return;
-  c.claudePrompt=generatePrompt(c);
-  saveClients(clients);
-  document.getElementById('panel-prompt').textContent=c.claudePrompt;
+async function regeneratePrompt() {
+  const c = allClients.find(x => x.clientId === currentClientId);
+  if (!c) return;
+  const prompt = generatePrompt(c);
+  document.getElementById('panel-prompt').textContent = prompt;
+  await updateClient(currentClientId, { claudePrompt: prompt });
 }
 
-function saveNotes(){
-  if(!currentClientId) return;
-  const clients=getClients();
-  const c=clients.find(x=>x.clientId===currentClientId);
-  if(!c) return;
-  c.notes=document.getElementById('panel-notes').value;
-  saveClients(clients);
-  const btn=document.querySelector('[onclick="saveNotes()"]');
-  const orig=btn.textContent; btn.textContent='Saved'; setTimeout(()=>btn.textContent=orig,1500);
+async function saveNotes() {
+  if (!currentClientId) return;
+  const notes = document.getElementById('panel-notes').value;
+  await updateClient(currentClientId, { notes });
+  const btn = document.querySelector('[onclick="saveNotes()"]');
+  btn.textContent = 'Saved ✓'; setTimeout(() => btn.textContent = 'Save Notes', 1500);
+  const c = allClients.find(x => x.clientId === currentClientId);
+  if (c) c.notes = notes;
 }
 
-function panelAction(type){
-  if(!currentClientId) return;
-  const clients=getClients();
-  const c=clients.find(x=>x.clientId===currentClientId);
-  if(!c) return;
-  if(type==='stage'){
-    const stages=STAGES;
-    const idx=stages.indexOf(c.stage);
-    if(idx<stages.length-1){ c.stage=stages[idx+1]; saveClients(clients); openClient(currentClientId); renderPipeline(); renderDashboard(); alert(`Moved to: ${STAGE_LABELS[c.stage]}`); }
+async function panelAction(type) {
+  if (!currentClientId) return;
+  const c = allClients.find(x => x.clientId === currentClientId);
+  if (!c) return;
+  const msg = document.getElementById('panel-action-msg');
+
+  if (type === 'next-stage') {
+    const idx = STAGES.indexOf(c.stage);
+    if (idx < STAGES.length - 1) {
+      const newStage = STAGES[idx + 1];
+      await updateClient(currentClientId, { stage: newStage });
+      c.stage = newStage;
+      openClient(currentClientId);
+      renderPipeline();
+      msg.style.display = 'block'; msg.style.color = 'var(--cyan)';
+      msg.textContent = 'Moved to: ' + STAGE_LABELS[newStage];
+    }
   }
-  if(type==='preview'){ const url=prompt('Enter preview URL:'); if(url){ c.stage='preview-sent'; c.previewUrl=url; c.previewSentAt=new Date().toISOString(); saveClients(clients); renderPipeline(); closePanel(); alert('Stage updated to Preview Sent. Send the preview email from the CRM or manually.'); } }
-  if(type==='invoice'){ alert('Invoice creation: In production this calls /.netlify/functions/send-invoice with the client ID. This generates the PDF and sends it automatically.'); }
-  if(type==='archive'){ if(confirm(`Archive ${c.business_name}?`)){ c.stage='archived'; saveClients(clients); renderPipeline(); closePanel(); } }
-}
-
-// ==========================================
-// INVOICES
-// ==========================================
-function renderInvoices(filter=''){
-  const invoices=getInvoices();
-  const tbody=document.getElementById('invoices-tbody');
-  const filtered=filter?invoices.filter(i=>i.status===filter):invoices;
-  if(!filtered.length){ tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted)">No invoices'+(filter?' with status '+filter:'')+' yet.</td></tr>'; return; }
-  tbody.innerHTML=filtered.map(i=>`<tr>
-    <td style="font-family:'DM Mono',monospace;font-size:12px">${i.number}</td>
-    <td><strong>${i.businessName}</strong><br><span style="font-size:12px;color:var(--muted)">${i.email}</span></td>
-    <td style="font-family:'DM Mono',monospace;font-weight:700;color:var(--cyan)">£${i.amount}</td>
-    <td style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted)">${new Date(i.createdAt).toLocaleDateString('en-GB')}</td>
-    <td><span class="status-pill s-${i.status}">${i.status}</span></td>
-    <td><div class="row-actions"><button class="row-btn">View PDF</button><button class="row-btn">Resend</button>${i.status!=='paid'?`<button class="row-btn" onclick="markPaid('${i.id}')">Mark Paid</button>`:''}</div></td>
-  </tr>`).join('');
-}
-function filterInvoices(f){ renderInvoices(f); }
-function markPaid(id){ const invs=getInvoices(); const i=invs.find(x=>x.id===id); if(i){ i.status='paid'; saveInvoices(invs); renderInvoices(); } }
-
-// ==========================================
-// REVENUE CHARTS (pure canvas — no libs)
-// ==========================================
-function renderRevenue(){
-  const clients=getClients();
-  const paid=clients.filter(c=>c.paid&&c.paidAt);
-  const now=new Date();
-  const todayStart=new Date(now.getFullYear(),now.getMonth(),now.getDate()).getTime();
-  const weekStart=todayStart-6*86400000;
-  const monthStart=new Date(now.getFullYear(),now.getMonth(),1).getTime();
-  const lastMonthStart=new Date(now.getFullYear(),now.getMonth()-1,1).getTime();
-  const qStart=new Date(now.getFullYear(),Math.floor(now.getMonth()/3)*3,1).getTime();
-  const sum=(arr,from,to)=>arr.filter(c=>{const t=new Date(c.paidAt).getTime();return t>=from&&t<to;}).reduce((s,c)=>s+(c.amount||149),0);
-  document.getElementById('rev-today').textContent='£'+sum(paid,todayStart,Infinity);
-  document.getElementById('rev-week').textContent='£'+sum(paid,weekStart,Infinity);
-  const thisMonth=sum(paid,monthStart,Infinity);
-  document.getElementById('rev-month').textContent='£'+thisMonth;
-  document.getElementById('month-revenue').textContent='£'+thisMonth+' this month';
-  document.getElementById('rev-lastmonth').textContent='£'+sum(paid,lastMonthStart,monthStart);
-  document.getElementById('rev-quarter').textContent='£'+sum(paid,qStart,Infinity);
-  document.getElementById('rev-alltime').textContent='£'+paid.reduce((s,c)=>s+(c.amount||149),0);
-  drawBarChart('revenue-chart', buildWeeklyData(paid), '#00C8E0');
-  drawPieChart('split-chart', clients);
-  drawLineChart('cumulative-chart', paid);
-}
-
-function buildWeeklyData(paid){
-  const weeks=[];
-  for(let i=11;i>=0;i--){
-    const d=new Date();
-    d.setDate(d.getDate()-i*7);
-    const start=new Date(d.getFullYear(),d.getMonth(),d.getDate()-d.getDay()).getTime();
-    const end=start+7*86400000;
-    const val=paid.filter(c=>{const t=new Date(c.paidAt).getTime();return t>=start&&t<end;}).reduce((s,c)=>s+(c.amount||149),0);
-    const label='W'+Math.ceil((new Date(start).getDate())/7)+'/'+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][new Date(start).getMonth()];
-    weeks.push({label,val});
+  if (type === 'preview') {
+    const url = prompt('Enter the preview URL:');
+    if (url) {
+      await updateClient(currentClientId, { stage: 'preview-sent', previewUrl: url, previewSentAt: new Date().toISOString() });
+      // Call send-preview function
+      fetch('/.netlify/functions/send-preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ clientId: currentClientId, previewUrl: url })
+      });
+      c.stage = 'preview-sent';
+      openClient(currentClientId); renderPipeline();
+      msg.style.display = 'block'; msg.style.color = 'var(--green)';
+      msg.textContent = 'Preview email sent to ' + c.delivery_email;
+    }
   }
-  return weeks;
-}
-
-function drawBarChart(id,data,color){
-  const canvas=document.getElementById(id);
-  if(!canvas) return;
-  const ctx=canvas.getContext('2d');
-  canvas.width=canvas.parentElement.offsetWidth-40;
-  canvas.height=200;
-  const w=canvas.width,h=canvas.height,pad=40,barW=(w-pad*2)/data.length-8;
-  const maxVal=Math.max(...data.map(d=>d.val),1);
-  ctx.clearRect(0,0,w,h);
-  ctx.fillStyle='rgba(255,255,255,0.04)';
-  for(let i=0;i<4;i++){ const y=pad+(h-pad*2)/4*i; ctx.fillRect(0,y,w,1); }
-  data.forEach((d,i)=>{
-    const x=pad+i*(barW+8);
-    const bh=Math.max(2,((d.val/maxVal)*(h-pad*2)));
-    const y=h-pad-bh;
-    ctx.fillStyle=color+'33';
-    ctx.fillRect(x,pad,barW,h-pad*2);
-    ctx.fillStyle=color;
-    ctx.fillRect(x,y,barW,bh);
-    ctx.fillStyle='rgba(255,255,255,0.3)';
-    ctx.font='10px DM Mono';
-    ctx.textAlign='center';
-    ctx.fillText(d.label,x+barW/2,h-10);
-    if(d.val>0){ ctx.fillStyle=color; ctx.fillText('£'+d.val,x+barW/2,y-4); }
-  });
-}
-
-function drawPieChart(id,clients){
-  const canvas=document.getElementById(id);
-  if(!canvas) return;
-  const ctx=canvas.getContext('2d');
-  canvas.width=canvas.parentElement.offsetWidth-40;
-  canvas.height=200;
-  const starter=clients.filter(c=>c.package==='starter').length;
-  const advanced=clients.filter(c=>c.package==='advanced').length;
-  const total=starter+advanced||1;
-  const cx=canvas.width/2,cy=100,r=70;
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  const draw=(start,end,color)=>{ ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,start,end);ctx.closePath();ctx.fillStyle=color;ctx.fill(); };
-  const s1=Math.PI*2*(starter/total);
-  draw(-Math.PI/2,-Math.PI/2+s1,'#00C8E0');
-  draw(-Math.PI/2+s1,-Math.PI/2+Math.PI*2,'#a78bfa');
-  ctx.fillStyle='rgba(255,255,255,0.7)';
-  ctx.font='12px DM Sans';ctx.textAlign='center';
-  ctx.fillText('Starter: '+starter,cx-r*0.3,cy+r+20);
-  ctx.fillStyle='rgba(167,139,250,0.9)';
-  ctx.fillText('Advanced: '+advanced,cx+r*0.3+20,cy+r+20);
-}
-
-function drawLineChart(id,paid){
-  const canvas=document.getElementById(id);
-  if(!canvas) return;
-  const ctx=canvas.getContext('2d');
-  canvas.width=canvas.parentElement.offsetWidth-40;
-  canvas.height=200;
-  const months=[];
-  for(let i=0;i<12;i++){
-    const d=new Date();d.setMonth(d.getMonth()-11+i);
-    const m=new Date(d.getFullYear(),d.getMonth(),1).getTime();
-    const n=new Date(d.getFullYear(),d.getMonth()+1,1).getTime();
-    months.push(paid.filter(c=>{ const t=new Date(c.paidAt).getTime(); return t>=m&&t<n; }).reduce((s,c)=>s+(c.amount||149),0));
+  if (type === 'invoice') {
+    if (confirm('Send invoice to ' + c.delivery_email + '?')) {
+      const r = await fetch('/.netlify/functions/send-invoice', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ clientId: currentClientId })
+      });
+      const d = await r.json();
+      if (d.ok) {
+        msg.style.display = 'block'; msg.style.color = 'var(--green)';
+        msg.textContent = `Invoice ${d.invoiceNumber} sent — £${d.amount}`;
+        c.stage = 'invoice-sent'; renderPipeline();
+      }
+    }
   }
-  let cum=0;const cumData=months.map(v=>{cum+=v;return cum;});
-  const w=canvas.width,h=canvas.height,pad=40,maxVal=Math.max(...cumData,1);
-  ctx.clearRect(0,0,w,h);
-  ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.lineWidth=1;
-  for(let i=0;i<4;i++){ const y=pad+(h-pad*2)/4*i; ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke(); }
-  const stepX=(w-pad*2)/11;
-  ctx.beginPath();ctx.strokeStyle='#00C8E0';ctx.lineWidth=2;
-  cumData.forEach((v,i)=>{ const x=pad+i*stepX;const y=h-pad-(v/maxVal)*(h-pad*2); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
-  ctx.stroke();
-  cumData.forEach((v,i)=>{
-    const x=pad+i*stepX;const y=h-pad-(v/maxVal)*(h-pad*2);
-    ctx.beginPath();ctx.arc(x,y,4,0,Math.PI*2);ctx.fillStyle='#00C8E0';ctx.fill();
-    if(v>0){ctx.fillStyle='rgba(0,200,224,0.8)';ctx.font='10px DM Mono';ctx.textAlign='center';ctx.fillText('£'+v,x,y-10);}
-  });
+  if (type === 'paid') {
+    if (confirm('Mark ' + c.business_name + ' as paid?')) {
+      const amount = (c.package === 'advanced' ? 299 : 149) + (c.hosting_addon === 'yes' ? 29 : 0);
+      await updateClient(currentClientId, { stage: 'paid', paid: true, paidAt: new Date().toISOString(), amount });
+      c.stage = 'paid'; c.paid = true;
+      openClient(currentClientId); renderPipeline(); renderDashboard();
+      msg.style.display = 'block'; msg.style.color = 'var(--green)';
+      msg.textContent = 'Marked as paid — £' + amount;
+    }
+  }
+  if (type === 'archive') {
+    if (confirm('Archive ' + c.business_name + '?')) {
+      await updateClient(currentClientId, { stage: 'archived' });
+      c.stage = 'archived';
+      renderPipeline(); renderDashboard(); closePanel();
+    }
+  }
 }
 
 // ==========================================
-// SUPPORT
+// NEW ORDER
 // ==========================================
-let activeThread = null;
-function sendReply(){
-  const text=document.getElementById('reply-text').value.trim();
-  if(!text||!activeThread) return;
-  const msgs=document.getElementById('thread-messages');
-  msgs.innerHTML+=`<div class="message outbound">${text}<div class="message-meta">You — ${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</div></div>`;
-  document.getElementById('reply-text').value='';
-  msgs.scrollTop=msgs.scrollHeight;
-}
-
-// ==========================================
-// EXPORT (stub)
-// ==========================================
-async function exportExcel(){
+async function saveNewOrder() {
+  const name = document.getElementById('no-name').value.trim();
+  const bizname = document.getElementById('no-bizname').value.trim();
+  const email = document.getElementById('no-email').value.trim();
+  const brief = document.getElementById('no-brief').value.trim();
+  if (!name || !bizname || !email || !brief) {
+    alert('Please fill in: Name, Business Name, Email, and Brief.'); return;
+  }
+  const pkg = document.getElementById('no-package').value;
+  const hosting = document.getElementById('no-hosting').value;
+  const client = {
+    name, business_name: bizname, delivery_email: email,
+    phone: document.getElementById('no-phone').value,
+    wa: document.getElementById('no-wa').value,
+    business_type: document.getElementById('no-biztype').value,
+    source: document.getElementById('no-source').value,
+    referral: document.getElementById('no-referral').value,
+    location: document.getElementById('no-location').value,
+    brand_colours: document.getElementById('no-colours').value,
+    brief, reference_1: document.getElementById('no-refs').value,
+    services: document.getElementById('no-services').value,
+    special_requests: document.getElementById('no-requests').value,
+    notes: document.getElementById('no-notes').value,
+    package: pkg, hosting_addon: hosting,
+    amount: (pkg === 'advanced' ? 299 : 149) + (hosting === 'yes' ? 29 : 0),
+    stage: 'new-lead', source: 'admin-manual',
+  };
+  client.claudePrompt = generatePrompt(client);
   try {
-    const res = await fetch('/.netlify/functions/excel-export', {
+    const result = await saveClient(client);
+    allClients.unshift(result.client);
+    document.getElementById('no-success').style.display = 'block';
+    setTimeout(() => {
+      document.getElementById('no-success').style.display = 'none';
+      clearNewOrder();
+      showPage('pipeline', document.querySelectorAll('.nav-tab')[1]);
+      renderPipeline();
+      openClient(result.clientId);
+    }, 1500);
+  } catch(err) {
+    document.getElementById('no-error').style.display = 'block';
+    document.getElementById('no-error').textContent = 'Error: ' + err.message;
+  }
+}
+
+function clearNewOrder() {
+  ['no-name','no-bizname','no-email','no-phone','no-wa','no-brief','no-refs','no-services','no-requests','no-notes','no-location','no-colours']
+    .forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('no-success').style.display = 'none';
+  document.getElementById('no-error').style.display = 'none';
+}
+
+// ==========================================
+// REVENUE
+// ==========================================
+function renderRevenue() {
+  const now = new Date();
+  const ts = Date.now();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const weekStart = todayStart - 6 * 86400000;
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+  const paid = allClients.filter(c => c.paid && c.paidAt);
+  const sum = (from, to) => paid.filter(c => { const t = new Date(c.paidAt).getTime(); return t >= from && (!to || t < to); }).reduce((s,c) => s + (c.amount||149), 0);
+
+  document.getElementById('rev-today').textContent = '£' + sum(todayStart);
+  document.getElementById('rev-week').textContent = '£' + sum(weekStart);
+  document.getElementById('rev-month').textContent = '£' + sum(monthStart);
+  document.getElementById('rev-alltime').textContent = '£' + sum(0);
+  document.getElementById('rev-starter').textContent = allClients.filter(c => c.package !== 'advanced').length;
+  document.getElementById('rev-advanced').textContent = allClients.filter(c => c.package === 'advanced').length;
+
+  const tbody = document.getElementById('revenue-tbody');
+  if (!allClients.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted)">No clients yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = allClients.map(c => {
+    const amount = c.amount || (c.package === 'advanced' ? 299 : 149);
+    const statusColor = c.paid ? 'var(--green)' : c.stage === 'invoice-sent' ? 'var(--amber)' : 'var(--muted)';
+    const statusLabel = c.paid ? 'Paid' : c.stage === 'invoice-sent' ? 'Invoice Sent' : STAGE_LABELS[c.stage] || c.stage;
+    return `<tr>
+      <td style="padding:12px 16px"><strong>${c.business_name || '—'}</strong><br><span style="font-size:12px;color:var(--muted)">${c.delivery_email || ''}</span></td>
+      <td style="padding:12px 16px;color:var(--muted)">${c.package === 'advanced' ? 'Advanced' : 'Starter'}</td>
+      <td style="padding:12px 16px;font-family:'DM Mono',monospace;font-weight:700;color:var(--cyan)">£${amount}</td>
+      <td style="padding:12px 16px;font-family:'DM Mono',monospace;font-size:12px;color:var(--muted)">${c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-GB') : '—'}</td>
+      <td style="padding:12px 16px"><span style="font-size:12px;font-weight:700;color:${statusColor}">${statusLabel}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ==========================================
+// PROMPT GENERATOR
+// ==========================================
+function generatePrompt(c) {
+  return `=== STATICSWIFT BUILD PROMPT — ${c.business_name || '[BUSINESS]'} ===
+
+Build a complete single-file HTML website for ${c.business_name || '[BUSINESS NAME]'}, a ${c.business_type || '[BUSINESS TYPE]'} based in ${c.location || '[LOCATION]'}.
+Tier: ${c.package === 'advanced' ? 'Advanced (multi-page, gallery, testimonials)' : 'Starter (single page)'}.
+
+=== ABOUT ===
+Name: ${c.name || '—'}
+Description: ${c.brief || c.business_description || 'not specified'}
+Location: ${c.location || 'not specified'}
+USP: ${c.usp || 'not specified'}
+
+=== DESIGN ===
+Colours: ${c.brand_colours || 'choose professional palette for this niche'}
+Theme: ${c.theme_preference || 'use best judgement'}
+Personality: ${c.brand_personality || 'professional, trustworthy, local'}
+Avoid: ${c.avoid || 'nothing specified'}
+References: ${[c.reference_1, c.reference_2, c.reference_3].filter(Boolean).join(' | ') || 'none — use best design judgement for this niche'}
+
+=== CONTENT ===
+Services: ${c.services || 'not specified — use best judgement for this business type'}
+Address: ${c.address || 'not specified'}
+Hours: ${c.hours || 'not specified'}
+Phone: ${c.phone || 'not specified'}
+Email (contact form sends to): ${c.enquiry_email || c.delivery_email || 'not specified'}
+Social: ${c.social_links || 'not specified'}
+Requests: ${c.special_requests || 'none'}
+
+=== BUILD RULES ===
+Single HTML file. All CSS and JS inline. Google Fonts CDN only. Mobile-first.
+Sections: hero with CTA, services/products, about, contact form, footer.
+SEO: title tag, meta description, Open Graph, LocalBusiness JSON-LD schema.
+Animations: smooth scroll, fade-in on scroll, hover transitions.
+Footer: "Site by StaticSwift — staticswift.co.uk"
+${c.package === 'advanced' ? 'ADVANCED: Also include gallery section, testimonials, about page section with team/owner.' : ''}
+
+=== END ===`;
+}
+
+// ==========================================
+// PROMPTS LIBRARY
+// ==========================================
+const DEFAULT_PROMPTS = [
+  { id:'barbers', niche:'Barbers & Hair Salons', content:'Dark luxe aesthetic. Gold or white accent. Bebas Neue style heading. Sections: hero with click-to-call, services with prices, gallery of cuts, reviews, hours + map. Trust signals: years trading, walk-ins welcome. CTA: Call Now / Walk In Today.' },
+  { id:'trades', niche:'Trades (Plumbers, Electricians, Builders)', content:'Professional, trustworthy. Mobile-first — customers search on phone in emergencies. Prominent click-to-call as the #1 element. Trust signals: Gas Safe/NICEIC/NAPIT registration, years experience, fully insured, service area. Sections: hero with phone, services, qualifications, reviews, contact. CTA: Call Now / Free Quote.' },
+  { id:'photographers', niche:'Photographers', content:'Clean minimal image-led design. Let photography speak. Generous whitespace. Gallery must be fast-loading. Sections: hero gallery, packages with pricing, style/about, testimonials, booking form. CTA: Check Availability / Book a Consultation.' },
+  { id:'food', niche:'Cafes, Restaurants, Food Trucks', content:'Warm, inviting, personality-led. Feels like the venue itself. Menu easy to read on mobile. Google Maps embed essential. Sections: hero, menu highlights, story, hours + location, reservations. CTA: View Menu / Find Us / Reserve.' },
+  { id:'pt', niche:'Personal Trainers', content:'Energetic but professional. State specialism upfront. Trust signals: Level 3 PT, specialist certs, client results. Sections: hero with specialism, services/packages with pricing, qualifications, testimonials/results, contact. CTA: Free Consultation / Start Your Journey.' },
+];
+
+function renderPrompts() {
+  const prompts = JSON.parse(localStorage.getItem('ss_prompts') || 'null') || DEFAULT_PROMPTS;
+  const grid = document.getElementById('prompts-grid');
+  if (!grid) return;
+  grid.innerHTML = prompts.map(p => `
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+        <h3 style="font-size:15px;font-weight:700">${p.niche}</h3>
+        <button onclick="deletePrompt('${p.id}')" style="background:none;border:none;color:var(--dim);cursor:pointer;font-size:16px">✕</button>
+      </div>
+      <div style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--muted);line-height:1.6;max-height:120px;overflow-y:auto;margin-bottom:14px">${p.content}</div>
+      <div style="display:flex;gap:8px">
+        <button class="copy-btn" onclick="navigator.clipboard.writeText(\`${p.content.replace(/`/g,"'")}\`)">Copy</button>
+        <button class="open-claude-btn" onclick="blendWithLatest('${p.id}')">Blend with Client</button>
+      </div>
+    </div>`).join('');
+}
+
+function blendWithLatest(promptId) {
+  const prompts = JSON.parse(localStorage.getItem('ss_prompts') || 'null') || DEFAULT_PROMPTS;
+  const niche = prompts.find(p => p.id === promptId);
+  if (!niche) return;
+  const latest = allClients[0];
+  const intakePrompt = latest ? generatePrompt(latest) : '(No clients yet — save a new order first)';
+  const combined = intakePrompt + '\n\n=== NICHE DESIGN DIRECTION ===\n\n' + niche.content;
+  navigator.clipboard.writeText(combined);
+  alert('Combined prompt copied to clipboard. Paste into Claude.ai.');
+}
+
+function addPrompt() {
+  const name = prompt('Niche name:'); if (!name) return;
+  const content = prompt('Design direction notes:'); if (!content) return;
+  const prompts = JSON.parse(localStorage.getItem('ss_prompts') || 'null') || DEFAULT_PROMPTS;
+  prompts.push({ id: 'custom_' + Date.now(), niche: name, content });
+  localStorage.setItem('ss_prompts', JSON.stringify(prompts));
+  renderPrompts();
+}
+
+function deletePrompt(id) {
+  if (!confirm('Remove this prompt?')) return;
+  const prompts = (JSON.parse(localStorage.getItem('ss_prompts') || 'null') || DEFAULT_PROMPTS).filter(p => p.id !== id);
+  localStorage.setItem('ss_prompts', JSON.stringify(prompts));
+  renderPrompts();
+}
+
+// ==========================================
+// EXPORT
+// ==========================================
+async function exportData() {
+  try {
+    const r = await fetch('/.netlify/functions/excel-export', {
       headers: { 'x-admin-password': ADMIN_PW }
     });
-    if (!res.ok) { alert('Export failed. Check your connection.'); return; }
-    const blob = await res.blob();
+    if (!r.ok) { alert('Export failed — add ADMIN_PASSWORD env var in Netlify.'); return; }
+    const blob = await r.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = 'StaticSwift_Export_' + new Date().toISOString().split('T')[0] + '.xlsx';
-    a.click();
-    URL.revokeObjectURL(url);
+    a.href = url; a.download = 'StaticSwift_' + new Date().toISOString().split('T')[0] + '.xlsx';
+    a.click(); URL.revokeObjectURL(url);
   } catch(err) { alert('Export error: ' + err.message); }
 }
 
 
 // ==========================================
-// NICHE PROMPT LIBRARY
+// ANALYTICS
 // ==========================================
-const DEFAULT_PROMPTS = [
-  { id:'barbers', niche:'Barbers and Hair Salons', content:'BARBER NICHE DIRECTION\n\nDesign direction: Bold, masculine, clean. Dark background with strong contrast. Think premium barbershop branding.\nTrust signals to include: Years trading, number of happy clients, walk-ins welcome, qualifications.\nKey sections: Hero with click-to-call, services with prices, gallery of cuts, reviews, opening hours with Google Maps.\nCommon services: Haircut, skin fade, beard trim, hot towel shave, full groom.\nTypical price range: £15–£35 per service.\nCTA: Book Now / Call Now / Walk In Today.' },
-  { id:'trades', niche:'Trades (Plumbers, Electricians, Builders)', content:'TRADES NICHE DIRECTION\n\nDesign direction: Professional, trustworthy, established. Clean with strong colour contrast. Mobile-first since many customers search on phone in emergencies.\nTrust signals to include: Qualifications (Gas Safe, NICEIC, NAPIT, etc), years experience, insurance, trade body memberships, local area served.\nKey sections: Hero with prominent phone number, services list, service area, qualifications/accreditations, reviews, contact form.\nCritical: Click-to-call button must be the most prominent element on mobile.\nCTA: Call Now / Get a Free Quote / Emergency Callouts Available.' },
-  { id:'photographers', niche:'Photographers', content:'PHOTOGRAPHERS NICHE DIRECTION\n\nDesign direction: Clean, minimal, image-led. Let the photography speak. Dark or light depending on their style. Generous whitespace.\nTrust signals to include: Years experience, weddings/events photographed, specific style or specialism, awards if any.\nKey sections: Hero gallery, services and packages, pricing, about/style, testimonials, contact form with booking enquiry.\nCritical: Gallery must be fast-loading and responsive. This is the entire point of the site.\nCTA: View My Work / Check Availability / Book a Consultation.' },
-  { id:'food', niche:'Food and Drink (Cafes, Restaurants, Food Trucks)', content:'FOOD AND DRINK NICHE DIRECTION\n\nDesign direction: Warm, inviting, personality-led. Should feel like the brand of the venue itself. Photography or illustrated elements work well.\nTrust signals to include: Years trading, number of customers served, awards or features, chef background if relevant.\nKey sections: Hero with atmosphere photo, menu highlights, story/about, opening hours and location with Google Maps, booking/reservation link.\nCritical: Menu must be easy to read on mobile. Google Maps embed is essential.\nCTA: View Menu / Reserve a Table / Find Us.' },
-  { id:'pt', niche:'Personal Trainers and Fitness', content:'PERSONAL TRAINERS NICHE DIRECTION\n\nDesign direction: Energetic but professional. Strong typography, before/after results where available, certification badges.\nTrust signals to include: Level 3 PT qualification, specialist certifications, client results and testimonials, years experience.\nKey sections: Hero with clear specialism stated, services/packages with pricing, qualifications, client testimonials/results, contact/booking form.\nCritical: Clearly state specialism upfront — weight loss, strength, sports performance, etc. Generic PTs get ignored.\nCTA: Book a Free Consultation / Start Your Journey / Get in Touch.' },
-];
+async function loadAnalytics() {
+  document.getElementById('analytics-status').textContent = 'Refreshing...';
+  let anyData = false;
 
-function loadPrompts(){ try{ return JSON.parse(localStorage.getItem('ss_prompts')||'null') || DEFAULT_PROMPTS; }catch{ return DEFAULT_PROMPTS; } }
-function savePrompts(p){ localStorage.setItem('ss_prompts',JSON.stringify(p)); }
+  // GA4
+  try {
+    const r = await fetch('/.netlify/functions/analytics-data', {
+      headers: { 'x-admin-password': ADMIN_PW }
+    });
+    const d = await r.json();
+    if (d.unavailable) {
+      showAnalyticsSetup('GA4: ' + d.reason);
+    } else {
+      anyData = true;
+      document.getElementById('ga-sessions').textContent = d.overview.sessions.toLocaleString();
+      document.getElementById('ga-users').textContent = d.overview.users.toLocaleString();
+      document.getElementById('ga-pageviews').textContent = d.overview.pageviews.toLocaleString();
+      document.getElementById('ga-duration').textContent = Math.floor(d.overview.avgDuration/60) + 'm ' + (d.overview.avgDuration%60) + 's';
+      document.getElementById('ga-bounce').textContent = d.overview.bounceRate + '%';
 
-function renderPrompts(){
-  const prompts = loadPrompts();
-  const grid = document.getElementById('prompts-grid');
-  if(!grid) return;
-  grid.innerHTML = prompts.map(p => `
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
-        <h3 style="font-size:15px;font-weight:700">${p.niche}</h3>
-        <button onclick="deletePrompt('${p.id}')" style="background:none;border:none;color:var(--dim);cursor:pointer;font-size:16px;line-height:1">✕</button>
-      </div>
-      <div style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:12px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);white-space:pre-wrap;max-height:140px;overflow-y:auto;line-height:1.5;margin-bottom:14px">${p.content}</div>
-      <button class="copy-btn" onclick="navigator.clipboard.writeText(\`${p.content.replace(/`/g,"'")}\`)">Copy</button>
-      <button class="open-claude-btn" style="margin-left:8px" onclick="blendPrompt('${p.id}')">Blend with Client</button>
-    </div>
-  `).join('');
+      document.getElementById('ga-top-pages').innerHTML = d.topPages.map(p =>
+        `<div style="display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border)">
+          <span style="color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:70%">${p.path}</span>
+          <span style="font-family:'DM Mono',monospace;color:var(--cyan);flex-shrink:0">${p.views.toLocaleString()}</span>
+        </div>`).join('') || '<div class="empty">No data yet</div>';
+
+      document.getElementById('ga-sources').innerHTML = d.sources.map(s =>
+        `<div style="display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border)">
+          <span style="color:var(--muted)">${s.channel}</span>
+          <span style="font-family:'DM Mono',monospace;color:var(--cyan)">${s.sessions.toLocaleString()}</span>
+        </div>`).join('') || '<div class="empty">No data yet</div>';
+    }
+  } catch(err) {
+    document.getElementById('ga-top-pages').innerHTML = `<div class="empty">GA4 not connected</div>`;
+    document.getElementById('ga-sources').innerHTML = `<div class="empty">GA4 not connected</div>`;
+  }
+
+  // Search Console
+  try {
+    const r = await fetch('/.netlify/functions/search-console-data', {
+      headers: { 'x-admin-password': ADMIN_PW }
+    });
+    const d = await r.json();
+    if (d.unavailable) {
+      showAnalyticsSetup('GSC: ' + d.reason);
+    } else {
+      anyData = true;
+      document.getElementById('gsc-clicks').textContent = d.overview.clicks.toLocaleString();
+      document.getElementById('gsc-impressions').textContent = d.overview.impressions.toLocaleString();
+      document.getElementById('gsc-ctr').textContent = d.overview.ctr + '%';
+      document.getElementById('gsc-position').textContent = '#' + d.overview.position;
+
+      document.getElementById('gsc-queries').innerHTML = d.topQueries.map(q =>
+        `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border);gap:8px">
+          <span style="color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${q.query}</span>
+          <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--dim);flex-shrink:0">${q.clicks} clicks · #${q.position}</span>
+        </div>`).join('') || '<div class="empty">No data yet</div>';
+
+      document.getElementById('gsc-sitemaps').innerHTML = d.sitemaps.length
+        ? d.sitemaps.map(s => {
+            const pct = s.submitted > 0 ? Math.round((s.indexed / s.submitted) * 100) : 0;
+            const color = pct >= 60 ? 'var(--green)' : pct >= 30 ? 'var(--amber)' : 'var(--red)';
+            return `<div style="padding:12px 16px;border-bottom:1px solid var(--border)">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span style="font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis">${s.path.replace('https://staticswift.co.uk','')}</span>
+                <span style="font-family:'DM Mono',monospace;font-size:11px;color:${color}">${s.indexed}/${s.submitted} (${pct}%)</span>
+              </div>
+              <div style="height:4px;background:var(--dark3);border-radius:2px;overflow:hidden">
+                <div style="height:100%;width:${pct}%;background:${color};border-radius:2px;transition:width .4s"></div>
+              </div>
+            </div>`;}).join('')
+        : '<div class="empty" style="font-size:13px">No sitemaps submitted yet.<br><a href="https://search.google.com/search-console" target="_blank" style="color:var(--cyan)">Submit at Search Console →</a></div>';
+    }
+  } catch(err) {
+    document.getElementById('gsc-queries').innerHTML = `<div class="empty">Search Console not connected</div>`;
+    document.getElementById('gsc-sitemaps').innerHTML = `<div class="empty">Search Console not connected</div>`;
+  }
+
+  document.getElementById('analytics-status').textContent = 'Updated ' + new Date().toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
+  if (!anyData) {
+    document.getElementById('analytics-setup').style.display = 'block';
+  }
 }
 
-function blendPrompt(promptId){
-  const prompts = loadPrompts();
-  const niche = prompts.find(p=>p.id===promptId);
-  if(!niche) return;
-  const clients = getClients();
-  const latest = clients[clients.length-1];
-  const intakePrompt = latest ? (latest.claudePrompt || generatePrompt(latest)) : '(No client selected — open a client record first, then use the Blend button from their panel)';
-  document.getElementById('blend-intake').textContent = intakePrompt;
-  document.getElementById('blend-niche').textContent = niche.content;
-  document.getElementById('blend-output').textContent = intakePrompt + '\n\n=== NICHE DESIGN DIRECTION ===\n\n' + niche.content;
-  document.getElementById('blend-modal').style.display = 'flex';
+function showAnalyticsSetup(reason) {
+  document.getElementById('analytics-setup').style.display = 'block';
 }
 
-function addNichePrompt(){
-  const name = prompt('Niche name (e.g. Dog Groomers):');
-  if(!name) return;
-  const content = prompt('Paste your niche design direction:');
-  if(!content) return;
-  const prompts = loadPrompts();
-  prompts.push({ id: 'custom_'+Date.now(), niche: name, content });
-  savePrompts(prompts);
-  renderPrompts();
+async function pingSitemaps() {
+  const btn = event.target;
+  btn.textContent = 'Pinging...';
+  btn.disabled = true;
+  try {
+    const r = await fetch('/.netlify/functions/ping-sitemaps', {
+      method: 'POST',
+      headers: { 'x-admin-password': ADMIN_PW }
+    });
+    const d = await r.json();
+    if (d.ok) {
+      btn.textContent = `Pinged ✓ (${d.sitemapsPinged} sitemaps, ${d.priorityUrlsSubmitted} priority URLs)`;
+      btn.style.color = 'var(--green)';
+    } else {
+      btn.textContent = 'Ping failed';
+    }
+  } catch(err) {
+    btn.textContent = 'Error: ' + err.message;
+  }
+  setTimeout(() => {
+    btn.textContent = 'Ping Sitemaps';
+    btn.style.color = '';
+    btn.disabled = false;
+  }, 5000);
 }
 
-function deletePrompt(id){
-  if(!confirm('Remove this prompt?')) return;
-  const prompts = loadPrompts().filter(p=>p.id!==id);
-  savePrompts(prompts);
-  renderPrompts();
+// ==========================================
+// UTILS
+// ==========================================
+function timeAgo(iso) {
+  if (!iso) return '—';
+  const diff = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return Math.round(diff/60) + 'm ago';
+  if (diff < 86400) return Math.round(diff/3600) + 'h ago';
+  return Math.round(diff/86400) + 'd ago';
 }
-
-// Patch showPage to also render prompts
-const _origShowPage = showPage;
-// (Already handles it via renderDashboard etc — renderPrompts called when prompts page shown)
-
 </script>
 </body>
 </html>
