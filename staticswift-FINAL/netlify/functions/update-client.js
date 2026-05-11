@@ -1,4 +1,4 @@
-const { getClientStore } = require('./_store');
+const { updateClient } = require('./_db');
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
@@ -9,12 +9,8 @@ exports.handler = async (event) => {
   try {
     const { clientId, updates } = JSON.parse(event.body || '{}');
     if (!clientId) return { statusCode: 400, body: JSON.stringify({ error: 'clientId required' }) };
-    const store = getClientStore();
-    const existing = await store.get(clientId, { type: 'json' });
-    if (!existing) return { statusCode: 404, body: JSON.stringify({ error: 'Client not found' }) };
-    const updated = { ...existing, ...updates, clientId };
-    await store.setJSON(clientId, updated);
-    return { statusCode: 200, body: JSON.stringify({ ok: true, client: updated }) };
+    const client = await updateClient(clientId, updates);
+    return { statusCode: 200, body: JSON.stringify({ ok: true, client }) };
   } catch (err) {
     console.error('[update-client] error:', err.message);
     return { statusCode: 500, body: JSON.stringify({ error: err.message }) };

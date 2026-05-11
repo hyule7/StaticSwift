@@ -1,29 +1,12 @@
-const { getClientStore } = require('./_store');
+const { getClients } = require('./_db');
 
 exports.handler = async (event) => {
   const auth = event.headers['x-admin-password'];
   const validPw = process.env.ADMIN_PASSWORD || 'Harry2001!';
-  if (auth !== validPw) {
-    return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
-  }
+  if (auth !== validPw) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
 
   try {
-    const store = getClientStore();
-    let clients = [];
-
-    try {
-      const { blobs } = await store.list();
-      for (const { key } of blobs) {
-        if (key === 'invoice_counter') continue;
-        try {
-          const c = await store.get(key, { type: 'json' });
-          if (c && c.clientId) clients.push(c);
-        } catch { continue; }
-      }
-    } catch (e) {
-      console.log('[get-clients] list failed:', e.message);
-    }
-
+    const clients = await getClients();
     clients.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     return {
       statusCode: 200,

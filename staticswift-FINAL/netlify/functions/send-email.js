@@ -1,4 +1,4 @@
-const { getClientStore, getMetaStore } = require('./_store');
+const { getClient, updateClient, incrementInvoiceCounter } = require('./_db');
 const { createTransporter, LOGO_HTML } = require('./_mailer');
 
 exports.handler = async (event) => {
@@ -15,8 +15,8 @@ exports.handler = async (event) => {
     if (!clientId) return { statusCode: 400, body: JSON.stringify({ error: 'clientId required' }) };
     if (!emailType) return { statusCode: 400, body: JSON.stringify({ error: 'emailType required' }) };
 
-    const store = getClientStore();
-    const client = await store.get(clientId, { type: 'json' });
+    
+    const client = await getClient(clientId);
     if (!client) return { statusCode: 404, body: JSON.stringify({ error: 'Client not found in Blobs' }) };
 
     const toAddr = client.delivery_email;
@@ -72,11 +72,7 @@ exports.handler = async (event) => {
       // Invoice number
       let invoiceNumber = 'SS-' + new Date().getFullYear() + '-001';
       try {
-        const metaStore = getMetaStore();
-        let counter = { count: 0 };
-        try { counter = await metaStore.get('invoice_counter', { type: 'json' }); } catch {}
-        const next = (counter?.count || 0) + 1;
-        await metaStore.setJSON('invoice_counter', { count: next });
+        const next = await incrementInvoiceCounter();
         invoiceNumber = 'SS-' + new Date().getFullYear() + '-' + String(next).padStart(3, '0');
       } catch {}
 
@@ -123,7 +119,7 @@ exports.handler = async (event) => {
     // Update client record
     const emailLog = Array.isArray(client.emailLog) ? client.emailLog : [];
     emailLog.push({ type: emailType, sentAt: new Date().toISOString(), direction: 'outbound', subject });
-    await store.setJSON(clientId, { ...client, ...stageUpdate, emailLog });
+    await updateClient(clientId, { ...stageUpdate, emailLog });
 
     return {
       statusCode: 200,

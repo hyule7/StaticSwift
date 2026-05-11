@@ -1,4 +1,4 @@
-const { getClientStore } = require('./_store');
+const { saveClient } = require('./_db');
 
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
@@ -20,8 +20,7 @@ exports.handler = async (event) => {
       emailLog: [],
     };
 
-    const store = getClientStore();
-    await store.setJSON(clientId, client);
+    await saveClient(client);
     console.log('[handle-intake] saved:', clientId);
 
     return {

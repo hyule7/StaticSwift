@@ -1,11 +1,11 @@
-const { getClientStore, getMetaStore } = require('./_store');
+
 
 exports.handler = async (event) => {
   const uuid = event.path.replace('/client/', '').replace(/\//g, '');
   if (!uuid) return { statusCode: 400, body: 'Missing portal UUID' };
 
   try {
-    const store = getClientStore();
+    const store = require('./_db').getClient;
     const { blobs } = await store.list();
     let client = null;
 
