@@ -1,32 +1,16 @@
-# ============================================================
-# StaticSwift — netlify.toml
-# ============================================================
-
 [build]
-  command = ""
+  command = "npm install"
   publish = "."
   functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "18"
 
-# Automatically installs function dependencies from functions/package.json
-[[plugins]]
-  package = "@netlify/plugin-functions-install-core"
-
-# ============================================================
-# SCHEDULED FUNCTIONS
-# ============================================================
-
 [functions."daily-followup"]
   schedule = "0 9 * * 1-5"
 
 [functions."poll-support"]
   schedule = "*/5 * * * *"
-
-# ============================================================
-# REDIRECTS
-# ============================================================
 
 [[redirects]]
   from = "/admin"
@@ -60,10 +44,6 @@
   to = "https://staticswift.co.uk/:splat"
   status = 301
   force = true
-
-# ============================================================
-# HEADERS
-# ============================================================
 
 [[headers]]
   for = "/*"
