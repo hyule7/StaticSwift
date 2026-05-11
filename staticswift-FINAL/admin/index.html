@@ -429,6 +429,10 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}
         <h4>Brief</h4>
         <div id="panel-brief" style="font-size:13px;color:var(--muted);line-height:1.7;max-height:120px;overflow-y:auto"></div>
       </div>
+      <div class="panel-section" id="panel-portal-section" style="display:none">
+        <h4>Client Portal</h4>
+        <div id="panel-portal" style="font-size:13px"></div>
+      </div>
       <div class="panel-section">
         <h4>Claude AI Build Prompt</h4>
         <div class="prompt-box" id="panel-prompt"></div>
@@ -710,6 +714,15 @@ function openClient(id) {
   document.getElementById('panel-prompt').textContent = prompt;
   document.getElementById('panel-notes').value = c.notes || '';
   document.getElementById('panel-action-msg').style.display = 'none';
+  if (c.portalUUID) {
+    const portalUrl = 'https://staticswift.co.uk/client/' + c.portalUUID;
+    document.getElementById('panel-portal-section').style.display = 'block';
+    const portalHTML = '<a href="' + portalUrl + '" target="_blank" style="color:var(--cyan);font-weight:600">' + portalUrl + '</a><br><button class="copy-btn" style="margin-top:8px" id="copy-portal-btn">Copy Link</button>';
+    document.getElementById('panel-portal').innerHTML = portalHTML;
+    document.getElementById('copy-portal-btn').addEventListener('click', function() { navigator.clipboard.writeText(portalUrl); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy Link', 2000); });
+  } else {
+    document.getElementById('panel-portal-section').style.display = 'none';
+  }
   document.getElementById('client-panel').classList.add('open');
 }
 
@@ -807,12 +820,14 @@ async function panelAction(type) {
   if (type === 'paid') {
     if (confirm('Mark ' + c.business_name + ' as paid?')) {
       const amount = (c.package === 'advanced' ? 299 : 149) + (c.hosting_addon === 'yes' ? 29 : 0);
-      await updateClient(currentClientId, { stage: 'paid', paid: true, paidAt: new Date().toISOString(), amount });
+      const portalUUID = "portal-" + Date.now() + "-" + Math.random().toString(36).substr(2,12);
+      const portalUrl = 'https://staticswift.co.uk/client/' + portalUUID;
+      await updateClient(currentClientId, { stage: 'paid', paid: true, paidAt: new Date().toISOString(), amount, portalUUID });
       c.stage = 'paid'; c.paid = true;
       await refreshData();
       openClient(currentClientId);
       msg.style.display = 'block'; msg.style.color = 'var(--green)';
-      msg.textContent = 'Marked as paid';
+      msg.innerHTML = 'Marked as paid. Client portal: <a href="' + portalUrl + '" target="_blank" style="color:var(--cyan)">' + portalUrl + '</a>';
     }
   }
   if (type === 'archive') {
