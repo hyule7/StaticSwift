@@ -1,6 +1,0 @@
-node_modules/
-.env
-leads.json
-sent_log.json
-*.log
-.DS_Store
