@@ -467,7 +467,7 @@ let ADMIN_PW = '';
 function tryLogin() {
   const val = document.getElementById('pw-input').value;
   if (!val) return;
-  // Verify against backend
+  // Try backend auth first, fall back to client-side
   fetch('/.netlify/functions/get-clients', {
     headers: { 'x-admin-password': val }
   }).then(r => {
@@ -480,10 +480,23 @@ function tryLogin() {
     } else {
       document.getElementById('login-err').style.display = 'block';
       document.getElementById('pw-input').value = '';
+      document.getElementById('pw-input').focus();
     }
   }).catch(() => {
-    document.getElementById('login-err').textContent = 'Connection error. Check your internet.';
-    document.getElementById('login-err').style.display = 'block';
+    // Backend unavailable (function not deployed yet or network error)
+    // Fall back to client-side password check
+    if (val === 'Harry2001!') {
+      ADMIN_PW = val;
+      sessionStorage.setItem('ss_pw', val);
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'flex';
+      initApp();
+    } else {
+      document.getElementById('login-err').textContent = 'Incorrect password.';
+      document.getElementById('login-err').style.display = 'block';
+      document.getElementById('pw-input').value = '';
+      document.getElementById('pw-input').focus();
+    }
   });
 }
 
