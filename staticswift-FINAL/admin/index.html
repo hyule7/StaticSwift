@@ -441,8 +441,10 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}
       <div class="panel-section">
         <h4>Actions</h4>
         <div class="panel-actions">
-          <button class="action-btn primary" onclick="panelAction('preview')">Send Preview</button>
+          <button class="action-btn primary" onclick="panelAction('confirmation')">Send Confirmation Email</button>
+          <button class="action-btn primary" onclick="panelAction('preview')">Send Preview Email</button>
           <button class="action-btn" onclick="panelAction('invoice')">Send Invoice</button>
+          <button class="action-btn" onclick="panelAction('custom')">Send Custom Email</button>
           <button class="action-btn" onclick="panelAction('next-stage')">Next Stage →</button>
           <button class="action-btn success" onclick="panelAction('paid')">Mark Paid</button>
           <button class="action-btn danger" onclick="panelAction('archive')">Archive</button>
@@ -742,48 +744,64 @@ async function panelAction(type) {
   const c = allClients.find(x => x.clientId === currentClientId);
   if (!c) return;
   const msg = document.getElementById('panel-action-msg');
+  msg.style.display = 'none';
 
+  async function sendEmailAction(body) {
+    try {
+      const r = await fetch('/.netlify/functions/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+        body: JSON.stringify(body)
+      });
+      const d = await r.json();
+      if (d.ok) {
+        msg.style.display = 'block'; msg.style.color = 'var(--green)';
+        msg.textContent = 'Email sent to ' + d.to + (d.invoiceNumber ? ' (' + d.invoiceNumber + ')' : '');
+        await refreshData();
+        openClient(currentClientId);
+      } else {
+        msg.style.display = 'block'; msg.style.color = 'var(--red)';
+        msg.textContent = 'Error: ' + (d.error || 'Unknown error');
+      }
+    } catch(err) {
+      msg.style.display = 'block'; msg.style.color = 'var(--red)';
+      msg.textContent = 'Network error: ' + err.message;
+    }
+  }
+
+  if (type === 'confirmation') {
+    if (confirm('Send confirmation email to ' + c.delivery_email + '?')) {
+      await sendEmailAction({ clientId: currentClientId, emailType: 'confirmation' });
+    }
+  }
+  if (type === 'preview') {
+    const url = prompt('Enter the preview URL:');
+    if (url) {
+      await sendEmailAction({ clientId: currentClientId, emailType: 'preview', previewUrl: url });
+    }
+  }
+  if (type === 'invoice') {
+    if (confirm('Send invoice to ' + c.delivery_email + '?')) {
+      await sendEmailAction({ clientId: currentClientId, emailType: 'invoice' });
+    }
+  }
+  if (type === 'custom') {
+    const subject = prompt('Email subject:');
+    if (!subject) return;
+    const body = prompt('Email body (plain text):');
+    if (!body) return;
+    await sendEmailAction({ clientId: currentClientId, emailType: 'custom', customSubject: subject, customBody: body });
+  }
   if (type === 'next-stage') {
     const idx = STAGES.indexOf(c.stage);
     if (idx < STAGES.length - 1) {
       const newStage = STAGES[idx + 1];
       await updateClient(currentClientId, { stage: newStage });
       c.stage = newStage;
+      await refreshData();
       openClient(currentClientId);
-      renderPipeline();
       msg.style.display = 'block'; msg.style.color = 'var(--cyan)';
       msg.textContent = 'Moved to: ' + STAGE_LABELS[newStage];
-    }
-  }
-  if (type === 'preview') {
-    const url = prompt('Enter the preview URL:');
-    if (url) {
-      await updateClient(currentClientId, { stage: 'preview-sent', previewUrl: url, previewSentAt: new Date().toISOString() });
-      // Call send-preview function
-      fetch('/.netlify/functions/send-preview', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ clientId: currentClientId, previewUrl: url })
-      });
-      c.stage = 'preview-sent';
-      openClient(currentClientId); renderPipeline();
-      msg.style.display = 'block'; msg.style.color = 'var(--green)';
-      msg.textContent = 'Preview email sent to ' + c.delivery_email;
-    }
-  }
-  if (type === 'invoice') {
-    if (confirm('Send invoice to ' + c.delivery_email + '?')) {
-      const r = await fetch('/.netlify/functions/send-invoice', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ clientId: currentClientId })
-      });
-      const d = await r.json();
-      if (d.ok) {
-        msg.style.display = 'block'; msg.style.color = 'var(--green)';
-        msg.textContent = `Invoice ${d.invoiceNumber} sent — £${d.amount}`;
-        c.stage = 'invoice-sent'; renderPipeline();
-      }
     }
   }
   if (type === 'paid') {
@@ -791,16 +809,18 @@ async function panelAction(type) {
       const amount = (c.package === 'advanced' ? 299 : 149) + (c.hosting_addon === 'yes' ? 29 : 0);
       await updateClient(currentClientId, { stage: 'paid', paid: true, paidAt: new Date().toISOString(), amount });
       c.stage = 'paid'; c.paid = true;
-      openClient(currentClientId); renderPipeline(); renderDashboard();
+      await refreshData();
+      openClient(currentClientId);
       msg.style.display = 'block'; msg.style.color = 'var(--green)';
-      msg.textContent = 'Marked as paid — £' + amount;
+      msg.textContent = 'Marked as paid';
     }
   }
   if (type === 'archive') {
     if (confirm('Archive ' + c.business_name + '?')) {
       await updateClient(currentClientId, { stage: 'archived' });
       c.stage = 'archived';
-      renderPipeline(); renderDashboard(); closePanel();
+      await refreshData();
+      closePanel();
     }
   }
 }

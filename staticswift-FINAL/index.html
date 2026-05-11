@@ -1974,12 +1974,19 @@ document.getElementById('intake-form').addEventListener('submit', async function
   submitBtn.disabled = true;
   const formData = new FormData(this);
   const clientName = formData.get('name') || '';
+  // Convert to JSON for reliable parsing
+  const jsonData = {};
+  for (const [key, value] of formData.entries()) {
+    if (typeof value === 'string') jsonData[key] = value;
+  }
   try {
-    await fetch('/.netlify/functions/handle-intake', {
+    const resp = await fetch('/.netlify/functions/handle-intake', {
       method: 'POST',
-      body: formData
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(jsonData)
     });
-  } catch(err) {}
+    if (!resp.ok) console.error('Intake error:', resp.status, await resp.text());
+  } catch(err) { console.error('Intake fetch error:', err); }
   window.location.href = `/thank-you.html?name=${encodeURIComponent(clientName)}`;
 });
 </script>
