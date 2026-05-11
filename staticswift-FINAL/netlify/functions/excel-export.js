@@ -1,4 +1,4 @@
-const { getStore } = require('@netlify/blobs');
+const { getClientStore, getMetaStore } = require('./_store');
 const ExcelJS = require('exceljs');
 
 exports.handler = async (event) => {
@@ -8,7 +8,7 @@ exports.handler = async (event) => {
   if (auth !== validPw) return { statusCode: 401, body: 'Unauthorized' };
 
   try {
-    const store = getStore('clients');
+    const store = getClientStore();
     const { blobs } = await store.list();
     const clients = [];
     for (const { key } of blobs) {

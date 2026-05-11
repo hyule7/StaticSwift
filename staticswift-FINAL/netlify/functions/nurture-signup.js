@@ -1,4 +1,4 @@
-const { getStore } = require('@netlify/blobs');
+const { getClientStore, getMetaStore, getNurtureStore, getSupportStore } = require('./_store');
 const { createTransporter, LOGO_HTML } = require('./_mailer');
 
 exports.handler = async (event) => {
@@ -7,7 +7,7 @@ exports.handler = async (event) => {
     const { email, business_type } = JSON.parse(event.body || '{}');
     if (!email) return { statusCode: 400, body: 'Email required' };
     const now = Date.now();
-    const store = getStore('nurture-list');
+    const store = getNurtureStore();
     const key = `nurture_${email.replace(/[^a-z0-9]/gi,'_')}`;
     await store.setJSON(key, {
       email, business_type: business_type || '',

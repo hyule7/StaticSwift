@@ -1,4 +1,4 @@
-const { getStore } = require('@netlify/blobs');
+const { getClientStore, getMetaStore } = require('./_store');
 const { createTransporter, LOGO_HTML } = require('./_mailer');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const { v4: uuidv4 } = require('uuid');
@@ -27,7 +27,7 @@ exports.handler = async (event) => {
 
     if (!customerEmail) return { statusCode: 200, body: 'No email on payment intent' };
 
-    const store = getStore('clients');
+    const store = getClientStore();
     const keys = await store.list();
     let clientKey = null;
     let client = null;

@@ -1,4 +1,4 @@
-const { getStore } = require('@netlify/blobs');
+const { getClientStore, getMetaStore } = require('./_store');
 const { createTransporter, LOGO_HTML } = require('./_mailer');
 
 exports.handler = async (event) => {
@@ -15,7 +15,7 @@ exports.handler = async (event) => {
     if (!clientId) return { statusCode: 400, body: JSON.stringify({ error: 'clientId required' }) };
     if (!emailType) return { statusCode: 400, body: JSON.stringify({ error: 'emailType required' }) };
 
-    const store = getStore('clients');
+    const store = getClientStore();
     const client = await store.get(clientId, { type: 'json' });
     if (!client) return { statusCode: 404, body: JSON.stringify({ error: 'Client not found in Blobs' }) };
 
@@ -72,7 +72,7 @@ exports.handler = async (event) => {
       // Invoice number
       let invoiceNumber = 'SS-' + new Date().getFullYear() + '-001';
       try {
-        const metaStore = getStore('meta');
+        const metaStore = getMetaStore();
         let counter = { count: 0 };
         try { counter = await metaStore.get('invoice_counter', { type: 'json' }); } catch {}
         const next = (counter?.count || 0) + 1;

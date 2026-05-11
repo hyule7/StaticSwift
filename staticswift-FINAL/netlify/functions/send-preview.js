@@ -1,4 +1,4 @@
-const { getStore } = require('@netlify/blobs');
+const { getClientStore, getMetaStore } = require('./_store');
 const { createTransporter, LOGO_HTML } = require('./_mailer');
 
 exports.handler = async (event) => {
@@ -6,7 +6,7 @@ exports.handler = async (event) => {
   try {
     const { clientId, previewUrl } = JSON.parse(event.body || '{}');
     if (!clientId || !previewUrl) return { statusCode: 400, body: 'clientId and previewUrl required' };
-    const store = getStore('clients');
+    const store = getClientStore();
     const client = await store.get(clientId, { type: 'json' });
     if (!client) return { statusCode: 404, body: 'Client not found' };
     await store.setJSON(clientId, {

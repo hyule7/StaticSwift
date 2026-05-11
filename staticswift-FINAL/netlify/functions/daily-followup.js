@@ -1,13 +1,13 @@
-const { getStore } = require('@netlify/blobs');
+const { getClientStore, getMetaStore, getNurtureStore } = require('./_store');
 const { createTransporter, LOGO_HTML } = require('./_mailer');
 
 const hoursSince = (isoDate) => (Date.now() - new Date(isoDate).getTime()) / 3600000;
 const daysSince = (isoDate) => hoursSince(isoDate) / 24;
 
 exports.handler = async () => {
-  const store = getStore('clients');
-  const nurtureStore = getStore('nurture-list');
-  const logStore = getStore('meta');
+  const store = getClientStore();
+  const nurtureStore = getNurtureStore();
+  const logStore = getMetaStore();
   const transporter = createTransporter();
   const log = [];
 

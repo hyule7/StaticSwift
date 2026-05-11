@@ -1,11 +1,11 @@
-const { getStore } = require('@netlify/blobs');
+const { getClientStore, getMetaStore } = require('./_store');
 
 exports.handler = async (event) => {
   const uuid = event.path.replace('/client/', '').replace(/\//g, '');
   if (!uuid) return { statusCode: 400, body: 'Missing portal UUID' };
 
   try {
-    const store = getStore('clients');
+    const store = getClientStore();
     const { blobs } = await store.list();
     let client = null;
 

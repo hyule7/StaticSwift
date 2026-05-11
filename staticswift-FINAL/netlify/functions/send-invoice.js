@@ -1,4 +1,4 @@
-const { getStore } = require('@netlify/blobs');
+const { getClientStore, getMetaStore } = require('./_store');
 const { createTransporter, LOGO_HTML } = require('./_mailer');
 
 async function getNextInvoiceNumber(store) {
@@ -15,11 +15,11 @@ exports.handler = async (event) => {
     const { clientId } = JSON.parse(event.body || '{}');
     if (!clientId) return { statusCode: 400, body: 'clientId required' };
 
-    const store = getStore('clients');
+    const store = getClientStore();
     const client = await store.get(clientId, { type: 'json' });
     if (!client) return { statusCode: 404, body: 'Client not found' };
 
-    const invoiceNumber = await getNextInvoiceNumber(getStore('meta'));
+    const invoiceNumber = await getNextInvoiceNumber(getMetaStore());
     const isAdvanced = client.package === 'advanced';
     const hasHosting = client.hosting_addon === 'yes';
     const amount = (isAdvanced ? 299 : 149) + (hasHosting ? 29 : 0);

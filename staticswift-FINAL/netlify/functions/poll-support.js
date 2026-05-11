@@ -1,4 +1,4 @@
-const { getStore } = require('@netlify/blobs');
+const { getClientStore, getMetaStore, getSupportStore } = require('./_store');
 const { google } = require('googleapis');
 
 // Scheduled every 5 minutes via netlify.toml
@@ -11,8 +11,8 @@ exports.handler = async () => {
     oauth2Client.setCredentials({ refresh_token: process.env.GMAIL_REFRESH_TOKEN });
     const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 
-    const store = getStore('clients');
-    const supportStore = getStore('support-inbox');
+    const store = getClientStore();
+    const supportStore = getSupportStore();
 
     // Fetch unread messages from support@staticswift.co.uk
     const listRes = await gmail.users.messages.list({
