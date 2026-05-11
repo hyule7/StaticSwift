@@ -12,10 +12,6 @@
 [functions."poll-support"]
   schedule = "*/5 * * * *"
 
-# Ping sitemaps after every successful deploy
-[functions."ping-sitemaps"]
-  # Called automatically via deploy hook set up in Netlify UI
-
 [[redirects]]
   from = "/admin"
   to = "/admin/index.html"
@@ -72,3 +68,6 @@
   for = "/.netlify/functions/*"
   [headers.values]
     Cache-Control = "no-store"
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, x-admin-password"

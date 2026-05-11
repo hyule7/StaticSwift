@@ -1,10 +1,7 @@
 {
-  "name": "staticswift-site",
+  "name": "staticswift-functions",
   "version": "1.0.0",
   "private": true,
-  "scripts": {
-    "build": "echo 'Static site \u2014 no build step'"
-  },
   "dependencies": {
     "@netlify/blobs": "^6.5.0",
     "exceljs": "^4.4.0",
