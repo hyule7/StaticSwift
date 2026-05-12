@@ -79,4 +79,4 @@ async function incrementInvoiceCounter() {
   return next;
 }
 
-module.exports = { getClients, saveClient, getClient, updateClient, getInvoiceCounter, incrementInvoiceCounter };
+module.exports = { getClients, saveClient, getClient, updateClient, getInvoiceCounter, incrementInvoiceCounter, readDB, writeDB };

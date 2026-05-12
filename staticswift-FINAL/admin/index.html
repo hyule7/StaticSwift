@@ -552,6 +552,13 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}
         <h4>Client Portal</h4>
         <div id="panel-portal" style="font-size:13px"></div>
       </div>
+      <div class="panel-section" id="panel-messages-section" style="display:none">
+        <h4>Portal Messages</h4>
+        <div id="panel-messages" style="font-size:13px;max-height:200px;overflow-y:auto;margin-bottom:12px"></div>
+        <textarea id="portal-reply-text" placeholder="Reply to client via portal..." style="width:100%;background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:13px;color:var(--text);outline:none;resize:vertical;min-height:70px;font-family:'DM Sans',sans-serif"></textarea>
+        <button class="copy-btn" style="margin-top:8px" onclick="sendPortalReply()">Send Reply</button>
+        <div id="portal-reply-msg" style="font-size:12px;margin-top:6px;display:none"></div>
+      </div>
       <div class="panel-section">
         <h4>Claude AI Build Prompt</h4>
         <div class="prompt-box" id="panel-prompt"></div>
@@ -562,10 +569,30 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}
         </div>
       </div>
       <div class="panel-section">
+        <h4>Upload Files</h4>
+        <div id="upload-section">
+          <div style="margin-bottom:12px">
+            <label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">Preview HTML</label>
+            <div id="preview-drop" onclick="document.getElementById('preview-file-input').click()" style="border:2px dashed var(--border);border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:border-color .2s;font-size:13px;color:var(--muted)">
+              Drop preview .html here or click to browse
+            </div>
+            <input type="file" id="preview-file-input" accept=".html" style="display:none" onchange="handleFileSelect(this,'preview')">
+            <div id="preview-upload-status" style="font-size:12px;margin-top:6px;display:none"></div>
+          </div>
+          <div>
+            <label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">Final Delivery HTML</label>
+            <div id="final-drop" onclick="document.getElementById('final-file-input').click()" style="border:2px dashed var(--border);border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:border-color .2s;font-size:13px;color:var(--muted)">
+              Drop final .html here or click to browse
+            </div>
+            <input type="file" id="final-file-input" accept=".html" style="display:none" onchange="handleFileSelect(this,'final')">
+            <div id="final-upload-status" style="font-size:12px;margin-top:6px;display:none"></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel-section">
         <h4>Actions</h4>
         <div class="panel-actions">
           <button class="action-btn primary" onclick="panelAction('confirmation')">Send Confirmation Email</button>
-          <button class="action-btn primary" onclick="panelAction('preview')">Send Preview Email</button>
           <button class="action-btn" onclick="panelAction('portal-link')">Send Portal Link</button>
           <button class="action-btn" onclick="panelAction('invoice')">Send Invoice</button>
           <button class="action-btn" onclick="panelAction('custom')">Send Custom Email</button>
@@ -869,13 +896,30 @@ function openClient(id) {
   document.getElementById('panel-notes').value = c.notes || '';
   document.getElementById('panel-action-msg').style.display = 'none';
   if (c.portalUUID) {
-    const portalUrl = 'https://staticswift.co.uk/client/' + c.portalUUID;
+    const portalUrl = 'https://staticswift.co.uk/.netlify/functions/client-portal?uuid=' + c.portalUUID;
     document.getElementById('panel-portal-section').style.display = 'block';
-    const portalHTML = '<a href="' + portalUrl + '" target="_blank" style="color:var(--cyan);font-weight:600">' + portalUrl + '</a><br><button class="copy-btn" style="margin-top:8px" id="copy-portal-btn">Copy Link</button>';
-    document.getElementById('panel-portal').innerHTML = portalHTML;
+    document.getElementById('panel-portal').innerHTML = '<a href="' + portalUrl + '" target="_blank" style="color:var(--cyan);font-weight:600;font-size:13px">' + portalUrl + '</a><br><button class="copy-btn" style="margin-top:8px" id="copy-portal-btn">Copy Link</button>';
     document.getElementById('copy-portal-btn').addEventListener('click', function() { navigator.clipboard.writeText(portalUrl); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy Link', 2000); });
+
+    // Render portal messages
+    const msgs = Array.isArray(c.portalMessages) ? c.portalMessages : [];
+    const msgsEl = document.getElementById('panel-messages');
+    const msgsSec = document.getElementById('panel-messages-section');
+    if (msgs.length > 0 || c.changeRequest) {
+      msgsSec.style.display = 'block';
+      let html = '';
+      if (c.changeRequest) {
+        html += '<div style="background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:13px"><div style="font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:4px;text-transform:uppercase">Change Request ' + (c.changeRequestAt ? '· ' + new Date(c.changeRequestAt).toLocaleDateString('en-GB') : '') + '</div>' + (c.changeRequest || '') + '</div>';
+      }
+      html += msgs.map(m => '<div style="background:' + (m.from === 'client' ? 'rgba(0,200,224,.08);border:1px solid rgba(0,200,224,.15)' : 'rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)') + ';border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:13px"><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;text-transform:uppercase">' + (m.from === 'client' ? c.name || 'Client' : 'You') + ' · ' + new Date(m.sentAt).toLocaleDateString('en-GB') + '</div>' + (m.notes || m.text || '') + '</div>').join('');
+      msgsEl.innerHTML = html;
+      msgsEl.scrollTop = msgsEl.scrollHeight;
+    } else {
+      msgsSec.style.display = 'none';
+    }
   } else {
     document.getElementById('panel-portal-section').style.display = 'none';
+    document.getElementById('panel-messages-section').style.display = 'none';
   }
   document.getElementById('client-panel').classList.add('open');
 }
@@ -1466,8 +1510,157 @@ async function sendReply(to, subject) {
   }
 }
 
+async function sendPortalReply() {
+  if (!currentClientId) return;
+  const text = document.getElementById('portal-reply-text').value.trim();
+  const msgEl = document.getElementById('portal-reply-msg');
+  if (!text) { msgEl.style.display='block'; msgEl.style.color='var(--red)'; msgEl.textContent='Write a message first.'; return; }
+  msgEl.style.display='block'; msgEl.style.color='var(--muted)'; msgEl.textContent='Sending...';
+  try {
+    const r = await fetch('/.netlify/functions/portal-reply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ clientId: currentClientId, text })
+    });
+    const d = await r.json();
+    if (d.ok) {
+      msgEl.style.color = 'var(--green)'; msgEl.textContent = 'Sent — client will receive an email.';
+      document.getElementById('portal-reply-text').value = '';
+      await refreshData();
+      openClient(currentClientId);
+    } else {
+      msgEl.style.color = 'var(--red)'; msgEl.textContent = 'Error: ' + (d.error || 'unknown');
+    }
+  } catch(e) {
+    msgEl.style.color = 'var(--red)'; msgEl.textContent = 'Network error';
+  }
+}
+
 // ==========================================
-// TICKETS
+// FILE UPLOAD
+// ==========================================
+async function handleFileSelect(input, fileType) {
+  const file = input.files[0];
+  if (!file) return;
+  if (!file.name.endsWith('.html')) { alert('Please select an HTML file.'); return; }
+  if (!currentClientId) { alert('No client selected.'); return; }
+
+  const statusEl = document.getElementById(fileType + '-upload-status');
+  const dropEl = document.getElementById(fileType + '-drop');
+  statusEl.style.display = 'block';
+  statusEl.style.color = 'var(--muted)';
+  statusEl.textContent = 'Reading file...';
+  dropEl.style.borderColor = 'var(--cyan)';
+
+  try {
+    // Read file as base64
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+    statusEl.textContent = 'Uploading...';
+
+    const r = await fetch('/.netlify/functions/upload-preview', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ clientId: currentClientId, fileType, htmlBase64: base64, filename: file.name })
+    });
+    const data = await r.json();
+    if (!data.ok) throw new Error(data.error || 'Upload failed');
+
+    const previewUrl = data.previewUrl;
+    statusEl.style.color = 'var(--green)';
+    statusEl.textContent = '✓ Uploaded: ' + previewUrl;
+    dropEl.textContent = '✓ ' + file.name;
+    dropEl.style.borderColor = 'var(--green)';
+
+    if (fileType === 'preview') {
+      // Auto: update client with preview URL, move to preview-sent, send preview email
+      await updateClient(currentClientId, { previewUrl, stage: 'preview-sent', previewSentAt: new Date().toISOString() });
+      statusEl.textContent = '✓ Uploaded — sending preview email to client...';
+
+      const emailR = await fetch('/.netlify/functions/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+        body: JSON.stringify({ clientId: currentClientId, emailType: 'preview', previewUrl })
+      });
+      const emailData = await emailR.json();
+      if (emailData.ok) {
+        statusEl.textContent = '✓ Preview sent to ' + emailData.to;
+        const msg = document.getElementById('panel-action-msg');
+        msg.style.display = 'block'; msg.style.color = 'var(--green)';
+        msg.textContent = 'Preview uploaded and emailed to client. Awaiting their approval.';
+      } else {
+        statusEl.textContent = '✓ Uploaded but email failed: ' + (emailData.error || 'unknown');
+        statusEl.style.color = 'var(--amber)';
+      }
+
+      await refreshData();
+      openClient(currentClientId);
+
+    } else if (fileType === 'final') {
+      // Auto: update client with final URL, send delivery email
+      await updateClient(currentClientId, { finalUrl: previewUrl, stage: 'complete', deliveredAt: new Date().toISOString() });
+      statusEl.textContent = '✓ Uploaded — sending delivery email to client...';
+
+      const c = allClients.find(x => x.clientId === currentClientId);
+      const emailR = await fetch('/.netlify/functions/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+        body: JSON.stringify({
+          clientId: currentClientId,
+          emailType: 'custom',
+          customSubject: 'Your website files are ready — ' + (c?.business_name || ''),
+          customBody: 'Hi ' + (c?.name || 'there') + ',\n\nYour final website files are ready. Download your HTML file from the link below:\n\n' + previewUrl + '\n\nThis link will remain active. If you need help getting your site live, see our upload guide at staticswift.co.uk/how-to-upload.html\n\nThank you for choosing StaticSwift!\n\nHarry\nStaticSwift'
+        })
+      });
+      const emailData = await emailR.json();
+      if (emailData.ok) {
+        statusEl.textContent = '✓ Final files sent to ' + emailData.to;
+        const msg = document.getElementById('panel-action-msg');
+        msg.style.display = 'block'; msg.style.color = 'var(--green)';
+        msg.textContent = 'Final file uploaded and delivered to client. Job complete.';
+      } else {
+        statusEl.textContent = '✓ Uploaded but email failed: ' + (emailData.error || 'unknown');
+        statusEl.style.color = 'var(--amber)';
+      }
+
+      await refreshData();
+      openClient(currentClientId);
+    }
+
+  } catch(err) {
+    statusEl.style.color = 'var(--red)';
+    statusEl.textContent = '✗ Error: ' + err.message;
+    dropEl.style.borderColor = 'var(--red)';
+  }
+
+  // Reset input so same file can be re-selected
+  input.value = '';
+}
+
+// Drag and drop support
+document.addEventListener('DOMContentLoaded', () => {
+  ['preview-drop','final-drop'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('dragover', e => { e.preventDefault(); el.style.borderColor='var(--cyan)'; });
+    el.addEventListener('dragleave', () => { el.style.borderColor='var(--border)'; });
+    el.addEventListener('drop', e => {
+      e.preventDefault();
+      el.style.borderColor='var(--border)';
+      const fileType = id.includes('preview') ? 'preview' : 'final';
+      const input = document.getElementById(fileType + '-file-input');
+      input.files = e.dataTransfer.files;
+      handleFileSelect(input, fileType);
+    });
+  });
+});
+
+
 // ==========================================
 let allTickets = [];
 let selectedTicket = null;
