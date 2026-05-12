@@ -1,4 +1,4 @@
-const { updateClient } = require('./_db');
+const { updateClient, saveClient, getClient } = require('./_db');
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
@@ -9,7 +9,24 @@ exports.handler = async (event) => {
   try {
     const { clientId, updates } = JSON.parse(event.body || '{}');
     if (!clientId) return { statusCode: 400, body: JSON.stringify({ error: 'clientId required' }) };
-    const client = await updateClient(clientId, updates);
+
+    let client;
+    try {
+      client = await updateClient(clientId, updates);
+    } catch (notFoundErr) {
+      // Client not found in DB — create it with the updates applied
+      console.log('[update-client] not found, creating:', clientId, notFoundErr.message);
+      const newClient = {
+        clientId,
+        ...updates,
+        createdAt: updates.createdAt || new Date().toISOString(),
+        stage: updates.stage || 'new-lead',
+        source: updates.source || 'admin-manual',
+        emailLog: [],
+      };
+      client = await saveClient(newClient);
+    }
+
     return { statusCode: 200, body: JSON.stringify({ ok: true, client }) };
   } catch (err) {
     console.error('[update-client] error:', err.message);

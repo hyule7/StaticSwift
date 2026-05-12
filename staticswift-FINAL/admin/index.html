@@ -753,8 +753,16 @@ async function updateClient(clientId, updates) {
     headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
     body: JSON.stringify({ clientId, updates })
   });
-  if (!r.ok) throw new Error('Failed to update client');
-  return r.json();
+  if (!r.ok) {
+    let errMsg = 'Failed to update client (HTTP ' + r.status + ')';
+    try { const d = await r.json(); errMsg = d.error || errMsg; } catch {}
+    throw new Error(errMsg);
+  }
+  const result = await r.json();
+  // Update local cache
+  const idx = allClients.findIndex(c => c.clientId === clientId);
+  if (idx >= 0) allClients[idx] = { ...allClients[idx], ...updates };
+  return result;
 }
 
 async function saveClient(data) {
