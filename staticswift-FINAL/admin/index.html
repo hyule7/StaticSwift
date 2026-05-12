@@ -1553,7 +1553,6 @@ async function handleFileSelect(input, fileType) {
   dropEl.style.borderColor = 'var(--cyan)';
 
   try {
-    // Read file as base64
     const base64 = await new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = e => resolve(e.target.result.split(',')[1]);
@@ -1571,40 +1570,60 @@ async function handleFileSelect(input, fileType) {
     const data = await r.json();
     if (!data.ok) throw new Error(data.error || 'Upload failed');
 
-    const previewUrl = data.previewUrl;
-    statusEl.style.color = 'var(--green)';
-    statusEl.textContent = '✓ Uploaded: ' + previewUrl;
+    const uploadedUrl = data.previewUrl;
     dropEl.textContent = '✓ ' + file.name;
     dropEl.style.borderColor = 'var(--green)';
 
+    const msg = document.getElementById('panel-action-msg');
+
     if (fileType === 'preview') {
-      // Auto: update client with preview URL, move to preview-sent, send preview email
-      await updateClient(currentClientId, { previewUrl, stage: 'preview-sent', previewSentAt: new Date().toISOString() });
-      statusEl.textContent = '✓ Uploaded — sending preview email to client...';
+      // Reset stage to preview-sent so portal shows the new preview awaiting review
+      // Clear previous approval/changes so client can review fresh
+      await updateClient(currentClientId, {
+        previewUrl: uploadedUrl,
+        stage: 'preview-sent',
+        previewSentAt: new Date().toISOString(),
+        approvedAt: null,
+        approvalNotes: null,
+        changeRequest: null,
+        changeRequestAt: null,
+      });
+      statusEl.textContent = 'Sending preview email to client...';
+
+      // Ensure portalUUID exists
+      const c = allClients.find(x => x.clientId === currentClientId);
+      if (!c.portalUUID) {
+        const newUUID = 'portal-' + currentClientId + '-' + Math.random().toString(36).substr(2, 10);
+        await updateClient(currentClientId, { portalUUID: newUUID });
+        c.portalUUID = newUUID;
+      }
+
+      const portalUrl = 'https://staticswift.co.uk/.netlify/functions/client-portal?uuid=' + c.portalUUID;
 
       const emailR = await fetch('/.netlify/functions/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
-        body: JSON.stringify({ clientId: currentClientId, emailType: 'preview', previewUrl })
+        body: JSON.stringify({ clientId: currentClientId, emailType: 'preview', previewUrl: portalUrl })
       });
       const emailData = await emailR.json();
+
       if (emailData.ok) {
+        statusEl.style.color = 'var(--green)';
         statusEl.textContent = '✓ Preview sent to ' + emailData.to;
-        const msg = document.getElementById('panel-action-msg');
         msg.style.display = 'block'; msg.style.color = 'var(--green)';
-        msg.textContent = 'Preview uploaded and emailed to client. Awaiting their approval.';
+        msg.textContent = 'Preview uploaded and emailed. Client portal updated — awaiting their approval.';
       } else {
-        statusEl.textContent = '✓ Uploaded but email failed: ' + (emailData.error || 'unknown');
         statusEl.style.color = 'var(--amber)';
+        statusEl.textContent = '✓ Uploaded — email failed: ' + (emailData.error || 'unknown');
       }
 
-      await refreshData();
-      openClient(currentClientId);
-
     } else if (fileType === 'final') {
-      // Auto: update client with final URL, send delivery email
-      await updateClient(currentClientId, { finalUrl: previewUrl, stage: 'complete', deliveredAt: new Date().toISOString() });
-      statusEl.textContent = '✓ Uploaded — sending delivery email to client...';
+      await updateClient(currentClientId, {
+        finalUrl: uploadedUrl,
+        stage: 'complete',
+        deliveredAt: new Date().toISOString()
+      });
+      statusEl.textContent = 'Sending delivery email to client...';
 
       const c = allClients.find(x => x.clientId === currentClientId);
       const emailR = await fetch('/.netlify/functions/send-email', {
@@ -1614,23 +1633,24 @@ async function handleFileSelect(input, fileType) {
           clientId: currentClientId,
           emailType: 'custom',
           customSubject: 'Your website files are ready — ' + (c?.business_name || ''),
-          customBody: 'Hi ' + (c?.name || 'there') + ',\n\nYour final website files are ready. Download your HTML file from the link below:\n\n' + previewUrl + '\n\nThis link will remain active. If you need help getting your site live, see our upload guide at staticswift.co.uk/how-to-upload.html\n\nThank you for choosing StaticSwift!\n\nHarry\nStaticSwift'
+          customBody: 'Hi ' + (c?.name || 'there') + ',\n\nYour final website files are ready to download:\n\n' + uploadedUrl + '\n\nThis link is permanent. If you need help uploading your site, see our guide:\nhttps://staticswift.co.uk/how-to-upload.html\n\nThank you!\n\nHarry\nStaticSwift'
         })
       });
       const emailData = await emailR.json();
-      if (emailData.ok) {
-        statusEl.textContent = '✓ Final files sent to ' + emailData.to;
-        const msg = document.getElementById('panel-action-msg');
-        msg.style.display = 'block'; msg.style.color = 'var(--green)';
-        msg.textContent = 'Final file uploaded and delivered to client. Job complete.';
-      } else {
-        statusEl.textContent = '✓ Uploaded but email failed: ' + (emailData.error || 'unknown');
-        statusEl.style.color = 'var(--amber)';
-      }
 
-      await refreshData();
-      openClient(currentClientId);
+      if (emailData.ok) {
+        statusEl.style.color = 'var(--green)';
+        statusEl.textContent = '✓ Final files sent to ' + emailData.to;
+        msg.style.display = 'block'; msg.style.color = 'var(--green)';
+        msg.textContent = 'Final file delivered. Job complete.';
+      } else {
+        statusEl.style.color = 'var(--amber)';
+        statusEl.textContent = '✓ Uploaded — email failed: ' + (emailData.error || 'unknown');
+      }
     }
+
+    await refreshData();
+    openClient(currentClientId);
 
   } catch(err) {
     statusEl.style.color = 'var(--red)';
@@ -1638,7 +1658,6 @@ async function handleFileSelect(input, fileType) {
     dropEl.style.borderColor = 'var(--red)';
   }
 
-  // Reset input so same file can be re-selected
   input.value = '';
 }
 

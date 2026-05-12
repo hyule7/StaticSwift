@@ -49,14 +49,13 @@ exports.handler = async (event) => {
     } else if (emailType === 'preview') {
       if (!previewUrl) return { statusCode: 400, body: JSON.stringify({ error: 'previewUrl required for preview email' }) };
       subject = 'Your ' + (client.business_name || '') + ' website preview is ready';
+      // previewUrl is always the portal URL now
       html = LOGO_HTML +
         '<div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:0 24px 32px;">' +
-        '<h2>Hi ' + (client.name || 'there') + ',</h2>' +
-        '<p>Your site is built. Take a look:</p>' +
-        '<p style="text-align:center;margin:28px 0;"><a href="' + previewUrl + '" style="background:#00C8E0;color:#07090f;font-weight:700;padding:14px 28px;border-radius:8px;text-decoration:none;display:inline-block;">View Your Preview</a></p>' +
-        '<p>Check it on both desktop and mobile.</p>' +
-        '<p><strong>Happy with it?</strong> Reply to confirm and I will send the invoice.</p>' +
-        '<p><strong>Want changes?</strong> Reply with details — one revision is included.</p>' +
+        '<h2 style="font-family:sans-serif">Hi ' + (client.name || 'there') + ',</h2>' +
+        '<p>Your ' + (client.business_name || 'website') + ' is built and ready to review.</p>' +
+        '<p style="text-align:center;margin:28px 0;"><a href="' + previewUrl + '" style="background:#00C8E0;color:#07090f;font-weight:700;padding:14px 28px;border-radius:8px;text-decoration:none;display:inline-block;">View Your Preview &amp; Approve ↗</a></p>' +
+        '<p style="font-size:14px;color:#555">Check it on desktop and mobile. From your portal you can approve the design or request changes — everything is handled there.</p>' +
         '<p style="color:#888;font-size:13px;margin-top:28px;">StaticSwift — <a href="https://staticswift.co.uk">staticswift.co.uk</a></p>' +
         '</div>';
       stageUpdate = { stage: 'preview-sent', previewUrl, previewSentAt: new Date().toISOString() };
