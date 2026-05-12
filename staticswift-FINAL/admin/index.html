@@ -738,13 +738,54 @@ async function testSubmission() {
 // ==========================================
 let allClients = [];
 
+const LOCAL_CLIENTS_KEY = 'ss_clients_backup';
+
+function saveClientsLocally(clients) {
+  try {
+    localStorage.setItem(LOCAL_CLIENTS_KEY, JSON.stringify({ clients, savedAt: new Date().toISOString() }));
+  } catch(e) { console.warn('Local save failed:', e.message); }
+}
+
+function loadClientsLocally() {
+  try {
+    const raw = localStorage.getItem(LOCAL_CLIENTS_KEY);
+    if (!raw) return null;
+    const { clients, savedAt } = JSON.parse(raw);
+    console.log('[local] Loaded', clients.length, 'clients from local backup (saved', savedAt, ')');
+    return clients;
+  } catch(e) { return null; }
+}
+
 async function fetchClients() {
-  const r = await fetch('/.netlify/functions/get-clients?t=' + Date.now(), {
-    headers: { 'x-admin-password': ADMIN_PW, 'Cache-Control': 'no-cache' }
-  });
-  if (!r.ok) throw new Error('Failed to fetch clients');
-  allClients = await r.json();
-  return allClients;
+  try {
+    const r = await fetch('/.netlify/functions/get-clients?t=' + Date.now(), {
+      headers: { 'x-admin-password': ADMIN_PW, 'Cache-Control': 'no-cache' }
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    allClients = await r.json();
+    // Save to local backup every successful fetch
+    saveClientsLocally(allClients);
+    return allClients;
+  } catch(err) {
+    console.error('[fetchClients] failed:', err.message);
+    // Fall back to local backup
+    const local = loadClientsLocally();
+    if (local && local.length > 0) {
+      allClients = local;
+      console.warn('[fetchClients] using local backup —', allClients.length, 'clients');
+      // Show warning banner
+      const existing = document.getElementById('offline-banner');
+      if (!existing) {
+        const banner = document.createElement('div');
+        banner.id = 'offline-banner';
+        banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#f59e0b;color:#07090f;padding:10px 20px;font-size:13px;font-weight:600;text-align:center';
+        banner.textContent = '⚠ Could not reach server — showing locally saved data. Changes may not save. Click Refresh to retry.';
+        document.body.prepend(banner);
+      }
+      return allClients;
+    }
+    throw err;
+  }
 }
 
 async function updateClient(clientId, updates) {
@@ -759,9 +800,11 @@ async function updateClient(clientId, updates) {
     throw new Error(errMsg);
   }
   const result = await r.json();
-  // Update local cache
+  // Update local array
   const idx = allClients.findIndex(c => c.clientId === clientId);
   if (idx >= 0) allClients[idx] = { ...allClients[idx], ...updates };
+  // Save to local backup after every successful update
+  saveClientsLocally(allClients);
   return result;
 }
 
@@ -772,7 +815,13 @@ async function saveClient(data) {
     body: JSON.stringify(data)
   });
   if (!r.ok) throw new Error('Failed to save client');
-  return r.json();
+  const result = await r.json();
+  // Add to local array and save backup
+  const idx = allClients.findIndex(c => c.clientId === data.clientId);
+  if (idx >= 0) allClients[idx] = { ...allClients[idx], ...data };
+  else allClients.unshift(data);
+  saveClientsLocally(allClients);
+  return result;
 }
 
 // ==========================================
@@ -795,10 +844,12 @@ async function refreshData() {
   if (btn) btn.textContent = '↻ Refreshing...';
   try {
     await fetchClients();
+    // Remove offline banner if server is back
+    const banner = document.getElementById('offline-banner');
+    if (banner) banner.remove();
     renderDashboard();
     renderPipeline();
     renderRevenue();
-    // Reopen panel with fresh data if one is open
     if (currentClientId) {
       const fresh = allClients.find(c => c.clientId === currentClientId);
       if (fresh) openClient(currentClientId);
@@ -1098,33 +1149,51 @@ async function panelAction(type) {
     const idx = STAGES.indexOf(c.stage);
     if (idx < STAGES.length - 1) {
       const newStage = STAGES[idx + 1];
-      await updateClient(currentClientId, { stage: newStage });
-      c.stage = newStage;
-      await refreshData();
-      openClient(currentClientId);
-      msg.style.display = 'block'; msg.style.color = 'var(--cyan)';
-      msg.textContent = 'Moved to: ' + STAGE_LABELS[newStage];
+      try {
+        await updateClient(currentClientId, { stage: newStage });
+        c.stage = newStage;
+        await refreshData();
+        openClient(currentClientId);
+        msg.style.display = 'block'; msg.style.color = 'var(--cyan)';
+        msg.textContent = 'Moved to: ' + STAGE_LABELS[newStage];
+      } catch(err) {
+        msg.style.display = 'block'; msg.style.color = 'var(--red)';
+        msg.textContent = 'Stage update failed: ' + err.message;
+      }
     }
   }
   if (type === 'paid') {
     if (confirm('Mark ' + c.business_name + ' as paid?')) {
       const amount = (c.package === 'advanced' ? 299 : 149) + (c.hosting_addon === 'yes' ? 29 : 0);
-      const portalUUID = "portal-" + Date.now() + "-" + Math.random().toString(36).substr(2,12);
+      let portalUUID = c.portalUUID;
+      if (!portalUUID) {
+        portalUUID = 'portal-' + currentClientId + '-' + Math.random().toString(36).substr(2, 10);
+      }
       const portalUrl = 'https://staticswift.co.uk/client?uuid=' + portalUUID;
-      await updateClient(currentClientId, { stage: 'paid', paid: true, paidAt: new Date().toISOString(), amount, portalUUID });
-      c.stage = 'paid'; c.paid = true;
-      await refreshData();
-      openClient(currentClientId);
-      msg.style.display = 'block'; msg.style.color = 'var(--green)';
-      msg.innerHTML = 'Marked as paid. Client portal: <a href="' + portalUrl + '" target="_blank" style="color:var(--cyan)">' + portalUrl + '</a>';
+      try {
+        await updateClient(currentClientId, { stage: 'paid', paid: true, paidAt: new Date().toISOString(), amount, portalUUID });
+        c.stage = 'paid'; c.paid = true; c.portalUUID = portalUUID;
+        await refreshData();
+        openClient(currentClientId);
+        msg.style.display = 'block'; msg.style.color = 'var(--green)';
+        msg.innerHTML = 'Marked as paid. Client portal: <a href="' + portalUrl + '" target="_blank" style="color:var(--cyan)">' + portalUrl + '</a>';
+      } catch(err) {
+        msg.style.display = 'block'; msg.style.color = 'var(--red)';
+        msg.textContent = 'Mark paid failed: ' + err.message;
+      }
     }
   }
   if (type === 'archive') {
     if (confirm('Archive ' + c.business_name + '?')) {
-      await updateClient(currentClientId, { stage: 'archived' });
-      c.stage = 'archived';
-      await refreshData();
-      closePanel();
+      try {
+        await updateClient(currentClientId, { stage: 'archived' });
+        c.stage = 'archived';
+        await refreshData();
+        closePanel();
+      } catch(err) {
+        msg.style.display = 'block'; msg.style.color = 'var(--red)';
+        msg.textContent = 'Archive failed: ' + err.message;
+      }
     }
   }
 }
