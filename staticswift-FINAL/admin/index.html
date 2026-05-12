@@ -599,19 +599,19 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}
         <h4>Upload Files</h4>
         <div id="upload-section">
           <div style="margin-bottom:12px">
-            <label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">Preview HTML</label>
+            <label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">Preview HTML or ZIP</label>
             <div id="preview-drop" onclick="document.getElementById('preview-file-input').click()" style="border:2px dashed var(--border);border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:border-color .2s;font-size:13px;color:var(--muted)">
-              Drop preview .html here or click to browse
+              Drop preview .html or .zip here or click to browse
             </div>
-            <input type="file" id="preview-file-input" accept=".html" style="display:none" onchange="handleFileSelect(this,'preview')">
+            <input type="file" id="preview-file-input" accept=".html,.zip" style="display:none" onchange="handleFileSelect(this,'preview')">
             <div id="preview-upload-status" style="font-size:12px;margin-top:6px;display:none"></div>
           </div>
           <div>
-            <label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">Final Delivery HTML</label>
+            <label style="font-size:12px;color:var(--muted);font-weight:600;display:block;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em">Final Delivery HTML or ZIP</label>
             <div id="final-drop" onclick="document.getElementById('final-file-input').click()" style="border:2px dashed var(--border);border-radius:8px;padding:16px;text-align:center;cursor:pointer;transition:border-color .2s;font-size:13px;color:var(--muted)">
-              Drop final .html here or click to browse
+              Drop final .html or .zip here or click to browse
             </div>
-            <input type="file" id="final-file-input" accept=".html" style="display:none" onchange="handleFileSelect(this,'final')">
+            <input type="file" id="final-file-input" accept=".html,.zip" style="display:none" onchange="handleFileSelect(this,'final')">
             <div id="final-upload-status" style="font-size:12px;margin-top:6px;display:none"></div>
           </div>
         </div>
@@ -918,7 +918,9 @@ function openClient(id) {
     const status = document.getElementById(type + '-upload-status');
     const input = document.getElementById(type + '-file-input');
     if (drop) {
-      drop.textContent = 'Drop ' + type + ' .html here or click to browse';
+      drop.textContent = type === 'preview'
+        ? 'Drop preview .html or .zip here or click to browse'
+        : 'Drop final .html or .zip here or click to browse';
       drop.style.borderColor = 'var(--border)';
     }
     if (status) { status.style.display = 'none'; status.textContent = ''; }
@@ -1662,7 +1664,10 @@ async function sendPortalReply() {
 async function handleFileSelect(input, fileType) {
   const file = input.files[0];
   if (!file) return;
-  if (!file.name.endsWith('.html')) { alert('Please select an HTML file.'); return; }
+  if (!file.name.endsWith('.html') && !file.name.endsWith('.zip')) {
+    alert('Please select an HTML or ZIP file.');
+    return;
+  }
   if (!currentClientId) { alert('No client selected.'); return; }
 
   const statusEl = document.getElementById(fileType + '-upload-status');
