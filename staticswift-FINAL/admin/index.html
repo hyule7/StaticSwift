@@ -742,16 +742,7 @@ async function refreshData() {
 }
 
 // ==========================================
-// PAGES
-// ==========================================
-function showPage(id, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  if (btn) btn.classList.add('active');
-  if (id === 'analytics') loadAnalytics();
-}
-
+// PAGES defined at bottom of script
 // ==========================================
 // DASHBOARD
 // ==========================================
@@ -1811,9 +1802,12 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 // Wire up showPage to render outreach/seo when switched to
-const _origShowPage = showPage;
 function showPage(id, btn) {
-  _origShowPage(id, btn);
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (id === 'analytics') loadAnalytics();
   if (id === 'outreach') renderProspects();
   if (id === 'seo') renderSEOChecklist();
 }
