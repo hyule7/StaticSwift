@@ -989,6 +989,9 @@ function openClient(id) {
       '<button class="copy-btn" style="background:var(--cyan);color:#07090f;border-color:var(--cyan)" onclick="panelAction(\'portal-link\')">Generate &amp; Send Portal Link</button>';
     document.getElementById('panel-messages-section').style.display = 'none';
   }
+  document.getElementById('client-panel').classList.add('open');
+}
+
 function closePanel() { document.getElementById('client-panel').classList.remove('open'); currentClientId = null; }
 function closePanelBg(e) { if (e.target.id === 'client-panel') closePanel(); }
 
