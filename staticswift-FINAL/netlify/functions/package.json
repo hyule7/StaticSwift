@@ -5,6 +5,8 @@
   "dependencies": {
     "exceljs": "^4.4.0",
     "googleapis": "^140.0.0",
+    "imap": "^0.8.19",
+    "mailparser": "^3.6.5",
     "nodemailer": "^6.9.0",
     "stripe": "^14.0.0",
     "uuid": "^9.0.0"

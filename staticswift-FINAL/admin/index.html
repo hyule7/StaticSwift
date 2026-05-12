@@ -189,6 +189,10 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}
       <button class="nav-tab" onclick="showPage('revenue',this)">Revenue</button>
       <button class="nav-tab" onclick="showPage('analytics',this)">Analytics</button>
       <button class="nav-tab" onclick="showPage('prompts',this)">Prompts</button>
+      <button class="nav-tab" onclick="showPage('inbox',this);loadInbox()">Inbox</button>
+      <button class="nav-tab" onclick="showPage('tickets',this);loadTickets()">Tickets</button>
+      <button class="nav-tab" onclick="showPage('outreach',this)">Outreach</button>
+      <button class="nav-tab" onclick="showPage('seo',this)">SEO</button>
     </div>
     <div class="topbar-right">
       <span class="revenue-badge" id="month-revenue">£0 this month</span>
@@ -408,6 +412,120 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}
     </div>
   </div>
 
+  <!-- INBOX -->
+  <div class="page" id="page-inbox">
+    <div class="page-header">
+      <h1 class="page-title">Inbox</h1>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select id="inbox-filter" onchange="renderInbox()" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:8px;font-size:13px">
+          <option value="all">All mailboxes</option>
+          <option value="hello">hello@staticswift.co.uk</option>
+          <option value="support">support@staticswift.co.uk</option>
+        </select>
+        <button class="btn-primary" onclick="loadInbox()" style="font-size:13px;padding:9px 16px">↻ Refresh</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:380px 1fr;gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;min-height:600px">
+      <!-- Email list -->
+      <div style="border-right:1px solid var(--border);overflow-y:auto;max-height:700px" id="inbox-list">
+        <div style="padding:24px;color:var(--muted);font-size:13px">Loading inbox...</div>
+      </div>
+      <!-- Email detail / compose reply -->
+      <div id="inbox-detail" style="padding:28px;overflow-y:auto;max-height:700px">
+        <div style="color:var(--muted);font-size:14px;padding-top:60px;text-align:center">Select an email to read</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TICKETS -->
+  <div class="page" id="page-tickets">
+    <div class="page-header">
+      <h1 class="page-title">Support Tickets</h1>
+      <div style="display:flex;gap:8px;align-items:center">
+        <select id="ticket-filter" onchange="renderTickets()" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:8px;font-size:13px">
+          <option value="open">Open</option>
+          <option value="all">All</option>
+          <option value="closed">Closed</option>
+        </select>
+        <button class="btn-primary" style="font-size:13px;padding:9px 16px" onclick="loadTickets()">↻ Refresh</button>
+        <button class="btn-ghost" style="font-size:13px;padding:9px 16px" onclick="showNewTicket()">+ New Ticket</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:360px 1fr;gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;min-height:620px">
+      <div style="border-right:1px solid var(--border);overflow-y:auto;max-height:720px" id="ticket-list">
+        <div style="padding:24px;color:var(--muted);font-size:13px">Click Refresh to load tickets from both mailboxes.</div>
+      </div>
+      <div id="ticket-detail" style="overflow-y:auto;max-height:720px">
+        <div style="color:var(--muted);font-size:14px;padding-top:80px;text-align:center">Select a ticket to view thread</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OUTREACH -->
+  <div class="page" id="page-outreach">
+    <div class="page-header">
+      <h1 class="page-title">Cold Outreach</h1>
+      <div style="display:flex;gap:8px">
+        <button class="btn-primary" onclick="showNewProspect()">+ Add Prospect</button>
+        <button class="btn-ghost" onclick="sendBatchOutreach()">Send Batch Emails</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 380px;gap:20px">
+      <!-- Prospect list -->
+      <div>
+        <div style="display:flex;gap:8px;margin-bottom:16px">
+          <select id="outreach-filter" onchange="renderProspects()" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:8px;font-size:13px">
+            <option value="all">All prospects</option>
+            <option value="new">Not contacted</option>
+            <option value="sent">Email sent</option>
+            <option value="replied">Replied</option>
+            <option value="converted">Converted</option>
+            <option value="dead">Dead</option>
+          </select>
+          <input id="outreach-search" oninput="renderProspects()" placeholder="Search..." style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:8px;font-size:13px;flex:1">
+        </div>
+        <div id="prospects-table"></div>
+      </div>
+      <!-- Quick add + templates -->
+      <div>
+        <div id="new-prospect-form" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
+          <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Quick Add Prospect</div>
+          <div class="field"><label>Business Name *</label><input type="text" id="pr-bizname" placeholder="Dave's Barbershop"></div>
+          <div class="field"><label>Contact Name</label><input type="text" id="pr-name" placeholder="Dave"></div>
+          <div class="field"><label>Email *</label><input type="email" id="pr-email" placeholder="dave@example.com"></div>
+          <div class="field"><label>Business Type</label>
+            <select id="pr-type">
+              <option>Barber / Hair Salon</option><option>Plumber</option><option>Electrician</option>
+              <option>Builder / Roofer</option><option>Cleaner</option><option>Photographer</option>
+              <option>Personal Trainer</option><option>Beauty Salon</option><option>Cafe / Coffee Shop</option>
+              <option>Takeaway / Restaurant</option><option>Landscaper / Gardener</option><option>Other</option>
+            </select>
+          </div>
+          <div class="field"><label>Town / City</label><input type="text" id="pr-location" placeholder="Edinburgh"></div>
+          <div class="field"><label>Notes</label><input type="text" id="pr-notes" placeholder="Found on Facebook, no website"></div>
+          <button class="btn-primary" onclick="addProspect()" style="width:100%;justify-content:center;margin-top:4px">Add Prospect</button>
+          <div id="pr-msg" style="font-size:12px;margin-top:8px;display:none"></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
+          <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Email Templates</div>
+          <div id="outreach-templates"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEO SETUP -->
+  <div class="page" id="page-seo">
+    <div class="page-header"><h1 class="page-title">SEO Setup</h1></div>
+    <div style="max-width:800px">
+      <div style="background:rgba(0,200,224,.07);border:1px solid rgba(0,200,224,.2);border-radius:12px;padding:20px;margin-bottom:20px">
+        <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:var(--cyan)">Why nothing is showing in Search Console yet</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7">Search Console data takes <strong style="color:var(--text)">4-16 weeks</strong> to appear on a brand new domain. Google needs to crawl, index, and observe clicks before it shows anything. This is completely normal. The actions below will speed it up.</p>
+      </div>
+      <div style="display:grid;gap:12px" id="seo-checklist"></div>
+    </div>
+  </div>
+
   <!-- CLIENT PANEL -->
   <div class="panel-overlay" id="client-panel" onclick="closePanelBg(event)">
     <div class="side-panel">
@@ -448,6 +566,7 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}
         <div class="panel-actions">
           <button class="action-btn primary" onclick="panelAction('confirmation')">Send Confirmation Email</button>
           <button class="action-btn primary" onclick="panelAction('preview')">Send Preview Email</button>
+          <button class="action-btn" onclick="panelAction('portal-link')">Send Portal Link</button>
           <button class="action-btn" onclick="panelAction('invoice')">Send Invoice</button>
           <button class="action-btn" onclick="panelAction('custom')">Send Custom Email</button>
           <button class="action-btn" onclick="panelAction('next-stage')">Next Stage →</button>
@@ -826,6 +945,19 @@ async function panelAction(type) {
     }
   }
 
+  if (type === 'portal-link') {
+    // Generate portalUUID if not already set
+    let portalUUID = c.portalUUID;
+    if (!portalUUID) {
+      portalUUID = 'portal-' + Date.now() + '-' + Math.random().toString(36).substr(2, 12);
+      await updateClient(currentClientId, { portalUUID });
+      c.portalUUID = portalUUID;
+    }
+    const portalUrl = 'https://staticswift.co.uk/client/?uuid=' + portalUUID;
+    if (confirm('Send portal link to ' + c.delivery_email + '?\n\n' + portalUrl)) {
+      await sendEmailAction({ clientId: currentClientId, emailType: 'custom', customSubject: 'Your StaticSwift client portal', customBody: 'Hi ' + (c.name || c.business_name) + ',\n\nYour private client portal is ready. Use the link below to review your project, approve your preview, and access your files:\n\n' + portalUrl + '\n\nBookmark this link — you can return to it any time.\n\nThanks,\nStaticSwift' });
+    }
+  }
   if (type === 'confirmation') {
     if (confirm('Send confirmation email to ' + c.delivery_email + '?')) {
       await sendEmailAction({ clientId: currentClientId, emailType: 'confirmation' });
@@ -1220,6 +1352,470 @@ function timeAgo(iso) {
   if (diff < 3600) return Math.round(diff/60) + 'm ago';
   if (diff < 86400) return Math.round(diff/3600) + 'h ago';
   return Math.round(diff/86400) + 'd ago';
+}
+
+// ==========================================
+// INBOX
+// ==========================================
+let inboxEmails = [];
+let inboxLoaded = false;
+let selectedEmail = null;
+
+async function loadInbox() {
+  const list = document.getElementById('inbox-list');
+  const detail = document.getElementById('inbox-detail');
+  if (!list) return;
+  list.innerHTML = '<div style="padding:24px;color:var(--muted);font-size:13px">Loading...</div>';
+  detail.innerHTML = '<div style="color:var(--muted);font-size:14px;padding-top:60px;text-align:center">Select an email to read</div>';
+  try {
+    const r = await fetch('/.netlify/functions/fetch-inbox', {
+      headers: { 'x-admin-password': ADMIN_PW }
+    });
+    if (!r.ok) {
+      const d = await r.json();
+      list.innerHTML = '<div style="padding:24px;color:var(--red);font-size:13px">Error: ' + (d.error || r.status) + '</div>';
+      return;
+    }
+    inboxEmails = await r.json();
+    inboxLoaded = true;
+    renderInbox();
+  } catch(err) {
+    list.innerHTML = '<div style="padding:24px;color:var(--red);font-size:13px">Failed to load: ' + err.message + '</div>';
+  }
+}
+
+function renderInbox() {
+  const list = document.getElementById('inbox-list');
+  if (!list) return;
+  const filter = document.getElementById('inbox-filter')?.value || 'all';
+  const emails = filter === 'all' ? inboxEmails : inboxEmails.filter(e => e.mailbox === filter);
+
+  if (!emails.length) {
+    list.innerHTML = '<div style="padding:24px;color:var(--muted);font-size:13px">' + (inboxLoaded ? 'No emails found.' : 'Click Refresh to load.') + '</div>';
+    return;
+  }
+
+  list.innerHTML = emails.map((e, i) => {
+    const isSelected = selectedEmail && selectedEmail.id === e.id;
+    const badgeCol = e.mailbox === 'support' ? '#f59e0b' : '#00C8E0';
+    const fromName = e.from.replace(/<.*>/, '').trim() || e.from;
+    return `<div onclick="openEmail(${i})" style="padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;background:${isSelected ? 'var(--surface2)' : 'transparent'};transition:background .15s">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px">
+        <span style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px">${fromName}</span>
+        <span style="font-size:11px;color:var(--muted);white-space:nowrap">${timeAgo(e.date)}</span>
+      </div>
+      <div style="font-size:12px;color:var(--text);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${e.subject}</div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="font-size:11px;padding:2px 6px;border-radius:4px;background:${badgeCol}22;color:${badgeCol};font-weight:600">${e.mailbox}</span>
+        <span style="font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.snippet}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openEmail(idx) {
+  const filter = document.getElementById('inbox-filter')?.value || 'all';
+  const emails = filter === 'all' ? inboxEmails : inboxEmails.filter(e => e.mailbox === filter);
+  const e = emails[idx];
+  if (!e) return;
+  selectedEmail = e;
+  renderInbox();
+
+  const detail = document.getElementById('inbox-detail');
+  const fromAddr = e.from.match(/<(.+)>/)?.[1] || e.from;
+  const badgeCol = e.mailbox === 'support' ? '#f59e0b' : '#00C8E0';
+
+  detail.innerHTML = `
+    <div style="margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)">
+      <div style="font-size:17px;font-weight:700;margin-bottom:8px;color:var(--text)">${e.subject}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--muted)">
+        <span><strong style="color:var(--text)">From:</strong> ${e.from}</span>
+        <span><strong style="color:var(--text)">To:</strong> ${e.to}</span>
+        <span><strong style="color:var(--text)">Date:</strong> ${new Date(e.date).toLocaleString('en-GB')}</span>
+        <span style="padding:2px 8px;border-radius:4px;background:${badgeCol}22;color:${badgeCol};font-weight:600;font-size:11px">${e.mailbox}@staticswift.co.uk</span>
+      </div>
+    </div>
+    <div style="font-size:14px;line-height:1.7;color:var(--text);margin-bottom:28px;white-space:pre-wrap">${e.text || '(HTML email — no plain text version)'}</div>
+    <div style="border-top:1px solid var(--border);padding-top:20px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:var(--text)">Reply from:
+        <select id="reply-mailbox" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:6px;font-size:12px;margin-left:8px">
+          <option value="hello" ${e.mailbox === 'hello' ? 'selected' : ''}>hello@staticswift.co.uk</option>
+          <option value="support" ${e.mailbox === 'support' ? 'selected' : ''}>support@staticswift.co.uk</option>
+        </select>
+      </div>
+      <textarea id="reply-body" placeholder="Write your reply..." style="width:100%;min-height:140px;background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:13px;color:var(--text);outline:none;resize:vertical;margin-bottom:10px;font-family:'DM Sans',sans-serif"></textarea>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button onclick="sendReply('${fromAddr.replace(/'/g,'\\'')}','${e.subject.replace(/'/g,'\\'')}')" style="background:var(--cyan);color:#07090f;font-weight:700;font-size:13px;padding:10px 20px;border-radius:8px;border:none;cursor:pointer">Send Reply</button>
+        <span id="reply-status" style="font-size:13px"></span>
+      </div>
+    </div>`;
+}
+
+async function sendReply(to, subject) {
+  const body = document.getElementById('reply-body')?.value?.trim();
+  const fromMailbox = document.getElementById('reply-mailbox')?.value || 'hello';
+  const status = document.getElementById('reply-status');
+  if (!body) { status.style.color = 'var(--red)'; status.textContent = 'Write a reply first'; return; }
+  status.style.color = 'var(--muted)'; status.textContent = 'Sending...';
+  try {
+    const r = await fetch('/.netlify/functions/send-reply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ to, subject, body, fromMailbox })
+    });
+    const d = await r.json();
+    if (d.ok) {
+      status.style.color = 'var(--green)'; status.textContent = 'Sent!';
+      document.getElementById('reply-body').value = '';
+    } else {
+      status.style.color = 'var(--red)'; status.textContent = 'Error: ' + (d.error || 'unknown');
+    }
+  } catch(err) {
+    status.style.color = 'var(--red)'; status.textContent = 'Network error';
+  }
+}
+
+// ==========================================
+// TICKETS
+// ==========================================
+let allTickets = [];
+let selectedTicket = null;
+
+async function loadTickets() {
+  const list = document.getElementById('ticket-list');
+  list.innerHTML = '<div style="padding:24px;color:var(--muted);font-size:13px">Loading from both mailboxes...</div>';
+  try {
+    const r = await fetch('/.netlify/functions/fetch-inbox', { headers: { 'x-admin-password': ADMIN_PW } });
+    if (!r.ok) {
+      const d = await r.json();
+      list.innerHTML = '<div style="padding:24px;color:var(--red);font-size:13px">Error: ' + (d.error || r.status) + '</div>';
+      return;
+    }
+    const emails = await r.json();
+    // Group emails into threads by subject
+    const threads = {};
+    emails.forEach(e => {
+      const key = e.subject.replace(/^(re:|fwd?:)\s*/i,'').trim().toLowerCase();
+      if (!threads[key]) threads[key] = { subject: e.subject.replace(/^(re:|fwd?:)\s*/i,'').trim(), emails: [], mailbox: e.mailbox, lastDate: e.date, status: 'open' };
+      threads[key].emails.push(e);
+      if (e.date > threads[key].lastDate) threads[key].lastDate = e.date;
+    });
+    allTickets = Object.values(threads).sort((a,b) => new Date(b.lastDate) - new Date(a.lastDate));
+    renderTickets();
+  } catch(err) {
+    list.innerHTML = '<div style="padding:24px;color:var(--red);font-size:13px">Failed: ' + err.message + '</div>';
+  }
+}
+
+function renderTickets() {
+  const list = document.getElementById('ticket-list');
+  const filter = document.getElementById('ticket-filter')?.value || 'open';
+  const tickets = filter === 'all' ? allTickets : allTickets.filter(t => filter === 'closed' ? t.status === 'closed' : t.status !== 'closed');
+  if (!tickets.length) { list.innerHTML = '<div style="padding:24px;color:var(--muted);font-size:13px">No tickets. Click Refresh to load.</div>'; return; }
+  list.innerHTML = tickets.map((t,i) => {
+    const isSelected = selectedTicket && selectedTicket.subject === t.subject;
+    const badgeCol = t.mailbox === 'support' ? '#f59e0b' : '#00C8E0';
+    const from = t.emails[0]?.from?.replace(/<.*>/,'').trim() || t.emails[0]?.from || '';
+    return `<div onclick="openTicket(${i})" style="padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;background:${isSelected?'var(--surface2)':'transparent'}">
+      <div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:4px">
+        <span style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:210px">${t.subject || '(no subject)'}</span>
+        <span style="font-size:11px;color:var(--muted);white-space:nowrap">${timeAgo(t.lastDate)}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+        <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:${badgeCol}22;color:${badgeCol};font-weight:600">${t.mailbox}</span>
+        <span style="font-size:11px;padding:2px 7px;border-radius:4px;background:${t.status==='closed'?'rgba(34,197,94,.15)':'rgba(251,191,36,.12)'};color:${t.status==='closed'?'#22c55e':'#fbbf24'};font-weight:600">${t.status}</span>
+        <span style="font-size:11px;color:var(--muted)">${t.emails.length} msg${t.emails.length>1?'s':''}</span>
+      </div>
+      <div style="font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${from}</div>
+    </div>`;
+  }).join('');
+}
+
+function openTicket(idx) {
+  const filter = document.getElementById('ticket-filter')?.value || 'open';
+  const tickets = filter === 'all' ? allTickets : allTickets.filter(t => filter === 'closed' ? t.status === 'closed' : t.status !== 'closed');
+  const t = tickets[idx];
+  if (!t) return;
+  selectedTicket = t;
+  renderTickets();
+  const detail = document.getElementById('ticket-detail');
+  const fromAddr = t.emails[0]?.from?.match(/<(.+)>/)?.[1] || t.emails[0]?.from || '';
+  const thread = [...t.emails].sort((a,b) => new Date(a.date)-new Date(b.date));
+  detail.innerHTML = `
+    <div style="padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start">
+      <div>
+        <div style="font-size:16px;font-weight:700;margin-bottom:6px">${t.subject || '(no subject)'}</div>
+        <div style="font-size:12px;color:var(--muted)">${t.emails.length} message${t.emails.length>1?'s':''} &nbsp;·&nbsp; ${t.mailbox}@staticswift.co.uk</div>
+      </div>
+      <button onclick="toggleTicketStatus()" style="background:${t.status==='closed'?'rgba(251,191,36,.15)':'rgba(34,197,94,.15)'};color:${t.status==='closed'?'#fbbf24':'#22c55e'};border:none;padding:7px 14px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer">
+        ${t.status==='closed'?'Reopen':'Close ticket'}
+      </button>
+    </div>
+    <div style="padding:20px 24px;max-height:320px;overflow-y:auto">
+      ${thread.map(e => `
+        <div style="margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border)">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <span style="font-size:13px;font-weight:600">${e.from}</span>
+            <span style="font-size:12px;color:var(--muted)">${new Date(e.date).toLocaleString('en-GB')}</span>
+          </div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.7;white-space:pre-wrap">${e.text || '(HTML only)'}</div>
+        </div>`).join('')}
+    </div>
+    <div style="padding:20px 24px;border-top:1px solid var(--border)">
+      <div style="font-size:13px;font-weight:600;margin-bottom:10px">Reply from:
+        <select id="ticket-reply-mailbox" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:5px 10px;border-radius:6px;font-size:12px;margin-left:8px">
+          <option value="hello" ${t.mailbox==='hello'?'selected':''}>hello@staticswift.co.uk</option>
+          <option value="support" ${t.mailbox==='support'?'selected':''}>support@staticswift.co.uk</option>
+        </select>
+      </div>
+      <textarea id="ticket-reply-body" placeholder="Write your reply..." style="width:100%;min-height:120px;background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:13px;color:var(--text);outline:none;resize:vertical;margin-bottom:10px;font-family:'DM Sans',sans-serif"></textarea>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button onclick="sendTicketReply('${fromAddr.replace(/'/g,"\\'")}','${(t.subject||'').replace(/'/g,"\\'")}','Re: ')" style="background:var(--cyan);color:#07090f;font-weight:700;font-size:13px;padding:10px 20px;border-radius:8px;border:none;cursor:pointer">Send Reply</button>
+        <span id="ticket-reply-status" style="font-size:13px"></span>
+      </div>
+    </div>`;
+}
+
+function toggleTicketStatus() {
+  if (!selectedTicket) return;
+  selectedTicket.status = selectedTicket.status === 'closed' ? 'open' : 'closed';
+  renderTickets();
+  const idx = allTickets.findIndex(t => t.subject === selectedTicket.subject);
+  if (idx >= 0) openTicket(idx);
+}
+
+async function sendTicketReply(to, subject, prefix) {
+  const body = document.getElementById('ticket-reply-body')?.value?.trim();
+  const fromMailbox = document.getElementById('ticket-reply-mailbox')?.value || 'support';
+  const status = document.getElementById('ticket-reply-status');
+  if (!body) { status.style.color='var(--red)'; status.textContent='Write a reply first'; return; }
+  status.style.color='var(--muted)'; status.textContent='Sending...';
+  try {
+    const r = await fetch('/.netlify/functions/send-reply', {
+      method:'POST', headers:{'Content-Type':'application/json','x-admin-password':ADMIN_PW},
+      body:JSON.stringify({ to, subject: (prefix||'Re: ')+subject, body, fromMailbox })
+    });
+    const d = await r.json();
+    if (d.ok) { status.style.color='var(--green)'; status.textContent='Sent!'; document.getElementById('ticket-reply-body').value=''; }
+    else { status.style.color='var(--red)'; status.textContent='Error: '+(d.error||'unknown'); }
+  } catch(e) { status.style.color='var(--red)'; status.textContent='Network error'; }
+}
+
+function showNewTicket() {
+  const to = prompt('Send new email to:');
+  if (!to) return;
+  const subject = prompt('Subject:');
+  if (!subject) return;
+  const body = prompt('Message:');
+  if (!body) return;
+  sendTicketReply(to, subject, '');
+}
+
+// ==========================================
+// OUTREACH
+// ==========================================
+let prospects = JSON.parse(localStorage.getItem('ss_prospects') || '[]');
+
+const OUTREACH_TEMPLATES = [
+  { name: 'No website', subject: 'Quick question — {business}', body: `Hi {name},\n\nI noticed {business} doesn't have a website yet — I build clean, professional sites for local businesses starting at £149, delivered in 24 hours.\n\nNo monthly fees, you own the files outright.\n\nWould it be worth a quick chat?\n\nHarry\nStaticSwift — staticswift.co.uk` },
+  { name: 'Outdated site', subject: 'Quick idea for {business}', body: `Hi {name},\n\nI came across {business} online — your site looks a little dated and might be putting customers off.\n\nI build fast, modern websites for local businesses from £149, done in 24 hours.\n\nHappy to show you a free mockup with no obligation.\n\nHarry\nStaticSwift — staticswift.co.uk` },
+  { name: 'Follow-up', subject: 'Following up — {business}', body: `Hi {name},\n\nJust following up on my earlier message about a website for {business}.\n\nIf the timing's not right I completely understand — but if you're still interested I'd love to help.\n\nHarry\nStaticSwift — staticswift.co.uk` },
+];
+
+function renderProspects() {
+  const filter = document.getElementById('outreach-filter')?.value || 'all';
+  const search = (document.getElementById('outreach-search')?.value || '').toLowerCase();
+  let list = prospects;
+  if (filter !== 'all') list = list.filter(p => p.status === filter);
+  if (search) list = list.filter(p => (p.bizname+p.name+p.email+p.location).toLowerCase().includes(search));
+  const el = document.getElementById('prospects-table');
+  if (!list.length) { el.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:16px">No prospects found. Add one using the form.</div>'; return; }
+  el.innerHTML = `<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <thead><tr style="border-bottom:1px solid var(--border)">
+        <th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Business</th>
+        <th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Email</th>
+        <th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Type</th>
+        <th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Status</th>
+        <th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Actions</th>
+      </tr></thead>
+      <tbody>${list.map((p,i) => {
+        const statusCol = {new:'var(--muted)',sent:'var(--cyan)',replied:'var(--amber)',converted:'var(--green)',dead:'var(--red)'}[p.status]||'var(--muted)';
+        return `<tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:10px 14px"><div style="font-weight:600">${p.bizname}</div><div style="color:var(--muted);font-size:12px">${p.location||''} ${p.name?'· '+p.name:''}</div></td>
+          <td style="padding:10px 14px;color:var(--muted)">${p.email}</td>
+          <td style="padding:10px 14px;color:var(--muted)">${p.type||'—'}</td>
+          <td style="padding:10px 14px"><span style="color:${statusCol};font-size:12px;font-weight:700;text-transform:uppercase">${p.status}</span></td>
+          <td style="padding:10px 14px">
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <button onclick="sendOutreachEmail(${prospects.indexOf(p)})" style="background:var(--cyan);color:#07090f;border:none;padding:5px 10px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer">Email</button>
+              <select onchange="updateProspectStatus(${prospects.indexOf(p)},this.value)" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:5px 8px;border-radius:6px;font-size:12px">
+                <option value="">Status...</option>
+                <option value="new">New</option><option value="sent">Sent</option><option value="replied">Replied</option>
+                <option value="converted">Converted</option><option value="dead">Dead</option>
+              </select>
+              <button onclick="convertToOrder(${prospects.indexOf(p)})" style="background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);padding:5px 10px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer">→ Order</button>
+              <button onclick="deleteProspect(${prospects.indexOf(p)})" style="background:transparent;color:var(--red);border:1px solid rgba(239,68,68,.3);padding:5px 10px;border-radius:6px;font-size:12px;cursor:pointer">✕</button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table>
+  </div>`;
+
+  // Templates
+  document.getElementById('outreach-templates').innerHTML = OUTREACH_TEMPLATES.map((t,i) =>
+    `<div style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px">
+      <div style="font-weight:700;font-size:13px;margin-bottom:6px">${t.name}</div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;white-space:pre-wrap;max-height:100px;overflow:hidden">${t.body.substring(0,200)}...</div>
+      <button onclick="copyTemplate(${i})" style="margin-top:10px;background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer">Copy template</button>
+    </div>`
+  ).join('');
+}
+
+function addProspect() {
+  const bizname = document.getElementById('pr-bizname').value.trim();
+  const email = document.getElementById('pr-email').value.trim();
+  const msg = document.getElementById('pr-msg');
+  if (!bizname || !email) { msg.style.display='block'; msg.style.color='var(--red)'; msg.textContent='Business name and email are required.'; return; }
+  prospects.unshift({ bizname, name:document.getElementById('pr-name').value.trim(), email, type:document.getElementById('pr-type').value, location:document.getElementById('pr-location').value.trim(), notes:document.getElementById('pr-notes').value.trim(), status:'new', addedAt:new Date().toISOString() });
+  saveProspects();
+  ['pr-bizname','pr-name','pr-email','pr-location','pr-notes'].forEach(id => document.getElementById(id).value='');
+  msg.style.display='block'; msg.style.color='var(--green)'; msg.textContent='Added!';
+  setTimeout(() => msg.style.display='none', 2000);
+  renderProspects();
+}
+
+function updateProspectStatus(idx, status) { if (!status) return; prospects[idx].status=status; prospects[idx].statusUpdated=new Date().toISOString(); saveProspects(); renderProspects(); }
+function deleteProspect(idx) { if (!confirm('Remove this prospect?')) return; prospects.splice(idx,1); saveProspects(); renderProspects(); }
+function saveProspects() { localStorage.setItem('ss_prospects', JSON.stringify(prospects)); }
+
+async function sendOutreachEmail(idx) {
+  const p = prospects[idx];
+  const tplIdx = parseInt(prompt('Choose template:\n1. No website\n2. Outdated site\n3. Follow-up\n\nEnter 1, 2 or 3:') || '0') - 1;
+  const tpl = OUTREACH_TEMPLATES[tplIdx] || OUTREACH_TEMPLATES[0];
+  const subject = tpl.subject.replace('{business}', p.bizname).replace('{name}', p.name||p.bizname);
+  const body = tpl.body.replace(/{business}/g, p.bizname).replace(/{name}/g, p.name||'there');
+  if (!confirm(`Send to ${p.email}?\n\nSubject: ${subject}\n\n${body.substring(0,200)}...`)) return;
+  try {
+    const r = await fetch('/.netlify/functions/send-reply', {
+      method:'POST', headers:{'Content-Type':'application/json','x-admin-password':ADMIN_PW},
+      body:JSON.stringify({ to:p.email, subject, body, fromMailbox:'hello' })
+    });
+    const d = await r.json();
+    if (d.ok) { prospects[idx].status='sent'; prospects[idx].lastContacted=new Date().toISOString(); saveProspects(); renderProspects(); alert('Sent to '+p.email); }
+    else alert('Error: '+(d.error||'unknown'));
+  } catch(e) { alert('Network error: '+e.message); }
+}
+
+async function sendBatchOutreach() {
+  const unsent = prospects.filter(p => p.status==='new');
+  if (!unsent.length) { alert('No unsent prospects. Add prospects with status "new" first.'); return; }
+  const tplIdx = parseInt(prompt(`Send to ${unsent.length} unsent prospects.\nChoose template:\n1. No website\n2. Outdated site\n3. Follow-up\n\nEnter 1, 2 or 3:`) || '0') - 1;
+  const tpl = OUTREACH_TEMPLATES[tplIdx] || OUTREACH_TEMPLATES[0];
+  if (!confirm(`Send "${tpl.name}" to ${unsent.length} prospects?`)) return;
+  let sent = 0;
+  for (const p of unsent) {
+    const subject = tpl.subject.replace('{business}',p.bizname).replace('{name}',p.name||p.bizname);
+    const body = tpl.body.replace(/{business}/g,p.bizname).replace(/{name}/g,p.name||'there');
+    try {
+      const r = await fetch('/.netlify/functions/send-reply', {
+        method:'POST', headers:{'Content-Type':'application/json','x-admin-password':ADMIN_PW},
+        body:JSON.stringify({ to:p.email, subject, body, fromMailbox:'hello' })
+      });
+      const d = await r.json();
+      if (d.ok) { const i = prospects.indexOf(p); if(i>=0){prospects[i].status='sent';prospects[i].lastContacted=new Date().toISOString();} sent++; }
+    } catch {}
+    await new Promise(r => setTimeout(r, 1200)); // Rate limit: 1 per 1.2s
+  }
+  saveProspects(); renderProspects(); alert(`Done. Sent ${sent} of ${unsent.length} emails.`);
+}
+
+function convertToOrder(idx) {
+  const p = prospects[idx];
+  if (!confirm(`Convert ${p.bizname} to a New Order?`)) return;
+  showPage('new-order', document.querySelectorAll('.nav-tab')[2]);
+  document.getElementById('no-bizname').value = p.bizname;
+  document.getElementById('no-name').value = p.name || '';
+  document.getElementById('no-email').value = p.email;
+  document.getElementById('no-location').value = p.location || '';
+  document.getElementById('no-source').value = 'Cold email reply';
+  prospects[idx].status = 'converted';
+  saveProspects();
+}
+
+function copyTemplate(idx) {
+  const t = OUTREACH_TEMPLATES[idx];
+  navigator.clipboard.writeText(t.body).then(() => alert('Template copied to clipboard'));
+}
+
+function showNewProspect() { document.getElementById('pr-bizname').focus(); }
+
+// ==========================================
+// SEO CHECKLIST
+// ==========================================
+const SEO_ITEMS = [
+  { done: false, title: 'Submit site to Google Search Console', detail: 'Go to search.google.com/search-console → Add property → Enter https://staticswift.co.uk → Verify ownership using the HTML file method (download file, upload to site root, then verify).', url: 'https://search.google.com/search-console' },
+  { done: false, title: 'Submit your sitemap', detail: 'In Search Console → Sitemaps → enter: sitemap_index.xml and click Submit. This tells Google about all your pages immediately.', url: 'https://search.google.com/search-console' },
+  { done: false, title: 'Request indexing for your homepage', detail: 'In Search Console → URL Inspection → enter https://staticswift.co.uk → click "Request Indexing". Do this for your main pages too.', url: 'https://search.google.com/search-console' },
+  { done: false, title: 'Set up Google Analytics', detail: 'Go to analytics.google.com → create a GA4 property → copy your Measurement ID (G-XXXXXXX) → it is already in your site code.', url: 'https://analytics.google.com' },
+  { done: false, title: 'Create a Google Business Profile', detail: 'Even as an online-only business, a GBP listing boosts local SEO and credibility. Go to business.google.com → Add business → StaticSwift → Website Design → Livingston, Scotland.', url: 'https://business.google.com' },
+  { done: false, title: 'Get your first 3 backlinks', detail: 'Submit to: (1) freeindex.co.uk — free local business directory. (2) yell.com — free listing. (3) LinkedIn company page linking to staticswift.co.uk. These signal legitimacy to Google.', url: 'https://www.freeindex.co.uk' },
+  { done: false, title: 'Post StaticSwift on social media', detail: 'Share your site on Facebook, Instagram, and LinkedIn. These links count as signals even if they are no-follow. Tag local business groups in Edinburgh/Lothians.', url: null },
+  { done: false, title: 'Connect Google Search Console to Analytics', detail: 'In GA4 → Admin → Product Links → Search Console Links → Link your verified Search Console property. This joins the data together in both dashboards.', url: 'https://analytics.google.com' },
+  { done: false, title: 'Check your site is indexed', detail: 'Search Google for: site:staticswift.co.uk — if results appear, you are indexed. If nothing shows after 8 weeks, check Search Console for crawl errors.', url: 'https://www.google.com/search?q=site:staticswift.co.uk' },
+  { done: false, title: 'Add Google Analytics env vars to Netlify', detail: 'In Netlify env vars add: GA4_PROPERTY_ID (numbers only from GA4 Admin), GSC_SITE_URL=https://staticswift.co.uk/, GOOGLE_SA_EMAIL, GOOGLE_SA_KEY. Then the Analytics tab in this dashboard will show live data.', url: 'https://app.netlify.com' },
+];
+
+let seoProgress = JSON.parse(localStorage.getItem('ss_seo') || '[]');
+
+function renderSEOChecklist() {
+  const el = document.getElementById('seo-checklist');
+  if (!el) return;
+  el.innerHTML = SEO_ITEMS.map((item, i) => {
+    const done = seoProgress.includes(i);
+    return `<div style="background:var(--surface);border:1px solid ${done?'rgba(34,197,94,.3)':'var(--border)'};border-radius:12px;padding:18px 20px;display:flex;gap:16px;align-items:flex-start">
+      <button onclick="toggleSEO(${i})" style="flex-shrink:0;width:22px;height:22px;border-radius:50%;border:2px solid ${done?'#22c55e':'var(--border)'};background:${done?'#22c55e':'transparent'};cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:1px">
+        ${done?'<span style="color:#07090f;font-size:12px;font-weight:900">✓</span>':''}
+      </button>
+      <div style="flex:1">
+        <div style="font-weight:700;font-size:14px;margin-bottom:6px;color:${done?'var(--muted)':'var(--text)'};${done?'text-decoration:line-through':''}">${item.title}</div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.6">${item.detail}</div>
+        ${item.url?`<a href="${item.url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--cyan);margin-top:8px;display:inline-block">Open → ${item.url.replace('https://','')}</a>`:''}
+      </div>
+    </div>`;
+  }).join('');
+  // Progress bar
+  const pct = Math.round((seoProgress.length / SEO_ITEMS.length) * 100);
+  const existing = document.getElementById('seo-progress');
+  if (existing) existing.remove();
+  const prog = document.createElement('div');
+  prog.id = 'seo-progress';
+  prog.style.cssText = 'margin-bottom:20px';
+  prog.innerHTML = `<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px"><span style="font-weight:700">Progress</span><span style="color:var(--muted)">${seoProgress.length} of ${SEO_ITEMS.length} complete</span></div>
+    <div style="background:var(--surface);border-radius:8px;height:8px;overflow:hidden"><div style="background:var(--cyan);height:100%;width:${pct}%;border-radius:8px;transition:width .4s"></div></div>`;
+  el.parentElement.insertBefore(prog, el);
+}
+
+function toggleSEO(idx) {
+  const i = seoProgress.indexOf(idx);
+  if (i >= 0) seoProgress.splice(i, 1); else seoProgress.push(idx);
+  localStorage.setItem('ss_seo', JSON.stringify(seoProgress));
+  renderSEOChecklist();
+}
+
+// Init outreach and SEO on page load
+window.addEventListener('DOMContentLoaded', () => {
+  renderProspects();
+  renderSEOChecklist();
+});
+
+// Wire up showPage to render outreach/seo when switched to
+const _origShowPage = showPage;
+function showPage(id, btn) {
+  _origShowPage(id, btn);
+  if (id === 'outreach') renderProspects();
+  if (id === 'seo') renderSEOChecklist();
 }
 </script>
 </body>

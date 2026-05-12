@@ -12,6 +12,12 @@
 [functions."poll-support"]
   schedule = "*/5 * * * *"
 
+[functions."fetch-inbox"]
+  timeout = 30
+
+[functions."client-portal"]
+  timeout = 15
+
 [[redirects]]
   from = "/admin"
   to = "/admin/index.html"
@@ -49,7 +55,6 @@
   for = "/*"
   [headers.values]
     X-Frame-Options = "SAMEORIGIN"
-    X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
@@ -57,12 +62,6 @@
   for = "/*.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
-
-[[headers]]
-  for = "/sitemap*.xml"
-  [headers.values]
-    Cache-Control = "public, max-age=3600"
-    Content-Type = "application/xml; charset=utf-8"
 
 [[headers]]
   for = "/.netlify/functions/*"
