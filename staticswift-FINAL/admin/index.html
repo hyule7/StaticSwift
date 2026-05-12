@@ -739,8 +739,8 @@ async function testSubmission() {
 let allClients = [];
 
 async function fetchClients() {
-  const r = await fetch('/.netlify/functions/get-clients', {
-    headers: { 'x-admin-password': ADMIN_PW }
+  const r = await fetch('/.netlify/functions/get-clients?t=' + Date.now(), {
+    headers: { 'x-admin-password': ADMIN_PW, 'Cache-Control': 'no-cache' }
   });
   if (!r.ok) throw new Error('Failed to fetch clients');
   allClients = await r.json();
@@ -784,15 +784,19 @@ async function initApp() {
 
 async function refreshData() {
   const btn = document.querySelector('.refresh-btn');
-  btn.textContent = '↻ Refreshing...';
+  if (btn) btn.textContent = '↻ Refreshing...';
   try {
     await fetchClients();
     renderDashboard();
     renderPipeline();
     renderRevenue();
-    if (currentClientId) openClient(currentClientId);
-  } catch(e) {}
-  btn.textContent = '↻ Refresh';
+    // Reopen panel with fresh data if one is open
+    if (currentClientId) {
+      const fresh = allClients.find(c => c.clientId === currentClientId);
+      if (fresh) openClient(currentClientId);
+    }
+  } catch(e) { console.error('refreshData error:', e.message); }
+  if (btn) btn.textContent = '↻ Refresh';
 }
 
 // ==========================================
@@ -899,17 +903,43 @@ function openClient(id) {
   const c = allClients.find(x => x.clientId === id);
   if (!c) return;
   currentClientId = id;
+
+  // Reset upload zones so previous client's state doesn't bleed through
+  ['preview', 'final'].forEach(type => {
+    const drop = document.getElementById(type + '-drop');
+    const status = document.getElementById(type + '-upload-status');
+    const input = document.getElementById(type + '-file-input');
+    if (drop) {
+      drop.textContent = 'Drop ' + type + ' .html here or click to browse';
+      drop.style.borderColor = 'var(--border)';
+    }
+    if (status) { status.style.display = 'none'; status.textContent = ''; }
+    if (input) input.value = '';
+  });
+
+  // Clear action message
+  const actionMsg = document.getElementById('panel-action-msg');
+  if (actionMsg) actionMsg.style.display = 'none';
+
+  // Clear portal reply
+  const replyText = document.getElementById('portal-reply-text');
+  if (replyText) replyText.value = '';
+  const replyMsg = document.getElementById('portal-reply-msg');
+  if (replyMsg) replyMsg.style.display = 'none';
+
   document.getElementById('panel-title').textContent = c.business_name || c.name || 'Client';
   document.getElementById('panel-subtitle').textContent = `${c.package === 'advanced' ? 'Advanced £299' : 'Starter £149'} — ${STAGE_LABELS[c.stage] || c.stage}`;
   document.getElementById('panel-contact').innerHTML = `
     <div class="info-row"><span class="info-key">Name</span><span class="info-val">${c.name || '—'}</span></div>
     <div class="info-row"><span class="info-key">Email</span><span class="info-val"><a href="mailto:${c.delivery_email}">${c.delivery_email || '—'}</a></span></div>
     <div class="info-row"><span class="info-key">Phone</span><span class="info-val">${c.phone || '—'}</span></div>
-    <div class="info-row"><span class="info-key">WhatsApp</span><span class="info-val">${c.wa ? `<a href="https://wa.me/${c.wa.replace(/\D/g,'')}" target="_blank">Message</a>` : '—'}</span></div>
+    <div class="info-row"><span class="info-key">WhatsApp</span><span class="info-val">${c.wa ? `<a href="https://wa.me/${c.wa.replace(/\\D/g,'')}" target="_blank">Message</a>` : '—'}</span></div>
     <div class="info-row"><span class="info-key">Business Type</span><span class="info-val">${c.business_type || '—'}</span></div>
     <div class="info-row"><span class="info-key">Location</span><span class="info-val">${c.location || '—'}</span></div>
     <div class="info-row"><span class="info-key">Source</span><span class="info-val">${c.source || '—'}</span></div>
     <div class="info-row"><span class="info-key">Received</span><span class="info-val">${c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-GB') : '—'}</span></div>
+    ${c.previewUrl ? '<div class="info-row"><span class="info-key">Preview</span><span class="info-val"><a href="' + c.previewUrl + '" target="_blank">View ↗</a></span></div>' : ''}
+    ${c.finalUrl ? '<div class="info-row"><span class="info-key">Final File</span><span class="info-val"><a href="' + c.finalUrl + '" target="_blank">Download ↗</a></span></div>' : ''}
   `;
   const stageIdx = STAGES.indexOf(c.stage);
   document.getElementById('panel-stage').innerHTML = STAGES.map((s, i) =>
@@ -921,7 +951,7 @@ function openClient(id) {
   const prompt = c.claudePrompt || generatePrompt(c);
   document.getElementById('panel-prompt').textContent = prompt;
   document.getElementById('panel-notes').value = c.notes || '';
-  document.getElementById('panel-action-msg').style.display = 'none';
+
   if (c.portalUUID) {
     const portalUrl = 'https://staticswift.co.uk/client?uuid=' + c.portalUUID;
     document.getElementById('panel-portal-section').style.display = 'block';
@@ -937,7 +967,6 @@ function openClient(id) {
       setTimeout(() => this.textContent = 'Copy Link', 2000);
     });
 
-    // Render portal messages
     const msgs = Array.isArray(c.portalMessages) ? c.portalMessages : [];
     const msgsEl = document.getElementById('panel-messages');
     const msgsSec = document.getElementById('panel-messages-section');
@@ -954,16 +983,12 @@ function openClient(id) {
       msgsSec.style.display = 'none';
     }
   } else {
-    // No portal yet — show generate button
     document.getElementById('panel-portal-section').style.display = 'block';
     document.getElementById('panel-portal').innerHTML =
       '<p style="font-size:13px;color:var(--muted);margin-bottom:10px">No portal generated yet.</p>' +
       '<button class="copy-btn" style="background:var(--cyan);color:#07090f;border-color:var(--cyan)" onclick="panelAction(\'portal-link\')">Generate &amp; Send Portal Link</button>';
     document.getElementById('panel-messages-section').style.display = 'none';
   }
-  document.getElementById('client-panel').classList.add('open');
-}
-
 function closePanel() { document.getElementById('client-panel').classList.remove('open'); currentClientId = null; }
 function closePanelBg(e) { if (e.target.id === 'client-panel') closePanel(); }
 
