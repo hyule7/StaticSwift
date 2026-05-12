@@ -48,13 +48,19 @@ exports.handler = async (event) => {
     const fileUUID = uploadData.file;
     if (!fileUUID) throw new Error('No file UUID from Uploadcare: ' + responseText);
 
-    const fileUrl = 'https://ucarecdn.com/' + fileUUID + '/' + safeName;
-    console.log('[upload-preview] uploaded:', fileUrl);
+    // Use serve-preview to proxy the file so it renders in browser/iframe
+    // (Uploadcare CDN forces HTML files as download — we need to proxy them)
+    const siteUrl = process.env.URL || 'https://staticswift.co.uk';
+    const previewUrl = `${siteUrl}/.netlify/functions/serve-preview?id=${fileUUID}&name=${encodeURIComponent(safeName)}`;
+    // Also store the direct CDN URL for final delivery download
+    const cdnUrl = `https://ucarecdn.com/${fileUUID}/${safeName}`;
+
+    console.log('[upload-preview] uploaded:', fileUUID, '→', previewUrl);
 
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ok: true, fileId: fileUUID, previewUrl: fileUrl })
+      body: JSON.stringify({ ok: true, fileId: fileUUID, previewUrl, cdnUrl })
     };
 
   } catch (err) {

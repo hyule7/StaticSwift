@@ -1690,7 +1690,8 @@ async function handleFileSelect(input, fileType) {
     const data = await r.json();
     if (!data.ok) throw new Error(data.error || 'Upload failed');
 
-    const uploadedUrl = data.previewUrl;
+    const uploadedUrl = data.previewUrl; // serve-preview proxy URL — renders in browser/iframe
+    const downloadUrl = data.cdnUrl || data.previewUrl; // direct CDN URL — for final delivery download
     dropEl.textContent = '✓ ' + file.name;
     dropEl.style.borderColor = 'var(--green)';
 
@@ -1739,7 +1740,7 @@ async function handleFileSelect(input, fileType) {
 
     } else if (fileType === 'final') {
       await updateClient(currentClientId, {
-        finalUrl: uploadedUrl,
+        finalUrl: downloadUrl,
         stage: 'complete',
         deliveredAt: new Date().toISOString()
       });
@@ -1753,7 +1754,7 @@ async function handleFileSelect(input, fileType) {
           clientId: currentClientId,
           emailType: 'custom',
           customSubject: 'Your website files are ready — ' + (c?.business_name || ''),
-          customBody: 'Hi ' + (c?.name || 'there') + ',\n\nYour final website files are ready to download:\n\n' + uploadedUrl + '\n\nThis link is permanent. If you need help uploading your site, see our guide:\nhttps://staticswift.co.uk/how-to-upload.html\n\nThank you!\n\nHarry\nStaticSwift'
+          customBody: 'Hi ' + (c?.name || 'there') + ',\n\nYour website is complete and ready to download:\n\n' + downloadUrl + '\n\nRight-click the link and choose "Save As" to download your HTML file, then follow our upload guide to go live:\nhttps://staticswift.co.uk/how-to-upload.html\n\nThank you for choosing StaticSwift!\n\nHarry\nStaticSwift — staticswift.co.uk'
         })
       });
       const emailData = await emailR.json();
