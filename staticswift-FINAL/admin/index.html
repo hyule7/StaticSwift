@@ -465,26 +465,32 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}
   <div class="page" id="page-outreach">
     <div class="page-header">
       <h1 class="page-title">Cold Outreach</h1>
-      <div style="display:flex;gap:8px">
-        <button class="btn-primary" onclick="showNewProspect()">+ Add Prospect</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn-primary" onclick="showAddProspectModal()">+ Add Prospect</button>
         <button class="btn-ghost" onclick="document.getElementById('csv-upload-input').click()">⬆ Import CSV</button>
         <input type="file" id="csv-upload-input" accept=".csv" style="display:none" onchange="importProspectsCSV(this)">
         <button class="btn-ghost" onclick="exportProspectsCSV()">⬇ Export CSV</button>
-        <button class="btn-ghost" onclick="sendBatchOutreach()">Send Batch Emails</button>
+        <button class="btn-ghost" onclick="sendBatchOutreach()">⚡ Send Batch</button>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:20px" id="outreach-stats">
-      <div class="stat-card"><div class="label">Total Prospects</div><div class="value" id="os-total">0</div></div>
-      <div class="stat-card"><div class="label">Sent Today</div><div class="value" id="os-today">0</div></div>
-      <div class="stat-card"><div class="label">Awaiting Reply</div><div class="value" id="os-sent">0</div></div>
-      <div class="stat-card"><div class="label">Replied</div><div class="value" id="os-replied">0</div></div>
-      <div class="stat-card"><div class="label">Converted</div><div class="value" id="os-converted">0</div></div>
+
+    <!-- Stats bar -->
+    <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap">
+      <div class="stat-card" style="flex:1;min-width:90px"><div class="label">Total</div><div class="value" id="os-total">0</div></div>
+      <div class="stat-card" style="flex:1;min-width:90px"><div class="label">New</div><div class="value" id="os-new">0</div></div>
+      <div class="stat-card" style="flex:1;min-width:90px"><div class="label">Sent</div><div class="value" id="os-sent">0</div></div>
+      <div class="stat-card" style="flex:1;min-width:90px"><div class="label">Replied</div><div class="value" id="os-replied">0</div></div>
+      <div class="stat-card" style="flex:1;min-width:90px"><div class="label">Converted</div><div class="value" id="os-converted">0</div></div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 380px;gap:20px">
-      <!-- Prospect list -->
-      <div>
-        <div style="display:flex;gap:8px;margin-bottom:16px">
-          <select id="outreach-filter" onchange="renderProspects()" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:8px;font-size:13px">
+
+    <!-- Three-pane layout -->
+    <div style="display:grid;grid-template-columns:260px 1fr;gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;min-height:640px">
+
+      <!-- LEFT: Prospect list -->
+      <div style="border-right:1px solid var(--border);display:flex;flex-direction:column">
+        <div style="padding:12px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:8px">
+          <input id="outreach-search" oninput="renderProspects()" placeholder="Search prospects..." style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:7px;font-size:12px;width:100%;outline:none">
+          <select id="outreach-filter" onchange="renderProspects()" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:7px;font-size:12px">
             <option value="all">All prospects</option>
             <option value="new">Not contacted</option>
             <option value="sent">Email sent</option>
@@ -492,34 +498,45 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}
             <option value="converted">Converted</option>
             <option value="dead">Dead</option>
           </select>
-          <input id="outreach-search" oninput="renderProspects()" placeholder="Search..." style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:8px;font-size:13px;flex:1">
         </div>
-        <div id="prospects-table"></div>
+        <div id="prospect-list" style="overflow-y:auto;flex:1"></div>
       </div>
-      <!-- Quick add + templates -->
-      <div>
-        <div id="new-prospect-form" style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px">
-          <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Quick Add Prospect</div>
-          <div class="field"><label>Business Name *</label><input type="text" id="pr-bizname" placeholder="Dave's Barbershop"></div>
-          <div class="field"><label>Contact Name</label><input type="text" id="pr-name" placeholder="Dave"></div>
-          <div class="field"><label>Email *</label><input type="email" id="pr-email" placeholder="dave@example.com"></div>
-          <div class="field"><label>Business Type</label>
-            <select id="pr-type">
-              <option>Barber / Hair Salon</option><option>Plumber</option><option>Electrician</option>
-              <option>Builder / Roofer</option><option>Cleaner</option><option>Photographer</option>
-              <option>Personal Trainer</option><option>Beauty Salon</option><option>Cafe / Coffee Shop</option>
-              <option>Takeaway / Restaurant</option><option>Landscaper / Gardener</option><option>Other</option>
-            </select>
+
+      <!-- RIGHT: Detail + compose panel -->
+      <div id="prospect-detail-pane" style="display:flex;flex-direction:column">
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;padding:40px;text-align:center">
+          <div>
+            <div style="font-size:32px;margin-bottom:12px">✉</div>
+            <div style="font-weight:600;margin-bottom:6px">Select a prospect</div>
+            <div style="font-size:13px">Click any prospect on the left to view details and send an email</div>
           </div>
-          <div class="field"><label>Town / City</label><input type="text" id="pr-location" placeholder="Edinburgh"></div>
-          <div class="field"><label>Notes</label><input type="text" id="pr-notes" placeholder="Found on Facebook, no website"></div>
-          <button class="btn-primary" onclick="addProspect()" style="width:100%;justify-content:center;margin-top:4px">Add Prospect</button>
-          <div id="pr-msg" style="font-size:12px;margin-top:8px;display:none"></div>
         </div>
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px">
-          <div style="font-size:13px;font-weight:700;margin-bottom:14px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em">Email Templates</div>
-          <div id="outreach-templates"></div>
+      </div>
+    </div>
+
+    <!-- Add prospect modal -->
+    <div id="add-prospect-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center">
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:28px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <div style="font-weight:700;font-size:16px">Add Prospect</div>
+          <button onclick="hideAddProspectModal()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;padding:0">✕</button>
         </div>
+        <div class="field"><label>Business Name *</label><input type="text" id="pr-bizname" placeholder="Dave's Barbershop"></div>
+        <div class="field"><label>Contact Name</label><input type="text" id="pr-name" placeholder="Dave"></div>
+        <div class="field"><label>Email *</label><input type="email" id="pr-email" placeholder="dave@example.com"></div>
+        <div class="field"><label>Business Type</label>
+          <select id="pr-type">
+            <option>Barber / Hair Salon</option><option>Plumber</option><option>Electrician</option>
+            <option>Builder / Roofer</option><option>Cleaner</option><option>Photographer</option>
+            <option>Personal Trainer</option><option>Beauty Salon</option><option>Cafe / Coffee Shop</option>
+            <option>Takeaway / Restaurant</option><option>Landscaper / Gardener</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field"><label>Town / City</label><input type="text" id="pr-location" placeholder="Edinburgh"></div>
+        <div class="field"><label>Phone</label><input type="text" id="pr-phone" placeholder="07700 900000"></div>
+        <div class="field"><label>Notes / Buying Signal</label><textarea id="pr-notes" placeholder="Found on Facebook, no website, 800 followers..." style="min-height:70px;width:100%;background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:10px;font-size:13px;color:var(--text);outline:none;resize:vertical;font-family:'DM Sans',sans-serif"></textarea></div>
+        <button class="btn-primary" onclick="addProspect()" style="width:100%;justify-content:center;margin-top:4px">Add Prospect</button>
+        <div id="pr-msg" style="font-size:12px;margin-top:8px;display:none"></div>
       </div>
     </div>
   </div>
@@ -1437,8 +1454,52 @@ async function loadInbox() {
     inboxEmails = await r.json();
     inboxLoaded = true;
     renderInbox();
+    detectProspectReplies(inboxEmails);
   } catch(err) {
     list.innerHTML = '<div style="padding:24px;color:var(--red);font-size:13px">Failed to load: ' + err.message + '</div>';
+  }
+}
+
+// Scan inbox for replies from prospects and auto-update their status
+function detectProspectReplies(emails) {
+  if (!emails || !emails.length || !prospects.length) return;
+  let updated = 0;
+  emails.forEach(email => {
+    // Extract the sender's email address
+    const fromMatch = email.from && email.from.match(/<(.+)>/) ;
+    const senderEmail = fromMatch ? fromMatch[1].toLowerCase() : (email.from || '').toLowerCase().trim();
+    if (!senderEmail) return;
+    // Find matching prospect
+    const idx = prospects.findIndex(p => p.email && p.email.toLowerCase() === senderEmail);
+    if (idx < 0) return;
+    const p = prospects[idx];
+    // Only update if they were in 'sent' state — this is a reply
+    if (p.status !== 'sent') return;
+    const emailDate = new Date(email.date);
+    const lastContacted = p.lastContacted ? new Date(p.lastContacted) : null;
+    // Only count as reply if the email arrived after we sent to them
+    if (lastContacted && emailDate < lastContacted) return;
+    // Mark as replied
+    prospects[idx].status = 'replied';
+    prospects[idx].repliedAt = email.date;
+    if (!Array.isArray(prospects[idx].emailHistory)) prospects[idx].emailHistory = [];
+    prospects[idx].emailHistory.push({
+      template: '↩ Reply received: ' + (email.subject || '(no subject)'),
+      sentAt: email.date,
+      to: senderEmail,
+      direction: 'inbound'
+    });
+    updated++;
+  });
+  if (updated > 0) {
+    saveProspects();
+    renderProspects();
+    // Show notification
+    const notif = document.createElement('div');
+    notif.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--green);color:#07090f;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:700;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.3)';
+    notif.textContent = '✓ ' + updated + ' prospect' + (updated > 1 ? 's' : '') + ' marked as Replied from inbox';
+    document.body.appendChild(notif);
+    setTimeout(() => notif.remove(), 4000);
   }
 }
 
@@ -1728,6 +1789,7 @@ async function loadTickets() {
     });
     allTickets = Object.values(threads).sort((a,b) => new Date(b.lastDate) - new Date(a.lastDate));
     renderTickets();
+    detectProspectReplies(emails);
   } catch(err) {
     list.innerHTML = '<div style="padding:24px;color:var(--red);font-size:13px">Failed: ' + err.message + '</div>';
   }
@@ -1841,247 +1903,327 @@ function showNewTicket() {
 // OUTREACH
 // ==========================================
 let prospects = JSON.parse(localStorage.getItem('ss_prospects') || '[]');
+let selectedProspectIdx = null;
 
 const OUTREACH_TEMPLATES = [
   {
-    name: 'No website',
-    subject: 'Quick question — {business}',
+    name: '🚫 No Website',
+    subject: 'Quick idea for {business}',
     body: `Hi {name},
 
-I was looking for {type} in {location} and noticed {business} doesn't have a website yet.
+I came across {business} on Facebook — great reviews and clearly a busy operation.
 
-I build professional websites for local businesses starting at £149 — done in 24 hours, no monthly fees, you own the files outright.
+I noticed you don't have a website yet. When someone Googles "{type} {location}", you're invisible — even if you're the best in the area.
 
-Most of my clients get their first enquiry from Google within a couple of weeks of going live.
+I build clean, professional websites for local businesses from £149, delivered within 24 hours. No monthly fees, you own the files outright.
 
-Worth a quick chat? Happy to show you a free example first.
+Happy to put together a free mockup for you with no obligation — just reply and I'll get it done.
 
 Harry
 StaticSwift — staticswift.co.uk`
   },
   {
-    name: 'Outdated site',
-    subject: 'Your website — quick idea, {name}',
+    name: '🔄 Outdated Site',
+    subject: 'Quick idea for {business}',
     body: `Hi {name},
 
-I came across {business} while searching for {type} in {location}. Your site came up but looks like it might be putting customers off before they even get in touch.
+I came across {business} online — I build websites for local businesses and noticed yours could do with a refresh.
 
-I rebuild outdated sites for local businesses from £149 — modern, fast, mobile-friendly, done in 24 hours.
+A modern, fast site helps you rank on Google and gives customers confidence before they call. From £149, delivered in 24 hours, you own the files.
 
-Happy to show you what I could do with {business} — no cost, no obligation.
+Happy to show you a free mockup — just reply and I'll put one together.
 
 Harry
 StaticSwift — staticswift.co.uk`
   },
   {
-    name: 'No social presence',
-    subject: 'Getting {business} more customers online',
+    name: '📲 Facebook Only',
+    subject: 'Free mockup for {business}',
     body: `Hi {name},
 
-I specialise in getting local businesses like {business} found online by people already searching for {type} in {location}.
+I found {business} on Facebook — you've clearly got a great reputation locally.
 
-A clean, fast website is still the best way to convert searchers into paying customers — and it starts at £149, delivered in 24 hours.
+The problem is, Facebook doesn't show up when people Google "{type} near me". A proper website fixes that overnight.
 
-I can show you a free mockup based on your business before you commit to anything.
+I build professional sites from £149, delivered in 24 hours. No monthly fees, no lock-in — you own everything.
+
+I'll build you a free mockup so you can see exactly what it would look like before paying anything. Just reply with a yes.
+
+Harry
+StaticSwift — staticswift.co.uk`
+  },
+  {
+    name: '🔁 Follow-Up',
+    subject: 'Following up — {business}',
+    body: `Hi {name},
+
+Just following up on my earlier message about a website for {business}.
+
+If the timing's not right, no worries at all — but if you're open to it I'd love to show you what I can put together. It only takes 24 hours and starts at £149.
+
+Harry
+StaticSwift — staticswift.co.uk`
+  },
+  {
+    name: '🏆 Trades Special',
+    subject: 'More jobs from Google — {business}',
+    body: `Hi {name},
+
+I work with tradespeople across the UK who are missing out on Google enquiries because they don't have a website.
+
+For {business}, a simple professional site would mean that when someone in {location} Googles "{type}", you actually show up.
+
+£149 one-off, delivered in 24 hours, no monthly fees. I'll do a free mockup first so you can see it before committing.
 
 Interested?
 
 Harry
 StaticSwift — staticswift.co.uk`
   },
-  {
-    name: 'Follow-up 1',
-    subject: 'Following up — {business}',
-    body: `Hi {name},
-
-Just following up on my message about a website for {business}.
-
-Completely understand if the timing isn't right — but if you're still open to it I'd love to show you what I could put together. Takes me 24 hours and starts at £149.
-
-Harry
-StaticSwift — staticswift.co.uk`
-  },
-  {
-    name: 'Follow-up 2 (final)',
-    subject: 'Last message — {business}',
-    body: `Hi {name},
-
-I'll keep this short — last message from me about a website for {business}.
-
-If you ever want to get online or refresh what you have, I'm at hello@staticswift.co.uk. Fast turnaround, honest price.
-
-All the best,
-Harry
-StaticSwift — staticswift.co.uk`
-  },
 ];
 
-function updateOutreachTracker() {
-  const today = new Date().toDateString();
-  const sentToday = prospects.filter(p => p.lastContacted && new Date(p.lastContacted).toDateString() === today).length;
-  const el = id => document.getElementById(id);
-  if (el('os-total')) el('os-total').textContent = prospects.length;
-  if (el('os-today')) el('os-today').textContent = sentToday;
-  if (el('os-sent')) el('os-sent').textContent = prospects.filter(p => p.status === 'sent').length;
-  if (el('os-replied')) el('os-replied').textContent = prospects.filter(p => p.status === 'replied').length;
-  if (el('os-converted')) el('os-converted').textContent = prospects.filter(p => p.status === 'converted').length;
+function updateOutreachStats() {
+  const g = id => document.getElementById(id);
+  if (!g('os-total')) return;
+  g('os-total').textContent = prospects.length;
+  g('os-new').textContent = prospects.filter(p => p.status === 'new').length;
+  g('os-sent').textContent = prospects.filter(p => p.status === 'sent').length;
+  g('os-replied').textContent = prospects.filter(p => p.status === 'replied').length;
+  g('os-converted').textContent = prospects.filter(p => p.status === 'converted').length;
 }
 
 function renderProspects() {
-  updateOutreachTracker();
+  updateOutreachStats();
+  const filter = document.getElementById('outreach-filter')?.value || 'all';
   const search = (document.getElementById('outreach-search')?.value || '').toLowerCase();
-  let list = prospects;
+  let list = [...prospects];
   if (filter !== 'all') list = list.filter(p => p.status === filter);
-  if (search) list = list.filter(p => (p.bizname+p.name+p.email+p.location).toLowerCase().includes(search));
-  const el = document.getElementById('prospects-table');
-  if (!list.length) { el.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:16px">No prospects found. Add one using the form.</div>'; return; }
-  el.innerHTML = `<div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden">
-    <table style="width:100%;border-collapse:collapse;font-size:13px">
-      <thead><tr style="border-bottom:1px solid var(--border)">
-        <th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Business</th>
-        <th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Email</th>
-        <th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Type</th>
-        <th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Status</th>
-        <th style="padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em">Actions</th>
-      </tr></thead>
-      <tbody>${list.map((p,i) => {
-        const statusCol = {new:'var(--muted)',sent:'var(--cyan)',replied:'var(--amber)',converted:'var(--green)',dead:'var(--red)'}[p.status]||'var(--muted)';
-        return `<tr style="border-bottom:1px solid var(--border)">
-          <td style="padding:10px 14px"><div style="font-weight:600">${p.bizname}</div><div style="color:var(--muted);font-size:12px">${p.location||''} ${p.name?'· '+p.name:''}</div></td>
-          <td style="padding:10px 14px;color:var(--muted)">${p.email}</td>
-          <td style="padding:10px 14px;color:var(--muted)">${p.type||'—'}</td>
-          <td style="padding:10px 14px"><span style="color:${statusCol};font-size:12px;font-weight:700;text-transform:uppercase">${p.status}</span></td>
-          <td style="padding:10px 14px">
-            <div style="display:flex;gap:6px;flex-wrap:wrap">
-              <button onclick="sendOutreachEmail(${prospects.indexOf(p)})" style="background:var(--cyan);color:#07090f;border:none;padding:5px 10px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer">Email</button>
-              <select onchange="updateProspectStatus(${prospects.indexOf(p)},this.value)" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:5px 8px;border-radius:6px;font-size:12px">
-                <option value="">Status...</option>
-                <option value="new">New</option><option value="sent">Sent</option><option value="replied">Replied</option>
-                <option value="converted">Converted</option><option value="dead">Dead</option>
-              </select>
-              <button onclick="convertToOrder(${prospects.indexOf(p)})" style="background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);padding:5px 10px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer">→ Order</button>
-              <button onclick="deleteProspect(${prospects.indexOf(p)})" style="background:transparent;color:var(--red);border:1px solid rgba(239,68,68,.3);padding:5px 10px;border-radius:6px;font-size:12px;cursor:pointer">✕</button>
-            </div>
-          </td>
-        </tr>`;
-      }).join('')}</tbody>
-    </table>
-  </div>`;
-
-  // Templates
-  document.getElementById('outreach-templates').innerHTML = OUTREACH_TEMPLATES.map((t,i) =>
-    `<div style="background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px">
-      <div style="font-weight:700;font-size:13px;margin-bottom:6px">${t.name}</div>
-      <div style="font-size:12px;color:var(--muted);line-height:1.6;white-space:pre-wrap;max-height:100px;overflow:hidden">${t.body.substring(0,200)}...</div>
-      <button onclick="copyTemplate(${i})" style="margin-top:10px;background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer">Copy template</button>
-    </div>`
-  ).join('');
+  if (search) list = list.filter(p => (p.bizname+p.name+p.email+p.location+p.type).toLowerCase().includes(search));
+  const el = document.getElementById('prospect-list');
+  if (!el) return;
+  if (!list.length) {
+    el.innerHTML = '<div style="padding:24px;color:var(--muted);font-size:13px;text-align:center">No prospects.<br><br>Import your CSV or add one above.</div>';
+    return;
+  }
+  el.innerHTML = list.map((p) => {
+    const idx = prospects.indexOf(p);
+    const isSelected = idx === selectedProspectIdx;
+    const statusColors = { new:'#8890a8', sent:'#00C8E0', replied:'#fbbf24', converted:'#22c55e', dead:'#f87171' };
+    const col = statusColors[p.status] || '#8890a8';
+    return `<div onclick="openProspect(${idx})" style="padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;background:${isSelected?'var(--surface2)':'transparent'}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:2px">
+        <span style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px">${p.bizname}</span>
+        <span style="font-size:10px;font-weight:700;color:${col};text-transform:uppercase;white-space:nowrap">${p.status}</span>
+      </div>
+      <div style="font-size:11px;color:var(--muted)">${p.type||''} ${p.location?'· '+p.location:''}</div>
+      <div style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.email||'No email'}</div>
+    </div>`;
+  }).join('');
 }
 
-function addProspect() {
-  const bizname = document.getElementById('pr-bizname').value.trim();
-  const email = document.getElementById('pr-email').value.trim();
-  const msg = document.getElementById('pr-msg');
-  if (!bizname || !email) { msg.style.display='block'; msg.style.color='var(--red)'; msg.textContent='Business name and email are required.'; return; }
-  prospects.unshift({ bizname, name:document.getElementById('pr-name').value.trim(), email, type:document.getElementById('pr-type').value, location:document.getElementById('pr-location').value.trim(), notes:document.getElementById('pr-notes').value.trim(), status:'new', addedAt:new Date().toISOString() });
-  saveProspects();
-  ['pr-bizname','pr-name','pr-email','pr-location','pr-notes'].forEach(id => document.getElementById(id).value='');
-  msg.style.display='block'; msg.style.color='var(--green)'; msg.textContent='Added!';
-  setTimeout(() => msg.style.display='none', 2000);
+function fillTemplate(text, p) {
+  const name = p.name || p.bizname || 'there';
+  const firstName = name.split(' ')[0];
+  return text
+    .replace(/{business}/g, p.bizname || 'your business')
+    .replace(/{name}/g, firstName)
+    .replace(/{type}/g, (p.type||'local business').toLowerCase())
+    .replace(/{location}/g, p.location || 'your area');
+}
+
+function openProspect(idx) {
+  selectedProspectIdx = idx;
   renderProspects();
+  const p = prospects[idx];
+  const pane = document.getElementById('prospect-detail-pane');
+  // Auto-select best template
+  let defaultTpl = 0;
+  if (p.status === 'sent') defaultTpl = 3;
+  else if (p.notes && p.notes.toLowerCase().includes('facebook')) defaultTpl = 2;
+  else if (p.notes && (p.notes.toLowerCase().includes('outdated') || p.notes.toLowerCase().includes('wix'))) defaultTpl = 1;
+  else if (p.type && ['Plumber','Electrician','Builder / Roofer'].includes(p.type)) defaultTpl = 4;
+  const tpl = OUTREACH_TEMPLATES[defaultTpl];
+  const filledSubject = fillTemplate(tpl.subject, p);
+  const filledBody = fillTemplate(tpl.body, p);
+  const statusColors = { new:'#8890a8', sent:'#00C8E0', replied:'#fbbf24', converted:'#22c55e', dead:'#f87171' };
+
+  pane.innerHTML = `
+    <div style="padding:18px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+      <div style="min-width:0">
+        <div style="font-size:16px;font-weight:700;margin-bottom:4px">${p.bizname}</div>
+        <div style="font-size:13px;color:var(--muted)">${[p.type,p.location,p.name].filter(Boolean).join(' · ')}</div>
+        ${p.phone ? '<div style="font-size:12px;color:var(--muted);margin-top:2px">📞 '+p.phone+'</div>' : ''}
+        ${p.notes ? '<div style="font-size:12px;color:var(--muted);margin-top:4px;font-style:italic;white-space:pre-wrap">'+p.notes+'</div>' : ''}
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end">
+        <select onchange="updateProspectStatus(${idx},this.value)" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:7px;font-size:12px">
+          <option value="">Status...</option>
+          <option value="new" ${p.status==='new'?'selected':''}>New</option>
+          <option value="sent" ${p.status==='sent'?'selected':''}>Sent</option>
+          <option value="replied" ${p.status==='replied'?'selected':''}>Replied</option>
+          <option value="converted" ${p.status==='converted'?'selected':''}>Converted</option>
+          <option value="dead" ${p.status==='dead'?'selected':''}>Dead</option>
+        </select>
+        <button onclick="convertToOrder(${idx})" style="background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.3);padding:6px 12px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer">→ Order</button>
+        <button onclick="deleteProspect(${idx})" style="background:transparent;color:var(--red);border:1px solid rgba(239,68,68,.3);padding:6px 10px;border-radius:7px;font-size:12px;cursor:pointer">✕</button>
+      </div>
+    </div>
+    ${(p.emailHistory||[]).length > 0 ? `<div style="padding:12px 22px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.15)">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Sent Emails</div>
+      ${(p.emailHistory||[]).map(h=>'<div style="font-size:12px;color:var(--muted);margin-bottom:3px">✓ '+h.template+' — '+new Date(h.sentAt).toLocaleDateString("en-GB")+' '+new Date(h.sentAt).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"})+'</div>').join('')}
+    </div>` : ''}
+    <div style="padding:18px 22px;display:flex;flex-direction:column;gap:12px;flex:1">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Template</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${OUTREACH_TEMPLATES.map((t,i)=>'<button onclick="applyTemplate('+i+','+idx+')" id="tpl-btn-'+i+'" style="padding:6px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid '+(i===defaultTpl?'var(--cyan)':'var(--border)')+';background:'+(i===defaultTpl?'rgba(0,200,224,.1)':'transparent')+';color:'+(i===defaultTpl?'var(--cyan)':'var(--muted)')+'">'+t.name+'</button>').join('')}
+        </div>
+      </div>
+      <div><label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">To</label>
+        <input id="compose-to" value="${p.email||''}" placeholder="email@example.com" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:13px;width:100%;outline:none;box-sizing:border-box">
+      </div>
+      <div><label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Subject</label>
+        <input id="compose-subject" value="${filledSubject.replace(/"/g,'&quot;')}" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:13px;width:100%;outline:none;box-sizing:border-box">
+      </div>
+      <div style="flex:1"><label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:6px">Message</label>
+        <textarea id="compose-body" style="width:100%;min-height:220px;background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:13px;color:var(--text);outline:none;resize:vertical;font-family:'DM Sans',sans-serif;line-height:1.7;box-sizing:border-box">${filledBody}</textarea>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <button onclick="sendProspectEmail(${idx})" style="background:var(--cyan);color:#07090f;font-weight:700;font-size:14px;padding:11px 28px;border-radius:8px;border:none;cursor:pointer">Send Email ✈</button>
+        <span id="outreach-send-status" style="font-size:13px"></span>
+      </div>
+    </div>`;
 }
 
-function updateProspectStatus(idx, status) { if (!status) return; prospects[idx].status=status; prospects[idx].statusUpdated=new Date().toISOString(); saveProspects(); renderProspects(); }
-function deleteProspect(idx) { if (!confirm('Remove this prospect?')) return; prospects.splice(idx,1); saveProspects(); renderProspects(); }
-function saveProspects() { localStorage.setItem('ss_prospects', JSON.stringify(prospects)); }
-
-async function sendOutreachEmail(idx) {
-  const p = prospects[idx];
-  const tplNames = OUTREACH_TEMPLATES.map((t,i) => (i+1) + '. ' + t.name).join('\n');
-  const tplIdx = parseInt(prompt('Choose template:\n' + tplNames + '\n\nEnter number:') || '0') - 1;
-  if (tplIdx < 0 || tplIdx >= OUTREACH_TEMPLATES.length) return;
+function applyTemplate(tplIdx, prospectIdx) {
+  const p = prospects[prospectIdx];
   const tpl = OUTREACH_TEMPLATES[tplIdx];
+  const subEl = document.getElementById('compose-subject');
+  const bodyEl = document.getElementById('compose-body');
+  if (subEl) subEl.value = fillTemplate(tpl.subject, p);
+  if (bodyEl) bodyEl.value = fillTemplate(tpl.body, p);
+  OUTREACH_TEMPLATES.forEach((_,i) => {
+    const btn = document.getElementById('tpl-btn-'+i);
+    if (!btn) return;
+    btn.style.borderColor = i===tplIdx ? 'var(--cyan)' : 'var(--border)';
+    btn.style.background = i===tplIdx ? 'rgba(0,200,224,.1)' : 'transparent';
+    btn.style.color = i===tplIdx ? 'var(--cyan)' : 'var(--muted)';
+  });
+}
 
-  const subject = tpl.subject
-    .replace(/{business}/g, p.bizname)
-    .replace(/{name}/g, p.name || p.bizname)
-    .replace(/{location}/g, p.location || 'your area')
-    .replace(/{type}/g, p.type || 'local businesses');
-
-  const body = tpl.body
-    .replace(/{business}/g, p.bizname)
-    .replace(/{name}/g, p.name || 'there')
-    .replace(/{location}/g, p.location || 'your area')
-    .replace(/{type}/g, p.type || 'local businesses');
-
-  if (!confirm('Send to ' + p.email + '?\n\nSubject: ' + subject + '\n\n' + body.substring(0, 300) + '...')) return;
-
+async function sendProspectEmail(idx) {
+  const p = prospects[idx];
+  const to = document.getElementById('compose-to')?.value?.trim();
+  const subject = document.getElementById('compose-subject')?.value?.trim();
+  const body = document.getElementById('compose-body')?.value?.trim();
+  const status = document.getElementById('outreach-send-status');
+  if (!to) { status.style.color='var(--red)'; status.textContent='Add an email address first'; return; }
+  if (!body) { status.style.color='var(--red)'; status.textContent='Write a message first'; return; }
+  status.style.color='var(--muted)'; status.textContent='Sending...';
   try {
     const r = await fetch('/.netlify/functions/send-reply', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
-      body: JSON.stringify({ to: p.email, subject, body, fromMailbox: 'hello' })
+      method:'POST', headers:{'Content-Type':'application/json','x-admin-password':ADMIN_PW},
+      body:JSON.stringify({ to, subject, body, fromMailbox:'hello' })
     });
     const d = await r.json();
     if (d.ok) {
-      const realIdx = prospects.indexOf(p);
-      if (realIdx >= 0) {
-        prospects[realIdx].status = 'sent';
-        prospects[realIdx].lastContacted = new Date().toISOString();
-        prospects[realIdx].lastTemplate = tpl.name;
-      }
-      saveProspects();
-      renderProspects();
-      updateOutreachTracker();
-      alert('Sent to ' + p.email);
-    } else {
-      alert('Error: ' + (d.error || 'unknown'));
-    }
-  } catch(e) { alert('Network error: ' + e.message); }
+      status.style.color='var(--green)'; status.textContent='✓ Sent to '+to;
+      prospects[idx].status='sent'; prospects[idx].lastContacted=new Date().toISOString(); prospects[idx].email=to;
+      if (!Array.isArray(prospects[idx].emailHistory)) prospects[idx].emailHistory=[];
+      prospects[idx].emailHistory.push({ template:subject, sentAt:new Date().toISOString(), to });
+      saveProspects(); renderProspects();
+      setTimeout(() => openProspect(idx), 1000);
+    } else { status.style.color='var(--red)'; status.textContent='Error: '+(d.error||'unknown'); }
+  } catch(e) { status.style.color='var(--red)'; status.textContent='Network error'; }
 }
+
+function showAddProspectModal() {
+  const m = document.getElementById('add-prospect-modal');
+  if (m) { m.style.display='flex'; setTimeout(()=>document.getElementById('pr-bizname')?.focus(),100); }
+}
+function hideAddProspectModal() { const m=document.getElementById('add-prospect-modal'); if(m) m.style.display='none'; }
+
+function addProspect() {
+  const bizname = document.getElementById('pr-bizname').value.trim();
+  const msg = document.getElementById('pr-msg');
+  if (!bizname) { msg.style.display='block'; msg.style.color='var(--red)'; msg.textContent='Business name required.'; return; }
+  prospects.unshift({ bizname, name:document.getElementById('pr-name').value.trim(), email:document.getElementById('pr-email').value.trim(), type:document.getElementById('pr-type').value, location:document.getElementById('pr-location').value.trim(), phone:document.getElementById('pr-phone').value.trim(), notes:document.getElementById('pr-notes').value.trim(), status:'new', addedAt:new Date().toISOString() });
+  saveProspects();
+  ['pr-bizname','pr-name','pr-email','pr-location','pr-phone'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('pr-notes').value='';
+  msg.style.display='block'; msg.style.color='var(--green)'; msg.textContent='Added!';
+  setTimeout(()=>{ msg.style.display='none'; hideAddProspectModal(); renderProspects(); openProspect(0); }, 800);
+}
+
+function updateProspectStatus(idx, status) {
+  if (!status) return; prospects[idx].status=status; prospects[idx].statusUpdated=new Date().toISOString();
+  saveProspects(); renderProspects(); if(selectedProspectIdx===idx) openProspect(idx);
+}
+function deleteProspect(idx) {
+  if (!confirm('Remove '+prospects[idx].bizname+'?')) return;
+  prospects.splice(idx,1); selectedProspectIdx=null; saveProspects(); renderProspects();
+  const pane=document.getElementById('prospect-detail-pane');
+  if(pane) pane.innerHTML='<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;padding:40px;text-align:center"><div><div style="font-size:32px;margin-bottom:12px">✉</div><div>Select a prospect</div></div></div>';
+}
+function saveProspects() { localStorage.setItem('ss_prospects', JSON.stringify(prospects)); }
 
 async function sendBatchOutreach() {
-  const unsent = prospects.filter(p => p.status==='new');
-  if (!unsent.length) { alert('No unsent prospects. Add prospects with status "new" first.'); return; }
-  const tplIdx = parseInt(prompt(`Send to ${unsent.length} unsent prospects.\nChoose template:\n1. No website\n2. Outdated site\n3. Follow-up\n\nEnter 1, 2 or 3:`) || '0') - 1;
-  const tpl = OUTREACH_TEMPLATES[tplIdx] || OUTREACH_TEMPLATES[0];
-  if (!confirm(`Send "${tpl.name}" to ${unsent.length} prospects?`)) return;
-  let sent = 0;
+  const unsent = prospects.filter(p => p.status === 'new' && p.email);
+  if (!unsent.length) { alert('No unsent prospects with an email address.\n\nAdd prospects and make sure each has an email set.'); return; }
+
+  const preview = unsent.slice(0, 5).map(p => {
+    const tplIdx = smartTemplatePick(p);
+    return '• ' + p.bizname + ' → ' + OUTREACH_TEMPLATES[tplIdx].name;
+  }).join('\n') + (unsent.length > 5 ? '\n... and ' + (unsent.length - 5) + ' more' : '');
+
+  if (!confirm('Send personalised emails to ' + unsent.length + ' prospects?\n\nEach gets the best-fit template automatically:\n\n' + preview + '\n\nProceed?')) return;
+
+  let sent = 0, failed = 0;
   for (const p of unsent) {
-    const subject = tpl.subject.replace('{business}',p.bizname).replace('{name}',p.name||p.bizname);
-    const body = tpl.body.replace(/{business}/g,p.bizname).replace(/{name}/g,p.name||'there');
+    const tplIdx = smartTemplatePick(p);
+    const tpl = OUTREACH_TEMPLATES[tplIdx];
     try {
       const r = await fetch('/.netlify/functions/send-reply', {
-        method:'POST', headers:{'Content-Type':'application/json','x-admin-password':ADMIN_PW},
-        body:JSON.stringify({ to:p.email, subject, body, fromMailbox:'hello' })
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+        body: JSON.stringify({ to: p.email, subject: fillTemplate(tpl.subject, p), body: fillTemplate(tpl.body, p), fromMailbox: 'hello' })
       });
       const d = await r.json();
-      if (d.ok) { const i = prospects.indexOf(p); if(i>=0){prospects[i].status='sent';prospects[i].lastContacted=new Date().toISOString();} sent++; }
-    } catch {}
-    await new Promise(r => setTimeout(r, 1200)); // Rate limit: 1 per 1.2s
+      const i = prospects.indexOf(p);
+      if (d.ok && i >= 0) {
+        prospects[i].status = 'sent';
+        prospects[i].lastContacted = new Date().toISOString();
+        prospects[i].lastTemplate = tpl.name;
+        if (!Array.isArray(prospects[i].emailHistory)) prospects[i].emailHistory = [];
+        prospects[i].emailHistory.push({ template: tpl.name, sentAt: new Date().toISOString(), to: p.email });
+        sent++;
+      } else { failed++; }
+    } catch { failed++; }
+    await new Promise(r => setTimeout(r, 1400));
   }
-  saveProspects(); renderProspects(); alert(`Done. Sent ${sent} of ${unsent.length} emails.`);
-}
-
-function convertToOrder(idx) {
-  const p = prospects[idx];
-  if (!confirm(`Convert ${p.bizname} to a New Order?`)) return;
-  showPage('new-order', document.querySelectorAll('.nav-tab')[2]);
-  document.getElementById('no-bizname').value = p.bizname;
-  document.getElementById('no-name').value = p.name || '';
-  document.getElementById('no-email').value = p.email;
-  document.getElementById('no-location').value = p.location || '';
-  document.getElementById('no-source').value = 'Cold email reply';
-  prospects[idx].status = 'converted';
   saveProspects();
+  renderProspects();
+  alert('Batch complete.\n\u2713 Sent: ' + sent + '\n\u2717 Failed: ' + failed);
 }
 
-function copyTemplate(idx) {
-  const t = OUTREACH_TEMPLATES[idx];
-  navigator.clipboard.writeText(t.body).then(() => alert('Template copied to clipboard'));
+function smartTemplatePick(p) {
+  const notes = (p.notes || '').toLowerCase();
+  const status = p.status || 'new';
+  if (status === 'sent') return 3;
+  if (notes.includes('facebook') || notes.includes('fb only') || notes.includes('no website')) return 2;
+  if (notes.includes('outdated') || notes.includes('wix') || notes.includes('old site') || notes.includes('basic site')) return 1;
+  if (p.type && ['Plumber','Electrician','Builder / Roofer','Landscaper / Gardener'].includes(p.type)) return 4;
+  return 0;
 }
-
-function showNewProspect() { document.getElementById('pr-bizname').focus(); }
+function convertToOrder(idx) {
+  const p=prospects[idx];
+  if (!confirm('Move '+p.bizname+' to Pipeline as a new order?')) return;
+  showPage('new-order',document.querySelectorAll('.nav-tab')[2]);
+  ['no-bizname','no-name','no-email','no-location'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.value=[p.bizname,p.name,p.email,p.location][i]||'';});
+  const src=document.getElementById('no-source'); if(src) src.value='Cold outreach';
+  prospects[idx].status='converted'; saveProspects();
+}
+function showNewProspect() { showAddProspectModal(); }
 
 function importProspectsCSV(input) {
   const file = input.files[0];
