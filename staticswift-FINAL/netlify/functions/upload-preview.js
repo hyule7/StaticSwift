@@ -1,6 +1,6 @@
-const { getStore } = require('@netlify/blobs');
+const { getFileStore } = require('./_filestore');
 
-exports.handler = async (event, context) => {
+exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
   const auth = event.headers['x-admin-password'];
   if (auth !== (process.env.ADMIN_PASSWORD || 'Harry2001!')) {
@@ -17,9 +17,7 @@ exports.handler = async (event, context) => {
     const fileId = clientId + '_' + fileType + '_' + Date.now();
     const fileBuffer = Buffer.from(htmlBase64, 'base64');
 
-    // Use Netlify Blobs — works correctly for binary/file storage
-    // context.clientContext is injected by Netlify at runtime
-    const store = getStore({ name: 'client-files', consistency: 'strong' });
+    const store = getFileStore();
     await store.set(fileId, fileBuffer, {
       metadata: { filename: safeName, mimeType, clientId, fileType, uploadedAt: new Date().toISOString() }
     });
@@ -27,7 +25,7 @@ exports.handler = async (event, context) => {
     const siteUrl = (process.env.URL || 'https://staticswift.co.uk').replace(/\/$/, '');
     const previewUrl = `${siteUrl}/.netlify/functions/serve-preview?id=${fileId}`;
 
-    console.log('[upload-preview] stored in Blobs:', fileId, safeName, fileBuffer.length + ' bytes');
+    console.log('[upload-preview] stored:', fileId, safeName, fileBuffer.length, 'bytes');
 
     return {
       statusCode: 200,
