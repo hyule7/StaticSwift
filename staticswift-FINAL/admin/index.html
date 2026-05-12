@@ -1436,7 +1436,7 @@ function openEmail(idx) {
       </div>
       <textarea id="reply-body" placeholder="Write your reply..." style="width:100%;min-height:140px;background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:13px;color:var(--text);outline:none;resize:vertical;margin-bottom:10px;font-family:'DM Sans',sans-serif"></textarea>
       <div style="display:flex;gap:8px;align-items:center">
-        <button onclick="sendReply('${fromAddr.replace(/'/g,'\\'')}','${e.subject.replace(/'/g,'\\'')}')" style="background:var(--cyan);color:#07090f;font-weight:700;font-size:13px;padding:10px 20px;border-radius:8px;border:none;cursor:pointer">Send Reply</button>
+        <button onclick="sendReply(this.dataset.to,this.dataset.subj)" data-to="${fromAddr}" data-subj="${e.subject}" style="background:var(--cyan);color:#07090f;font-weight:700;font-size:13px;padding:10px 20px;border-radius:8px;border:none;cursor:pointer">Send Reply</button>
         <span id="reply-status" style="font-size:13px"></span>
       </div>
     </div>`;
@@ -1561,7 +1561,7 @@ function openTicket(idx) {
       </div>
       <textarea id="ticket-reply-body" placeholder="Write your reply..." style="width:100%;min-height:120px;background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:13px;color:var(--text);outline:none;resize:vertical;margin-bottom:10px;font-family:'DM Sans',sans-serif"></textarea>
       <div style="display:flex;gap:8px;align-items:center">
-        <button onclick="sendTicketReply('${fromAddr.replace(/'/g,"\\'")}','${(t.subject||'').replace(/'/g,"\\'")}','Re: ')" style="background:var(--cyan);color:#07090f;font-weight:700;font-size:13px;padding:10px 20px;border-radius:8px;border:none;cursor:pointer">Send Reply</button>
+        <button onclick="sendTicketReply(this.dataset.to,this.dataset.subj,'Re: ')" data-to="${fromAddr}" data-subj="${t.subject||''}" style="background:var(--cyan);color:#07090f;font-weight:700;font-size:13px;padding:10px 20px;border-radius:8px;border:none;cursor:pointer">Send Reply</button>
         <span id="ticket-reply-status" style="font-size:13px"></span>
       </div>
     </div>`;
