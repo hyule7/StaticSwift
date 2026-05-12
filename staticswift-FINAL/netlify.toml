@@ -29,9 +29,16 @@
   status = 200
 
 [[redirects]]
+  from = "/client"
+  to = "/.netlify/functions/client-portal"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/client/*"
   to = "/.netlify/functions/client-portal"
   status = 200
+  force = true
 
 [[redirects]]
   from = "http://staticswift.co.uk/*"

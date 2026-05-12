@@ -467,8 +467,18 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}
       <h1 class="page-title">Cold Outreach</h1>
       <div style="display:flex;gap:8px">
         <button class="btn-primary" onclick="showNewProspect()">+ Add Prospect</button>
+        <button class="btn-ghost" onclick="document.getElementById('csv-upload-input').click()">⬆ Import CSV</button>
+        <input type="file" id="csv-upload-input" accept=".csv" style="display:none" onchange="importProspectsCSV(this)">
+        <button class="btn-ghost" onclick="exportProspectsCSV()">⬇ Export CSV</button>
         <button class="btn-ghost" onclick="sendBatchOutreach()">Send Batch Emails</button>
       </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:20px" id="outreach-stats">
+      <div class="stat-card"><div class="label">Total Prospects</div><div class="value" id="os-total">0</div></div>
+      <div class="stat-card"><div class="label">Sent Today</div><div class="value" id="os-today">0</div></div>
+      <div class="stat-card"><div class="label">Awaiting Reply</div><div class="value" id="os-sent">0</div></div>
+      <div class="stat-card"><div class="label">Replied</div><div class="value" id="os-replied">0</div></div>
+      <div class="stat-card"><div class="label">Converted</div><div class="value" id="os-converted">0</div></div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 380px;gap:20px">
       <!-- Prospect list -->
@@ -896,10 +906,19 @@ function openClient(id) {
   document.getElementById('panel-notes').value = c.notes || '';
   document.getElementById('panel-action-msg').style.display = 'none';
   if (c.portalUUID) {
-    const portalUrl = 'https://staticswift.co.uk/.netlify/functions/client-portal?uuid=' + c.portalUUID;
+    const portalUrl = 'https://staticswift.co.uk/client?uuid=' + c.portalUUID;
     document.getElementById('panel-portal-section').style.display = 'block';
-    document.getElementById('panel-portal').innerHTML = '<a href="' + portalUrl + '" target="_blank" style="color:var(--cyan);font-weight:600;font-size:13px">' + portalUrl + '</a><br><button class="copy-btn" style="margin-top:8px" id="copy-portal-btn">Copy Link</button>';
-    document.getElementById('copy-portal-btn').addEventListener('click', function() { navigator.clipboard.writeText(portalUrl); this.textContent = 'Copied!'; setTimeout(() => this.textContent = 'Copy Link', 2000); });
+    document.getElementById('panel-portal').innerHTML =
+      '<a href="' + portalUrl + '" target="_blank" style="color:var(--cyan);font-weight:600;font-size:13px;word-break:break-all;display:block;margin-bottom:8px">Open portal ↗</a>' +
+      '<div style="display:flex;gap:8px">' +
+      '<button class="copy-btn" id="copy-portal-btn">Copy Link</button>' +
+      '<button class="copy-btn" onclick="panelAction(\'portal-link\')" style="background:var(--cyan);color:#07090f;border-color:var(--cyan)">Resend Email</button>' +
+      '</div>';
+    document.getElementById('copy-portal-btn').addEventListener('click', function() {
+      navigator.clipboard.writeText(portalUrl);
+      this.textContent = 'Copied!';
+      setTimeout(() => this.textContent = 'Copy Link', 2000);
+    });
 
     // Render portal messages
     const msgs = Array.isArray(c.portalMessages) ? c.portalMessages : [];
@@ -909,7 +928,7 @@ function openClient(id) {
       msgsSec.style.display = 'block';
       let html = '';
       if (c.changeRequest) {
-        html += '<div style="background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:13px"><div style="font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:4px;text-transform:uppercase">Change Request ' + (c.changeRequestAt ? '· ' + new Date(c.changeRequestAt).toLocaleDateString('en-GB') : '') + '</div>' + (c.changeRequest || '') + '</div>';
+        html += '<div style="background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:13px"><div style="font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:4px;text-transform:uppercase">⚠ Change Request ' + (c.changeRequestAt ? '· ' + new Date(c.changeRequestAt).toLocaleDateString('en-GB') : '') + '</div>' + (c.changeRequest || '') + '</div>';
       }
       html += msgs.map(m => '<div style="background:' + (m.from === 'client' ? 'rgba(0,200,224,.08);border:1px solid rgba(0,200,224,.15)' : 'rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)') + ';border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:13px"><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;text-transform:uppercase">' + (m.from === 'client' ? c.name || 'Client' : 'You') + ' · ' + new Date(m.sentAt).toLocaleDateString('en-GB') + '</div>' + (m.notes || m.text || '') + '</div>').join('');
       msgsEl.innerHTML = html;
@@ -918,7 +937,11 @@ function openClient(id) {
       msgsSec.style.display = 'none';
     }
   } else {
-    document.getElementById('panel-portal-section').style.display = 'none';
+    // No portal yet — show generate button
+    document.getElementById('panel-portal-section').style.display = 'block';
+    document.getElementById('panel-portal').innerHTML =
+      '<p style="font-size:13px;color:var(--muted);margin-bottom:10px">No portal generated yet.</p>' +
+      '<button class="copy-btn" style="background:var(--cyan);color:#07090f;border-color:var(--cyan)" onclick="panelAction(\'portal-link\')">Generate &amp; Send Portal Link</button>';
     document.getElementById('panel-messages-section').style.display = 'none';
   }
   document.getElementById('client-panel').classList.add('open');
@@ -988,7 +1011,7 @@ async function panelAction(type) {
       await updateClient(currentClientId, { portalUUID });
       c.portalUUID = portalUUID;
     }
-    const portalUrl = 'https://staticswift.co.uk/client/?uuid=' + portalUUID;
+    const portalUrl = 'https://staticswift.co.uk/client?uuid=' + portalUUID;
     if (confirm('Send portal link to ' + c.delivery_email + '?\n\n' + portalUrl)) {
       await sendEmailAction({ clientId: currentClientId, emailType: 'custom', customSubject: 'Your StaticSwift client portal', customBody: 'Hi ' + (c.name || c.business_name) + ',\n\nYour private client portal is ready. Use the link below to review your project, approve your preview, and access your files:\n\n' + portalUrl + '\n\nBookmark this link — you can return to it any time.\n\nThanks,\nStaticSwift' });
     }
@@ -1032,7 +1055,7 @@ async function panelAction(type) {
     if (confirm('Mark ' + c.business_name + ' as paid?')) {
       const amount = (c.package === 'advanced' ? 299 : 149) + (c.hosting_addon === 'yes' ? 29 : 0);
       const portalUUID = "portal-" + Date.now() + "-" + Math.random().toString(36).substr(2,12);
-      const portalUrl = 'https://staticswift.co.uk/client/' + portalUUID;
+      const portalUrl = 'https://staticswift.co.uk/client?uuid=' + portalUUID;
       await updateClient(currentClientId, { stage: 'paid', paid: true, paidAt: new Date().toISOString(), amount, portalUUID });
       c.stage = 'paid'; c.paid = true;
       await refreshData();
@@ -1598,7 +1621,7 @@ async function handleFileSelect(input, fileType) {
         c.portalUUID = newUUID;
       }
 
-      const portalUrl = 'https://staticswift.co.uk/.netlify/functions/client-portal?uuid=' + c.portalUUID;
+      const portalUrl = 'https://staticswift.co.uk/client?uuid=' + c.portalUUID;
 
       const emailR = await fetch('/.netlify/functions/send-email', {
         method: 'POST',
@@ -1820,13 +1843,92 @@ function showNewTicket() {
 let prospects = JSON.parse(localStorage.getItem('ss_prospects') || '[]');
 
 const OUTREACH_TEMPLATES = [
-  { name: 'No website', subject: 'Quick question — {business}', body: `Hi {name},\n\nI noticed {business} doesn't have a website yet — I build clean, professional sites for local businesses starting at £149, delivered in 24 hours.\n\nNo monthly fees, you own the files outright.\n\nWould it be worth a quick chat?\n\nHarry\nStaticSwift — staticswift.co.uk` },
-  { name: 'Outdated site', subject: 'Quick idea for {business}', body: `Hi {name},\n\nI came across {business} online — your site looks a little dated and might be putting customers off.\n\nI build fast, modern websites for local businesses from £149, done in 24 hours.\n\nHappy to show you a free mockup with no obligation.\n\nHarry\nStaticSwift — staticswift.co.uk` },
-  { name: 'Follow-up', subject: 'Following up — {business}', body: `Hi {name},\n\nJust following up on my earlier message about a website for {business}.\n\nIf the timing's not right I completely understand — but if you're still interested I'd love to help.\n\nHarry\nStaticSwift — staticswift.co.uk` },
+  {
+    name: 'No website',
+    subject: 'Quick question — {business}',
+    body: `Hi {name},
+
+I was looking for {type} in {location} and noticed {business} doesn't have a website yet.
+
+I build professional websites for local businesses starting at £149 — done in 24 hours, no monthly fees, you own the files outright.
+
+Most of my clients get their first enquiry from Google within a couple of weeks of going live.
+
+Worth a quick chat? Happy to show you a free example first.
+
+Harry
+StaticSwift — staticswift.co.uk`
+  },
+  {
+    name: 'Outdated site',
+    subject: 'Your website — quick idea, {name}',
+    body: `Hi {name},
+
+I came across {business} while searching for {type} in {location}. Your site came up but looks like it might be putting customers off before they even get in touch.
+
+I rebuild outdated sites for local businesses from £149 — modern, fast, mobile-friendly, done in 24 hours.
+
+Happy to show you what I could do with {business} — no cost, no obligation.
+
+Harry
+StaticSwift — staticswift.co.uk`
+  },
+  {
+    name: 'No social presence',
+    subject: 'Getting {business} more customers online',
+    body: `Hi {name},
+
+I specialise in getting local businesses like {business} found online by people already searching for {type} in {location}.
+
+A clean, fast website is still the best way to convert searchers into paying customers — and it starts at £149, delivered in 24 hours.
+
+I can show you a free mockup based on your business before you commit to anything.
+
+Interested?
+
+Harry
+StaticSwift — staticswift.co.uk`
+  },
+  {
+    name: 'Follow-up 1',
+    subject: 'Following up — {business}',
+    body: `Hi {name},
+
+Just following up on my message about a website for {business}.
+
+Completely understand if the timing isn't right — but if you're still open to it I'd love to show you what I could put together. Takes me 24 hours and starts at £149.
+
+Harry
+StaticSwift — staticswift.co.uk`
+  },
+  {
+    name: 'Follow-up 2 (final)',
+    subject: 'Last message — {business}',
+    body: `Hi {name},
+
+I'll keep this short — last message from me about a website for {business}.
+
+If you ever want to get online or refresh what you have, I'm at hello@staticswift.co.uk. Fast turnaround, honest price.
+
+All the best,
+Harry
+StaticSwift — staticswift.co.uk`
+  },
 ];
 
+function updateOutreachTracker() {
+  const today = new Date().toDateString();
+  const sentToday = prospects.filter(p => p.lastContacted && new Date(p.lastContacted).toDateString() === today).length;
+  const el = id => document.getElementById(id);
+  if (el('os-total')) el('os-total').textContent = prospects.length;
+  if (el('os-today')) el('os-today').textContent = sentToday;
+  if (el('os-sent')) el('os-sent').textContent = prospects.filter(p => p.status === 'sent').length;
+  if (el('os-replied')) el('os-replied').textContent = prospects.filter(p => p.status === 'replied').length;
+  if (el('os-converted')) el('os-converted').textContent = prospects.filter(p => p.status === 'converted').length;
+}
+
 function renderProspects() {
-  const filter = document.getElementById('outreach-filter')?.value || 'all';
+  updateOutreachTracker();
   const search = (document.getElementById('outreach-search')?.value || '').toLowerCase();
   let list = prospects;
   if (filter !== 'all') list = list.filter(p => p.status === filter);
@@ -1895,20 +1997,47 @@ function saveProspects() { localStorage.setItem('ss_prospects', JSON.stringify(p
 
 async function sendOutreachEmail(idx) {
   const p = prospects[idx];
-  const tplIdx = parseInt(prompt('Choose template:\n1. No website\n2. Outdated site\n3. Follow-up\n\nEnter 1, 2 or 3:') || '0') - 1;
-  const tpl = OUTREACH_TEMPLATES[tplIdx] || OUTREACH_TEMPLATES[0];
-  const subject = tpl.subject.replace('{business}', p.bizname).replace('{name}', p.name||p.bizname);
-  const body = tpl.body.replace(/{business}/g, p.bizname).replace(/{name}/g, p.name||'there');
-  if (!confirm(`Send to ${p.email}?\n\nSubject: ${subject}\n\n${body.substring(0,200)}...`)) return;
+  const tplNames = OUTREACH_TEMPLATES.map((t,i) => (i+1) + '. ' + t.name).join('\n');
+  const tplIdx = parseInt(prompt('Choose template:\n' + tplNames + '\n\nEnter number:') || '0') - 1;
+  if (tplIdx < 0 || tplIdx >= OUTREACH_TEMPLATES.length) return;
+  const tpl = OUTREACH_TEMPLATES[tplIdx];
+
+  const subject = tpl.subject
+    .replace(/{business}/g, p.bizname)
+    .replace(/{name}/g, p.name || p.bizname)
+    .replace(/{location}/g, p.location || 'your area')
+    .replace(/{type}/g, p.type || 'local businesses');
+
+  const body = tpl.body
+    .replace(/{business}/g, p.bizname)
+    .replace(/{name}/g, p.name || 'there')
+    .replace(/{location}/g, p.location || 'your area')
+    .replace(/{type}/g, p.type || 'local businesses');
+
+  if (!confirm('Send to ' + p.email + '?\n\nSubject: ' + subject + '\n\n' + body.substring(0, 300) + '...')) return;
+
   try {
     const r = await fetch('/.netlify/functions/send-reply', {
-      method:'POST', headers:{'Content-Type':'application/json','x-admin-password':ADMIN_PW},
-      body:JSON.stringify({ to:p.email, subject, body, fromMailbox:'hello' })
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ to: p.email, subject, body, fromMailbox: 'hello' })
     });
     const d = await r.json();
-    if (d.ok) { prospects[idx].status='sent'; prospects[idx].lastContacted=new Date().toISOString(); saveProspects(); renderProspects(); alert('Sent to '+p.email); }
-    else alert('Error: '+(d.error||'unknown'));
-  } catch(e) { alert('Network error: '+e.message); }
+    if (d.ok) {
+      const realIdx = prospects.indexOf(p);
+      if (realIdx >= 0) {
+        prospects[realIdx].status = 'sent';
+        prospects[realIdx].lastContacted = new Date().toISOString();
+        prospects[realIdx].lastTemplate = tpl.name;
+      }
+      saveProspects();
+      renderProspects();
+      updateOutreachTracker();
+      alert('Sent to ' + p.email);
+    } else {
+      alert('Error: ' + (d.error || 'unknown'));
+    }
+  } catch(e) { alert('Network error: ' + e.message); }
 }
 
 async function sendBatchOutreach() {
@@ -1953,6 +2082,66 @@ function copyTemplate(idx) {
 }
 
 function showNewProspect() { document.getElementById('pr-bizname').focus(); }
+
+function importProspectsCSV(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const lines = e.target.result.split('\n').filter(l => l.trim());
+    if (!lines.length) return;
+    // Detect header row
+    const headers = lines[0].split(',').map(h => h.replace(/"/g,'').trim().toLowerCase());
+    const bizIdx = headers.findIndex(h => h.includes('business'));
+    const nameIdx = headers.findIndex(h => h.includes('contact') || h === 'name');
+    const emailIdx = headers.findIndex(h => h.includes('email'));
+    const typeIdx = headers.findIndex(h => h.includes('type'));
+    const locationIdx = headers.findIndex(h => h.includes('location') || h.includes('town') || h.includes('city'));
+    const notesIdx = headers.findIndex(h => h.includes('notes') || h.includes('signal'));
+    let added = 0;
+    for (let i = 1; i < lines.length; i++) {
+      // Handle quoted CSV fields
+      const cols = lines[i].match(/(".*?"|[^,]+|(?<=,)(?=,)|^(?=,)|(?<=,)$)/g) || lines[i].split(',');
+      const clean = cols.map(c => (c || '').replace(/^"|"$/g,'').trim());
+      const bizname = bizIdx >= 0 ? clean[bizIdx] : clean[0];
+      const email = emailIdx >= 0 ? clean[emailIdx] : '';
+      if (!bizname || bizname.toLowerCase() === 'business name') continue;
+      // Check for duplicate
+      if (prospects.find(p => p.bizname === bizname && p.email === email)) continue;
+      prospects.push({
+        bizname,
+        name: nameIdx >= 0 ? clean[nameIdx] : '',
+        email: email || '',
+        type: typeIdx >= 0 ? clean[typeIdx] : '',
+        location: locationIdx >= 0 ? clean[locationIdx] : '',
+        notes: notesIdx >= 0 ? clean[notesIdx] : '',
+        status: 'new',
+        addedAt: new Date().toISOString(),
+        source: 'csv-import'
+      });
+      added++;
+    }
+    saveProspects();
+    renderProspects();
+    alert('Imported ' + added + ' prospects. Duplicates skipped.');
+  };
+  reader.readAsText(file);
+  input.value = '';
+}
+
+function exportProspectsCSV() {
+  const headers = ['Business Name','Contact Name','Email','Phone','Location','Type','Status','Notes','Last Contacted'];
+  const rows = prospects.map(p => [
+    p.bizname, p.name || '', p.email || '', p.phone || '', p.location || '',
+    p.type || '', p.status || 'new', p.notes || '', p.lastContacted || ''
+  ].map(v => '"' + String(v).replace(/"/g,'""') + '"').join(','));
+  const csv = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'staticswift_prospects.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
 
 // ==========================================
 // SEO CHECKLIST

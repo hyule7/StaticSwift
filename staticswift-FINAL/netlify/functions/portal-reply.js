@@ -30,7 +30,7 @@ exports.handler = async (event) => {
         html: LOGO_HTML + `<div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:0 24px 32px">
           <p>Hi ${client.name || 'there'},</p>
           <p style="line-height:1.7">${text.replace(/\n/g,'<br>')}</p>
-          <p style="margin-top:24px"><a href="${process.env.URL || 'https://staticswift.co.uk'}/.netlify/functions/client-portal?uuid=${client.portalUUID}" style="color:#00C8E0">View your project portal ↗</a></p>
+          <p style="margin-top:24px"><a href="${process.env.URL || 'https://staticswift.co.uk'}/client?uuid=${client.portalUUID}" style="color:#00C8E0">View your project portal ↗</a></p>
           <p style="color:#888;font-size:13px;margin-top:28px">StaticSwift — staticswift.co.uk</p>
           </div>`,
       });
