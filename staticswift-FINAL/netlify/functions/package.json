@@ -9,7 +9,8 @@
     "mailparser": "^3.6.5",
     "nodemailer": "^6.9.0",
     "stripe": "^14.0.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "form-data": "^4.0.0"
   },
   "engines": {
     "node": "18"
