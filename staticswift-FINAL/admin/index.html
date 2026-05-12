@@ -617,6 +617,10 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}
         </div>
       </div>
       <div class="panel-section">
+        <h4>WhatsApp</h4>
+        <div id="panel-wa-actions"></div>
+      </div>
+      <div class="panel-section">
         <h4>Actions</h4>
         <div class="panel-actions">
           <button class="action-btn primary" onclick="panelAction('confirmation')">Send Confirmation Email</button>
@@ -701,11 +705,31 @@ async function testSubmission() {
       body: JSON.stringify({
         name: 'Test Lead',
         business_name: 'Test Business',
-        business_type: 'Other',
-        business_description: 'Test submission from admin panel',
-        location: 'Test Town',
+        business_type: 'Plumber',
+        business_description: 'Emergency plumbing and boiler servicing across Manchester, available 7 days.',
+        usp: '15 years experience, same-day service, fully insured',
+        location: 'Manchester',
+        trading_years: '5-10 years',
+        target_customers: 'Local homeowners / families',
+        website_goals: 'get phone calls, get email enquiries, look professional / credible',
+        colour_preference: 'Dark & bold (black, navy, charcoal)',
+        brand_colours: 'navy blue',
+        vibe: 'professional & corporate, traditional & trustworthy',
+        theme: 'dark',
+        sections: 'customer testimonials, Google Map embed',
+        services: 'Emergency Callout\nBoiler Service — £80\nLeak Repair\nBathroom Installation',
+        phone: '07700 900000',
+        enquiry_email: 'test@smithplumbing.co.uk',
+        hours: 'Mon–Fri 8am–6pm, Sat 9am–2pm',
+        address: '123 Test Street, Manchester M1 1AA',
+        social_links: '@smithplumbing',
+        contact_methods: 'phone number, WhatsApp button, contact form',
+        special_requests: 'include a Gas Safe logo, prominent call now button',
         delivery_email: 'test@staticswift.co.uk',
+        whatsapp: '07700900000',
         package: 'starter',
+        hosting_addon: 'no',
+        heard_about: 'Google search',
         source: 'admin-test'
       })
     });
@@ -990,14 +1014,57 @@ function openClient(id) {
 
   document.getElementById('panel-title').textContent = c.business_name || c.name || 'Client';
   document.getElementById('panel-subtitle').textContent = `${c.package === 'advanced' ? 'Advanced £299' : 'Starter £149'} — ${STAGE_LABELS[c.stage] || c.stage}`;
+
+  // ── WhatsApp quick-message buttons ──────────────────────────────────────
+  const waNum = (c.whatsapp || c.wa || c.phone || '').replace(/\D/g, '').replace(/^0/, '44');
+  const waBase = waNum ? `https://wa.me/${waNum}?text=` : null;
+  const firstName = (c.name || 'there').split(' ')[0];
+  const bizName = c.business_name || 'your business';
+
+  const waMessages = {
+    'new-lead':      `Hi ${firstName}! 👋 This is Harry from StaticSwift. Thanks for your order for ${bizName}! I'm starting work on your website now and will have a preview ready within 24 hours. Please keep an eye on your email — and check your junk folder as our emails sometimes land there. Any questions just message me here! 😊`,
+    'building':      `Hi ${firstName}, just a quick update — I'm currently building your website for ${bizName} and it's coming along great! I'll send your preview link very soon. Please check your junk/spam folder when it arrives as emails sometimes get filtered. 🙌`,
+    'uploaded':      `Hi ${firstName}, your ${bizName} website preview is ready and I've sent the link to your email. Please check your junk/spam folder if you can't see it! Let me know what you think — you can approve or request changes directly from the link. 🚀`,
+    'preview-sent':  `Hi ${firstName}! Just checking in — I sent your ${bizName} website preview to your email. Have you had a chance to look at it? Check your junk folder if you haven't seen it. Let me know if you have any questions or changes! 😊`,
+    'approved':      `Hi ${firstName}, great news — your ${bizName} website has been approved! I'll now send your invoice. Once payment is received I'll send over the final files straight away. Thank you! 🎉`,
+    'invoice-sent':  `Hi ${firstName}! I've sent your invoice to your email for the ${bizName} website. Please check your junk folder if you haven't seen it. Once payment is received I'll send your final website files the same day. Any questions just let me know! 💳`,
+    'paid':          `Hi ${firstName}, payment received — thank you so much! 🙏 I'm now preparing your final ${bizName} website files and will send them to your email shortly. Please check your junk folder when they arrive. Exciting times! 🎉`,
+    'complete':      `Hi ${firstName}! Your ${bizName} website has been delivered to your email — please check your junk folder if you haven't seen it. It includes your website file, upload guide, and a review link. I'd really appreciate a review when you get a chance! Thanks again for choosing StaticSwift 🌟`,
+  };
+
+  const waMsg = waMessages[c.stage] || waMessages['new-lead'];
+  const waActionsHtml = waBase
+    ? `<div style="margin-bottom:12px;padding:12px;background:rgba(37,211,102,.06);border:1px solid rgba(37,211,102,.15);border-radius:8px;">
+        <div style="font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#25D366;font-weight:700;margin-bottom:8px;">💬 WhatsApp ${firstName}</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px;padding:8px;background:rgba(0,0,0,.3);border-radius:6px;">"${waMsg.substring(0, 100)}..."</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <a href="${waBase}${encodeURIComponent(waMsg)}" target="_blank" style="background:#25D366;color:#fff;padding:8px 16px;border-radius:5px;font-size:12px;font-weight:700;text-decoration:none;display:inline-block;">Send via WhatsApp ↗</a>
+          <button class="copy-btn" onclick="navigator.clipboard.writeText(${JSON.stringify(waMsg)});this.textContent='Copied!';setTimeout(()=>this.textContent='Copy Message',2000)" style="font-size:12px;">Copy Message</button>
+        </div>
+      </div>`
+    : `<div style="margin-bottom:12px;padding:10px 12px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.15);border-radius:8px;font-size:12px;color:var(--amber);">⚠ No WhatsApp number — ask client for their number.</div>`;
+
+  const waActionsEl = document.getElementById('panel-wa-actions');
+  if (waActionsEl) waActionsEl.innerHTML = waActionsHtml;
   document.getElementById('panel-contact').innerHTML = `
     <div class="info-row"><span class="info-key">Name</span><span class="info-val">${c.name || '—'}</span></div>
     <div class="info-row"><span class="info-key">Email</span><span class="info-val"><a href="mailto:${c.delivery_email}">${c.delivery_email || '—'}</a></span></div>
-    <div class="info-row"><span class="info-key">Phone</span><span class="info-val">${c.phone || '—'}</span></div>
-    <div class="info-row"><span class="info-key">WhatsApp</span><span class="info-val">${c.wa ? `<a href="https://wa.me/${c.wa.replace(/\\D/g,'')}" target="_blank">Message</a>` : '—'}</span></div>
+    <div class="info-row"><span class="info-key">Phone</span><span class="info-val">${c.phone ? `<a href="tel:${c.phone}" style="color:var(--cyan)">${c.phone}</a>` : '—'}</span></div>
+    <div class="info-row"><span class="info-key">WhatsApp</span><span class="info-val">${(c.whatsapp||c.wa) ? (() => { const n=(c.whatsapp||c.wa||'').replace(/\D/g,'').replace(/^0/,'44'); return `<a href="https://wa.me/${n}" target="_blank" style="background:#25D366;color:#fff;padding:4px 12px;border-radius:4px;font-weight:700;font-size:12px;text-decoration:none;">💬 WhatsApp</a>`; })() : '—'}</span></div>
     <div class="info-row"><span class="info-key">Business Type</span><span class="info-val">${c.business_type || '—'}</span></div>
     <div class="info-row"><span class="info-key">Location</span><span class="info-val">${c.location || '—'}</span></div>
-    <div class="info-row"><span class="info-key">Source</span><span class="info-val">${c.source || '—'}</span></div>
+    <div class="info-row"><span class="info-key">Trading</span><span class="info-val">${c.trading_years || '—'}</span></div>
+    <div class="info-row"><span class="info-key">Customers</span><span class="info-val">${c.target_customers || '—'}</span></div>
+    ${c.website_goals ? `<div class="info-row"><span class="info-key">Goals</span><span class="info-val">${c.website_goals}</span></div>` : ''}
+    ${c.vibe ? `<div class="info-row"><span class="info-key">Vibe</span><span class="info-val">${c.vibe}</span></div>` : ''}
+    ${c.sections ? `<div class="info-row"><span class="info-key">Sections</span><span class="info-val">${c.sections}</span></div>` : ''}
+    ${c.contact_methods ? `<div class="info-row"><span class="info-key">Contact on site</span><span class="info-val">${c.contact_methods}</span></div>` : ''}
+    ${c.colour_preference ? `<div class="info-row"><span class="info-key">Colours</span><span class="info-val">${c.colour_preference}${c.brand_colours ? ' — ' + c.brand_colours : ''}</span></div>` : ''}
+    ${c.social_links ? `<div class="info-row"><span class="info-key">Social</span><span class="info-val">${c.social_links}</span></div>` : ''}
+    ${c.hours ? `<div class="info-row"><span class="info-key">Hours</span><span class="info-val">${c.hours}</span></div>` : ''}
+    ${c.address ? `<div class="info-row"><span class="info-key">Address</span><span class="info-val">${c.address}</span></div>` : ''}
+    ${c.enquiry_email ? `<div class="info-row"><span class="info-key">Enquiry email</span><span class="info-val">${c.enquiry_email}</span></div>` : ''}
+    <div class="info-row"><span class="info-key">Source</span><span class="info-val">${c.source || '—'}${c.heard_about ? ' · ' + c.heard_about : ''}</span></div>
     <div class="info-row"><span class="info-key">Received</span><span class="info-val">${c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-GB') : '—'}</span></div>
     ${c.previewUrl ? '<div class="info-row"><span class="info-key">Preview</span><span class="info-val"><a href="' + c.previewUrl + '" target="_blank">View ↗</a></span></div>' : ''}
     ${c.finalUrl ? '<div class="info-row"><span class="info-key">Final File</span><span class="info-val"><a href="' + c.finalUrl + '" target="_blank">Download ↗</a></span></div>' : ''}
@@ -1295,40 +1362,89 @@ function renderRevenue() {
 // PROMPT GENERATOR
 // ==========================================
 function generatePrompt(c) {
+  const pkg = c.package === 'advanced';
+  const goals = Array.isArray(c.website_goals) ? c.website_goals.join(', ') : (c.website_goals || 'get phone calls, look professional');
+  const vibe = Array.isArray(c.vibe) ? c.vibe.join(', ') : (c.vibe || 'professional, trustworthy, local');
+  const sections = Array.isArray(c.sections) ? c.sections.join(', ') : (c.sections || '');
+  const contactMethods = Array.isArray(c.contact_methods) ? c.contact_methods.join(', ') : (c.contact_methods || 'phone, email, contact form');
+  const refs = [c.reference_1, c.reference_2, c.reference_3].filter(Boolean).join(' | ');
+
   return `=== STATICSWIFT BUILD PROMPT — ${c.business_name || '[BUSINESS]'} ===
 
 Build a complete single-file HTML website for ${c.business_name || '[BUSINESS NAME]'}, a ${c.business_type || '[BUSINESS TYPE]'} based in ${c.location || '[LOCATION]'}.
-Tier: ${c.package === 'advanced' ? 'Advanced (multi-page, gallery, testimonials)' : 'Starter (single page)'}.
+Tier: ${pkg ? 'Advanced (multi-section, gallery, testimonials, about, rich animations)' : 'Starter (single page, clean, essential sections only)'}.
 
-=== ABOUT ===
-Name: ${c.name || '—'}
+=== CLIENT ===
+Owner name: ${c.name || '—'}
+Business name: ${c.business_name || '—'}
+Business type: ${c.business_type || '—'}
+Location: ${c.location || '—'}
+Trading: ${c.trading_years || 'not specified'}
+Target customers: ${c.target_customers || 'local customers'}
+
+=== ABOUT THE BUSINESS ===
 Description: ${c.brief || c.business_description || 'not specified'}
-Location: ${c.location || 'not specified'}
-USP: ${c.usp || 'not specified'}
+USP / what makes them different: ${c.usp || 'not specified'}
 
-=== DESIGN ===
-Colours: ${c.brand_colours || 'choose professional palette for this niche'}
-Theme: ${c.theme_preference || 'use best judgement'}
-Personality: ${c.brand_personality || 'professional, trustworthy, local'}
+=== WEBSITE GOALS ===
+The client wants the website to: ${goals}
+${sections ? 'Sections client specifically requested: ' + sections : ''}
+
+=== DESIGN DIRECTION ===
+Colour preference: ${c.colour_preference || 'choose best professional palette for this trade'}
+Specific brand colours: ${c.brand_colours || 'none given — use best judgement'}
+Theme: ${c.theme === 'dark' ? 'Dark background — premium, modern feel' : c.theme === 'light' ? 'Light background — clean, professional feel' : 'Use best judgement for this niche'}
+Vibe / personality: ${vibe}
 Avoid: ${c.avoid || 'nothing specified'}
-References: ${[c.reference_1, c.reference_2, c.reference_3].filter(Boolean).join(' | ') || 'none — use best design judgement for this niche'}
+Reference sites: ${refs || 'none provided — use best design judgement for this niche'}
 
 === CONTENT ===
-Services: ${c.services || 'not specified — use best judgement for this business type'}
-Address: ${c.address || 'not specified'}
-Hours: ${c.hours || 'not specified'}
+Services / products: ${c.services || 'not specified — use best judgement for this business type'}
 Phone: ${c.phone || 'not specified'}
-Email (contact form sends to): ${c.enquiry_email || c.delivery_email || 'not specified'}
-Social: ${c.social_links || 'not specified'}
-Requests: ${c.special_requests || 'none'}
+Enquiry email (contact form sends to): ${c.enquiry_email || c.delivery_email || 'not specified'}
+Hours: ${c.hours || 'not specified'}
+Address: ${c.address || 'not specified — omit from site'}
+Social media: ${c.social_links || 'not specified'}
+Contact methods to show: ${contactMethods}
+Special requests: ${c.special_requests || 'none'}
 
 === BUILD RULES ===
-Single HTML file. All CSS and JS inline. Google Fonts CDN only. Mobile-first.
-Sections: hero with CTA, services/products, about, contact form, footer.
-SEO: title tag, meta description, Open Graph, LocalBusiness JSON-LD schema.
-Animations: smooth scroll, fade-in on scroll, hover transitions.
-Footer: "Site by StaticSwift — staticswift.co.uk"
-${c.package === 'advanced' ? 'ADVANCED: Also include gallery section, testimonials, about page section with team/owner.' : ''}
+- Single HTML file. All CSS and JS inline. No external dependencies except Google Fonts CDN.
+- Mobile-first responsive design. Test on 375px width minimum.
+- Formsubmit.co for contact form (action="https://formsubmit.co/${c.enquiry_email || c.delivery_email || 'EMAIL'}"). No account needed.
+- WhatsApp link format: https://wa.me/[full international number without spaces or +]
+- Phone as tap-to-call: <a href="tel:NUMBER">
+- SEO: descriptive title tag, meta description (150 chars max), Open Graph tags, LocalBusiness JSON-LD schema with name/description/phone/email/address if available.
+- Animations: smooth scroll, fade-in on scroll with IntersectionObserver, hover transitions. No janky JS — CSS preferred.
+- Footer must say: "Site by StaticSwift — staticswift.co.uk"
+- No prices shown unless the client has provided them above.
+- No location shown unless the client has provided it above.
+- No stock images. Use CSS gradients, geometric shapes, or abstract art for visuals. Never use <img> tags pointing to external URLs.
+- Custom cursor on desktop.
+- Scrolling marquee ticker for trust signals / services.
+${pkg ? `
+=== ADVANCED TIER REQUIREMENTS ===
+- Hero section: Full viewport height, animated background (CSS only), large headline, subheadline, 2 CTAs, stat counters (e.g. years experience, clients served, rating).
+- Scrolling marquee strip below hero listing services/values.
+- Services section: 6 cards minimum with icons, descriptions and hover effects.
+- Gallery / portfolio section: CSS art grid (no real images — use gradients and shapes to suggest photography/work). 8+ items with hover overlays showing category labels.
+- About section: split layout with CSS illustration on one side, bio text / signature on other. Include experience badge.
+- Testimonials: Featured large quote + 3 card grid. Made-up but realistic names for this business type and location.
+- Process / how it works: 4-step numbered section.
+- Packages / pricing (only if prices were given): 3-tier comparison cards.
+- CTA band: full-width coloured strip with headline and 2 buttons.
+- Contact section: split layout — contact details left, form right. Underline-style form inputs.
+- Footer: 3-4 column grid with logo, tagline, nav links, services links, contact details.
+- All sections must have smooth fade-in on scroll.
+- Animated custom cursor (dot + ring).` : `
+=== STARTER TIER REQUIREMENTS ===
+- Hero: Strong headline, subheadline, 1–2 CTAs. Animated CSS background. Stats strip.
+- Services: 3 cards with icons and descriptions.
+- About: Simple 2-column layout with key facts.
+- Testimonials: 3 cards.
+- Contact: Contact details + form. Clean layout.
+- Footer: Logo, tagline, nav links, contact.
+- Fade-in animations on scroll throughout.`}
 
 === END ===`;
 }

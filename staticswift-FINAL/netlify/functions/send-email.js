@@ -36,12 +36,18 @@ exports.handler = async (event) => {
 
     if (emailType === 'confirmation') {
       subject = 'We have received your request — ' + (client.business_name || 'your business');
+      const waNum = (client.whatsapp || client.phone || '').replace(/\D/g, '');
+      const waLink = waNum ? 'https://wa.me/' + (waNum.startsWith('0') ? '44' + waNum.slice(1) : waNum) : null;
       html = LOGO_HTML +
         '<div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:0 24px 32px;">' +
         '<h2 style="font-size:22px;margin-bottom:8px;">Hi ' + (client.name || 'there') + ',</h2>' +
-        '<p>Thanks for getting in touch. We have received all the details for <strong>' + (client.business_name || 'your business') + '</strong>.</p>' +
-        '<p>Your preview will be with you within 24 hours. Watch for an email from <a href="mailto:hello@staticswift.co.uk">hello@staticswift.co.uk</a>.</p>' +
-        '<p>No payment until you approve the design. One free revision included.</p>' +
+        '<p style="margin-bottom:14px;">Thanks for getting in touch. We have received all the details for <strong>' + (client.business_name || 'your business') + '</strong>.</p>' +
+        '<p style="margin-bottom:14px;">Your preview will be with you within <strong>24 hours</strong>. Watch for an email from <a href="mailto:hello@staticswift.co.uk">hello@staticswift.co.uk</a>.</p>' +
+        '<div style="background:#fff8e1;border:1px solid #f59e0b;border-radius:8px;padding:16px 18px;margin:20px 0;">' +
+        '<p style="margin:0;font-size:14px;color:#92400e;"><strong>⚠ Check your junk or spam folder</strong><br>Our emails sometimes get filtered. If you don\'t see a reply within 24 hours, please check your junk folder or contact us directly.</p>' +
+        '</div>' +
+        (waLink ? '<p style="margin-bottom:14px;">We will also message you on WhatsApp when your preview is ready — keep an eye out.</p><p style="margin-bottom:14px;"><a href="' + waLink + '" style="background:#25D366;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:600;display:inline-block;">💬 Message us on WhatsApp</a></p>' : '') +
+        '<p style="margin-bottom:14px;">No payment until you approve the design. One free revision included.</p>' +
         '<p style="margin-top:32px;color:#888;font-size:13px;">StaticSwift — <a href="https://staticswift.co.uk">staticswift.co.uk</a></p>' +
         '</div>';
       stageUpdate = { stage: 'building' };

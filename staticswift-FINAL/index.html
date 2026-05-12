@@ -1005,6 +1005,12 @@ footer {
 .cyan { color: var(--cyan); }
 .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 @media (max-width: 520px) { .form-row-2 { grid-template-columns: 1fr; } }
+.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:4px;}
+.check-option{display:flex;align-items:center;gap:9px;padding:9px 12px;background:var(--dark3);border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .2s;user-select:none;}
+.check-option:hover{border-color:rgba(0,200,224,.3);color:var(--text);}
+.check-option input[type=checkbox]{width:15px;height:15px;accent-color:var(--cyan);cursor:pointer;flex-shrink:0;}
+.label-opt{font-size:11px;font-weight:400;color:var(--dim);margin-left:4px;}
+.char-counter{font-size:11px;color:var(--muted);text-align:right;margin-top:3px;}
 </style>
 </head>
 <body>
@@ -1467,254 +1473,287 @@ footer {
     </div>
 
     <form id="intake-form" novalidate>
-      <!-- HONEYPOT -->
       <input type="text" name="bot-field" class="honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
 
-      <!-- STEP 1 -->
-      <div class="form-step active" id="step-1" aria-label="Step 1: About Your Business">
-        <h3 class="step-title">About Your Business</h3>
+      <!-- ── STEP 1: About You ── -->
+      <div class="form-step active" id="step-1">
+        <h3 class="step-title">About You &amp; Your Business</h3>
         <div class="form-row-2">
           <div class="field-group">
-            <label class="field-label field-required" for="f-name">Full Name</label>
-            <input type="text" class="form-input" id="f-name" name="name" autocomplete="name" required>
-            <span class="field-error" id="err-name">Please enter your full name.</span>
+            <label class="field-label field-required" for="f-name">Your Full Name</label>
+            <input type="text" class="form-input" id="f-name" name="name" autocomplete="name" maxlength="60" required placeholder="e.g. John Smith">
+            <span class="field-error" id="err-name">Please enter your name.</span>
           </div>
           <div class="field-group">
             <label class="field-label field-required" for="f-bizname">Business Name</label>
-            <input type="text" class="form-input" id="f-bizname" name="business_name" required>
+            <input type="text" class="form-input" id="f-bizname" name="business_name" maxlength="60" required placeholder="e.g. Smith Plumbing">
             <span class="field-error" id="err-bizname">Please enter your business name.</span>
           </div>
         </div>
-        <div class="field-group">
-          <label class="field-label field-required" for="f-biztype">Business Type</label>
-          <select class="form-select" id="f-biztype" name="business_type" required>
-            <option value="">Select your business type</option>
-            <option>Barber / Hair Salon</option>
-            <option>Plumber</option>
-            <option>Electrician</option>
-            <option>Builder / Roofer</option>
-            <option>Cleaner</option>
-            <option>Photographer</option>
-            <option>Personal Trainer</option>
-            <option>Beauty Salon / Nail Bar</option>
-            <option>Food Truck / Street Food</option>
-            <option>Cafe / Coffee Shop</option>
-            <option>Dog Groomer</option>
-            <option>Tattoo Studio</option>
-            <option>Retailer</option>
-            <option>Driving Instructor</option>
-            <option>Accountant / Bookkeeper</option>
-            <option>Therapist / Counsellor</option>
-            <option>Event DJ</option>
-            <option>Gardener / Landscaper</option>
-            <option>Childminder / Nursery</option>
-            <option>Solicitor / Legal Services</option>
-            <option>Other</option>
-          </select>
-          <span class="field-error" id="err-biztype">Please select a business type.</span>
+        <div class="form-row-2">
+          <div class="field-group">
+            <label class="field-label field-required" for="f-biztype">Business Type</label>
+            <select class="form-select" id="f-biztype" name="business_type" required>
+              <option value="">Select type...</option>
+              <option>Barber / Hair Salon</option>
+              <option>Beauty Salon / Nail Bar</option>
+              <option>Plumber</option>
+              <option>Electrician</option>
+              <option>Builder / Roofer</option>
+              <option>Cleaner</option>
+              <option>Gardener / Landscaper</option>
+              <option>Photographer</option>
+              <option>Personal Trainer</option>
+              <option>Food Truck / Street Food</option>
+              <option>Cafe / Coffee Shop</option>
+              <option>Restaurant / Takeaway</option>
+              <option>Dog Groomer</option>
+              <option>Tattoo Studio</option>
+              <option>Retailer / Shop</option>
+              <option>Driving Instructor</option>
+              <option>Accountant / Bookkeeper</option>
+              <option>Therapist / Counsellor</option>
+              <option>Event DJ / Entertainer</option>
+              <option>Childminder / Nursery</option>
+              <option>Solicitor / Legal Services</option>
+              <option>Florist</option>
+              <option>Mechanic / Garage</option>
+              <option>Dentist / Optician</option>
+              <option>Online / eCommerce</option>
+              <option>Other</option>
+            </select>
+            <span class="field-error" id="err-biztype">Please select a business type.</span>
+          </div>
+          <div class="field-group">
+            <label class="field-label field-required" for="f-location">Town / City</label>
+            <input type="text" class="form-input" id="f-location" name="location" maxlength="60" required placeholder="e.g. Manchester">
+            <span class="field-error" id="err-location">Please enter your location.</span>
+          </div>
         </div>
         <div class="field-group">
-          <label class="field-label field-required" for="f-bizdesc">What does your business do?</label>
-          <textarea class="form-textarea" id="f-bizdesc" name="business_description" placeholder="Describe your services, what makes you great, who you serve..." required></textarea>
+          <label class="field-label field-required" for="f-bizdesc">Describe your business in 1–2 sentences</label>
+          <textarea class="form-textarea" id="f-bizdesc" name="business_description" maxlength="220" data-maxlength="220" placeholder="e.g. We offer emergency plumbing and boiler servicing across Manchester, available 7 days a week." required style="min-height:76px;"></textarea>
+          <div class="char-counter" id="cc-bizdesc">0 / 220</div>
           <span class="field-error" id="err-bizdesc">Please describe your business.</span>
         </div>
         <div class="field-group">
-          <label class="field-label" for="f-idealcust">Who is your ideal customer?</label>
-          <textarea class="form-textarea" id="f-idealcust" name="ideal_customer" placeholder="e.g. local homeowners, small businesses, women aged 25-45..." style="min-height:80px;"></textarea>
-        </div>
-        <div class="field-group">
-          <label class="field-label" for="f-usp">What makes you different?</label>
-          <textarea class="form-textarea" id="f-usp" name="usp" placeholder="Your USP, awards, years experience, anything that sets you apart..." style="min-height:80px;"></textarea>
+          <label class="field-label" for="f-usp">What makes you different from competitors? <span class="label-opt">optional</span></label>
+          <textarea class="form-textarea" id="f-usp" name="usp" maxlength="160" data-maxlength="160" placeholder="e.g. 15 years experience, same-day service, fully insured, 5-star Google rating, family run" style="min-height:60px;"></textarea>
+          <div class="char-counter" id="cc-usp">0 / 160</div>
         </div>
         <div class="form-row-2">
           <div class="field-group">
-            <label class="field-label" for="f-trading">How long have you been trading?</label>
+            <label class="field-label">How long have you been trading?</label>
             <select class="form-select" id="f-trading" name="trading_years">
-              <option value="">Select</option>
+              <option value="">Select...</option>
+              <option>New — just starting</option>
               <option>Less than 1 year</option>
-              <option>1-3 years</option>
-              <option>3-5 years</option>
-              <option>5-10 years</option>
+              <option>1–3 years</option>
+              <option>3–5 years</option>
+              <option>5–10 years</option>
               <option>10+ years</option>
             </select>
           </div>
           <div class="field-group">
-            <label class="field-label field-required" for="f-location">Location (Town / City)</label>
-            <input type="text" class="form-input" id="f-location" name="location" placeholder="e.g. Manchester" required>
-            <span class="field-error" id="err-location">Please enter your location.</span>
+            <label class="field-label">Who are your main customers?</label>
+            <select class="form-select" id="f-customers" name="target_customers">
+              <option value="">Select...</option>
+              <option>Local homeowners / families</option>
+              <option>Local businesses (B2B)</option>
+              <option>Both homeowners and businesses</option>
+              <option>Young people / students</option>
+              <option>Professionals / corporate</option>
+              <option>Nationwide / online customers</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">What do you want the website to do? <span class="label-opt">tick all that apply</span></label>
+          <div class="check-grid">
+            <label class="check-option"><input type="checkbox" name="website_goals" value="get phone calls"><span>Get phone calls</span></label>
+            <label class="check-option"><input type="checkbox" name="website_goals" value="get email enquiries"><span>Get email enquiries</span></label>
+            <label class="check-option"><input type="checkbox" name="website_goals" value="get WhatsApp messages"><span>Get WhatsApp messages</span></label>
+            <label class="check-option"><input type="checkbox" name="website_goals" value="show portfolio / gallery"><span>Show portfolio / gallery</span></label>
+            <label class="check-option"><input type="checkbox" name="website_goals" value="show prices"><span>Show prices</span></label>
+            <label class="check-option"><input type="checkbox" name="website_goals" value="take bookings"><span>Take bookings</span></label>
+            <label class="check-option"><input type="checkbox" name="website_goals" value="look professional / credible"><span>Look professional / credible</span></label>
+            <label class="check-option"><input type="checkbox" name="website_goals" value="rank on Google"><span>Rank on Google</span></label>
           </div>
         </div>
         <div class="form-nav">
-          <button type="button" class="btn-next" onclick="nextStep(1)">Next: Online Presence &rarr;</button>
+          <button type="button" class="btn-next" onclick="nextStep(1)">Next: Design &amp; Style &rarr;</button>
         </div>
       </div>
 
-      <!-- STEP 2 -->
-      <div class="form-step" id="step-2" aria-label="Step 2: Online Presence">
-        <h3 class="step-title">Online Presence</h3>
-        <div class="field-group">
-          <label class="field-label" for="f-website">Current website URL (leave blank if none)</label>
-          <input type="url" class="form-input" id="f-website" name="current_website" placeholder="https://...">
-        </div>
-        <div class="field-group">
-          <label class="field-label" for="f-sitedislike">What do you dislike about your current site?</label>
-          <textarea class="form-textarea" id="f-sitedislike" name="site_dislikes" placeholder="e.g. outdated design, not mobile friendly, hard to update..." style="min-height:80px;"></textarea>
-        </div>
-        <div class="field-group">
-          <label class="field-label" for="f-ref1">Reference site 1 (a website you like the look of)</label>
-          <input type="url" class="form-input" id="f-ref1" name="reference_1" placeholder="https://...">
-        </div>
-        <div class="field-group">
-          <label class="field-label" for="f-ref2">Reference site 2</label>
-          <input type="url" class="form-input" id="f-ref2" name="reference_2" placeholder="https://...">
-        </div>
-        <div class="field-group">
-          <label class="field-label" for="f-ref3">Reference site 3</label>
-          <input type="url" class="form-input" id="f-ref3" name="reference_3" placeholder="https://...">
-        </div>
-        <div class="field-group">
-          <label class="field-label">Do you have a Google Business Profile?</label>
-          <div class="radio-group" role="radiogroup">
-            <label class="radio-option"><input type="radio" name="gbp" value="yes"><span><span class="radio-label">Yes</span></span></label>
-            <label class="radio-option"><input type="radio" name="gbp" value="no"><span><span class="radio-label">No</span></span></label>
-            <label class="radio-option"><input type="radio" name="gbp" value="not-sure"><span><span class="radio-label">Not sure</span></span></label>
+      <!-- ── STEP 2: Design & Style ── -->
+      <div class="form-step" id="step-2">
+        <h3 class="step-title">Design &amp; Style</h3>
+        <div class="form-row-2">
+          <div class="field-group">
+            <label class="field-label">Colour preference</label>
+            <select class="form-select" name="colour_preference">
+              <option value="">You choose — best for my trade</option>
+              <option>Dark &amp; bold (black, navy, charcoal)</option>
+              <option>Light &amp; clean (white, grey, neutral)</option>
+              <option>Warm tones (brown, gold, cream)</option>
+              <option>Vibrant / bright (red, orange, yellow)</option>
+              <option>Natural / earthy (green, teal, forest)</option>
+              <option>Cool &amp; professional (blue, slate)</option>
+              <option>Pink / feminine palette</option>
+              <option>I have specific brand colours (enter below)</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="f-colours">Specific colours <span class="label-opt">if known</span></label>
+            <input type="text" class="form-input" id="f-colours" name="brand_colours" maxlength="80" placeholder="e.g. navy #003366 and gold #FFD700">
           </div>
         </div>
         <div class="field-group">
-          <label class="field-label" for="f-social">Social media links (Facebook, Instagram, TikTok, LinkedIn)</label>
-          <textarea class="form-textarea" id="f-social" name="social_links" placeholder="Paste any social media profile URLs here, one per line..." style="min-height:80px;"></textarea>
+          <label class="field-label">Overall vibe / feel</label>
+          <div class="check-grid">
+            <label class="check-option"><input type="checkbox" name="vibe" value="professional &amp; corporate"><span>Professional &amp; corporate</span></label>
+            <label class="check-option"><input type="checkbox" name="vibe" value="friendly &amp; approachable"><span>Friendly &amp; approachable</span></label>
+            <label class="check-option"><input type="checkbox" name="vibe" value="luxury &amp; premium"><span>Luxury &amp; premium</span></label>
+            <label class="check-option"><input type="checkbox" name="vibe" value="bold &amp; energetic"><span>Bold &amp; energetic</span></label>
+            <label class="check-option"><input type="checkbox" name="vibe" value="clean &amp; minimal"><span>Clean &amp; minimal</span></label>
+            <label class="check-option"><input type="checkbox" name="vibe" value="warm &amp; local"><span>Warm &amp; local</span></label>
+            <label class="check-option"><input type="checkbox" name="vibe" value="modern &amp; techy"><span>Modern &amp; techy</span></label>
+            <label class="check-option"><input type="checkbox" name="vibe" value="traditional &amp; trustworthy"><span>Traditional &amp; trustworthy</span></label>
+          </div>
+        </div>
+        <div class="form-row-2">
+          <div class="field-group">
+            <label class="field-label">Light or dark background?</label>
+            <div class="radio-group" role="radiogroup">
+              <label class="radio-option"><input type="radio" name="theme" value="light"><span><span class="radio-label">Light</span><span class="radio-desc">Clean white / neutral</span></span></label>
+              <label class="radio-option"><input type="radio" name="theme" value="dark"><span><span class="radio-label">Dark</span><span class="radio-desc">Dark / premium feel</span></span></label>
+              <label class="radio-option"><input type="radio" name="theme" value="no-pref"><span><span class="radio-label">Your choice</span></span></label>
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Sections to include <span class="label-opt">tick all you want</span></label>
+            <div class="check-grid" style="grid-template-columns:1fr;">
+              <label class="check-option"><input type="checkbox" name="sections" value="photo gallery"><span>Photo gallery</span></label>
+              <label class="check-option"><input type="checkbox" name="sections" value="customer testimonials"><span>Customer testimonials</span></label>
+              <label class="check-option"><input type="checkbox" name="sections" value="team / about section"><span>Team / about section</span></label>
+              <label class="check-option"><input type="checkbox" name="sections" value="FAQ section"><span>FAQ section</span></label>
+              <label class="check-option"><input type="checkbox" name="sections" value="Google Map embed"><span>Google Map embed</span></label>
+              <label class="check-option"><input type="checkbox" name="sections" value="booking / appointment link"><span>Booking / appointment link</span></label>
+              <label class="check-option"><input type="checkbox" name="sections" value="before &amp; after photos"><span>Before &amp; after photos</span></label>
+            </div>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="f-ref1">A website you like the look of <span class="label-opt">paste URL — optional</span></label>
+          <input type="url" class="form-input" id="f-ref1" name="reference_1" maxlength="200" placeholder="https://...">
         </div>
         <div class="form-nav">
           <button type="button" class="btn-back" onclick="prevStep(2)">&larr; Back</button>
-          <button type="button" class="btn-next" onclick="nextStep(2)">Next: Design &rarr;</button>
+          <button type="button" class="btn-next" onclick="nextStep(2)">Next: Content &amp; Contact &rarr;</button>
         </div>
       </div>
 
-      <!-- STEP 3 -->
-      <div class="form-step" id="step-3" aria-label="Step 3: Design and Brand">
-        <h3 class="step-title">Design &amp; Brand</h3>
+      <!-- ── STEP 3: Content & Contact ── -->
+      <div class="form-step" id="step-3">
+        <h3 class="step-title">Content &amp; Contact Details</h3>
         <div class="field-group">
-          <label class="field-label" for="f-colours">Brand colours (leave blank and we will choose)</label>
-          <input type="text" class="form-input" id="f-colours" name="brand_colours" placeholder="e.g. navy blue and gold, or #003366 and #FFD700">
+          <label class="field-label" for="f-services">Your services / products &amp; prices <span class="label-opt">one per line, leave prices blank if not wanted</span></label>
+          <textarea class="form-textarea" id="f-services" name="services" maxlength="500" data-maxlength="500" placeholder="e.g.&#10;Haircut — £20&#10;Beard Trim — £12&#10;Full Groom Package — £35&#10;Kids Cut — £14"></textarea>
+          <div class="char-counter" id="cc-services">0 / 500</div>
         </div>
-        <div class="field-group">
-          <label class="field-label">Theme preference</label>
-          <div class="radio-group" role="radiogroup">
-            <label class="radio-option"><input type="radio" name="theme" value="light"><span><span class="radio-label">Light</span><span class="radio-desc">Clean white background, professional feel</span></span></label>
-            <label class="radio-option"><input type="radio" name="theme" value="dark"><span><span class="radio-label">Dark</span><span class="radio-desc">Dark background, modern premium feel</span></span></label>
-            <label class="radio-option"><input type="radio" name="theme" value="no-pref"><span><span class="radio-label">No preference — you choose</span></span></label>
+        <div class="form-row-2">
+          <div class="field-group">
+            <label class="field-label" for="f-phone">Phone number</label>
+            <input type="tel" class="form-input" id="f-phone" name="phone" maxlength="20" placeholder="01234 567890" autocomplete="tel">
           </div>
-        </div>
-        <div class="field-group">
-          <label class="field-label" for="f-personality">Describe your brand in 3 words</label>
-          <input type="text" class="form-input" id="f-personality" name="brand_personality" placeholder="e.g. friendly, professional, bold">
-        </div>
-        <div class="field-group">
-          <label class="field-label" for="f-logo">Upload your logo (PNG or SVG preferred)</label>
-          <input type="file" class="form-input" id="f-logo" name="logo" accept=".png,.svg,.jpg,.jpeg" style="padding:10px;">
-        </div>
-        <div class="field-group">
-          <label class="field-label" for="f-photos">Upload any photos (hold Ctrl/Cmd to select multiple)</label>
-          <input type="file" class="form-input" id="f-photos" name="photos" multiple accept="image/*" style="padding:10px;">
-        </div>
-        <div class="form-nav">
-          <button type="button" class="btn-back" onclick="prevStep(3)">&larr; Back</button>
-          <button type="button" class="btn-next" onclick="nextStep(3)">Next: Content &rarr;</button>
-        </div>
-      </div>
-
-      <!-- STEP 4 -->
-      <div class="form-step" id="step-4" aria-label="Step 4: Content and Features">
-        <h3 class="step-title">Content &amp; Features</h3>
-        <div class="field-group">
-          <label class="field-label" for="f-services">List your services or products</label>
-          <textarea class="form-textarea" id="f-services" name="services" placeholder="e.g. Haircut £20, Beard Trim £12, Full Groom £30. Or describe your main offerings..."></textarea>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Do you have a physical address to show?</label>
-          <div class="radio-group" role="radiogroup">
-            <label class="radio-option"><input type="radio" name="show_address" value="yes" id="addr-yes"><span><span class="radio-label">Yes</span></span></label>
-            <label class="radio-option"><input type="radio" name="show_address" value="no"><span><span class="radio-label">No — service area or remote only</span></span></label>
+          <div class="field-group">
+            <label class="field-label" for="f-enquiryemail">Email for enquiries</label>
+            <input type="email" class="form-input" id="f-enquiryemail" name="enquiry_email" maxlength="100" placeholder="hello@yourbusiness.co.uk">
           </div>
-        </div>
-        <div class="field-group">
-          <label class="field-label" for="f-address">Business address</label>
-          <input type="text" class="form-input" id="f-address" name="address" placeholder="Full address including postcode">
         </div>
         <div class="form-row-2">
           <div class="field-group">
             <label class="field-label" for="f-hours">Opening hours</label>
-            <textarea class="form-textarea" id="f-hours" name="hours" placeholder="e.g. Mon-Fri 9am-6pm, Sat 10am-4pm" style="min-height:80px;"></textarea>
+            <input type="text" class="form-input" id="f-hours" name="hours" maxlength="120" placeholder="e.g. Mon–Fri 9am–6pm, Sat 10am–4pm">
           </div>
           <div class="field-group">
-            <label class="field-label" for="f-phone">Phone number</label>
-            <input type="tel" class="form-input" id="f-phone" name="phone" placeholder="01234 567890" autocomplete="tel">
+            <label class="field-label" for="f-address">Business address <span class="label-opt">leave blank if home-based</span></label>
+            <input type="text" class="form-input" id="f-address" name="address" maxlength="120" placeholder="Full address incl. postcode">
           </div>
         </div>
         <div class="field-group">
-          <label class="field-label" for="f-enquiryemail">Enquiry email (where contact form sends to)</label>
-          <input type="email" class="form-input" id="f-enquiryemail" name="enquiry_email" placeholder="hello@yourbusiness.co.uk" autocomplete="email">
+          <label class="field-label" for="f-social">Social media handles / links <span class="label-opt">optional</span></label>
+          <input type="text" class="form-input" id="f-social" name="social_links" maxlength="300" placeholder="e.g. Instagram: @smithplumbing · Facebook: facebook.com/smithplumbing">
         </div>
         <div class="field-group">
-          <label class="field-label">Include a contact form?</label>
-          <div class="radio-group" role="radiogroup">
-            <label class="radio-option"><input type="radio" name="contact_form" value="yes"><span><span class="radio-label">Yes</span></span></label>
-            <label class="radio-option"><input type="radio" name="contact_form" value="no"><span><span class="radio-label">No — just contact details</span></span></label>
+          <label class="field-label">Contact methods to show on site <span class="label-opt">tick all you want</span></label>
+          <div class="check-grid">
+            <label class="check-option"><input type="checkbox" name="contact_methods" value="phone number"><span>Phone number</span></label>
+            <label class="check-option"><input type="checkbox" name="contact_methods" value="email address"><span>Email address</span></label>
+            <label class="check-option"><input type="checkbox" name="contact_methods" value="WhatsApp button"><span>WhatsApp button</span></label>
+            <label class="check-option"><input type="checkbox" name="contact_methods" value="contact form"><span>Contact form</span></label>
+            <label class="check-option"><input type="checkbox" name="contact_methods" value="Instagram link"><span>Instagram link</span></label>
+            <label class="check-option"><input type="checkbox" name="contact_methods" value="Facebook link"><span>Facebook link</span></label>
+            <label class="check-option"><input type="checkbox" name="contact_methods" value="TikTok link"><span>TikTok link</span></label>
+            <label class="check-option"><input type="checkbox" name="contact_methods" value="business address"><span>Business address</span></label>
           </div>
         </div>
         <div class="field-group">
-          <label class="field-label" for="f-requests">Any specific requests or things to include?</label>
-          <textarea class="form-textarea" id="f-requests" name="special_requests" placeholder="Anything specific you want — gallery, testimonials, booking link, Google Maps, WhatsApp button..." style="min-height:80px;"></textarea>
-        </div>
-        <div class="field-group">
-          <label class="field-label" for="f-avoid">Anything to avoid?</label>
-          <input type="text" class="form-input" id="f-avoid" name="avoid" placeholder="e.g. avoid blue colours, no stock photos, no sliders">
+          <label class="field-label" for="f-requests">Anything specific you want included? <span class="label-opt">max 250 chars</span></label>
+          <textarea class="form-textarea" id="f-requests" name="special_requests" maxlength="250" data-maxlength="250" placeholder="e.g. include a before/after gallery, add a booking link to Calendly, feature my 5-star Google reviews, include a video embed..." style="min-height:70px;"></textarea>
+          <div class="char-counter" id="cc-requests">0 / 250</div>
         </div>
         <div class="form-nav">
-          <button type="button" class="btn-back" onclick="prevStep(4)">&larr; Back</button>
-          <button type="button" class="btn-next" onclick="nextStep(4)">Next: Package &rarr;</button>
+          <button type="button" class="btn-back" onclick="prevStep(3)">&larr; Back</button>
+          <button type="button" class="btn-next" onclick="nextStep(3)">Next: Package &rarr;</button>
         </div>
       </div>
 
-      <!-- STEP 5 -->
-      <div class="form-step" id="step-5" aria-label="Step 5: Choose Your Package">
+      <!-- ── STEP 4: Package ── -->
+      <div class="form-step" id="step-4">
         <h3 class="step-title">Choose Your Package</h3>
         <div class="field-group">
           <label class="field-label field-required">Select your package</label>
           <div class="radio-group" id="package-group" role="radiogroup">
-            <label class="radio-option"><input type="radio" name="package" value="starter" required><span><span class="radio-label">Starter Site — £149</span><span class="radio-desc">Custom single-page website. Mobile responsive. SEO optimised. Contact form. Delivered in 24hrs. 1 free revision. Free support forever.</span></span></label>
-            <label class="radio-option"><input type="radio" name="package" value="advanced"><span><span class="radio-label">Advanced Site — £299</span><span class="radio-desc">Everything in Starter plus multi-page structure, services detail, gallery, testimonials, about page, advanced animations, priority delivery.</span></span></label>
+            <label class="radio-option"><input type="radio" name="package" value="starter" required><span><span class="radio-label">Starter Site — £149</span><span class="radio-desc">Single-page website. Mobile responsive. SEO optimised. Contact form. Delivered in 24hrs. 1 free revision. Free support.</span></span></label>
+            <label class="radio-option"><input type="radio" name="package" value="advanced"><span><span class="radio-label">Advanced Site — £299</span><span class="radio-desc">Everything in Starter plus gallery, testimonials, about section, advanced animations, multiple sections, priority delivery.</span></span></label>
           </div>
           <span class="field-error" id="err-package">Please select a package.</span>
         </div>
         <div class="field-group">
           <label class="field-label">Hosting upload add-on (+£29)</label>
-          <div class="radio-group" role="radiogroup">
-            <label class="radio-option"><input type="radio" name="hosting_addon" value="yes"><span><span class="radio-label">Yes — upload it for me (+£29)</span><span class="radio-desc">We handle uploading your site to Netlify and connecting your domain.</span></span></label>
-            <label class="radio-option"><input type="radio" name="hosting_addon" value="no"><span><span class="radio-label">No — I will handle it myself</span><span class="radio-desc">We provide a full step-by-step upload guide.</span></span></label>
+          <div class="radio-group">
+            <label class="radio-option"><input type="radio" name="hosting_addon" value="yes"><span><span class="radio-label">Yes — upload it for me (+£29)</span><span class="radio-desc">We upload your site to Netlify and connect your domain.</span></span></label>
+            <label class="radio-option"><input type="radio" name="hosting_addon" value="no"><span><span class="radio-label">No — I'll do it myself</span><span class="radio-desc">We send a full step-by-step guide.</span></span></label>
           </div>
         </div>
-        <div class="field-group">
-          <label class="field-label field-required" for="f-email">Delivery email address</label>
-          <input type="email" class="form-input" id="f-email" name="delivery_email" placeholder="Where should we send your preview and files?" required autocomplete="email">
-          <span class="field-error" id="err-email">Please enter a valid email address.</span>
+        <div class="form-row-2">
+          <div class="field-group">
+            <label class="field-label field-required" for="f-email">Delivery email</label>
+            <input type="email" class="form-input" id="f-email" name="delivery_email" placeholder="Where to send your preview" required autocomplete="email">
+            <p style="font-size:12px;color:#f59e0b;margin-top:6px;padding:9px 13px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:6px;">⚠ <strong>Check junk/spam</strong> — our emails sometimes land there. We'll also WhatsApp you as a backup.</p>
+            <span class="field-error" id="err-email">Please enter a valid email.</span>
+          </div>
+          <div class="field-group">
+            <label class="field-label field-required" for="f-whatsapp">WhatsApp / Mobile</label>
+            <input type="tel" class="form-input" id="f-whatsapp" name="whatsapp" placeholder="07700 900000" required autocomplete="tel">
+            <p style="font-size:12px;color:var(--muted);margin-top:4px;">We'll WhatsApp you when your preview is ready.</p>
+            <span class="field-error" id="err-whatsapp">Please enter your mobile number.</span>
+          </div>
         </div>
         <div class="field-group">
           <label class="field-label" for="f-heardabout">How did you hear about us?</label>
           <select class="form-select" id="f-heardabout" name="heard_about">
-            <option value="">Select</option>
+            <option value="">Select...</option>
             <option>Google search</option>
             <option>Google Maps</option>
-            <option>Cold email</option>
-            <option>WhatsApp</option>
+            <option>Cold email from StaticSwift</option>
+            <option>WhatsApp message</option>
             <option>Referral from someone</option>
             <option>Social media</option>
             <option>Other</option>
           </select>
-        </div>
-        <div class="field-group">
-          <label class="field-label" for="f-extra">Anything else you want us to know?</label>
-          <textarea class="form-textarea" id="f-extra" name="extra_info" placeholder="Any final notes, deadline requests, or questions for us..." style="min-height:80px;"></textarea>
         </div>
         <div class="field-group">
           <label class="terms-check">
@@ -1724,7 +1763,7 @@ footer {
           <span class="field-error" id="err-terms">Please agree to the terms to continue.</span>
         </div>
         <div class="form-nav" style="flex-direction:column;">
-          <button type="button" class="btn-back" style="margin-bottom:12px;" onclick="prevStep(5)">&larr; Back</button>
+          <button type="button" class="btn-back" style="margin-bottom:12px;" onclick="prevStep(4)">&larr; Back</button>
           <button type="submit" class="btn-submit">Build My Website &rarr;</button>
         </div>
       </div>
@@ -1885,12 +1924,11 @@ document.getElementById('nurture-form').addEventListener('submit', async functio
 // MULTI-STEP FORM
 // ==========================================
 let currentStep = 1;
-const totalSteps = 5;
+const totalSteps = 4;
 const stepLabels = [
-  'About Your Business',
-  'Online Presence',
-  'Design & Brand',
-  'Content & Features',
+  'About You & Your Business',
+  'Design & Style',
+  'Content & Contact',
   'Choose Your Package'
 ];
 
@@ -1933,9 +1971,10 @@ function validateStep(step) {
     if (!document.getElementById('f-bizdesc').value.trim()) showErr('f-bizdesc', 'err-bizdesc');
     if (!document.getElementById('f-location').value.trim()) showErr('f-location', 'err-location');
   }
-  if (step === 5) {
+  if (step === 4) {
     clearErr('err-package');
     clearErr('err-email'); clearField('f-email');
+    clearErr('err-whatsapp');
     clearErr('err-terms');
     const pkg = document.querySelector('input[name="package"]:checked');
     if (!pkg) {
@@ -1945,6 +1984,8 @@ function validateStep(step) {
     const email = document.getElementById('f-email').value.trim();
     const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     if (!emailOk) showErr('f-email', 'err-email');
+    const whatsapp = document.getElementById('f-whatsapp').value.trim();
+    if (!whatsapp) { showErr('f-whatsapp', 'err-whatsapp'); if (valid) { document.getElementById('f-whatsapp').focus(); valid = false; } }
     if (!document.getElementById('f-terms').checked) {
       document.getElementById('err-terms').style.display = 'block';
       if (valid) { document.getElementById('f-terms').focus(); valid = false; }
@@ -1961,12 +2002,31 @@ function prevStep(current) {
   if (current > 1) goToStep(current - 1);
 }
 
+// Char counters
+function initCharCounters() {
+  document.querySelectorAll('textarea[data-maxlength], input[data-maxlength]').forEach(el => {
+    const maxLen = parseInt(el.getAttribute('data-maxlength'));
+    const counterId = el.id ? 'cc-' + el.id.replace('f-', '') : null;
+    if (!counterId) return;
+    const counter = document.getElementById(counterId);
+    if (!counter) return;
+    const update = () => {
+      const len = el.value.length;
+      counter.textContent = len + ' / ' + maxLen;
+      counter.style.color = len > maxLen * 0.9 ? '#ef4444' : len > maxLen * 0.75 ? '#f59e0b' : 'var(--muted)';
+    };
+    el.addEventListener('input', update);
+    update();
+  });
+}
+document.addEventListener('DOMContentLoaded', initCharCounters);
+
 // ==========================================
 // FORM SUBMIT
 // ==========================================
 document.getElementById('intake-form').addEventListener('submit', async function(e) {
   e.preventDefault();
-  if (!validateStep(5)) return;
+  if (!validateStep(4)) return;
   const honeypot = this.querySelector('[name="bot-field"]').value;
   if (honeypot) return;
 
@@ -1978,9 +2038,20 @@ document.getElementById('intake-form').addEventListener('submit', async function
   const clientName = formData.get('name') || '';
   const clientEmail = formData.get('delivery_email') || '';
 
+  // Multi-value checkbox fields — must use getAll() not entries()
+  const MULTI_FIELDS = ['website_goals', 'vibe', 'sections', 'contact_methods'];
+
   const jsonData = {};
+  // First pass — all single-value fields
   for (const [key, value] of formData.entries()) {
-    if (typeof value === 'string') jsonData[key] = value;
+    if (typeof value === 'string' && !MULTI_FIELDS.includes(key) && key !== 'terms') {
+      jsonData[key] = value;
+    }
+  }
+  // Second pass — multi-value checkbox fields (join as comma-separated string for storage)
+  for (const key of MULTI_FIELDS) {
+    const vals = formData.getAll(key).filter(v => v);
+    if (vals.length > 0) jsonData[key] = vals.join(', ');
   }
 
   try {
