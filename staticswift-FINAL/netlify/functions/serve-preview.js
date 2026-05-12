@@ -1,62 +1,46 @@
-/**
- * serve-preview.js
- * Proxies HTML files from Uploadcare so they render in browser/iframe
- * Accepts either:
- *   ?id=UUID&base=https://subdomain.ucarecd.net  (preferred - full CDN base)
- *   ?id=UUID  (fallback - tries to fetch from passed URL)
- *   ?url=FULL_CDN_URL  (most direct)
- */
-exports.handler = async (event) => {
-  const { id, base, url } = event.queryStringParameters || {};
+const { getStore } = require('@netlify/blobs');
 
-  // Build the fetch URL
-  let fetchUrl;
-  if (url) {
-    // Full URL passed directly
-    fetchUrl = decodeURIComponent(url);
-  } else if (id && base) {
-    // UUID + base domain
-    fetchUrl = `${decodeURIComponent(base)}${id}/`;
-  } else if (id) {
-    // UUID only — try ucarecdn.com as last resort
-    fetchUrl = `https://ucarecdn.com/${id}/`;
-  } else {
-    return { statusCode: 400, body: 'Missing url or id parameter' };
-  }
+exports.handler = async (event) => {
+  const fileId = event.queryStringParameters?.id;
+  if (!fileId) return { statusCode: 400, body: 'Missing id' };
 
   try {
-    const r = await fetch(fetchUrl, {
-      headers: { 'Accept': 'text/html,*/*' }
-    });
+    const store = getStore({ name: 'client-files', consistency: 'strong' });
+    const { data, metadata } = await store.getWithMetadata(fileId, { type: 'arrayBuffer' });
 
-    if (!r.ok) {
-      console.error('[serve-preview]', r.status, fetchUrl);
+    if (!data) return {
+      statusCode: 404,
+      headers: { 'Content-Type': 'text/html' },
+      body: `<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body style="font-family:sans-serif;padding:40px;background:#07090f;color:#f0f2f8"><h2>Preview not found</h2><p style="color:#8890a8">Try re-uploading from the admin panel.</p></body></html>`
+    };
+
+    const isZip = metadata?.mimeType === 'application/zip';
+    const buf = Buffer.from(data);
+
+    if (isZip) {
       return {
-        statusCode: 404,
-        headers: { 'Content-Type': 'text/html' },
-        body: `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
-          <body style="font-family:sans-serif;padding:40px;background:#07090f;color:#f0f2f8">
-          <h2 style="margin-bottom:12px">Preview unavailable</h2>
-          <p style="color:#8890a8">Could not load preview (HTTP ${r.status}).</p>
-          <p style="color:#8890a8;font-size:13px">Try re-uploading the file from the admin panel.</p>
-          </body></html>`
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'application/zip',
+          'Content-Disposition': `attachment; filename="${metadata?.filename || 'delivery.zip'}"`,
+        },
+        body: buf.toString('base64'),
+        isBase64Encoded: true,
       };
     }
 
-    const html = await r.text();
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' },
-      body: html
+      body: buf.toString('utf-8'),
     };
+
   } catch (err) {
-    console.error('[serve-preview] error:', err.message);
+    console.error('[serve-preview] error:', err.message, 'id:', fileId);
     return {
       statusCode: 500,
       headers: { 'Content-Type': 'text/html' },
-      body: `<!DOCTYPE html><html><body style="font-family:sans-serif;padding:40px;background:#07090f;color:#f0f2f8">
-        <h2>Error loading preview</h2><p style="color:#8890a8">${err.message}</p>
-        </body></html>`
+      body: `<!DOCTYPE html><html><body style="font-family:sans-serif;padding:40px;background:#07090f;color:#f0f2f8"><h2>Error loading file</h2><p style="color:#8890a8">${err.message}</p><p style="color:#8890a8;font-size:13px">Try re-uploading from the admin panel.</p></body></html>`
     };
   }
 };

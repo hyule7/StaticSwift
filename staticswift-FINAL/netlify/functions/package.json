@@ -10,7 +10,8 @@
     "nodemailer": "^6.9.0",
     "stripe": "^14.0.0",
     "uuid": "^9.0.0",
-    "form-data": "^4.0.0"
+    "form-data": "^4.0.0",
+    "@netlify/blobs": "^8.1.0"
   },
   "engines": {
     "node": "18"
