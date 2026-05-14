@@ -36,6 +36,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;1,9..144,300;1,9..144,400&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <!-- This will be assembled with preserved parts -->
+<!-- This will be assembled with preserved parts -->
 <style>
 /* ═══════════════════════════════════════════════════════════
    STATICSWIFT — CINEMATIC WHITE REBRAND
@@ -647,7 +648,7 @@ footer{background:var(--ink);padding:80px 64px 40px;color:rgba(255,255,255,.4)}
 </section>
 
 
-<!-- FOOTER -->
+
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
@@ -684,6 +685,8 @@ footer{background:var(--ink);padding:80px 64px 40px;color:rgba(255,255,255,.4)}
     <span>staticswift.co.uk &nbsp;&bull;&nbsp; hello@staticswift.co.uk</span>
   </div>
 </footer>
+
+
 <script>
 // Mobile menu
 function closeMobileMenu(){document.getElementById('mobile-menu').classList.remove('open')}
@@ -692,14 +695,37 @@ document.getElementById('menu-btn').addEventListener('click',function(){document
 // FAQ
 function toggleFaq(btn){const a=btn.nextElementSibling;const o=btn.classList.contains('open');document.querySelectorAll('.faq-q').forEach(q=>{q.classList.remove('open');q.nextElementSibling.classList.remove('open')});if(!o){btn.classList.add('open');a.classList.add('open')}}
 
-// Scroll reveal
-const _obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('on')})},{threshold:0.06});
+// Scroll reveal with Apple-style spring easing
+const _obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');_obs.unobserve(e.target)}})
+},{threshold:0.05,rootMargin:'0px 0px -60px 0px'});
 document.querySelectorAll('.fi').forEach(el=>_obs.observe(el));
 
-// Nav scroll
-window.addEventListener('scroll',()=>{document.getElementById('nav').style.borderBottomColor=scrollY>30?'rgba(0,0,0,.1)':'rgba(0,0,0,.07)'},{passive:true});
+// Parallax on hero browser frame
+let ticking=false;
+window.addEventListener('scroll',()=>{
+  if(!ticking){requestAnimationFrame(()=>{
+    const hero=document.querySelector('.hero-showcase');
+    if(hero){
+      const rect=hero.getBoundingClientRect();
+      const pct=(rect.top+rect.height/2)/window.innerHeight;
+      const browser=hero.querySelector('.hero-browser');
+      if(browser){
+        const rotX=4-pct*3;
+        const rotY=-1+pct*0.5;
+        browser.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+      }
+    }
+    ticking=false;
+  });ticking=true}
+},{passive:true});
 
-// Quick form
+// Nav scroll
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').style.borderBottomColor=scrollY>30?'rgba(0,0,0,.1)':'rgba(0,0,0,.07)';
+},{passive:true});
+
+// Quick contact form
 async function submitQuick(e){
   e.preventDefault();
   const form=e.target;
@@ -708,13 +734,13 @@ async function submitQuick(e){
   const fd=new FormData(form);
   const data={};
   for(const[k,v]of fd.entries())data[k]=v;
-  data.source='quick-form';data.stage='new-lead';data.createdAt=new Date().toISOString();
+  data.source='contact-form';data.stage='new-lead';data.createdAt=new Date().toISOString();
   try{
     const r=await fetch('/.netlify/functions/handle-intake',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
     const result=await r.json();
     if(result.ok){form.style.display='none';document.getElementById('qf-ok').style.display='block'}
-    else{btn.textContent='Something went wrong — try again';btn.disabled=false;btn.style.background='#dc2626'}
-  }catch(err){btn.textContent='Network error — try again';btn.disabled=false;btn.style.background='#dc2626'}
+    else{btn.textContent='Something went wrong';btn.disabled=false;btn.style.background='#dc2626'}
+  }catch{btn.textContent='Network error';btn.disabled=false;btn.style.background='#dc2626'}
 }
 </script>
 </body>

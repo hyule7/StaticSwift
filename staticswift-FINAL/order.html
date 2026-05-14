@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Start Your Project — StaticSwift</title>
+<meta name="description" content="Tell us about your business and we'll build your website within 24 hours. From £149, no monthly fees.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--bg2:#f9f8f6;--bg3:#f2f0ec;--ink:#0a0a0a;--muted:#6a6a6a;--dim:#9a9a9a;--gold:#b08a3e;--gold-light:rgba(176,138,62,.08);--gold-border:rgba(176,138,62,.2);--border:rgba(0,0,0,.07);--border2:rgba(0,0,0,.12);--green:#16a34a;--red:#dc2626}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--ink);font-family:'Outfit',sans-serif;line-height:1.6}
+h1,h2,h3{font-family:'Instrument Serif',serif;font-weight:400}
+a{color:var(--gold);text-decoration:none}
+::selection{background:var(--gold);color:#fff}
+
+.page-header{background:var(--ink);padding:20px 48px;display:flex;align-items:center;justify-content:space-between}
+.page-logo{font-family:'Instrument Serif',serif;font-size:18px;color:#fff;display:flex;align-items:center;gap:8px}
+.page-logo svg{display:block}
+.page-back{font-size:13px;color:rgba(255,255,255,.4);transition:color .2s}
+.page-back:hover{color:#fff}
+
+.order-wrap{max-width:680px;margin:0 auto;padding:48px 32px 80px}
+.order-wrap h1{font-size:clamp(32px,4vw,48px);letter-spacing:-.04em;margin-bottom:8px;text-align:center}
+.order-wrap h1 em{font-style:italic;color:var(--gold)}
+.order-sub{text-align:center;color:var(--muted);font-size:15px;margin-bottom:40px;line-height:1.6}
+
+.progress{display:flex;gap:4px;margin-bottom:36px}
+.progress-step{flex:1;height:3px;background:var(--border);border-radius:2px;transition:background .4s}
+.progress-step.active{background:var(--gold)}
+
+.form-step{display:none}.form-step.active{display:block}
+.step-title{font-family:'Instrument Serif',serif;font-size:24px;margin-bottom:28px;color:var(--ink)}
+
+.fg{margin-bottom:20px}
+.fg label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.fg label .req{color:var(--gold)}
+.fg input,.fg select,.fg textarea{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:14px;color:var(--ink);font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold-border);box-shadow:0 0 0 3px var(--gold-light)}
+.fg textarea{min-height:90px;resize:vertical}
+.fg select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a9a9a' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
+.fg select option{background:var(--bg2)}
+.fg .hint{font-size:11px;color:var(--dim);margin-top:4px}
+.fg .err{display:none;font-size:11px;color:var(--red);margin-top:4px}
+.fg .counter{font-size:11px;color:var(--dim);text-align:right;margin-top:3px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+
+.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:5px}
+.check-opt{display:flex;align-items:center;gap:9px;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .2s;user-select:none}
+.check-opt:hover{border-color:var(--gold-border);color:var(--ink)}
+.check-opt input{accent-color:var(--gold);cursor:pointer}
+
+.radio-group{display:flex;flex-direction:column;gap:8px}
+.radio-opt{display:flex;align-items:flex-start;gap:12px;padding:16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:border-color .2s}
+.radio-opt:hover{border-color:var(--gold-border)}
+.radio-opt input{margin-top:3px;accent-color:var(--gold);cursor:pointer}
+.radio-opt strong{font-size:15px;font-weight:600;color:var(--ink);display:block}
+.radio-opt span{font-size:12px;color:var(--muted);display:block;margin-top:3px;line-height:1.4}
+
+.form-nav{display:flex;justify-content:space-between;align-items:center;margin-top:32px;gap:12px}
+.btn-next{background:var(--ink);color:#fff;padding:14px 32px;border-radius:100px;font-size:15px;font-weight:600;border:none;cursor:pointer;transition:all .3s;font-family:'Outfit',sans-serif}
+.btn-next:hover{opacity:.85;transform:translateY(-1px)}
+.btn-back{background:none;border:1px solid var(--border);color:var(--muted);padding:14px 28px;border-radius:100px;font-size:14px;cursor:pointer;transition:all .3s;font-family:'Outfit',sans-serif}
+.btn-back:hover{border-color:var(--ink);color:var(--ink)}
+.btn-submit{width:100%;background:var(--ink);color:#fff;padding:18px;border-radius:100px;font-size:17px;font-weight:600;border:none;cursor:pointer;transition:all .3s;font-family:'Instrument Serif',serif}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.15)}
+.btn-submit:disabled{opacity:.5;cursor:wait;transform:none}
+
+.ok-msg{display:none;background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.2);border-radius:12px;padding:24px;text-align:center;color:var(--green);font-size:16px;font-weight:500;margin-top:20px}
+
+.warn-box{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:12px 14px;font-size:12px;color:#92400e;margin-top:8px}
+
+@media(max-width:640px){
+  .order-wrap{padding:32px 20px 60px}
+  .row2,.check-grid{grid-template-columns:1fr}
+  .page-header{padding:16px 20px}
+}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <a href="/" class="page-logo"><svg viewBox="0 0 28 28" fill="none" width="22" height="22"><polygon points="14,1 27,7.5 27,20.5 14,27 1,20.5 1,7.5" fill="none" stroke="#b08a3e" stroke-width="1.2" opacity=".7"/><polygon points="14,6 22,10 22,18 14,22 6,18 6,10" fill="#b08a3e" opacity=".12"/><polygon points="14,10 18,12 18,16 14,18 10,16 10,12" fill="#b08a3e" opacity=".45"/></svg><span>StaticSwift</span></a>
+  <a href="/" class="page-back">← Back to site</a>
+</div>
+
+<div class="order-wrap">
+  <h1>Tell us about your <em>business.</em></h1>
+  <p class="order-sub">We'll use this to build your website. Takes about 3 minutes. The more detail you give, the better the result.</p>
+
+  <div class="progress"><div class="progress-step active"></div><div class="progress-step"></div><div class="progress-step"></div><div class="progress-step"></div></div>
+
+  <form id="order-form" novalidate>
+    <input type="text" name="bot-field" style="position:absolute;left:-9999px;opacity:0" tabindex="-1" autocomplete="off">
+
+    <!-- STEP 1 -->
+    <div class="form-step active" id="s1">
+      <div class="step-title">About You &amp; Your Business</div>
+      <div class="row2">
+        <div class="fg"><label>Your Name <span class="req">*</span></label><input type="text" name="name" id="f-name" maxlength="60" required placeholder="e.g. John Smith"></div>
+        <div class="fg"><label>Business Name <span class="req">*</span></label><input type="text" name="business_name" id="f-bizname" maxlength="60" required placeholder="e.g. Smith Plumbing"></div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>Business Type <span class="req">*</span></label><select name="business_type" id="f-biztype" required><option value="">Select type...</option><option>Barber / Hair Salon</option><option>Beauty / Nail Bar</option><option>Plumber</option><option>Electrician</option><option>Builder / Roofer</option><option>Cleaner</option><option>Gardener / Landscaper</option><option>Photographer</option><option>Personal Trainer / Gym</option><option>Cafe / Restaurant</option><option>Dog Groomer</option><option>Tattoo Studio</option><option>Driving Instructor</option><option>Accountant</option><option>Therapist</option><option>Mechanic</option><option>Florist</option><option>Retailer</option><option>Other</option></select></div>
+        <div class="fg"><label>Town / City <span class="req">*</span></label><input type="text" name="location" id="f-location" maxlength="60" required placeholder="e.g. Manchester"></div>
+      </div>
+      <div class="fg"><label>What does your business do? <span class="req">*</span></label><textarea name="business_description" id="f-bizdesc" maxlength="220" data-max="220" required placeholder="e.g. We offer emergency plumbing and boiler servicing across Manchester. Available 7 days a week."></textarea><div class="counter" id="cc-bizdesc">0 / 220</div></div>
+      <div class="fg"><label>What makes you stand out?</label><textarea name="usp" maxlength="160" data-max="160" placeholder="e.g. 15 years experience, same-day service, fully insured, 5-star Google rating"></textarea><div class="counter" id="cc-usp">0 / 160</div></div>
+      <div class="row2">
+        <div class="fg"><label>How long trading?</label><select name="trading_years"><option value="">Select...</option><option>New / just starting</option><option>Less than 1 year</option><option>1-3 years</option><option>3-5 years</option><option>5-10 years</option><option>10+ years</option></select></div>
+        <div class="fg"><label>Who are your customers?</label><select name="target_customers"><option value="">Select...</option><option>Local homeowners / families</option><option>Local businesses (B2B)</option><option>Both homeowners and businesses</option><option>Young people / students</option><option>Professionals / corporate</option><option>Nationwide / online</option><option>Other</option></select></div>
+      </div>
+      <div class="fg"><label>What should the website do?</label>
+        <div class="check-grid">
+          <label class="check-opt"><input type="checkbox" name="website_goals" value="get phone calls">Get phone calls</label>
+          <label class="check-opt"><input type="checkbox" name="website_goals" value="get email enquiries">Get email enquiries</label>
+          <label class="check-opt"><input type="checkbox" name="website_goals" value="get WhatsApp messages">WhatsApp messages</label>
+          <label class="check-opt"><input type="checkbox" name="website_goals" value="show portfolio / gallery">Show portfolio</label>
+          <label class="check-opt"><input type="checkbox" name="website_goals" value="show prices">Show prices</label>
+          <label class="check-opt"><input type="checkbox" name="website_goals" value="take bookings">Take bookings</label>
+          <label class="check-opt"><input type="checkbox" name="website_goals" value="look professional">Look professional</label>
+          <label class="check-opt"><input type="checkbox" name="website_goals" value="rank on Google">Rank on Google</label>
+        </div>
+      </div>
+      <div class="form-nav"><div></div><button type="button" class="btn-next" onclick="nextStep(1)">Next: Design →</button></div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="form-step" id="s2">
+      <div class="step-title">Design &amp; Style</div>
+      <div class="row2">
+        <div class="fg"><label>Colour preference</label><select name="colour_preference"><option value="">You choose</option><option>Dark &amp; bold</option><option>Light &amp; clean</option><option>Warm tones</option><option>Vibrant / bright</option><option>Natural / earthy</option><option>Cool &amp; professional</option><option>Pink / feminine</option><option>I have specific colours</option></select></div>
+        <div class="fg"><label>Specific colours</label><input type="text" name="brand_colours" maxlength="80" placeholder="e.g. navy #003366 and gold"></div>
+      </div>
+      <div class="fg"><label>Overall vibe</label>
+        <div class="check-grid">
+          <label class="check-opt"><input type="checkbox" name="vibe" value="professional &amp; corporate">Professional</label>
+          <label class="check-opt"><input type="checkbox" name="vibe" value="friendly &amp; approachable">Friendly</label>
+          <label class="check-opt"><input type="checkbox" name="vibe" value="luxury &amp; premium">Luxury / premium</label>
+          <label class="check-opt"><input type="checkbox" name="vibe" value="bold &amp; energetic">Bold / energetic</label>
+          <label class="check-opt"><input type="checkbox" name="vibe" value="clean &amp; minimal">Clean / minimal</label>
+          <label class="check-opt"><input type="checkbox" name="vibe" value="warm &amp; local">Warm / local</label>
+          <label class="check-opt"><input type="checkbox" name="vibe" value="modern &amp; techy">Modern / techy</label>
+          <label class="check-opt"><input type="checkbox" name="vibe" value="traditional">Traditional</label>
+        </div>
+      </div>
+      <div class="fg"><label>Light or dark?</label>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="theme" value="light"><div><strong>Light</strong><span>Clean white / neutral background</span></div></label>
+          <label class="radio-opt"><input type="radio" name="theme" value="dark"><div><strong>Dark</strong><span>Premium dark background</span></div></label>
+          <label class="radio-opt"><input type="radio" name="theme" value="no-pref"><div><strong>Your choice</strong><span>We'll pick what works best</span></div></label>
+        </div>
+      </div>
+      <div class="fg"><label>Sections to include</label>
+        <div class="check-grid">
+          <label class="check-opt"><input type="checkbox" name="sections" value="photo gallery">Photo gallery</label>
+          <label class="check-opt"><input type="checkbox" name="sections" value="testimonials">Testimonials</label>
+          <label class="check-opt"><input type="checkbox" name="sections" value="team / about">Team / about</label>
+          <label class="check-opt"><input type="checkbox" name="sections" value="FAQ">FAQ section</label>
+          <label class="check-opt"><input type="checkbox" name="sections" value="Google Map">Google Map</label>
+          <label class="check-opt"><input type="checkbox" name="sections" value="booking link">Booking link</label>
+          <label class="check-opt"><input type="checkbox" name="sections" value="before &amp; after">Before &amp; after</label>
+        </div>
+      </div>
+      <div class="fg"><label>Website you like the look of</label><input type="url" name="reference_1" maxlength="200" placeholder="https://..."></div>
+      <div class="form-nav"><button type="button" class="btn-back" onclick="prevStep(2)">← Back</button><button type="button" class="btn-next" onclick="nextStep(2)">Next: Content →</button></div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="form-step" id="s3">
+      <div class="step-title">Content &amp; Contact</div>
+      <div class="fg"><label>Services / products &amp; prices</label><textarea name="services" maxlength="500" data-max="500" placeholder="e.g.&#10;Haircut — £20&#10;Beard Trim — £12&#10;Full Groom — £30"></textarea><div class="counter" id="cc-services">0 / 500</div></div>
+      <div class="row2">
+        <div class="fg"><label>Phone number</label><input type="tel" name="phone" maxlength="20" placeholder="01234 567890"></div>
+        <div class="fg"><label>Email for enquiries</label><input type="email" name="enquiry_email" maxlength="100" placeholder="hello@yourbiz.co.uk"></div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>Opening hours</label><input type="text" name="hours" maxlength="120" placeholder="Mon-Fri 9am-6pm, Sat 10am-4pm"></div>
+        <div class="fg"><label>Business address</label><input type="text" name="address" maxlength="120" placeholder="Leave blank if home-based"></div>
+      </div>
+      <div class="fg"><label>Social media</label><input type="text" name="social_links" maxlength="300" placeholder="e.g. @smithplumbing or paste link"></div>
+      <div class="fg"><label>Contact methods to show on site</label>
+        <div class="check-grid">
+          <label class="check-opt"><input type="checkbox" name="contact_methods" value="phone">Phone</label>
+          <label class="check-opt"><input type="checkbox" name="contact_methods" value="email">Email</label>
+          <label class="check-opt"><input type="checkbox" name="contact_methods" value="WhatsApp">WhatsApp</label>
+          <label class="check-opt"><input type="checkbox" name="contact_methods" value="contact form">Contact form</label>
+          <label class="check-opt"><input type="checkbox" name="contact_methods" value="Instagram">Instagram</label>
+          <label class="check-opt"><input type="checkbox" name="contact_methods" value="Facebook">Facebook</label>
+          <label class="check-opt"><input type="checkbox" name="contact_methods" value="address">Address</label>
+          <label class="check-opt"><input type="checkbox" name="contact_methods" value="TikTok">TikTok</label>
+        </div>
+      </div>
+      <div class="fg"><label>Anything specific to include?</label><textarea name="special_requests" maxlength="250" data-max="250" placeholder="e.g. include a gallery, add booking link, feature Google reviews..."></textarea><div class="counter" id="cc-requests">0 / 250</div></div>
+      <div class="form-nav"><button type="button" class="btn-back" onclick="prevStep(3)">← Back</button><button type="button" class="btn-next" onclick="nextStep(3)">Next: Package →</button></div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="form-step" id="s4">
+      <div class="step-title">Choose Your Package</div>
+      <div class="fg"><label>Package <span class="req">*</span></label>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="package" value="starter" required><div><strong>Starter — £149</strong><span>Single-page website. Mobile responsive. SEO. Contact form. 24hr delivery. 1 revision.</span></div></label>
+          <label class="radio-opt"><input type="radio" name="package" value="advanced"><div><strong>Advanced — £299</strong><span>Everything in Starter plus gallery, testimonials, about section, premium animations, priority delivery.</span></div></label>
+        </div>
+        <div class="err" id="err-pkg">Please select a package.</div>
+      </div>
+      <div class="fg"><label>Hosting add-on (+£29)</label>
+        <div class="radio-group">
+          <label class="radio-opt"><input type="radio" name="hosting_addon" value="yes"><div><strong>Yes — upload it for me (+£29)</strong><span>We upload to Netlify and connect your domain.</span></div></label>
+          <label class="radio-opt"><input type="radio" name="hosting_addon" value="no"><div><strong>No — I'll do it myself</strong><span>We include a full step-by-step guide.</span></div></label>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="fg"><label>Delivery email <span class="req">*</span></label><input type="email" name="delivery_email" id="f-email" required placeholder="Where to send preview"><div class="warn-box">⚠ Check your junk folder after submitting. We'll also WhatsApp you as a backup.</div><div class="err" id="err-email">Please enter a valid email.</div></div>
+        <div class="fg"><label>WhatsApp / Mobile <span class="req">*</span></label><input type="tel" name="whatsapp" id="f-wa" required placeholder="07700 900000"><div class="hint">We'll WhatsApp you when your preview is ready.</div><div class="err" id="err-wa">Please enter your number.</div></div>
+      </div>
+      <div class="fg"><label>How did you hear about us?</label><select name="heard_about"><option value="">Select...</option><option>Google search</option><option>Google Maps</option><option>Cold email</option><option>WhatsApp message</option><option>Referral</option><option>Social media</option><option>Other</option></select></div>
+      <div class="fg"><label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400;font-size:13px;color:var(--muted)"><input type="checkbox" id="f-terms" name="terms" required style="accent-color:var(--gold);margin-top:2px;cursor:pointer">I agree to the <a href="/terms.html" target="_blank" style="color:var(--gold)">Terms</a> and <a href="/privacy.html" target="_blank" style="color:var(--gold)">Privacy Policy</a>. I understand I will not be charged until I approve.</label><div class="err" id="err-terms">Please agree to continue.</div></div>
+      <div class="form-nav" style="flex-direction:column;gap:12px">
+        <button type="button" class="btn-back" onclick="prevStep(4)">← Back</button>
+        <button type="submit" class="btn-submit">Build My Website →</button>
+      </div>
+      <div class="ok-msg" id="ok">✓ Received! We'll have your preview ready within 24 hours. Check your email and junk folder.</div>
+    </div>
+  </form>
+</div>
+
+<script>
+let step=1;
+const MULTI=['website_goals','vibe','sections','contact_methods'];
+
+function goTo(n){
+  document.querySelectorAll('.form-step').forEach((s,i)=>s.classList.toggle('active',i+1===n));
+  document.querySelectorAll('.progress-step').forEach((s,i)=>s.classList.toggle('active',i<n));
+  step=n;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function nextStep(n){
+  // Basic validation for step 1
+  if(n===1){
+    const fields=['f-name','f-bizname','f-biztype','f-location','f-bizdesc'];
+    let ok=true;
+    for(const id of fields){
+      const el=document.getElementById(id);
+      if(!el||!el.value.trim()){ok=false;el.style.borderColor='var(--red)';setTimeout(()=>el.style.borderColor='',2000)}
+    }
+    if(!ok)return;
+  }
+  if(n<4)goTo(n+1);
+}
+function prevStep(n){if(n>1)goTo(n-1)}
+
+// Char counters
+document.querySelectorAll('textarea[data-max]').forEach(el=>{
+  const max=parseInt(el.dataset.max);
+  const id='cc-'+el.name.replace('business_description','bizdesc').replace('special_requests','requests');
+  const counter=document.getElementById(id);
+  if(!counter)return;
+  const update=()=>{
+    const len=el.value.length;
+    counter.textContent=len+' / '+max;
+    counter.style.color=len>max*.9?'#dc2626':len>max*.75?'#d97706':'var(--dim)';
+  };
+  el.addEventListener('input',update);update();
+});
+
+// Submit
+document.getElementById('order-form').addEventListener('submit',async function(e){
+  e.preventDefault();
+  const bot=this.querySelector('[name="bot-field"]');
+  if(bot&&bot.value)return;
+
+  // Validate step 4
+  let ok=true;
+  const pkg=document.querySelector('input[name="package"]:checked');
+  if(!pkg){document.getElementById('err-pkg').style.display='block';ok=false}
+  const email=document.getElementById('f-email');
+  if(!email.value.trim()||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)){document.getElementById('err-email').style.display='block';email.style.borderColor='var(--red)';ok=false}
+  const wa=document.getElementById('f-wa');
+  if(!wa.value.trim()){document.getElementById('err-wa').style.display='block';wa.style.borderColor='var(--red)';ok=false}
+  const terms=document.getElementById('f-terms');
+  if(!terms.checked){document.getElementById('err-terms').style.display='block';ok=false}
+  if(!ok)return;
+
+  const btn=this.querySelector('.btn-submit');
+  btn.textContent='Sending...';btn.disabled=true;
+
+  const fd=new FormData(this);
+  const data={};
+  for(const[k,v]of fd.entries()){
+    if(!MULTI.includes(k)&&k!=='terms'&&k!=='bot-field')data[k]=v;
+  }
+  for(const key of MULTI){
+    const vals=fd.getAll(key).filter(v=>v);
+    if(vals.length)data[key]=vals.join(', ');
+  }
+  data.source='order-form';data.stage='new-lead';data.createdAt=new Date().toISOString();
+
+  try{
+    const r=await fetch('/.netlify/functions/handle-intake',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    const result=await r.json();
+    if(result.ok){
+      this.style.display='none';
+      document.getElementById('ok').style.display='block';
+      document.querySelector('.progress').style.display='none';
+    }else{btn.textContent='Error — try again';btn.disabled=false;btn.style.background='#dc2626'}
+  }catch{btn.textContent='Network error — try again';btn.disabled=false;btn.style.background='#dc2626'}
+});
+</script>
+</body>
+</html>
