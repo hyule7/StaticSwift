@@ -882,6 +882,111 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
   .ct-header,.ct-row{grid-template-columns:1fr 1fr}
 }
 
+
+/* ═══ MOCK SITE SYSTEM ═══ */
+.browser-viewport{overflow:hidden;position:relative}
+.mock-site{font-family:'DM Sans',sans-serif;font-size:11px;overflow:hidden;position:relative}
+.mock-site *{box-sizing:border-box}
+
+/* Nav inside mockups */
+.ms-nav{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid rgba(255,255,255,.06)}
+.ms-logo{font-family:'Fraunces',serif;font-size:12px;font-weight:300;color:#f2f0ec}
+.ms-navlinks{font-size:8px;color:rgba(255,255,255,.35);letter-spacing:.04em}
+.ms-hero-area{padding:20px 14px 16px}
+.ms-h1{font-family:'Fraunces',serif;font-size:18px;font-weight:300;color:#f2f0ec;line-height:1.1;margin-bottom:6px;letter-spacing:-.02em}
+.ms-h1 em{font-style:italic;color:var(--gold)}
+.ms-sub{font-size:9px;color:rgba(255,255,255,.4);line-height:1.5;margin-bottom:12px}
+.ms-btns{display:flex;gap:6px;align-items:center}
+.ms-btn-p{background:var(--gold);color:#0a0a0a;font-size:9px;font-weight:700;padding:6px 14px;display:inline-block}
+.ms-btn-o{border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.45);font-size:9px;padding:5px 12px;display:inline-block}
+
+/* Cards inside mockups */
+.ms-cards-3{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:10px 14px}
+.ms-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);padding:10px 8px;text-align:center}
+.ms-card-icon{font-size:16px;margin-bottom:4px}
+.ms-card-title{font-size:9px;font-weight:700;color:#f2f0ec;margin-bottom:2px}
+.ms-card-text{font-size:7px;color:rgba(255,255,255,.35)}
+
+/* Testimonial inside mockup */
+.ms-testimonial{padding:12px 14px;border-top:1px solid rgba(255,255,255,.06)}
+.ms-t-stars{color:var(--gold);font-size:10px;letter-spacing:2px;margin-bottom:4px}
+.ms-t-text{font-size:8px;color:rgba(255,255,255,.5);font-style:italic;margin-bottom:3px}
+.ms-t-author{font-size:7px;color:rgba(255,255,255,.25)}
+
+/* Gallery inside mockup */
+.ms-gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:8px 14px}
+.ms-gallery-grid div{height:32px;border-radius:2px}
+
+/* Price list inside barber mockup */
+.ms-price-list{padding:10px 14px;border-top:1px solid rgba(255,255,255,.06)}
+.ms-price-list div{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:8px;color:rgba(255,255,255,.5)}
+.ms-price-list div span:last-child{color:var(--gold);font-weight:700}
+
+/* Menu inside restaurant mockup */
+.ms-menu-preview{padding:10px 14px;border-top:1px solid rgba(255,255,255,.06)}
+.ms-menu-item{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:8px;color:rgba(255,255,255,.5)}
+.ms-menu-item span:last-child{color:#e8c36a;font-weight:600}
+
+/* Theme variants */
+.mock-plumber{background:linear-gradient(160deg,#0a0c10 0%,#101418 100%)}
+.mock-photo-dark{background:var(--ink)}
+.mock-barber{background:linear-gradient(160deg,#0c0a08 0%,#181410 100%)}
+.mock-cleaner{background:#f5f8f5;color:#111}
+.mock-cleaner .ms-nav{border-color:rgba(0,0,0,.06)}.mock-cleaner .ms-logo{color:#111}.mock-cleaner .ms-navlinks{color:rgba(0,0,0,.4)}
+.mock-cleaner .ms-h1{color:#111;font-size:16px}.mock-cleaner .ms-h1 em{color:#16a34a}
+.mock-cleaner .ms-sub{color:rgba(0,0,0,.5)}
+.mock-restaurant{background:linear-gradient(160deg,#0e0c08 0%,#1a1610 100%)}
+.mock-pt{background:#0a0a0a}
+
+/* ═══ SHOWCASE LAYOUTS ═══ */
+.showcase-row{margin-bottom:24px}
+.showcase-featured{display:grid;grid-template-columns:2fr 1fr;gap:20px;align-items:end;position:relative}
+.sc-browser{border:1px solid var(--border2);overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.5);transition:border-color .3s,transform .3s}
+.sc-browser:hover{border-color:var(--gold-border);transform:translateY(-4px)}
+.sc-large{grid-column:1}
+
+/* Phone mockup */
+.sc-phone-wrap{position:relative;display:flex;flex-direction:column;align-items:center}
+.sc-phone{
+  width:140px;background:var(--ink3);border:1px solid var(--border2);
+  border-radius:24px;overflow:hidden;padding:10px;
+  box-shadow:0 24px 60px rgba(0,0,0,.7);
+  position:relative;animation:phoneFloat 5s ease-in-out infinite;
+}
+@keyframes phoneFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.sp-notch{width:36px;height:6px;background:var(--ink);border-radius:3px;margin:0 auto 6px}
+.sc-phone-shadow{
+  width:100px;height:8px;background:radial-gradient(ellipse,rgba(0,0,0,.4),transparent);
+  margin-top:10px;filter:blur(4px);animation:phoneFloat 5s ease-in-out infinite;
+}
+
+/* Meta info */
+.sc-meta{padding:16px 0 0}
+.sc-meta-tag{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);opacity:.7;margin-bottom:4px}
+.sc-meta-name{font-family:'Fraunces',serif;font-size:18px;font-weight:300;color:var(--text);margin-bottom:4px}
+.sc-meta-desc{font-size:13px;color:var(--muted);line-height:1.5}
+.showcase-featured .sc-meta{grid-column:1/3;margin-top:8px}
+
+/* Duo row */
+.showcase-duo{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.sc-duo-item .sc-browser{margin-bottom:0}
+
+/* Trio row */
+.showcase-trio{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.sc-small .browser-viewport{max-height:180px}
+
+/* ═══ RESPONSIVE SHOWCASE ═══ */
+@media(max-width:1100px){
+  .showcase-featured{grid-template-columns:1fr;gap:16px}
+  .sc-phone-wrap{display:none}
+  .showcase-featured .sc-meta{grid-column:auto}
+  .showcase-duo{grid-template-columns:1fr}
+  .showcase-trio{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .ms-h1{font-size:14px !important}
+}
+
 </style>
 
 
@@ -909,12 +1014,8 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
     <a href="#pricing">Pricing</a>
     <a href="#get-started" class="nav-cta">Start a project</a>
   </div>
-  <button class="nav-menu-btn" id="menu-btn" aria-label="Menu">
-    <span></span><span></span>
-  </button>
+  <button class="nav-menu-btn" id="menu-btn" aria-label="Menu"><span></span><span></span></button>
 </nav>
-
-<!-- MOBILE MENU -->
 <div id="mobile-menu">
   <a href="#work" onclick="closeMobileMenu()">Work</a>
   <a href="#how" onclick="closeMobileMenu()">Process</a>
@@ -922,21 +1023,18 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
   <a href="#get-started" onclick="closeMobileMenu()" class="mobile-cta">Start a project →</a>
 </div>
 
-<!-- HERO -->
+<!-- ═══════════════════ HERO ═══════════════════ -->
 <section id="hero">
   <div class="hero-grain"></div>
   <div class="hero-glow"></div>
   <div class="hero-left">
-    <div class="hero-eyebrow">
-      <div class="avail-pulse"></div>
-      Now taking new clients
-    </div>
+    <div class="hero-eyebrow"><div class="avail-pulse"></div>Now taking new clients</div>
     <h1 class="hero-h1">
       <span class="h1-block"><span class="h1-inner l1">Websites that make</span></span>
       <span class="h1-block"><span class="h1-inner l2">businesses look <em class="h1-em">like</em></span></span>
       <span class="h1-block"><span class="h1-inner l3"><em class="h1-em">they mean it.</em></span></span>
     </h1>
-    <p class="hero-sub">StaticSwift designs and builds professional websites for UK small businesses — custom, fast, and delivered within 24 hours. From £149. No monthly fees, ever.</p>
+    <p class="hero-sub">Custom-designed websites for UK small businesses. Delivered in 24 hours, from £149. No monthly fees. You see it before you pay.</p>
     <div class="hero-actions">
       <a href="#get-started" class="btn-gold">Start your project →</a>
       <a href="#work" class="btn-outline">See our work</a>
@@ -948,23 +1046,28 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
       <div class="hstat"><span class="hstat-n">100%</span><span class="hstat-l">Yours forever</span></div>
     </div>
   </div>
+  <!-- Hero browser with REAL rendered site mockup -->
   <div class="hero-right">
     <div class="browser-frame">
-      <div class="browser-bar">
-        <div class="b-dot"></div><div class="b-dot"></div><div class="b-dot"></div>
-        <div class="b-url">yoursite.co.uk</div>
-      </div>
-      <div class="browser-content">
-        <div class="bc-hero">
-          <div class="bc-nav"><div class="bc-logo"></div><div class="bc-navl"><span></span><span></span><span></span></div></div>
-          <div class="bc-h"></div><div class="bc-h2"></div>
-          <div class="bc-sub"></div><div class="bc-sub2"></div>
-          <div class="bc-btns"><div class="bc-btn-f"></div><div class="bc-btn-o"></div></div>
-        </div>
-        <div class="bc-grid">
-          <div class="bc-card"><div class="bc-ci"></div><div class="bc-cl"><div></div><div></div></div></div>
-          <div class="bc-card"><div class="bc-ci"></div><div class="bc-cl"><div></div><div></div></div></div>
-          <div class="bc-card"><div class="bc-ci"></div><div class="bc-cl"><div></div><div></div></div></div>
+      <div class="browser-bar"><div class="b-dot"></div><div class="b-dot"></div><div class="b-dot"></div><div class="b-url">jamesplumbing.co.uk</div></div>
+      <div class="browser-viewport">
+        <div class="mock-site mock-plumber">
+          <div class="ms-nav"><span class="ms-logo">James Plumbing</span><span class="ms-navlinks">Services&nbsp;&nbsp;&nbsp;About&nbsp;&nbsp;&nbsp;Contact</span></div>
+          <div class="ms-hero-area">
+            <div class="ms-h1">Emergency Plumbing<br><em>You Can Trust</em></div>
+            <div class="ms-sub">Manchester's most reliable plumber. Available 7 days a week. No callout fee.</div>
+            <div class="ms-btns"><span class="ms-btn-p">Call Now</span><span class="ms-btn-o">Get a Quote</span></div>
+          </div>
+          <div class="ms-cards-3">
+            <div class="ms-card"><div class="ms-card-icon">🔧</div><div class="ms-card-title">Repairs</div><div class="ms-card-text">Fast leak and pipe repair</div></div>
+            <div class="ms-card"><div class="ms-card-icon">🔥</div><div class="ms-card-title">Boilers</div><div class="ms-card-text">Service and installation</div></div>
+            <div class="ms-card"><div class="ms-card-icon">🚿</div><div class="ms-card-title">Bathrooms</div><div class="ms-card-text">Full bathroom fitting</div></div>
+          </div>
+          <div class="ms-testimonial">
+            <div class="ms-t-stars">★★★★★</div>
+            <div class="ms-t-text">"Brilliant service. Same-day fix. Highly recommend."</div>
+            <div class="ms-t-author">— Sarah M., Didsbury</div>
+          </div>
         </div>
       </div>
     </div>
@@ -980,543 +1083,328 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
     <span class="ti">Mobile responsive</span><span class="td">✦</span>
     <span class="ti">SEO optimised</span><span class="td">✦</span>
     <span class="ti">Pay on approval</span><span class="td">✦</span>
-    <span class="ti">Free revision included</span><span class="td">✦</span>
-    <span class="ti">Yours to keep forever</span><span class="td">✦</span>
+    <span class="ti">Free revision</span><span class="td">✦</span>
+    <span class="ti">Yours forever</span><span class="td">✦</span>
     <span class="ti">Custom design</span><span class="td">✦</span>
     <span class="ti">24-hour delivery</span><span class="td">✦</span>
     <span class="ti">No monthly fees</span><span class="td">✦</span>
     <span class="ti">Mobile responsive</span><span class="td">✦</span>
     <span class="ti">SEO optimised</span><span class="td">✦</span>
     <span class="ti">Pay on approval</span><span class="td">✦</span>
-    <span class="ti">Free revision included</span><span class="td">✦</span>
-    <span class="ti">Yours to keep forever</span><span class="td">✦</span>
+    <span class="ti">Free revision</span><span class="td">✦</span>
+    <span class="ti">Yours forever</span><span class="td">✦</span>
   </div>
 </div>
 
-<!-- PROOF BAR -->
-<section id="proof-bar">
-  <div class="section-inner">
-    <div class="pb-grid">
-      <div class="pb-item fi">
-        <div class="pb-n">50+</div>
-        <div class="pb-l">Websites delivered</div>
-      </div>
-      <div class="pb-divider"></div>
-      <div class="pb-item fi d1">
-        <div class="pb-n">24hrs</div>
-        <div class="pb-l">Average turnaround</div>
-      </div>
-      <div class="pb-divider"></div>
-      <div class="pb-item fi d2">
-        <div class="pb-n">£0</div>
-        <div class="pb-l">Monthly fees forever</div>
-      </div>
-      <div class="pb-divider"></div>
-      <div class="pb-item fi d3">
-        <div class="pb-n">100%</div>
-        <div class="pb-l">Approval before payment</div>
-      </div>
-      <div class="pb-divider"></div>
-      <div class="pb-item fi d4">
-        <div class="pb-n">5★</div>
-        <div class="pb-l">Client satisfaction</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- WORK -->
+<!-- ═══════════════════ SHOWCASE — RICH WEBSITE PREVIEWS ═══════════════════ -->
 <section id="work">
   <div class="section-inner">
     <div class="section-header">
-      <div class="fi">
-        <span class="section-label">Selected work</span>
-        <h2 class="section-title">What we build.</h2>
-        <p style="font-size:15px;color:var(--muted);margin-top:8px;max-width:480px;line-height:1.65">Real websites for real businesses. Every site is custom-designed, mobile-ready, and delivered within 24 hours.</p>
-      </div>
+      <div class="fi"><span class="section-label">What we build</span><h2 class="section-title">Real websites.<br><em>Real businesses.</em></h2></div>
       <a href="#get-started" class="btn-outline fi">Start your project →</a>
     </div>
-    <div class="work-grid">
-      <div class="work-card wc-tall fi">
-        <div class="wc-preview wc-dark">
-          <div class="wc-preview-inner">
-            <div class="wcp-nav"><div class="wcp-logo"></div><div class="wcp-navlinks"><span></span><span></span><span></span></div></div>
-            <div class="wcp-hero-block">
-              <div class="wcp-headline"></div>
-              <div class="wcp-sub"></div>
-              <div class="wcp-cta"></div>
-            </div>
-            <div class="wcp-grid3"><div class="wcp-card"></div><div class="wcp-card"></div><div class="wcp-card"></div></div>
-            <div class="wcp-gallery"><div></div><div></div><div></div><div></div></div>
-          </div>
-          <div class="wc-overlay">
-            <span class="wc-view-label">Mirkhan Photography</span>
-          </div>
-        </div>
-        <div class="wc-info">
-          <div>
-            <div class="wc-tags"><span>Photographer</span><span>Advanced</span></div>
-            <div class="wc-name">Mirkhan Photography</div>
-            <div class="wc-desc">Custom advanced photography site. Gallery, services, testimonials, contact form.</div>
-          </div>
-          <div class="wc-arrow">→</div>
-        </div>
-      </div>
-      <div class="work-col">
-        <div class="work-card fi">
-          <div class="wc-preview wc-navy" style="aspect-ratio:16/10">
-            <div class="wc-preview-inner" style="padding:16px">
-              <div class="wcp-ticker-thin"></div>
-              <div class="wcp-headline wcp-short"></div>
-              <div class="wcp-sub wcp-thin"></div>
-              <div class="wcp-cta" style="background:rgba(37,99,235,.5);width:52px;height:18px"></div>
-            </div>
-            <div class="wc-overlay">
-              <span class="wc-view-label">Crafters</span>
-            </div>
-          </div>
-          <div class="wc-info">
-            <div>
-              <div class="wc-tags"><span>Online Business</span><span>Starter</span></div>
-              <div class="wc-name">Crafters</div>
-              <div class="wc-desc">Clean starter site. Hero, services, contact form.</div>
-            </div>
-            <div class="wc-arrow">→</div>
-          </div>
-        </div>
-        <div class="work-card fi d1">
-          <div class="wc-preview wc-teal" style="aspect-ratio:16/10">
-            <div class="wc-preview-inner" style="padding:16px">
-              <div class="wcp-headline wcp-short"></div>
-              <div class="wcp-sub wcp-thin"></div>
-              <div class="wcp-cta" style="background:rgba(42,157,143,.5);width:52px;height:18px"></div>
-            </div>
-            <div class="wc-overlay">
-              <span class="wc-view-label">Sami Brand</span>
-            </div>
-          </div>
-          <div class="wc-info">
-            <div>
-              <div class="wc-tags"><span>Photographer</span><span>Advanced</span></div>
-              <div class="wc-name">Sami Brand</div>
-              <div class="wc-desc">Advanced photography site with gallery, testimonials, process.</div>
-            </div>
-            <div class="wc-arrow">→</div>
-          </div>
-        </div>
-      </div>
-      <div class="work-card wc-wide fi d1">
-        <div class="wc-preview wc-red">
-          <div class="wc-preview-inner">
-            <div class="wcp-ticker-bar"></div>
-            <div class="wcp-headline"></div>
-            <div class="wcp-sub wcp-thin"></div>
-            <div class="wcp-cards-row"><div></div><div></div><div></div></div>
-          </div>
-          <div class="wc-overlay">
-            <span class="wc-view-label">Adok Manut — Live Scores</span>
-          </div>
-        </div>
-        <div class="wc-info">
-          <div>
-            <div class="wc-tags"><span>Sports &amp; Media</span><span>Starter</span></div>
-            <div class="wc-name">Adok Manut — Live Scores</div>
-            <div class="wc-desc">Sports coverage site with live ticker, stats, and contact.</div>
-          </div>
-          <div class="wc-arrow">→</div>
-        </div>
-      </div>
-    </div>
-    <p class="work-note">Every site is a single-file HTML build — instant load, no complexity, no monthly fees.</p>
-  </div>
-</section>
 
-<!-- SHOWCASE VIDEO / DEMO SECTION -->
-<section id="showcase">
-  <div class="section-inner">
-    <div class="showcase-header fi">
-      <span class="section-label">See it in action</span>
-      <h2 class="section-title">Built to impress.<br><em>Delivered to convert.</em></h2>
-      <p class="section-sub">Every site we build is fast, responsive, and designed to turn visitors into customers. See what a StaticSwift website actually looks like on any device.</p>
+    <!-- ROW 1: Large featured + phone mockup -->
+    <div class="showcase-row showcase-featured fi">
+      <div class="sc-browser sc-large">
+        <div class="browser-bar"><div class="b-dot"></div><div class="b-dot"></div><div class="b-dot"></div><div class="b-url">mirkhanphotography.com</div></div>
+        <div class="browser-viewport">
+          <div class="mock-site mock-photo-dark">
+            <div class="ms-nav"><span class="ms-logo" style="font-style:italic">Mirkhan</span><span class="ms-navlinks">Gallery&nbsp;&nbsp;&nbsp;About&nbsp;&nbsp;&nbsp;Contact</span></div>
+            <div class="ms-hero-area" style="text-align:center;padding:36px 16px">
+              <div class="ms-h1" style="font-size:22px">Capturing<br><em>Moments.</em></div>
+              <div class="ms-sub">Professional photography in Muzaffarabad. Weddings, portraits, events.</div>
+              <div class="ms-btns" style="justify-content:center"><span class="ms-btn-p" style="background:#c4a35a">View Portfolio</span></div>
+            </div>
+            <div class="ms-gallery-grid">
+              <div style="background:linear-gradient(135deg,#1a1612,#2a2218)"></div>
+              <div style="background:linear-gradient(135deg,#12161a,#1a2430)"></div>
+              <div style="background:linear-gradient(135deg,#1a1216,#2a1820)"></div>
+              <div style="background:linear-gradient(135deg,#121a16,#182a20)"></div>
+              <div style="background:linear-gradient(135deg,#16121a,#201830)"></div>
+              <div style="background:linear-gradient(135deg,#1a1814,#2a2416)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sc-phone-wrap">
+        <div class="sc-phone">
+          <div class="sp-notch"></div>
+          <div class="mock-site mock-photo-dark" style="border-radius:0;font-size:9px">
+            <div class="ms-nav" style="padding:6px 8px"><span class="ms-logo" style="font-size:10px;font-style:italic">Mirkhan</span><span style="font-size:8px;color:rgba(255,255,255,.3)">☰</span></div>
+            <div style="text-align:center;padding:18px 8px 10px">
+              <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:300;color:#f2f0ec;margin-bottom:4px">Capturing <em style="color:#c4a35a">Moments.</em></div>
+              <div style="font-size:8px;color:rgba(255,255,255,.4);margin-bottom:8px">Professional photography</div>
+              <div style="display:inline-block;background:#c4a35a;color:#0a0a0a;font-size:7px;font-weight:700;padding:4px 10px">View Portfolio</div>
+            </div>
+            <div class="ms-gallery-grid" style="padding:0 6px 6px;gap:3px">
+              <div style="background:linear-gradient(135deg,#1a1612,#2a2218)"></div>
+              <div style="background:linear-gradient(135deg,#12161a,#1a2430)"></div>
+              <div style="background:linear-gradient(135deg,#1a1216,#2a1820)"></div>
+              <div style="background:linear-gradient(135deg,#121a16,#182a20)"></div>
+            </div>
+          </div>
+        </div>
+        <div class="sc-phone-shadow"></div>
+      </div>
+      <div class="sc-meta">
+        <div class="sc-meta-tag">Advanced · £299</div>
+        <div class="sc-meta-name">Mirkhan Photography</div>
+        <div class="sc-meta-desc">Full photography portfolio. Gallery, testimonials, services, contact form with WhatsApp.</div>
+      </div>
     </div>
-    <div class="showcase-device-wrap fi">
-      <div class="showcase-devices">
-        <!-- Desktop mockup -->
-        <div class="device-desktop">
-          <div class="device-desktop-screen">
-            <div class="dds-inner">
-              <div class="dds-nav"><div class="dds-logo"></div><div class="dds-links"><span></span><span></span><span></span><span class="dds-cta"></span></div></div>
-              <div class="dds-hero">
-                <div class="dds-h1"></div>
-                <div class="dds-h2"></div>
-                <div class="dds-sub"></div>
-                <div class="dds-btns"><div class="dds-btn-p"></div><div class="dds-btn-o"></div></div>
-                <div class="dds-stats"><div></div><div></div><div></div><div></div></div>
+
+    <!-- ROW 2: Two side by side -->
+    <div class="showcase-row showcase-duo fi">
+      <div class="sc-duo-item">
+        <div class="sc-browser">
+          <div class="browser-bar"><div class="b-dot"></div><div class="b-dot"></div><div class="b-dot"></div><div class="b-url">elitebarbers.co.uk</div></div>
+          <div class="browser-viewport">
+            <div class="mock-site mock-barber">
+              <div class="ms-nav"><span class="ms-logo">Elite Barbers</span><span class="ms-navlinks">Services&nbsp;&nbsp;Book&nbsp;&nbsp;Contact</span></div>
+              <div class="ms-hero-area">
+                <div class="ms-h1">Precision Cuts.<br><em>Sharp Style.</em></div>
+                <div class="ms-sub">Walk-ins welcome. Appointments available daily.</div>
+                <div class="ms-btns"><span class="ms-btn-p" style="background:#c4a35a">Book Now</span></div>
+              </div>
+              <div class="ms-price-list">
+                <div><span>Haircut</span><span>£18</span></div>
+                <div><span>Beard Trim</span><span>£12</span></div>
+                <div><span>Full Groom</span><span>£28</span></div>
+                <div><span>Kids Cut</span><span>£14</span></div>
               </div>
             </div>
           </div>
-          <div class="device-desktop-stand"></div>
-          <div class="device-desktop-base"></div>
         </div>
-        <!-- Phone mockup -->
-        <div class="device-phone">
-          <div class="device-phone-frame">
-            <div class="device-phone-notch"></div>
-            <div class="device-phone-screen">
-              <div class="dps-nav"><div class="dps-logo"></div><div class="dps-burger"><span></span><span></span></div></div>
-              <div class="dps-hero">
-                <div class="dps-h1"></div>
-                <div class="dps-h2"></div>
-                <div class="dps-sub"></div>
-                <div class="dps-btn"></div>
+        <div class="sc-meta">
+          <div class="sc-meta-tag">Starter · £149</div>
+          <div class="sc-meta-name">Barber Website</div>
+          <div class="sc-meta-desc">Price list, opening hours, booking link, tap-to-call, Google Maps.</div>
+        </div>
+      </div>
+      <div class="sc-duo-item">
+        <div class="sc-browser">
+          <div class="browser-bar"><div class="b-dot"></div><div class="b-dot"></div><div class="b-dot"></div><div class="b-url">sparkclean.co.uk</div></div>
+          <div class="browser-viewport">
+            <div class="mock-site mock-cleaner">
+              <div class="ms-nav"><span class="ms-logo">Spark Clean</span><span class="ms-navlinks">Services&nbsp;&nbsp;Areas&nbsp;&nbsp;Contact</span></div>
+              <div class="ms-hero-area">
+                <div class="ms-h1">Spotless Homes.<br><em>Every Time.</em></div>
+                <div class="ms-sub">Reliable domestic and commercial cleaning across Bristol.</div>
+                <div class="ms-btns"><span class="ms-btn-p" style="background:#16a34a">Get a Free Quote</span></div>
               </div>
-              <div class="dps-cards"><div></div><div></div></div>
+              <div class="ms-cards-3" style="background:#f8faf8">
+                <div class="ms-card" style="background:#fff;border:1px solid #e5e7eb"><div class="ms-card-icon">🏠</div><div class="ms-card-title" style="color:#111">Domestic</div><div class="ms-card-text" style="color:#555">Regular home cleaning</div></div>
+                <div class="ms-card" style="background:#fff;border:1px solid #e5e7eb"><div class="ms-card-icon">🏢</div><div class="ms-card-title" style="color:#111">Commercial</div><div class="ms-card-text" style="color:#555">Office &amp; workspace</div></div>
+                <div class="ms-card" style="background:#fff;border:1px solid #e5e7eb"><div class="ms-card-icon">✨</div><div class="ms-card-title" style="color:#111">Deep Clean</div><div class="ms-card-text" style="color:#555">One-off deep cleans</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sc-meta">
+          <div class="sc-meta-tag">Starter · £149</div>
+          <div class="sc-meta-name">Cleaning Company</div>
+          <div class="sc-meta-desc">Services, areas covered, testimonials, quote request form.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ROW 3: Wide restaurant + phone -->
+    <div class="showcase-row showcase-featured fi">
+      <div class="sc-browser sc-large">
+        <div class="browser-bar"><div class="b-dot"></div><div class="b-dot"></div><div class="b-dot"></div><div class="b-url">bellacucina.co.uk</div></div>
+        <div class="browser-viewport">
+          <div class="mock-site mock-restaurant">
+            <div class="ms-nav"><span class="ms-logo" style="font-family:'Fraunces',serif;font-weight:300;font-style:italic">Bella Cucina</span><span class="ms-navlinks">Menu&nbsp;&nbsp;&nbsp;Reserve&nbsp;&nbsp;&nbsp;Contact</span></div>
+            <div class="ms-hero-area" style="text-align:center;padding:40px 20px;background:linear-gradient(to bottom,rgba(0,0,0,.3),rgba(0,0,0,.5)),linear-gradient(135deg,#1a140e,#2a2016)">
+              <div class="ms-h1" style="font-size:24px;font-family:'Fraunces',serif;font-weight:300">Authentic Italian<br><em style="color:#e8c36a">Dining</em></div>
+              <div class="ms-sub" style="color:rgba(255,255,255,.6)">Fresh pasta. Wood-fired pizza. Warm hospitality.</div>
+              <div class="ms-btns" style="justify-content:center"><span class="ms-btn-p" style="background:#e8c36a;color:#1a1408">Reserve a Table</span><span class="ms-btn-o" style="border-color:rgba(232,195,106,.4);color:#e8c36a">View Menu</span></div>
+            </div>
+            <div class="ms-menu-preview">
+              <div class="ms-menu-item"><span>Margherita</span><span>£9.50</span></div>
+              <div class="ms-menu-item"><span>Carbonara</span><span>£12.00</span></div>
+              <div class="ms-menu-item"><span>Tiramisu</span><span>£7.50</span></div>
+              <div class="ms-menu-item"><span>House Wine</span><span>£6.00</span></div>
             </div>
           </div>
         </div>
       </div>
-      <div class="showcase-pulses" aria-hidden="true">
-        <div class="sp sp1"></div>
-        <div class="sp sp2"></div>
-        <div class="sp sp3"></div>
+      <div class="sc-phone-wrap">
+        <div class="sc-phone">
+          <div class="sp-notch"></div>
+          <div class="mock-site mock-restaurant" style="border-radius:0;font-size:9px">
+            <div class="ms-nav" style="padding:6px 8px"><span class="ms-logo" style="font-size:10px;font-family:'Fraunces',serif;font-style:italic">Bella Cucina</span><span style="font-size:8px;color:rgba(255,255,255,.3)">☰</span></div>
+            <div style="text-align:center;padding:16px 8px;background:linear-gradient(135deg,#1a140e,#2a2016)">
+              <div style="font-family:'Fraunces',serif;font-size:14px;font-weight:300;color:#f2f0ec">Authentic Italian <em style="color:#e8c36a">Dining</em></div>
+              <div style="font-size:7px;color:rgba(255,255,255,.4);margin:4px 0 8px">Fresh pasta. Wood-fired pizza.</div>
+              <div style="display:inline-block;background:#e8c36a;color:#1a1408;font-size:7px;font-weight:700;padding:4px 10px">Reserve</div>
+            </div>
+          </div>
+        </div>
+        <div class="sc-phone-shadow"></div>
+      </div>
+      <div class="sc-meta">
+        <div class="sc-meta-tag">Advanced · £299</div>
+        <div class="sc-meta-name">Restaurant Website</div>
+        <div class="sc-meta-desc">Menu, reservations, gallery, opening hours, Google Maps, Instagram feed.</div>
       </div>
     </div>
-    <div class="showcase-features fi">
-      <div class="sf-item">
-        <div class="sf-icon">⚡</div>
-        <div class="sf-title">Lightning fast</div>
-        <div class="sf-desc">Single-file HTML loads instantly. No WordPress bloat, no plugins, no slow database queries.</div>
+
+    <!-- ROW 4: Three smaller cards -->
+    <div class="showcase-row showcase-trio fi">
+      <div class="sc-trio-item">
+        <div class="sc-browser sc-small">
+          <div class="browser-bar"><div class="b-dot"></div><div class="b-dot"></div><div class="b-dot"></div><div class="b-url">ptfitness.co.uk</div></div>
+          <div class="browser-viewport">
+            <div class="mock-site mock-pt">
+              <div class="ms-hero-area" style="padding:16px 12px;background:linear-gradient(135deg,#0a0a0a,#1a1a1a)">
+                <div class="ms-h1" style="font-size:14px">Transform Your<br><em style="color:#ef4444">Body</em></div>
+                <div class="ms-sub" style="font-size:8px">Personal training in Leeds</div>
+                <div class="ms-btns"><span class="ms-btn-p" style="background:#ef4444;font-size:8px;padding:4px 10px">Book Session</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sc-meta"><div class="sc-meta-tag">Starter</div><div class="sc-meta-name">Personal Trainer</div></div>
       </div>
-      <div class="sf-item">
-        <div class="sf-icon">📱</div>
-        <div class="sf-title">Mobile-first</div>
-        <div class="sf-desc">Every site is tested on real devices. Looks perfect on iPhone, Android, tablet and desktop.</div>
+      <div class="sc-trio-item">
+        <div class="sc-browser sc-small">
+          <div class="browser-bar"><div class="b-dot"></div><div class="b-dot"></div><div class="b-dot"></div><div class="b-url">adokmanut.com</div></div>
+          <div class="browser-viewport">
+            <div class="mock-site" style="background:#0e0808">
+              <div class="ms-hero-area" style="padding:16px 12px">
+                <div style="background:#dc2626;color:#fff;font-size:7px;font-weight:700;padding:3px 6px;display:inline-flex;align-items:center;gap:4px;margin-bottom:8px"><span style="width:4px;height:4px;background:#fff;border-radius:50%;display:inline-block"></span>LIVE</div>
+                <div class="ms-h1" style="font-size:14px;color:#f0f0f0">Live Match<br><em style="color:#ef4444">Scores.</em></div>
+                <div class="ms-sub" style="font-size:8px;color:rgba(255,255,255,.4)">Real-time sports coverage</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sc-meta"><div class="sc-meta-tag">Starter</div><div class="sc-meta-name">Sports / Live Scores</div></div>
       </div>
-      <div class="sf-item">
-        <div class="sf-icon">🔍</div>
-        <div class="sf-title">SEO optimised</div>
-        <div class="sf-desc">Title tags, meta descriptions, Open Graph, schema markup — all included as standard on every build.</div>
-      </div>
-      <div class="sf-item">
-        <div class="sf-icon">✉</div>
-        <div class="sf-title">Enquiry-ready</div>
-        <div class="sf-desc">Every site includes a working contact form, tap-to-call phone link, and WhatsApp button.</div>
+      <div class="sc-trio-item">
+        <div class="sc-browser sc-small">
+          <div class="browser-bar"><div class="b-dot"></div><div class="b-dot"></div><div class="b-dot"></div><div class="b-url">crafters.co.uk</div></div>
+          <div class="browser-viewport">
+            <div class="mock-site" style="background:#0a0c18">
+              <div class="ms-hero-area" style="padding:16px 12px">
+                <div class="ms-h1" style="font-size:14px;color:#f0f0f0">Handmade<br><em style="color:#3b82f6">With Love</em></div>
+                <div class="ms-sub" style="font-size:8px;color:rgba(255,255,255,.4)">Unique gifts &amp; crafts online</div>
+                <div class="ms-btns"><span class="ms-btn-p" style="background:#3b82f6;font-size:8px;padding:4px 10px">Shop Now</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="sc-meta"><div class="sc-meta-tag">Starter</div><div class="sc-meta-name">Online Shop</div></div>
       </div>
     </div>
+
+    <p class="work-note">Every site is a single-file HTML build. Instant load. No complexity. No monthly fees.</p>
   </div>
 </section>
 
-<!-- WHY STATICSWIFT -->
+<!-- ═══════════════════ WHY STATICSWIFT ═══════════════════ -->
 <section id="why">
   <div class="section-inner">
     <div class="why-inner">
       <div class="why-left fi">
         <span class="section-label">Why StaticSwift</span>
         <h2 class="section-title">Not just a website.<br><em>A business asset.</em></h2>
-        <p style="font-size:15px;color:var(--muted);line-height:1.75;margin-top:16px;margin-bottom:36px">Most small businesses in the UK don't have a website — or have one that looks like it was built in 2012. Your website is often the first impression customers get. We make sure it counts.</p>
+        <p style="font-size:15px;color:var(--muted);line-height:1.75;margin-top:16px;margin-bottom:36px">Most small businesses in the UK don't have a website, or have one that looks like it was built in 2012. Your website is often the first impression customers get. We make sure it counts.</p>
         <a href="#get-started" class="btn-gold">Start your project →</a>
       </div>
       <div class="why-right">
-        <div class="why-item fi">
-          <div class="why-num">01</div>
-          <div class="why-content">
-            <div class="why-title">Your competitors already have one</div>
-            <div class="why-desc">Customers Google every business before they call. Without a professional website, you're losing work to competitors every single day.</div>
-          </div>
-        </div>
-        <div class="why-item fi d1">
-          <div class="why-num">02</div>
-          <div class="why-content">
-            <div class="why-title">First impressions happen in under 3 seconds</div>
-            <div class="why-desc">A poor website signals an unprofessional business. A great one builds instant trust and makes customers want to reach out immediately.</div>
-          </div>
-        </div>
-        <div class="why-item fi d2">
-          <div class="why-num">03</div>
-          <div class="why-content">
-            <div class="why-title">You pay once. It works forever.</div>
-            <div class="why-desc">Unlike WordPress or Squarespace — no £30/month subscriptions, no renewal fees, no plugin updates. Buy it once. It's yours.</div>
-          </div>
-        </div>
-        <div class="why-item fi d3">
-          <div class="why-num">04</div>
-          <div class="why-content">
-            <div class="why-title">Done in 24 hours, not 6 weeks</div>
-            <div class="why-desc">Traditional web agencies take months and charge thousands. We deliver a professional, custom website within 24 hours of your enquiry.</div>
-          </div>
-        </div>
+        <div class="why-item fi"><div class="why-num">01</div><div class="why-content"><div class="why-title">Your competitors already have one</div><div class="why-desc">Customers Google every business before they call. Without a professional website, you're losing work to competitors every single day.</div></div></div>
+        <div class="why-item fi d1"><div class="why-num">02</div><div class="why-content"><div class="why-title">First impressions happen in under 3 seconds</div><div class="why-desc">A poor website signals an unprofessional business. A great one builds instant trust and makes customers want to reach out immediately.</div></div></div>
+        <div class="why-item fi d2"><div class="why-num">03</div><div class="why-content"><div class="why-title">You pay once. It works forever.</div><div class="why-desc">No £30/month subscriptions, no renewal fees, no plugin updates. Buy it once. It's yours.</div></div></div>
+        <div class="why-item fi d3"><div class="why-num">04</div><div class="why-content"><div class="why-title">Done in 24 hours, not 6 weeks</div><div class="why-desc">Traditional agencies take months and charge thousands. We deliver a professional custom website within 24 hours of your enquiry.</div></div></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- COMPARISON -->
+<!-- ═══════════════════ COMPARISON ═══════════════════ -->
 <section id="compare">
   <div class="section-inner">
-    <div class="fi">
-      <span class="section-label">The honest comparison</span>
-      <h2 class="section-title">Why not just use<br><em>WordPress or Squarespace?</em></h2>
-    </div>
+    <div class="fi"><span class="section-label">Honest comparison</span><h2 class="section-title">Why not just use<br><em>WordPress or Squarespace?</em></h2></div>
     <div class="compare-table fi">
-      <div class="ct-header">
-        <div class="ct-feature"></div>
-        <div class="ct-col ct-us">StaticSwift</div>
-        <div class="ct-col">WordPress</div>
-        <div class="ct-col">Squarespace</div>
-        <div class="ct-col">Web Agency</div>
-      </div>
-      <div class="ct-row">
-        <div class="ct-feature">One-time price</div>
-        <div class="ct-col ct-us"><span class="ct-yes">£149–£299</span></div>
-        <div class="ct-col"><span class="ct-meh">Free but complex</span></div>
-        <div class="ct-col"><span class="ct-no">£0 + £15/mo</span></div>
-        <div class="ct-col"><span class="ct-no">£1,500–£10,000+</span></div>
-      </div>
-      <div class="ct-row">
-        <div class="ct-feature">Monthly fees</div>
-        <div class="ct-col ct-us"><span class="ct-yes">None. Ever.</span></div>
-        <div class="ct-col"><span class="ct-no">Hosting ~£10/mo</span></div>
-        <div class="ct-col"><span class="ct-no">£15–£40/mo</span></div>
-        <div class="ct-col"><span class="ct-no">Hosting + support</span></div>
-      </div>
-      <div class="ct-row">
-        <div class="ct-feature">Delivery time</div>
-        <div class="ct-col ct-us"><span class="ct-yes">24 hours</span></div>
-        <div class="ct-col"><span class="ct-meh">Weeks of DIY</span></div>
-        <div class="ct-col"><span class="ct-meh">Days of DIY</span></div>
-        <div class="ct-col"><span class="ct-no">4–12 weeks</span></div>
-      </div>
-      <div class="ct-row">
-        <div class="ct-feature">Custom design</div>
-        <div class="ct-col ct-us"><span class="ct-yes">Yes — fully bespoke</span></div>
-        <div class="ct-col"><span class="ct-meh">Template-based</span></div>
-        <div class="ct-col"><span class="ct-meh">Template-based</span></div>
-        <div class="ct-col"><span class="ct-yes">Yes, but expensive</span></div>
-      </div>
-      <div class="ct-row">
-        <div class="ct-feature">Technical knowledge needed</div>
-        <div class="ct-col ct-us"><span class="ct-yes">None at all</span></div>
-        <div class="ct-col"><span class="ct-no">High</span></div>
-        <div class="ct-col"><span class="ct-meh">Medium</span></div>
-        <div class="ct-col"><span class="ct-yes">None</span></div>
-      </div>
-      <div class="ct-row">
-        <div class="ct-feature">You pay before seeing it</div>
-        <div class="ct-col ct-us"><span class="ct-yes">No — approve first</span></div>
-        <div class="ct-col"><span class="ct-meh">N/A — DIY</span></div>
-        <div class="ct-col"><span class="ct-no">Yes</span></div>
-        <div class="ct-col"><span class="ct-no">Deposit upfront</span></div>
-      </div>
-      <div class="ct-row">
-        <div class="ct-feature">Page load speed</div>
-        <div class="ct-col ct-us"><span class="ct-yes">Instant</span></div>
-        <div class="ct-col"><span class="ct-no">Slow without plugins</span></div>
-        <div class="ct-col"><span class="ct-meh">Moderate</span></div>
-        <div class="ct-col"><span class="ct-meh">Varies</span></div>
-      </div>
+      <div class="ct-header"><div class="ct-feature"></div><div class="ct-col ct-us">StaticSwift</div><div class="ct-col">WordPress</div><div class="ct-col">Squarespace</div><div class="ct-col">Web Agency</div></div>
+      <div class="ct-row"><div class="ct-feature">Price</div><div class="ct-col ct-us"><span class="ct-yes">£149–£299</span></div><div class="ct-col"><span class="ct-meh">Free but complex</span></div><div class="ct-col"><span class="ct-no">£15/mo ongoing</span></div><div class="ct-col"><span class="ct-no">£2,000–£10,000+</span></div></div>
+      <div class="ct-row"><div class="ct-feature">Monthly fees</div><div class="ct-col ct-us"><span class="ct-yes">None. Ever.</span></div><div class="ct-col"><span class="ct-no">~£10/mo hosting</span></div><div class="ct-col"><span class="ct-no">£15–£40/mo</span></div><div class="ct-col"><span class="ct-no">Hosting + support</span></div></div>
+      <div class="ct-row"><div class="ct-feature">Delivery</div><div class="ct-col ct-us"><span class="ct-yes">24 hours</span></div><div class="ct-col"><span class="ct-meh">Weeks of DIY</span></div><div class="ct-col"><span class="ct-meh">Days of DIY</span></div><div class="ct-col"><span class="ct-no">4–12 weeks</span></div></div>
+      <div class="ct-row"><div class="ct-feature">Custom design</div><div class="ct-col ct-us"><span class="ct-yes">Fully bespoke</span></div><div class="ct-col"><span class="ct-meh">Template</span></div><div class="ct-col"><span class="ct-meh">Template</span></div><div class="ct-col"><span class="ct-yes">Bespoke</span></div></div>
+      <div class="ct-row"><div class="ct-feature">Knowledge needed</div><div class="ct-col ct-us"><span class="ct-yes">None</span></div><div class="ct-col"><span class="ct-no">High</span></div><div class="ct-col"><span class="ct-meh">Medium</span></div><div class="ct-col"><span class="ct-yes">None</span></div></div>
+      <div class="ct-row"><div class="ct-feature">See before paying</div><div class="ct-col ct-us"><span class="ct-yes">Yes</span></div><div class="ct-col"><span class="ct-meh">N/A</span></div><div class="ct-col"><span class="ct-no">No</span></div><div class="ct-col"><span class="ct-no">Deposit first</span></div></div>
     </div>
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
+<!-- ═══════════════════ HOW IT WORKS ═══════════════════ -->
 <section id="how">
   <div class="section-inner">
-    <div class="fi">
-      <span class="section-label">The process</span>
-      <h2 class="section-title">Three steps. Done.</h2>
-      <p class="section-sub">From enquiry to a live professional website — without a single meeting, lengthy brief, or upfront payment.</p>
-    </div>
+    <div class="fi"><span class="section-label">The process</span><h2 class="section-title">Three steps. Done.</h2><p class="section-sub">From enquiry to a live website. No meetings, no lengthy briefs, no upfront payment.</p></div>
     <div class="how-grid">
-      <div class="how-step fi">
-        <div class="how-num">01</div>
-        <h3>Tell us about your business</h3>
-        <p>Fill in our short form — takes about three minutes. Business name, what you do, what you want the site to achieve. No design experience needed.</p>
-        <div class="how-time">~3 minutes</div>
-      </div>
-      <div class="how-step fi d1">
-        <div class="how-num">02</div>
-        <h3>We build and send a preview</h3>
-        <p>Within 24 hours you receive a preview link. We design everything — layout, copy, SEO, contact form. You review it before paying a single penny.</p>
-        <div class="how-time">Within 24 hours</div>
-      </div>
-      <div class="how-step fi d2">
-        <div class="how-num">03</div>
-        <h3>Approve, pay, go live</h3>
-        <p>Happy with what you see? Approve it, pay once, and receive your website files. One free revision included. Then it's yours — to keep forever.</p>
-        <div class="how-time">Same day</div>
-      </div>
+      <div class="how-step fi"><div class="how-num">01</div><h3>Tell us about your business</h3><p>Fill in our short form. Takes about 3 minutes. Your business name, what you do, what you want the site to achieve. No design experience needed.</p><div class="how-time">~3 minutes</div></div>
+      <div class="how-step fi d1"><div class="how-num">02</div><h3>We build and send a preview</h3><p>Within 24 hours you receive a preview link. We design everything: layout, copy, SEO, contact form. You review it before paying a penny.</p><div class="how-time">Within 24 hours</div></div>
+      <div class="how-step fi d2"><div class="how-num">03</div><h3>Approve, pay, go live</h3><p>Happy? Approve it, pay once, receive your website files. One free revision included. Then it's yours to keep forever.</p><div class="how-time">Same day</div></div>
     </div>
-    <div class="how-cta-row fi">
-      <a href="#get-started" class="btn-gold">Start your project — free preview first →</a>
-    </div>
+    <div class="how-cta-row fi"><a href="#get-started" class="btn-gold">Start your project — free preview first →</a></div>
   </div>
 </section>
 
-<!-- REVIEWS -->
+<!-- ═══════════════════ REVIEWS ═══════════════════ -->
 <section id="reviews">
   <div class="section-inner">
-    <div class="fi">
-      <span class="section-label">Client feedback</span>
-      <h2 class="section-title">What clients say.</h2>
-    </div>
+    <div class="fi"><span class="section-label">Client feedback</span><h2 class="section-title">What clients say.</h2></div>
     <div class="reviews-featured fi">
       <div class="rf-quote">Absolutely brilliant from start to finish. My site was ready the next morning and it looked more professional than anything I could have imagined. Best money I've spent on my business.</div>
-      <div class="rf-author">
-        <div class="rf-av">J</div>
-        <div class="rf-name">James T.</div>
-        <div class="rf-role">Plumber · Manchester</div>
-        <div class="rf-stars">★★★★★</div>
-      </div>
+      <div class="rf-author"><div class="rf-av">J</div><div class="rf-name">James T.</div><div class="rf-role">Plumber · Manchester</div><div class="rf-stars">★★★★★</div></div>
     </div>
     <div class="reviews-grid">
-      <div class="review-card fi">
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text">"I had no idea getting a website could be this easy. Filled in the form, had a preview by the next morning. Exactly what I wanted. No fuss, no monthly fees."</p>
-        <div class="review-author">
-          <div class="review-av">S</div>
-          <div><div class="review-name">Sarah K.</div><div class="review-role">Dog Groomer · Leeds</div></div>
-        </div>
-      </div>
-      <div class="review-card fi d1">
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text">"Harry was amazing throughout. The whole process was completely stress-free and the site looks genuinely premium. I've already had new enquiries through the contact form."</p>
-        <div class="review-author">
-          <div class="review-av">M</div>
-          <div><div class="review-name">Mohammed A.</div><div class="review-role">Barber · Birmingham</div></div>
-        </div>
-      </div>
-      <div class="review-card fi d2">
-        <div class="review-stars">★★★★★</div>
-        <p class="review-text">"Worth every penny. I've tried building my own site before and it never looked right. StaticSwift delivered something genuinely professional in less than a day."</p>
-        <div class="review-author">
-          <div class="review-av">L</div>
-          <div><div class="review-name">Laura M.</div><div class="review-role">Personal Trainer · Bristol</div></div>
-        </div>
-      </div>
+      <div class="review-card fi"><div class="review-stars">★★★★★</div><p class="review-text">"Had no idea getting a website could be this easy. Filled in the form, had a preview next morning. Exactly what I wanted. No fuss, no monthly fees."</p><div class="review-author"><div class="review-av">S</div><div><div class="review-name">Sarah K.</div><div class="review-role">Dog Groomer · Leeds</div></div></div></div>
+      <div class="review-card fi d1"><div class="review-stars">★★★★★</div><p class="review-text">"Harry was amazing throughout. The whole process was stress-free and the site looks genuinely premium. Already had new enquiries through the contact form."</p><div class="review-author"><div class="review-av">M</div><div><div class="review-name">Mohammed A.</div><div class="review-role">Barber · Birmingham</div></div></div></div>
+      <div class="review-card fi d2"><div class="review-stars">★★★★★</div><p class="review-text">"Worth every penny. I'd tried building my own site before and it never looked right. StaticSwift delivered something genuinely professional in less than a day."</p><div class="review-author"><div class="review-av">L</div><div><div class="review-name">Laura M.</div><div class="review-role">Personal Trainer · Bristol</div></div></div></div>
     </div>
   </div>
 </section>
 
-<!-- CTA BAND -->
+<!-- ═══════════════════ CTA BAND ═══════════════════ -->
 <section id="cta-band">
   <div class="ctab-inner">
-    <div class="ctab-left fi">
-      <div class="ctab-label">Ready when you are</div>
-      <h2 class="ctab-headline">Your business deserves<br>a website that <em>works.</em></h2>
-    </div>
+    <div class="ctab-left fi"><div class="ctab-label">Ready when you are</div><h2 class="ctab-headline">Your business deserves<br>a website that <em>works.</em></h2></div>
     <div class="ctab-right fi d1">
-      <p class="ctab-sub">Start today. See a preview within 24 hours. Pay only when you love it.</p>
-      <div class="ctab-btns">
-        <a href="#get-started" class="ctab-btn-primary">Start your project →</a>
-        <a href="mailto:hello@staticswift.co.uk" class="ctab-btn-secondary">Ask a question</a>
-      </div>
-      <div class="ctab-trust">
-        <span>✓ No upfront payment</span>
-        <span>✓ Preview in 24hrs</span>
-        <span>✓ Free revision</span>
-      </div>
+      <p class="ctab-sub">Start today. Preview within 24 hours. Pay only when you love it.</p>
+      <div class="ctab-btns"><a href="#get-started" class="ctab-btn-primary">Start your project →</a><a href="mailto:hello@staticswift.co.uk" class="ctab-btn-secondary">Ask a question</a></div>
+      <div class="ctab-trust"><span>✓ No upfront payment</span><span>✓ Preview in 24hrs</span><span>✓ Free revision</span></div>
     </div>
   </div>
 </section>
 
-<!-- PRICING -->
+<!-- ═══════════════════ PRICING ═══════════════════ -->
 <section id="pricing">
   <div class="section-inner">
-    <div class="fi">
-      <span class="section-label">Pricing</span>
-      <h2 class="section-title">Simple, honest pricing.</h2>
-      <p class="section-sub">One payment. No subscriptions. No hidden costs. Your website is yours to keep forever.</p>
-    </div>
+    <div class="fi"><span class="section-label">Pricing</span><h2 class="section-title">Simple, honest pricing.</h2><p class="section-sub">One payment. No subscriptions. No hidden costs. Yours forever.</p></div>
     <div class="pricing-grid">
-      <div class="pricing-card fi">
-        <div class="pc-name">Starter</div>
-        <div class="pc-price">£149 <span>one-time</span></div>
-        <div class="pc-per">Single-page website · Delivered in 24hrs</div>
-        <ul class="pc-list">
-          <li class="bold">Custom single-page design</li>
-          <li>Mobile responsive</li>
-          <li>SEO optimised</li>
-          <li>Contact form included</li>
-          <li>Delivered within 24 hours</li>
-          <li>1 free revision</li>
-          <li>Upload guide included</li>
-          <li>Yours to keep forever</li>
-        </ul>
-        <a href="#get-started" class="btn-outline-full">Get started →</a>
-      </div>
-      <div class="pricing-card pc-featured fi d1">
-        <div class="pc-badge">Most popular</div>
-        <div class="pc-name">Advanced</div>
-        <div class="pc-price">£299 <span>one-time</span></div>
-        <div class="pc-per">Multi-section website · Priority build</div>
-        <ul class="pc-list">
-          <li class="bold">Everything in Starter</li>
-          <li>Gallery section</li>
-          <li>Testimonials section</li>
-          <li>About / team section</li>
-          <li>Premium animations</li>
-          <li>Priority build queue</li>
-          <li>Marquee ticker strip</li>
-          <li>Yours to keep forever</li>
-        </ul>
-        <a href="#get-started" class="btn-gold-full">Get started →</a>
-      </div>
-      <div class="pricing-card fi d2">
-        <div class="pc-name">Hosting add-on</div>
-        <div class="pc-price">£29 <span>one-time</span></div>
-        <div class="pc-per">We handle the upload for you</div>
-        <ul class="pc-list">
-          <li class="bold">We upload it for you</li>
-          <li>Connect your domain</li>
-          <li>Free hosting on Netlify</li>
-          <li>SSL certificate included</li>
-          <li>Step-by-step guide also included</li>
-          <li>Or DIY — guide makes it simple</li>
-        </ul>
-        <a href="#get-started" class="btn-outline-full">Add to order →</a>
-      </div>
+      <div class="pricing-card fi"><div class="pc-name">Starter</div><div class="pc-price">£149 <span>one-time</span></div><div class="pc-per">Single-page website · 24hr delivery</div><ul class="pc-list"><li class="bold">Custom single-page design</li><li>Mobile responsive</li><li>SEO optimised</li><li>Contact form</li><li>Delivered in 24 hours</li><li>1 free revision</li><li>Upload guide included</li><li>Yours to keep forever</li></ul><a href="#get-started" class="btn-outline-full">Get started →</a></div>
+      <div class="pricing-card pc-featured fi d1"><div class="pc-badge">Most popular</div><div class="pc-name">Advanced</div><div class="pc-price">£299 <span>one-time</span></div><div class="pc-per">Multi-section · Priority build</div><ul class="pc-list"><li class="bold">Everything in Starter</li><li>Gallery section</li><li>Testimonials</li><li>About / team section</li><li>Premium animations</li><li>Priority build queue</li><li>Marquee ticker</li><li>Yours to keep forever</li></ul><a href="#get-started" class="btn-gold-full">Get started →</a></div>
+      <div class="pricing-card fi d2"><div class="pc-name">Hosting add-on</div><div class="pc-price">£29 <span>one-time</span></div><div class="pc-per">We upload it for you</div><ul class="pc-list"><li class="bold">We handle the upload</li><li>Connect your domain</li><li>Free Netlify hosting</li><li>SSL certificate</li><li>Guide also included</li><li>Or DIY — guide makes it easy</li></ul><a href="#get-started" class="btn-outline-full">Add to order →</a></div>
     </div>
-    <p class="pricing-note">No payment until you approve the preview. Not happy with it? You pay nothing.</p>
+    <p class="pricing-note">No payment until you approve the preview. Not happy? You pay nothing.</p>
   </div>
 </section>
 
-<!-- FAQ -->
+<!-- ═══════════════════ FAQ ═══════════════════ -->
 <section id="faq">
   <div class="section-inner faq-inner">
-    <div class="faq-left fi">
-      <span class="section-label">FAQ</span>
-      <h2 class="section-title">Questions answered.</h2>
-      <p style="font-size:14px;color:var(--muted);line-height:1.75;margin-top:16px">Anything else? Email us at <a href="mailto:hello@staticswift.co.uk" style="color:var(--gold)">hello@staticswift.co.uk</a></p>
-    </div>
+    <div class="faq-left fi"><span class="section-label">FAQ</span><h2 class="section-title">Questions<br>answered.</h2><p style="font-size:14px;color:var(--muted);line-height:1.75;margin-top:16px">Anything else?<br><a href="mailto:hello@staticswift.co.uk" style="color:var(--gold)">hello@staticswift.co.uk</a></p></div>
     <div class="faq-list" id="faq-list">
-      <div class="faq-item fi">
-        <button class="faq-q" onclick="toggleFaq(this)">Do I pay before seeing the site?<span class="fq-plus">+</span></button>
-        <div class="faq-a">No — you only pay after you've seen and approved the preview. We build first, you pay after. If you're not happy with the preview, you don't pay anything.</div>
-      </div>
-      <div class="faq-item fi">
-        <button class="faq-q" onclick="toggleFaq(this)">What do I need to provide?<span class="fq-plus">+</span></button>
-        <div class="faq-a">Just fill in our short form — takes about three minutes. Business name, what you do, your phone number and email. We handle all the design and content. No design experience needed.</div>
-      </div>
-      <div class="faq-item fi">
-        <button class="faq-q" onclick="toggleFaq(this)">How quickly will I get a preview?<span class="fq-plus">+</span></button>
-        <div class="faq-a">You'll receive a preview link within 24 hours of submitting your form. Most clients get theirs the same day — often within a few hours.</div>
-      </div>
-      <div class="faq-item fi">
-        <button class="faq-q" onclick="toggleFaq(this)">What if I want changes?<span class="fq-plus">+</span></button>
-        <div class="faq-a">One free revision is included with every order. Just tell us what you'd like changed after seeing the preview and we'll update it promptly.</div>
-      </div>
-      <div class="faq-item fi">
-        <button class="faq-q" onclick="toggleFaq(this)">Are there really no monthly fees?<span class="fq-plus">+</span></button>
-        <div class="faq-a">None at all — ever. You pay once and the site is yours to keep forever. Hosting on Netlify is completely free. The only optional cost is a domain name (around £10–15/year from any registrar).</div>
-      </div>
-      <div class="faq-item fi">
-        <button class="faq-q" onclick="toggleFaq(this)">Can I use my own domain name?<span class="fq-plus">+</span></button>
-        <div class="faq-a">Yes. Every delivery includes a full step-by-step guide for connecting your domain. Or add the hosting add-on for £29 and we'll handle the entire setup for you.</div>
-      </div>
-      <div class="faq-item fi">
-        <button class="faq-q" onclick="toggleFaq(this)">What types of businesses do you work with?<span class="fq-plus">+</span></button>
-        <div class="faq-a">Any UK small business. We've built for plumbers, barbers, photographers, dog groomers, personal trainers, takeaways, driving instructors, accountants — if you're a local business that needs a professional web presence, we can help.</div>
-      </div>
+      <div class="faq-item fi"><button class="faq-q" onclick="toggleFaq(this)">Do I pay before seeing the site?<span class="fq-plus">+</span></button><div class="faq-a">No. You only pay after seeing and approving the preview. We build first, you pay after. Not happy? You pay nothing.</div></div>
+      <div class="faq-item fi"><button class="faq-q" onclick="toggleFaq(this)">What do I need to provide?<span class="fq-plus">+</span></button><div class="faq-a">Fill in our short form — about 3 minutes. Business name, what you do, phone and email. We handle all the design and content. No experience needed.</div></div>
+      <div class="faq-item fi"><button class="faq-q" onclick="toggleFaq(this)">How quickly will I get a preview?<span class="fq-plus">+</span></button><div class="faq-a">Within 24 hours. Most clients get theirs the same day, often within a few hours.</div></div>
+      <div class="faq-item fi"><button class="faq-q" onclick="toggleFaq(this)">What if I want changes?<span class="fq-plus">+</span></button><div class="faq-a">One free revision is included. Tell us what you'd like changed and we'll update it promptly.</div></div>
+      <div class="faq-item fi"><button class="faq-q" onclick="toggleFaq(this)">Are there really no monthly fees?<span class="fq-plus">+</span></button><div class="faq-a">None. Ever. You pay once and the site is yours forever. Hosting on Netlify is free. Only optional cost is a domain (about £10–15/year).</div></div>
+      <div class="faq-item fi"><button class="faq-q" onclick="toggleFaq(this)">What businesses do you work with?<span class="fq-plus">+</span></button><div class="faq-a">Any UK small business. Plumbers, barbers, photographers, groomers, trainers, takeaways, accountants, cleaners — if you need a professional web presence, we can help.</div></div>
     </div>
   </div>
 </section>
@@ -1835,6 +1723,7 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
     </form>
   </div>
 </section>
+
 
 
 
