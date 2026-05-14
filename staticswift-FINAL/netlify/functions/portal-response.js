@@ -37,9 +37,7 @@ exports.handler = async (event) => {
         const isAdvanced = client.package === 'advanced';
         const hasHosting = client.hosting_addon === 'yes';
         const amount = (isAdvanced ? 299 : 149) + (hasHosting ? 29 : 0);
-        const paymentLink = isAdvanced
-          ? (process.env.STRIPE_PAYMENT_LINK_ADVANCED || 'https://staticswift.co.uk/#contact')
-          : (process.env.STRIPE_PAYMENT_LINK_STARTER || 'https://staticswift.co.uk/#contact');
+
 
         try {
           await transporter.sendMail({
@@ -53,10 +51,14 @@ exports.handler = async (event) => {
               <table style="width:100%;border-collapse:collapse;font-size:14px;margin:24px 0">
                 <tr style="background:#f5f5f5"><td style="padding:10px 14px;border:1px solid #eee">${isAdvanced ? 'Advanced' : 'Starter'} Website Design</td><td style="padding:10px 14px;border:1px solid #eee;text-align:right">£${isAdvanced ? 299 : 149}</td></tr>
                 ${hasHosting ? '<tr><td style="padding:10px 14px;border:1px solid #eee">Hosting Upload Service</td><td style="padding:10px 14px;border:1px solid #eee;text-align:right">£29</td></tr>' : ''}
-                <tr style="font-weight:700;background:#f5f5f5"><td style="padding:10px 14px;border:1px solid #eee">Total Due</td><td style="padding:10px 14px;border:1px solid #eee;text-align:right;color:#00C8E0;font-size:18px">£${amount}</td></tr>
+                <tr style="font-weight:700;background:#f5f5f5"><td style="padding:10px 14px;border:1px solid #eee">Total Due</td><td style="padding:10px 14px;border:1px solid #eee;text-align:right;color:#b8953e;font-size:18px">£${amount}</td></tr>
               </table>
-              <p style="text-align:center;margin:28px 0"><a href="${paymentLink}" style="background:#00C8E0;color:#07090f;font-weight:700;padding:16px 36px;border-radius:8px;text-decoration:none;font-size:16px;display:inline-block">Pay Now — £${amount}</a></p>
-              <p style="font-size:13px;color:#888;text-align:center">Files delivered within 1 hour of payment. Questions? Reply to this email.</p>
+              <div style="background:#faf8f2;border:1px solid #e8e4d8;border-radius:8px;padding:20px;margin:24px 0">
+                <h3 style="font-size:15px;margin:0 0 12px;color:#0b0b0b">Bank Transfer Details</h3>
+                <table style="font-size:13px;color:#333;line-height:1.8"><tr><td style="font-weight:600;padding:2px 14px 2px 0">Beneficiary</td><td>Harry Yule</td></tr><tr><td style="font-weight:600;padding:2px 14px 2px 0">Sort Code</td><td>04-00-75</td></tr><tr><td style="font-weight:600;padding:2px 14px 2px 0">Account No.</td><td>98518224</td></tr><tr><td style="font-weight:600;padding:2px 14px 2px 0">Reference</td><td>INV-${client.business_name || 'STATICSWIFT'}</td></tr><tr><td style="font-weight:600;padding:2px 14px 2px 0">Bank</td><td>Revolut Ltd</td></tr></table>
+                <p style="font-size:11px;color:#888;margin:10px 0 0">International: IBAN GB64 REVO 0099 7062 6486 05 · BIC REVOGB21</p>
+              </div>
+              <p style="font-size:14px;color:#555;text-align:center">Your website files will be delivered within 1 hour of payment confirmation.</p>
               </div>`,
           });
           client.stage = 'invoice-sent';

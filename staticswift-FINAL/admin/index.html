@@ -1369,152 +1369,11 @@ function generatePrompt(c) {
   const contactMethods = Array.isArray(c.contact_methods) ? c.contact_methods.join(', ') : (c.contact_methods || 'phone, email, contact form');
   const refs = [c.reference_1, c.reference_2, c.reference_3].filter(Boolean).join(' | ');
 
-  return `=== STATICSWIFT BUILD PROMPT — ${c.business_name || '[BUSINESS]'} ===
+  return `=== STATICSWIFT BUILD PROMPT ===
 
-You are a world-class creative director and senior frontend engineer.
-Build a complete single-file HTML website for ${c.business_name || '[BUSINESS NAME]'}, a ${c.business_type || '[BUSINESS TYPE]'} based in ${c.location || '[LOCATION]'}.
-Tier: ${pkg ? 'Advanced — premium multi-section, gallery, testimonials, rich animations. Worth £299.' : 'Starter — clean, elegant single page. Worth £149.'}
-
-=== CLIENT ===
-Owner name: ${c.name || '—'}
-Business name: ${c.business_name || '—'}
-Business type: ${c.business_type || '—'}
-Location: ${c.location || '—'}
-Trading: ${c.trading_years || 'not specified'}
-Target customers: ${c.target_customers || 'local customers'}
-
-=== ABOUT THE BUSINESS ===
-Description: ${c.brief || c.business_description || 'not specified'}
-USP / what makes them different: ${c.usp || 'not specified'}
-
-=== WEBSITE GOALS ===
-The client wants the website to: ${goals}
-${sections ? 'Sections client specifically requested: ' + sections : ''}
-
-=== DESIGN DIRECTION ===
-Colour preference: ${c.colour_preference || 'choose best professional palette for this trade'}
-Specific brand colours: ${c.brand_colours || 'none given — use best judgement'}
-Theme: ${c.theme === 'dark' ? 'Dark background — premium, modern feel' : c.theme === 'light' ? 'Light background — clean, professional feel' : 'Use best judgement for this niche'}
-Vibe / personality: ${vibe}
-Avoid: ${c.avoid || 'nothing specified'}
-Reference sites: ${refs || 'none provided — use best design judgement for this niche'}
-
-=== CONTENT ===
-Services / products: ${c.services || 'not specified — use best judgement for this business type'}
-Phone: ${c.phone || 'not specified'}
-Enquiry email (contact form sends to): ${c.enquiry_email || c.delivery_email || 'not specified'}
-Hours: ${c.hours || 'not specified'}
-Address: ${c.address || 'not specified — omit from site'}
-Social media: ${c.social_links || 'not specified'}
-Contact methods to show: ${contactMethods}
-Special requests: ${c.special_requests || 'none'}
-
-=== CREATIVE DIRECTION ===
-This website must feel PREMIUM, CINEMATIC, and TRUSTWORTHY — not like a template.
-Every section should answer: Why trust them? Why are they better? What do I get? Why contact them now?
-
-PRIMARY GOALS — conversion psychology:
-1. Establish credibility and trust within 5 seconds of landing
-2. Communicate the business outcome clearly (not just the service)
-3. Guide visitors emotionally toward making contact
-4. Feel expensive and worth paying for
-
-DESIGN PHILOSOPHY:
-- Premium and editorial. Think high-end agency, not generic small business template.
-- Calm confidence. Not flashy, not cluttered. Intentional spacing. Breathing room.
-- Typography carries emotional weight. Large, bold headlines. Generous line-height.
-- Subtle, cinematic motion — fade-in on scroll, hover transitions, no bounce/gimmick animations.
-- Every section is purposeful. No filler. No buzzwords.
-- Colour palette must feel sophisticated — not generic or garish.
-
-=== BUILD RULES ===
-TECHNICAL:
-- Single HTML file. All CSS and JS inline. No external dependencies except Google Fonts CDN.
-- Mobile-first responsive. Test on 375px minimum viewport.
-- Formsubmit.co for contact form: action="https://formsubmit.co/${c.enquiry_email || c.delivery_email || 'EMAIL'}"
-  Include: <input type="hidden" name="_captcha" value="false"> and <input type="hidden" name="_template" value="table">
-- WhatsApp button: https://wa.me/[full international number, no spaces, no +]
-- Phone: <a href="tel:NUMBER"> for tap-to-call
-- SEO: keyword-rich title tag, meta description max 155 chars, Open Graph tags, LocalBusiness JSON-LD schema
-- Animations: IntersectionObserver fade-in, CSS transitions, no heavy JS
-- Footer must say: "Site by StaticSwift — staticswift.co.uk"
-- No prices unless client provided them
-- No location/address unless client provided it
-- No external images. CSS gradients, geometric shapes, abstract art only. Never <img> pointing to external URLs.
-- Custom cursor on desktop (dot + ring follower)
-- Scrolling marquee ticker strip for trust signals
-
-TYPOGRAPHY:
-- Use Google Fonts — pick a premium, characterful pairing. NOT Inter, NOT Roboto, NOT generic sans.
-- Good options: Fraunces + DM Sans, Playfair Display + Outfit, Cormorant + Plus Jakarta Sans, etc.
-- Hero headline: 64px+ on desktop, bold editorial weight
-- Body text: 15–16px, 1.7 line-height minimum
-- Section headers: large, commanding, with generous whitespace above
-
-SPACING:
-- Luxury spacing throughout. Sections: 120px+ padding top/bottom.
-- Breathing room between elements. Don't compress.
-- Let whitespace do the work.
-
-COLOUR APPROACH:
-- Commit to a clear palette: one dominant, one accent, one background
-- Dark themes: deep near-black background, warm or cool accent, light text
-- Light themes: clean off-white/cream background, strong dark text, one accent
-- No cheap gradients. Subtle radial glows allowed sparingly.
-
-${pkg ? `=== ADVANCED TIER — FULL BRIEF ===
-Build an editorial, multi-section website. Every section earns its place.
-
-SECTIONS (in order):
-1. NAV — sticky, minimal, blur backdrop. Logo left, links right, CTA button.
-2. HERO — full viewport height. Left: editorial headline (3 lines, large), subheading, 2 CTAs, 4 proof stats. Right: CSS illustration or abstract visual (no images). Staggered animation on load. Availability badge.
-3. MARQUEE TICKER — single line strip, services/values, slow scroll, uppercase mono.
-4. WORK/GALLERY — asymmetric masonry grid, 6-8 slots. CSS art fills (gradients + shapes). Hover reveals category label. No real images needed.
-5. SERVICES — 6 cards minimum. Icon, title, description, hover state. Large number in background.
-6. ABOUT — split layout: CSS portrait illustration left, bio text right. Signature. Experience badge. Personal, human tone.
-7. PROCESS — 4 numbered steps. Minimal, editorial. Show the journey from enquiry to delivery.
-8. TESTIMONIALS — 1 featured large pull-quote + 3 card grid. Real-sounding names for this business type.
-9. CTA BAND — full width coloured section. Strong headline. Two buttons. Confidence.
-10. CONTACT — split: left has details + secondary trust signals. Right has form. Underline-style inputs.
-11. FOOTER — 3-4 columns, logo, tagline, nav links, services, contact.
-
-ANIMATION NOTES:
-- Staggered hero reveal on page load (CSS animation-delay)
-- IntersectionObserver fade-up on all sections
-- Hover: cards lift, borders illuminate, text shifts to accent colour
-- Marquee: continuous, no pause, medium speed
-- Custom cursor: small dot + larger slow-following ring` : `=== STARTER TIER — FULL BRIEF ===
-Build a clean, premium, high-converting single-page website.
-
-SECTIONS (in order):
-1. NAV — sticky, minimal. Logo left, key links right, one CTA button.
-2. HERO — strong headline, subheadline (outcome-focused, not service-focused), 2 CTAs, proof stats strip. Animated background (CSS only). Availability badge.
-3. MARQUEE TICKER — trust signals strip.
-4. SERVICES — 3 clean cards. Icon, title, description. Premium hover states.
-5. ABOUT — 2-column. Human, personal. Key facts and what makes them different.
-6. TESTIMONIALS — 3 cards. Specific, credible, outcome-focused.
-7. CONTACT — full details + form. Every contact method listed.
-8. FOOTER — logo, tagline, links, contact.
-
-Keep it tight. Every section earns its place. No filler.`}
-
-=== END ===`;
-}
-  const goals = Array.isArray(c.website_goals) ? c.website_goals.join(', ') : (c.website_goals || 'get phone calls, look professional');
-  const vibe = Array.isArray(c.vibe) ? c.vibe.join(', ') : (c.vibe || 'professional, trustworthy, local');
-  const sections = Array.isArray(c.sections) ? c.sections.join(', ') : (c.sections || '');
-  const contactMethods = Array.isArray(c.contact_methods) ? c.contact_methods.join(', ') : (c.contact_methods || 'phone, email, contact form');
-  const refs = [c.reference_1, c.reference_2, c.reference_3].filter(Boolean).join(' | ');
-  const tierLabel = pkg ? 'Advanced — £299' : 'Starter — £149';
-
-  return `=== STATICSWIFT BUILD PROMPT — ${c.business_name || '[BUSINESS]'} ===
-Package: ${tierLabel}
-
-You are a world-class creative director and senior frontend engineer.
-Build a complete single-file HTML website for ${c.business_name || '[BUSINESS NAME]'}, a ${c.business_type || '[BUSINESS TYPE]'} based in ${c.location || '[LOCATION]'}.
-
-PRIMARY GOAL: This site must feel PREMIUM, trust-building, and conversion-focused.
-Visitors must feel within 5 seconds: "This is a professional business I want to work with."
+You are a world-class creative director and frontend engineer.
+Build a complete single-file HTML website for ${c.business_name || '[BUSINESS]'}, a ${c.business_type || '[TYPE]'} based in ${c.location || '[LOCATION]'}.
+Tier: ${pkg ? 'Advanced (multi-section, gallery, testimonials, rich animations). Worth £299.' : 'Starter (clean single page). Worth £149.'}
 
 === CLIENT ===
 Owner: ${c.name || '—'}
@@ -1522,185 +1381,79 @@ Business: ${c.business_name || '—'}
 Type: ${c.business_type || '—'}
 Location: ${c.location || '—'}
 Trading: ${c.trading_years || 'not specified'}
-Target customers: ${c.target_customers || 'local customers'}
-
-=== ABOUT ===
-Description: ${c.brief || c.business_description || 'not specified — use best judgement for this business type'}
-What makes them different: ${c.usp || 'not specified — infer from business type'}
+Customers: ${c.target_customers || 'local customers'}
+Description: ${c.brief || c.business_description || 'not specified'}
+USP: ${c.usp || 'not specified'}
 
 === GOALS ===
-The website must: ${goals}
-${sections ? 'Client specifically requested sections: ' + sections : ''}
+Website goals: ${goals}
+${sections ? 'Requested sections: ' + sections : ''}
 
-=== DESIGN DIRECTION ===
-Colour preference: ${c.colour_preference || 'choose the best professional palette for this trade'}
-Specific colours: ${c.brand_colours || 'none given — use best judgement'}
-Light or dark: ${c.theme === 'dark' ? 'Dark background — premium, cinematic feel' : c.theme === 'light' ? 'Light background — clean, editorial feel' : 'Use best judgement for this niche'}
+=== DESIGN ===
+Colours: ${c.colour_preference || 'choose best palette for this trade'}
+Brand colours: ${c.brand_colours || 'none — use best judgement'}
+Theme: ${c.theme === 'dark' ? 'Dark' : c.theme === 'light' ? 'Light' : 'Best judgement'}
 Vibe: ${vibe}
-Avoid: ${c.avoid || 'nothing specified'}
-Reference sites: ${refs || 'none — use best design judgement for this niche'}
+Reference: ${refs || 'none — use best judgement'}
 
 === CONTENT ===
-Services / products: ${c.services || 'not specified — use best judgement for this business type'}
+Services: ${c.services || 'not specified — use judgement for this type'}
 Phone: ${c.phone || 'not specified'}
-Enquiry email (contact form action): ${c.enquiry_email || c.delivery_email || 'not specified'}
+Email (form sends to): ${c.enquiry_email || c.delivery_email || 'not specified'}
 Hours: ${c.hours || 'not specified'}
 Address: ${c.address || 'not specified — omit'}
-Social media: ${c.social_links || 'not specified'}
-Contact methods on site: ${contactMethods}
-Special requests: ${c.special_requests || 'none'}
+Social: ${c.social_links || 'not specified'}
+Contact methods: ${contactMethods}
+Requests: ${c.special_requests || 'none'}
 
-=== DESIGN SYSTEM REQUIREMENTS ===
-- Typography: Use a premium display font (Fraunces, Playfair Display, Cormorant, or similar serif) paired with a refined sans-serif (DM Sans, Outfit, or similar). NO Inter, Roboto, or generic system fonts.
-- Colour: Commit to a dominant dark or light palette with ONE strong accent colour. Use CSS variables throughout. No cheap gradients.
-- Spacing: Luxury spacing. Generous padding. Sections should breathe. Minimum 100px section padding.
-- No card grids with 6+ identical cards — use editorial layouts instead.
-- Typography scale: Hero headline 64px+. Section titles 48px+. Use em/rem properly.
+=== CREATIVE DIRECTION ===
+This must feel PREMIUM and TRUSTWORTHY. Not a template.
+Every section answers: Why trust them? Why are they better? What do I get? Why contact now?
 
-=== COPY REQUIREMENTS ===
-Write all copy focused on BUSINESS OUTCOMES, not features or technical specs.
-Bad: "Mobile responsive website with SEO"
-Good: "A site that gets you found on Google and turns visitors into customers"
-Every headline should create emotional desire or establish authority.
-CTAs should be confident and outcome-focused: "Start your project", "Get in touch today", "Book a free call".
-
-=== TECHNICAL REQUIREMENTS ===
-- Single HTML file. All CSS and JS inline. Google Fonts CDN only. No frameworks.
-- Mobile-first. Works perfectly at 375px.
-- Contact form: formsubmit.co (action="https://formsubmit.co/${c.enquiry_email || c.delivery_email || 'EMAIL'}"). Includes _subject, _captcha:false, _template:table hidden fields.
-- WhatsApp link: https://wa.me/[international number without + or spaces]
-- Phone: <a href="tel:NUMBER">
-- SEO: Descriptive title, meta description (150 chars max), Open Graph tags, LocalBusiness JSON-LD schema.
-- Animations: CSS IntersectionObserver fade-ups only. Smooth, subtle, premium. NO bounce, NO janky JS.
-- Footer: "Site by StaticSwift — staticswift.co.uk"
-- No prices unless client provided them. No location unless client provided it.
-- NO external images. Use CSS gradients, geometric shapes, abstract art for all visuals.
-
-${pkg ? `=== ADVANCED TIER ===
-This is a £299 Advanced site. It must feel worth every penny.
-
-REQUIRED SECTIONS (in this order):
-1. HERO — Full-viewport. Cinematic CSS background (radial gradients, grain texture overlay). Large serif headline (4–5 words, bold outcome-focused). Italic accent on key phrase. Subheadline 16–18px. Two CTAs (primary filled, secondary outlined). 4-stat strip (years/clients/rating/response time) at bottom.
-2. MARQUEE TICKER — Dark background strip. Services/values scrolling left. Subtle separator between items.
-3. PORTFOLIO / GALLERY — 2-column grid. Each item is a CSS art card with unique gradient + abstract shapes representing the work type. Hover reveals overlay with category label. Large, editorial feel.
-4. SERVICES — NOT a card grid. Use an editorial numbered list layout (01/02/03) or two-column table layout. Each service gets a large number, title, one-line description, and "from £X" if provided.
-5. ABOUT — Split layout. Left: CSS illustration or abstract art representing the business. Right: personal/business bio, signature, feature chips (equipment/credentials/years). Position the owner as a trusted expert.
-6. TESTIMONIALS — Large featured quote (the best one, displayed prominently) + 3 smaller review cards in a grid. Stars. Author name and role. Quote mark as decorative element.
-7. HOW IT WORKS — 4-step numbered section. Clean. Horizontal timeline on desktop, stacked on mobile.
-8. PRICING (only if prices provided) — 3-tier comparison. Most popular highlighted with top border accent.
-9. FAQ — 2-column: sticky heading left, accordion right. 5–6 questions covering main objections.
-10. CONTACT — Split: left side has contact details (phone, WhatsApp, email, hours) with icon grid. Right side has the contact form with clean underline inputs.
-11. FOOTER — 3–4 column grid. Logo + tagline + contact. Nav links. Services links. All links anchor to sections.
-
-ANIMATIONS: Every section fades up on scroll. Hero headline animates line by line. Stagger delays on grid items. Hover states on all interactive elements.` : `=== STARTER TIER ===
-This is a £149 Starter site. It must be clean, professional, and conversion-focused.
-
-REQUIRED SECTIONS:
-1. HERO — Full-viewport or near. Strong serif headline. Subheadline. Two CTAs. 3-4 proof stats.
-2. TICKER STRIP — Services/values scrolling.
-3. SERVICES — 3 clean cards with icon, title, description.
-4. ABOUT — Simple 2-column. Business bio on one side, key facts/credentials on other.
-5. TESTIMONIALS — 3 review cards with stars.
-6. CONTACT — Contact details + form. Clean layout.
-7. FOOTER — Logo, tagline, nav links, contact.
-
-Keep it clean and premium. No bloat. Every element earns its place.`}
-
-=== ABSOLUTELY AVOID ===
-- Generic Tailwind startup aesthetics
-- Purple gradients on white
-- Identical card grids with 6+ items
-- Small typography (anything under 14px for body)
-- Developer-centric copy
-- Over-animation or bounce effects
-- Template-feeling layouts
-- Dense sections with no breathing room
-- Buzzword-heavy headlines
-
-=== END ===`;
-}
-  const goals = Array.isArray(c.website_goals) ? c.website_goals.join(', ') : (c.website_goals || 'get phone calls, look professional');
-  const vibe = Array.isArray(c.vibe) ? c.vibe.join(', ') : (c.vibe || 'professional, trustworthy, local');
-  const sections = Array.isArray(c.sections) ? c.sections.join(', ') : (c.sections || '');
-  const contactMethods = Array.isArray(c.contact_methods) ? c.contact_methods.join(', ') : (c.contact_methods || 'phone, email, contact form');
-  const refs = [c.reference_1, c.reference_2, c.reference_3].filter(Boolean).join(' | ');
-
-  return `=== STATICSWIFT BUILD PROMPT — ${c.business_name || '[BUSINESS]'} ===
-
-Build a complete single-file HTML website for ${c.business_name || '[BUSINESS NAME]'}, a ${c.business_type || '[BUSINESS TYPE]'} based in ${c.location || '[LOCATION]'}.
-Tier: ${pkg ? 'Advanced (multi-section, gallery, testimonials, about, rich animations)' : 'Starter (single page, clean, essential sections only)'}.
-
-=== CLIENT ===
-Owner name: ${c.name || '—'}
-Business name: ${c.business_name || '—'}
-Business type: ${c.business_type || '—'}
-Location: ${c.location || '—'}
-Trading: ${c.trading_years || 'not specified'}
-Target customers: ${c.target_customers || 'local customers'}
-
-=== ABOUT THE BUSINESS ===
-Description: ${c.brief || c.business_description || 'not specified'}
-USP / what makes them different: ${c.usp || 'not specified'}
-
-=== WEBSITE GOALS ===
-The client wants the website to: ${goals}
-${sections ? 'Sections client specifically requested: ' + sections : ''}
-
-=== DESIGN DIRECTION ===
-Colour preference: ${c.colour_preference || 'choose best professional palette for this trade'}
-Specific brand colours: ${c.brand_colours || 'none given — use best judgement'}
-Theme: ${c.theme === 'dark' ? 'Dark background — premium, modern feel' : c.theme === 'light' ? 'Light background — clean, professional feel' : 'Use best judgement for this niche'}
-Vibe / personality: ${vibe}
-Avoid: ${c.avoid || 'nothing specified'}
-Reference sites: ${refs || 'none provided — use best design judgement for this niche'}
-
-=== CONTENT ===
-Services / products: ${c.services || 'not specified — use best judgement for this business type'}
-Phone: ${c.phone || 'not specified'}
-Enquiry email (contact form sends to): ${c.enquiry_email || c.delivery_email || 'not specified'}
-Hours: ${c.hours || 'not specified'}
-Address: ${c.address || 'not specified — omit from site'}
-Social media: ${c.social_links || 'not specified'}
-Contact methods to show: ${contactMethods}
-Special requests: ${c.special_requests || 'none'}
+DESIGN PHILOSOPHY:
+- Premium editorial. High-end agency feel, not generic template.
+- WHITE BACKGROUND. Warm whites (#ffffff, #fafaf8, #f4f3f0). Rich black text (#0b0b0b).
+- Warm gold accent (#b8953e) for highlights and CTAs.
+- Typography: Fraunces serif for headlines + DM Sans for body. NOT Inter/Roboto.
+- Hero headline 64px+ desktop. Body 15-16px, 1.7 line-height.
+- Luxury spacing: 120px+ section padding.
+- Apple-style scroll animations: translateY(40px) + opacity fade, cubic-bezier(.16,1,.3,1), 0.9s duration.
+- Cards: border-radius 16px, 1px borders, hover lift with shadow.
+- Buttons: border-radius 100px (pill shape), black fill or outline.
+- No cheap gradients. No bounce animations. No flashy effects.
 
 === BUILD RULES ===
-- Single HTML file. All CSS and JS inline. No external dependencies except Google Fonts CDN.
-- Mobile-first responsive design. Test on 375px width minimum.
-- Formsubmit.co for contact form (action="https://formsubmit.co/${c.enquiry_email || c.delivery_email || 'EMAIL'}"). No account needed.
-- WhatsApp link format: https://wa.me/[full international number without spaces or +]
-- Phone as tap-to-call: <a href="tel:NUMBER">
-- SEO: descriptive title tag, meta description (150 chars max), Open Graph tags, LocalBusiness JSON-LD schema with name/description/phone/email/address if available.
-- Animations: smooth scroll, fade-in on scroll with IntersectionObserver, hover transitions. No janky JS — CSS preferred.
-- Footer must say: "Site by StaticSwift — staticswift.co.uk"
-- No prices shown unless the client has provided them above.
-- No location shown unless the client has provided it above.
-- No stock images. Use CSS gradients, geometric shapes, or abstract art for visuals. Never use <img> tags pointing to external URLs.
-- Custom cursor on desktop.
-- Scrolling marquee ticker for trust signals / services.
-${pkg ? `
-=== ADVANCED TIER REQUIREMENTS ===
-- Hero section: Full viewport height, animated background (CSS only), large headline, subheadline, 2 CTAs, stat counters (e.g. years experience, clients served, rating).
-- Scrolling marquee strip below hero listing services/values.
-- Services section: 6 cards minimum with icons, descriptions and hover effects.
-- Gallery / portfolio section: CSS art grid (no real images — use gradients and shapes to suggest photography/work). 8+ items with hover overlays showing category labels.
-- About section: split layout with CSS illustration on one side, bio text / signature on other. Include experience badge.
-- Testimonials: Featured large quote + 3 card grid. Made-up but realistic names for this business type and location.
-- Process / how it works: 4-step numbered section.
-- Packages / pricing (only if prices were given): 3-tier comparison cards.
-- CTA band: full-width coloured strip with headline and 2 buttons.
-- Contact section: split layout — contact details left, form right. Underline-style form inputs.
-- Footer: 3-4 column grid with logo, tagline, nav links, services links, contact details.
-- All sections must have smooth fade-in on scroll.
-- Animated custom cursor (dot + ring).` : `
-=== STARTER TIER REQUIREMENTS ===
-- Hero: Strong headline, subheadline, 1–2 CTAs. Animated CSS background. Stats strip.
-- Services: 3 cards with icons and descriptions.
-- About: Simple 2-column layout with key facts.
-- Testimonials: 3 cards.
-- Contact: Contact details + form. Clean layout.
-- Footer: Logo, tagline, nav links, contact.
-- Fade-in animations on scroll throughout.`}
+- Single HTML file. All CSS + JS inline. Google Fonts CDN only.
+- Mobile-first responsive. 375px min.
+- Contact form: formsubmit.co (action="https://formsubmit.co/${c.enquiry_email || c.delivery_email || 'EMAIL'}") with _captcha=false and _template=table.
+- WhatsApp: https://wa.me/[international number, no spaces/+]
+- Phone: <a href="tel:NUMBER">
+- SEO: title, meta description, Open Graph, LocalBusiness JSON-LD.
+- Animations: IntersectionObserver fade-in, CSS transitions.
+- Footer: "Site by StaticSwift — staticswift.co.uk"
+- No prices unless client provided them. No location unless provided.
+- No external images. CSS gradients, shapes, abstract art only.
+
+${pkg ? `=== ADVANCED SECTIONS ===
+1. Nav — sticky, frosted glass blur, logo left, links right, pill CTA
+2. Hero — centred, large headline, subhead, 2 CTAs, proof stats strip
+3. Marquee ticker
+4. Services — 6 cards, icons, descriptions, hover lift
+5. Gallery — masonry grid, CSS art, hover category labels
+6. About — split layout, CSS illustration, bio, signature
+7. Process — 4 numbered steps
+8. Testimonials — featured quote + 3 cards
+9. CTA band — dark background, strong headline
+10. Contact — details + form, pill inputs
+11. Footer — 3-4 columns` : `=== STARTER SECTIONS ===
+1. Nav — sticky, frosted glass
+2. Hero — centred headline, 2 CTAs, stats
+3. Marquee ticker
+4. Services — 3 cards
+5. About — 2 columns
+6. Testimonials — 3 cards
+7. Contact — details + form
+8. Footer`}
 
 === END ===`;
 }

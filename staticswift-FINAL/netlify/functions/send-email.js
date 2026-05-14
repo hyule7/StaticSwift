@@ -70,9 +70,7 @@ exports.handler = async (event) => {
       const isAdvanced = client.package === 'advanced';
       const hasHosting = client.hosting_addon === 'yes';
       const amount = (isAdvanced ? 299 : 149) + (hasHosting ? 29 : 0);
-      const paymentLink = isAdvanced
-        ? (process.env.STRIPE_PAYMENT_LINK_ADVANCED || '#')
-        : (process.env.STRIPE_PAYMENT_LINK_STARTER || '#');
+
 
       // Invoice number
       let invoiceNumber = 'SS-' + new Date().getFullYear() + '-001';
@@ -90,10 +88,20 @@ exports.handler = async (event) => {
         '<tr style="background:#f5f5f5"><th style="padding:10px 14px;text-align:left;border:1px solid #eee">Description</th><th style="padding:10px 14px;text-align:right;border:1px solid #eee">Amount</th></tr>' +
         '<tr><td style="padding:12px 14px;border:1px solid #eee">' + (isAdvanced ? 'Advanced' : 'Starter') + ' Website Design</td><td style="padding:12px 14px;border:1px solid #eee;text-align:right">£' + (isAdvanced ? 299 : 149) + '</td></tr>' +
         (hasHosting ? '<tr><td style="padding:12px 14px;border:1px solid #eee">Hosting Upload Service</td><td style="padding:12px 14px;border:1px solid #eee;text-align:right">£29</td></tr>' : '') +
-        '<tr style="background:#f5f5f5;font-weight:700"><td style="padding:12px 14px;border:1px solid #eee">Total Due</td><td style="padding:12px 14px;border:1px solid #eee;text-align:right;font-size:18px;color:#00C8E0">£' + amount + '</td></tr>' +
+        '<tr style="background:#f5f5f5;font-weight:700"><td style="padding:12px 14px;border:1px solid #eee">Total Due</td><td style="padding:12px 14px;border:1px solid #eee;text-align:right;font-size:18px;color:#b8953e">£' + amount + '</td></tr>' +
         '</table>' +
-        '<p style="text-align:center;margin:32px 0"><a href="' + paymentLink + '" style="background:#00C8E0;color:#07090f;font-weight:700;padding:16px 36px;border-radius:8px;text-decoration:none;font-size:16px;display:inline-block">Pay Securely — £' + amount + '</a></p>' +
-        '<p style="font-size:13px;color:#888;text-align:center">Files delivered within 1 hour of payment.</p>' +
+        '<div style="background:#faf8f2;border:1px solid #e8e4d8;border-radius:8px;padding:24px;margin:28px 0">' +
+        '<h3 style="font-size:16px;margin:0 0 14px;color:#0b0b0b">Bank Transfer Details</h3>' +
+        '<table style="font-size:14px;color:#333;line-height:1.8;width:100%">' +
+        '<tr><td style="font-weight:600;padding:2px 16px 2px 0;white-space:nowrap">Beneficiary</td><td>Harry Yule</td></tr>' +
+        '<tr><td style="font-weight:600;padding:2px 16px 2px 0;white-space:nowrap">Sort Code</td><td>04-00-75</td></tr>' +
+        '<tr><td style="font-weight:600;padding:2px 16px 2px 0;white-space:nowrap">Account No.</td><td>98518224</td></tr>' +
+        '<tr><td style="font-weight:600;padding:2px 16px 2px 0;white-space:nowrap">Reference</td><td>' + invoiceNumber + '</td></tr>' +
+        '<tr><td style="font-weight:600;padding:2px 16px 2px 0;white-space:nowrap">Bank</td><td>Revolut Ltd</td></tr>' +
+        '</table>' +
+        '<p style="font-size:12px;color:#888;margin:14px 0 0">For international transfers: IBAN GB64 REVO 0099 7062 6486 05 · BIC REVOGB21</p>' +
+        '</div>' +
+        '<p style="font-size:14px;color:#555;text-align:center">Please use <strong>' + invoiceNumber + '</strong> as your payment reference.<br>Your website files will be delivered within 1 hour of payment confirmation.</p>' +
         '<p style="color:#888;font-size:13px;margin-top:28px;text-align:center;">StaticSwift — <a href="https://staticswift.co.uk">staticswift.co.uk</a></p>' +
         '</div>';
       stageUpdate = { stage: 'invoice-sent', invoiceNumber, amount, invoiceSentAt: new Date().toISOString() };
