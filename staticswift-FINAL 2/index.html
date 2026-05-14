@@ -1023,6 +1023,84 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
 /* Showcase section bg */
 #work{background:var(--ink2);padding:130px 0}
 
+
+/* ═══ VISUAL POLISH ═══ */
+
+/* Browser frames — stronger shadows and borders */
+.browser-frame,.sc-browser{
+  box-shadow:0 32px 100px rgba(0,0,0,.7),0 0 0 1px rgba(255,255,255,.04);
+}
+.browser-frame:hover,.sc-browser:hover{
+  box-shadow:0 40px 120px rgba(0,0,0,.8),0 0 0 1px rgba(196,163,90,.15);
+}
+
+/* Mock site nav — stronger visual */  
+.ms-nav{background:rgba(0,0,0,.3);backdrop-filter:blur(8px)}
+.mock-cleaner .ms-nav{background:rgba(255,255,255,.9);backdrop-filter:blur(8px)}
+
+/* Hero headline — text shadow for depth */
+.hero-h1{text-shadow:0 2px 40px rgba(0,0,0,.3)}
+
+/* Section transitions — staggered from left on alternate sections */
+#why .fi,#compare .fi{opacity:0;transform:translateX(-20px);transition:opacity .7s ease,transform .7s ease}
+#why .fi.on,#compare .fi.on{opacity:1;transform:none}
+
+/* Comparison table — highlight column glow */
+.ct-us{position:relative}
+.ct-us::before{content:'';position:absolute;inset:-1px;background:rgba(196,163,90,.04);pointer-events:none;z-index:0}
+.ct-header .ct-us{background:rgba(196,163,90,.1);color:var(--gold) !important;font-weight:700}
+
+/* Review cards — quote marks */
+.review-card{position:relative}
+.review-card::before{content:'"';position:absolute;top:8px;left:20px;font-family:'Fraunces',serif;font-size:64px;color:rgba(196,163,90,.06);line-height:1;pointer-events:none}
+
+/* CTA band — subtle grain */
+#cta-band{position:relative;overflow:hidden}
+#cta-band::before{
+  content:'';position:absolute;inset:0;pointer-events:none;opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px;
+}
+
+/* Pricing cards — hover lift */
+.pricing-card{transition:transform .3s,border-color .3s,box-shadow .3s}
+.pricing-card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.pc-featured{box-shadow:0 0 0 1px var(--gold-border),0 24px 60px rgba(0,0,0,.3)}
+.pc-featured:hover{box-shadow:0 0 0 1px var(--gold-border),0 32px 80px rgba(0,0,0,.4)}
+
+/* FAQ items — indent animation */
+.faq-a{padding-left:4px;transition:max-height .4s ease,padding .4s,padding-left .3s}
+.faq-a.open{padding-left:16px}
+
+/* How steps — hover glow */
+.how-step{transition:background .3s,box-shadow .3s,transform .3s}
+.how-step:hover{background:var(--ink3);transform:translateY(-3px);box-shadow:0 16px 48px rgba(0,0,0,.3)}
+
+/* Work card hover — subtle zoom on mockup */
+.work-card .browser-viewport,.sc-browser .browser-viewport{transition:transform .5s ease}
+.work-card:hover .browser-viewport,.sc-browser:hover .browser-viewport{transform:scale(1.02)}
+
+/* Why items — hover highlight */
+.why-item{transition:padding-left .3s}
+.why-item:hover{padding-left:8px}
+
+/* Proof bar numbers — counter animation placeholder */
+.pb-n{transition:color .3s}
+.pb-item:hover .pb-n{color:var(--gold2)}
+
+/* Smooth section separators */
+#work::before,#why::before,#compare::before,#reviews::before{
+  content:'';display:block;width:80px;height:1px;
+  background:linear-gradient(to right,transparent,var(--gold-border),transparent);
+  margin:0 auto 0;position:relative;top:-65px;
+}
+
+/* Mobile polish */
+@media(max-width:640px){
+  .browser-frame,.sc-browser{box-shadow:0 16px 48px rgba(0,0,0,.5)}
+  .how-step:hover,.pricing-card:hover{transform:none}
+}
+
 </style>
 
 
