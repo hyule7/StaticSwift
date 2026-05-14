@@ -634,6 +634,254 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
   .footer-bottom{flex-direction:column;text-align:center}
   #get-started .form-container{padding:0 20px}
 }
+
+/* ── PROOF BAR ── */
+#proof-bar{background:var(--ink3);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:52px 0}
+.pb-grid{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px}
+.pb-item{text-align:center;flex:1;min-width:120px}
+.pb-n{font-family:'Fraunces',serif;font-size:48px;font-weight:300;color:var(--gold);line-height:1;letter-spacing:-.04em}
+.pb-l{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:.12em;margin-top:6px}
+.pb-divider{width:1px;height:48px;background:var(--border);flex-shrink:0}
+
+/* ── WORK (enhanced) ── */
+.wc-preview-inner{position:relative;z-index:1;padding:18px}
+.wcp-hero-block{margin-bottom:10px}
+.wcp-gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:8px}
+.wcp-gallery div{height:24px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);border-radius:2px}
+.wcp-ticker-thin{height:12px;background:linear-gradient(90deg,rgba(37,99,235,.3),rgba(37,99,235,.1));border-radius:2px;margin-bottom:10px}
+.wcp-ticker-bar{height:20px;background:linear-gradient(90deg,rgba(220,38,38,.4),rgba(220,38,38,.15));border-radius:2px;margin-bottom:10px}
+.wcp-cards-row{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:8px}
+.wcp-cards-row div{height:28px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.06);border-radius:3px}
+.wc-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,9,11,.85) 0%,transparent 50%);opacity:0;transition:opacity .35s;display:flex;align-items:flex-end;padding:16px;z-index:2}
+.work-card:hover .wc-overlay{opacity:1}
+.wc-view-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.wc-desc{font-size:12px;color:var(--dim);margin-top:3px;line-height:1.4}
+.wc-arrow{font-size:18px;color:var(--dim);transition:all .3s;flex-shrink:0}
+.work-card:hover .wc-arrow{color:var(--gold);transform:translateX(4px)}
+
+/* ── SHOWCASE ── */
+#showcase{background:var(--ink);padding:130px 0;overflow:hidden}
+.showcase-header{text-align:center;margin-bottom:72px}
+.showcase-header .section-sub{margin:16px auto 0;text-align:center}
+.showcase-device-wrap{position:relative;display:flex;justify-content:center;align-items:flex-end;gap:0;margin-bottom:72px;min-height:300px}
+/* Desktop mockup */
+.device-desktop{display:flex;flex-direction:column;align-items:center;position:relative;z-index:2}
+.device-desktop-screen{
+  width:min(560px,52vw);background:var(--ink3);border:1px solid var(--border2);
+  border-radius:8px 8px 0 0;overflow:hidden;
+  box-shadow:0 32px 80px rgba(0,0,0,.6);
+}
+.dds-inner{padding:0}
+.dds-nav{
+  background:var(--ink2);padding:10px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+.dds-logo{width:44px;height:7px;background:var(--gold);opacity:.4;border-radius:2px}
+.dds-links{display:flex;align-items:center;gap:6px}
+.dds-links span{width:20px;height:5px;background:var(--dim);border-radius:2px}
+.dds-cta{width:48px;height:20px;background:var(--gold);opacity:.5;border-radius:3px}
+.dds-hero{
+  padding:24px 20px;
+  background:linear-gradient(155deg,rgba(196,163,90,.04),rgba(196,163,90,.01));
+}
+.dds-h1{height:18px;background:rgba(255,255,255,.16);border-radius:3px;width:68%;margin-bottom:8px}
+.dds-h2{height:18px;background:rgba(255,255,255,.12);border-radius:3px;width:52%;margin-bottom:8px}
+.dds-sub{height:7px;background:rgba(255,255,255,.06);border-radius:2px;width:80%;margin-bottom:5px}
+.dds-btns{display:flex;gap:8px;margin:14px 0 18px}
+.dds-btn-p{width:80px;height:26px;background:var(--gold);opacity:.65;border-radius:3px}
+.dds-btn-o{width:72px;height:26px;border:1px solid var(--border2);border-radius:3px}
+.dds-stats{display:flex;gap:0;border:1px solid var(--border);width:fit-content}
+.dds-stats div{width:56px;height:36px;border-right:1px solid var(--border)}
+.dds-stats div:last-child{border-right:none}
+.device-desktop-stand{
+  width:80px;height:20px;background:var(--ink4);
+  clip-path:polygon(15% 0,85% 0,100% 100%,0 100%);
+}
+.device-desktop-base{
+  width:160px;height:8px;background:var(--ink5);border-radius:4px;
+  box-shadow:0 0 0 1px var(--border);
+}
+
+/* Phone mockup */
+.device-phone{
+  position:absolute;right:calc(50% - 320px);bottom:20px;z-index:3;
+  animation:phoneFloat 4s ease-in-out infinite;
+}
+@keyframes phoneFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.device-phone-frame{
+  width:130px;background:var(--ink3);border:1px solid var(--border2);
+  border-radius:24px;overflow:hidden;padding:10px;
+  box-shadow:0 24px 60px rgba(0,0,0,.7);
+  position:relative;
+}
+.device-phone-notch{
+  width:36px;height:6px;background:var(--ink2);
+  border-radius:3px;margin:0 auto 8px;
+}
+.device-phone-screen{
+  background:var(--ink4);border-radius:16px;overflow:hidden;padding:0;
+}
+.dps-nav{
+  background:var(--ink3);padding:8px 10px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+.dps-logo{width:28px;height:5px;background:var(--gold);opacity:.4;border-radius:2px}
+.dps-burger{display:flex;flex-direction:column;gap:3px}
+.dps-burger span{width:12px;height:1.5px;background:var(--dim);border-radius:1px}
+.dps-hero{padding:14px 10px 10px}
+.dps-h1{height:10px;background:rgba(255,255,255,.14);border-radius:2px;width:85%;margin-bottom:5px}
+.dps-h2{height:10px;background:rgba(255,255,255,.1);border-radius:2px;width:65%;margin-bottom:5px}
+.dps-sub{height:5px;background:rgba(255,255,255,.05);border-radius:2px;width:90%;margin-bottom:10px}
+.dps-btn{width:60px;height:18px;background:var(--gold);opacity:.6;border-radius:3px;margin-bottom:10px}
+.dps-cards{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:0 0 6px}
+.dps-cards div{height:36px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.05);border-radius:4px}
+
+/* Pulse rings */
+.showcase-pulses{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.sp{position:absolute;border-radius:50%;border:1px solid rgba(196,163,90,.08);animation:spPulse 4s ease-out infinite}
+.sp1{width:400px;height:400px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:0s}
+.sp2{width:600px;height:600px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1.3s}
+.sp3{width:800px;height:800px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:2.6s}
+@keyframes spPulse{0%{opacity:.4;transform:translate(-50%,-50%) scale(.8)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.1)}}
+
+/* Features grid */
+.showcase-features{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--border);border:1px solid var(--border);
+}
+.sf-item{
+  background:var(--ink2);padding:36px 32px;
+  transition:background .3s;
+}
+.sf-item:hover{background:var(--ink3)}
+.sf-icon{font-size:28px;margin-bottom:16px;display:block}
+.sf-title{font-family:'Fraunces',serif;font-size:17px;font-weight:300;margin-bottom:10px;color:var(--text);letter-spacing:-.01em}
+.sf-desc{font-size:13px;color:var(--muted);line-height:1.7}
+
+/* ── WHY ── */
+#why{background:var(--ink2);padding:130px 0}
+.why-inner{display:grid;grid-template-columns:1fr 1.6fr;gap:100px;align-items:start}
+.why-left{position:sticky;top:100px}
+.why-right{display:flex;flex-direction:column;gap:0}
+.why-item{
+  display:grid;grid-template-columns:64px 1fr;gap:24px;
+  padding:36px 0;border-bottom:1px solid var(--border);
+  align-items:start;transition:all .3s;
+}
+.why-item:first-child{padding-top:0}
+.why-item:last-child{border-bottom:none}
+.why-item:hover .why-num{color:var(--gold);opacity:1}
+.why-num{
+  font-family:'Fraunces',serif;font-size:28px;font-weight:300;
+  color:var(--dim);letter-spacing:-.03em;line-height:1.2;
+  transition:color .3s;opacity:.5;
+}
+.why-title{
+  font-family:'Fraunces',serif;font-size:19px;font-weight:300;
+  color:var(--text);margin-bottom:8px;letter-spacing:-.01em;line-height:1.3;
+}
+.why-desc{font-size:14px;color:var(--muted);line-height:1.75}
+
+/* ── COMPARISON ── */
+#compare{background:var(--ink);padding:130px 0}
+.compare-table{
+  border:1px solid var(--border);overflow:hidden;margin-top:60px;
+}
+.ct-header{
+  display:grid;grid-template-columns:2fr 1.2fr 1fr 1fr 1fr;
+  background:var(--ink3);border-bottom:1px solid var(--border);
+}
+.ct-header .ct-col,.ct-row .ct-col{
+  padding:16px 20px;font-size:12px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--dim);text-align:center;
+}
+.ct-header .ct-feature{padding:16px 20px}
+.ct-us{background:rgba(196,163,90,.06);border-left:1px solid var(--gold-border);border-right:1px solid var(--gold-border)}
+.ct-us .ct-col{color:var(--gold)}
+.ct-row{
+  display:grid;grid-template-columns:2fr 1.2fr 1fr 1fr 1fr;
+  border-bottom:1px solid var(--border);transition:background .2s;
+}
+.ct-row:last-child{border-bottom:none}
+.ct-row:hover{background:var(--ink3)}
+.ct-feature{
+  padding:18px 20px;font-size:14px;color:var(--text);font-weight:500;
+  display:flex;align-items:center;
+}
+.ct-row .ct-col{
+  padding:18px 20px;display:flex;align-items:center;justify-content:center;
+  text-align:center;font-size:13px;font-weight:400;letter-spacing:0;
+  text-transform:none;
+}
+.ct-yes{color:var(--green);font-weight:600}
+.ct-no{color:var(--red);opacity:.75}
+.ct-meh{color:var(--muted)}
+.ct-row .ct-us{background:rgba(196,163,90,.04)}
+
+/* ── HOW (enhanced) ── */
+.how-time{
+  display:inline-block;margin-top:20px;
+  font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gold);opacity:.7;
+  border:1px solid var(--gold-border);padding:5px 12px;
+}
+
+/* ── CTA BAND ── */
+#cta-band{background:var(--gold);padding:100px 72px}
+.ctab-inner{
+  max-width:1160px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;
+}
+.ctab-label{
+  font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(8,9,11,.5);margin-bottom:14px;
+}
+.ctab-headline{
+  font-family:'Fraunces',serif;font-size:clamp(36px,4vw,56px);
+  font-weight:300;color:var(--ink);line-height:1.05;letter-spacing:-.04em;
+}
+.ctab-headline em{font-style:italic}
+.ctab-sub{font-size:16px;color:rgba(8,9,11,.65);line-height:1.65;margin-bottom:28px}
+.ctab-btns{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.ctab-btn-primary{
+  background:var(--ink);color:var(--gold);
+  padding:14px 32px;font-size:14px;font-weight:700;
+  letter-spacing:.02em;transition:all .25s;display:inline-block;
+}
+.ctab-btn-primary:hover{background:var(--ink2)}
+.ctab-btn-secondary{
+  border:1.5px solid rgba(8,9,11,.3);color:rgba(8,9,11,.7);
+  padding:14px 28px;font-size:14px;font-weight:500;
+  transition:all .25s;display:inline-block;
+}
+.ctab-btn-secondary:hover{border-color:var(--ink);color:var(--ink)}
+.ctab-trust{display:flex;gap:20px;flex-wrap:wrap}
+.ctab-trust span{font-size:12px;font-weight:600;color:rgba(8,9,11,.55);letter-spacing:.03em}
+
+/* ── RESPONSIVE ADDITIONS ── */
+@media(max-width:1100px){
+  .pb-grid{justify-content:center;gap:16px}
+  .pb-divider{display:none}
+  .showcase-features{grid-template-columns:1fr 1fr}
+  .why-inner{grid-template-columns:1fr;gap:48px}
+  .why-left{position:static}
+  .ct-header,.ct-row{grid-template-columns:1.5fr 1fr}
+  .ct-header .ct-col:nth-child(n+3),.ct-row .ct-col:nth-child(n+3){display:none}
+  .ct-header .ct-col:nth-child(3){display:flex}
+  .ct-row .ct-col:nth-child(3){display:flex}
+  #cta-band{padding:72px 28px}
+  .ctab-inner{grid-template-columns:1fr;gap:40px}
+  .device-phone{display:none}
+  .showcase-device-wrap{min-height:auto}
+}
+@media(max-width:640px){
+  .showcase-features{grid-template-columns:1fr}
+  .why-item{grid-template-columns:44px 1fr;gap:16px}
+  .ct-header,.ct-row{grid-template-columns:1fr 1fr}
+}
+
 </style>
 
 
@@ -709,10 +957,8 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
       <div class="browser-content">
         <div class="bc-hero">
           <div class="bc-nav"><div class="bc-logo"></div><div class="bc-navl"><span></span><span></span><span></span></div></div>
-          <div class="bc-h"></div>
-          <div class="bc-h2"></div>
-          <div class="bc-sub"></div>
-          <div class="bc-sub2"></div>
+          <div class="bc-h"></div><div class="bc-h2"></div>
+          <div class="bc-sub"></div><div class="bc-sub2"></div>
           <div class="bc-btns"><div class="bc-btn-f"></div><div class="bc-btn-o"></div></div>
         </div>
         <div class="bc-grid">
@@ -747,6 +993,38 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
   </div>
 </div>
 
+<!-- PROOF BAR -->
+<section id="proof-bar">
+  <div class="section-inner">
+    <div class="pb-grid">
+      <div class="pb-item fi">
+        <div class="pb-n">50+</div>
+        <div class="pb-l">Websites delivered</div>
+      </div>
+      <div class="pb-divider"></div>
+      <div class="pb-item fi d1">
+        <div class="pb-n">24hrs</div>
+        <div class="pb-l">Average turnaround</div>
+      </div>
+      <div class="pb-divider"></div>
+      <div class="pb-item fi d2">
+        <div class="pb-n">£0</div>
+        <div class="pb-l">Monthly fees forever</div>
+      </div>
+      <div class="pb-divider"></div>
+      <div class="pb-item fi d3">
+        <div class="pb-n">100%</div>
+        <div class="pb-l">Approval before payment</div>
+      </div>
+      <div class="pb-divider"></div>
+      <div class="pb-item fi d4">
+        <div class="pb-n">5★</div>
+        <div class="pb-l">Client satisfaction</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- WORK -->
 <section id="work">
   <div class="section-inner">
@@ -754,56 +1032,98 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
       <div class="fi">
         <span class="section-label">Selected work</span>
         <h2 class="section-title">What we build.</h2>
+        <p style="font-size:15px;color:var(--muted);margin-top:8px;max-width:480px;line-height:1.65">Real websites for real businesses. Every site is custom-designed, mobile-ready, and delivered within 24 hours.</p>
       </div>
       <a href="#get-started" class="btn-outline fi">Start your project →</a>
     </div>
     <div class="work-grid">
       <div class="work-card wc-tall fi">
         <div class="wc-preview wc-dark">
-          <div class="wcp-nav"><div class="wcp-logo"></div><div class="wcp-navlinks"><span></span><span></span><span></span></div></div>
-          <div class="wcp-headline"></div><div class="wcp-sub"></div>
-          <div class="wcp-cta"></div>
-          <div class="wcp-grid3"><div class="wcp-card"></div><div class="wcp-card"></div><div class="wcp-card"></div></div>
+          <div class="wc-preview-inner">
+            <div class="wcp-nav"><div class="wcp-logo"></div><div class="wcp-navlinks"><span></span><span></span><span></span></div></div>
+            <div class="wcp-hero-block">
+              <div class="wcp-headline"></div>
+              <div class="wcp-sub"></div>
+              <div class="wcp-cta"></div>
+            </div>
+            <div class="wcp-grid3"><div class="wcp-card"></div><div class="wcp-card"></div><div class="wcp-card"></div></div>
+            <div class="wcp-gallery"><div></div><div></div><div></div><div></div></div>
+          </div>
+          <div class="wc-overlay">
+            <span class="wc-view-label">Mirkhan Photography</span>
+          </div>
         </div>
         <div class="wc-info">
-          <div class="wc-tags"><span>Photographer</span><span>Advanced</span></div>
-          <div class="wc-name">Mirkhan Photography</div>
+          <div>
+            <div class="wc-tags"><span>Photographer</span><span>Advanced</span></div>
+            <div class="wc-name">Mirkhan Photography</div>
+            <div class="wc-desc">Custom advanced photography site. Gallery, services, testimonials, contact form.</div>
+          </div>
+          <div class="wc-arrow">→</div>
         </div>
       </div>
       <div class="work-col">
         <div class="work-card fi">
-          <div class="wc-preview wc-navy" style="aspect-ratio:16/9">
-            <div class="wcp-headline wcp-short"></div>
-            <div class="wcp-sub wcp-thin"></div>
-            <div class="wcp-cta wcp-small" style="background:rgba(37,99,235,.45)"></div>
+          <div class="wc-preview wc-navy" style="aspect-ratio:16/10">
+            <div class="wc-preview-inner" style="padding:16px">
+              <div class="wcp-ticker-thin"></div>
+              <div class="wcp-headline wcp-short"></div>
+              <div class="wcp-sub wcp-thin"></div>
+              <div class="wcp-cta" style="background:rgba(37,99,235,.5);width:52px;height:18px"></div>
+            </div>
+            <div class="wc-overlay">
+              <span class="wc-view-label">Crafters</span>
+            </div>
           </div>
           <div class="wc-info">
-            <div class="wc-tags"><span>Online Business</span><span>Starter</span></div>
-            <div class="wc-name">Crafters</div>
+            <div>
+              <div class="wc-tags"><span>Online Business</span><span>Starter</span></div>
+              <div class="wc-name">Crafters</div>
+              <div class="wc-desc">Clean starter site. Hero, services, contact form.</div>
+            </div>
+            <div class="wc-arrow">→</div>
           </div>
         </div>
-        <div class="work-card fi">
-          <div class="wc-preview wc-teal" style="aspect-ratio:16/9">
-            <div class="wcp-headline wcp-short"></div>
-            <div class="wcp-sub wcp-thin"></div>
-            <div class="wcp-cta wcp-small" style="background:rgba(42,157,143,.4)"></div>
+        <div class="work-card fi d1">
+          <div class="wc-preview wc-teal" style="aspect-ratio:16/10">
+            <div class="wc-preview-inner" style="padding:16px">
+              <div class="wcp-headline wcp-short"></div>
+              <div class="wcp-sub wcp-thin"></div>
+              <div class="wcp-cta" style="background:rgba(42,157,143,.5);width:52px;height:18px"></div>
+            </div>
+            <div class="wc-overlay">
+              <span class="wc-view-label">Sami Brand</span>
+            </div>
           </div>
           <div class="wc-info">
-            <div class="wc-tags"><span>Photographer</span><span>Starter</span></div>
-            <div class="wc-name">Sami Brand</div>
+            <div>
+              <div class="wc-tags"><span>Photographer</span><span>Advanced</span></div>
+              <div class="wc-name">Sami Brand</div>
+              <div class="wc-desc">Advanced photography site with gallery, testimonials, process.</div>
+            </div>
+            <div class="wc-arrow">→</div>
           </div>
         </div>
       </div>
-      <div class="work-card wc-wide fi">
+      <div class="work-card wc-wide fi d1">
         <div class="wc-preview wc-red">
-          <div class="wcp-ticker"></div>
-          <div class="wcp-headline"></div>
-          <div class="wcp-sub wcp-thin"></div>
-          <div class="wcp-cta wcp-small" style="background:rgba(220,38,38,.4)"></div>
+          <div class="wc-preview-inner">
+            <div class="wcp-ticker-bar"></div>
+            <div class="wcp-headline"></div>
+            <div class="wcp-sub wcp-thin"></div>
+            <div class="wcp-cards-row"><div></div><div></div><div></div></div>
+          </div>
+          <div class="wc-overlay">
+            <span class="wc-view-label">Adok Manut — Live Scores</span>
+          </div>
         </div>
         <div class="wc-info">
-          <div class="wc-tags"><span>Sports &amp; Media</span><span>Starter</span></div>
-          <div class="wc-name">Adok Manut — Live Scores</div>
+          <div>
+            <div class="wc-tags"><span>Sports &amp; Media</span><span>Starter</span></div>
+            <div class="wc-name">Adok Manut — Live Scores</div>
+            <div class="wc-desc">Sports coverage site with live ticker, stats, and contact.</div>
+          </div>
+          <div class="wc-arrow">→</div>
         </div>
       </div>
     </div>
@@ -811,29 +1131,219 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
   </div>
 </section>
 
-<!-- HOW -->
+<!-- SHOWCASE VIDEO / DEMO SECTION -->
+<section id="showcase">
+  <div class="section-inner">
+    <div class="showcase-header fi">
+      <span class="section-label">See it in action</span>
+      <h2 class="section-title">Built to impress.<br><em>Delivered to convert.</em></h2>
+      <p class="section-sub">Every site we build is fast, responsive, and designed to turn visitors into customers. See what a StaticSwift website actually looks like on any device.</p>
+    </div>
+    <div class="showcase-device-wrap fi">
+      <div class="showcase-devices">
+        <!-- Desktop mockup -->
+        <div class="device-desktop">
+          <div class="device-desktop-screen">
+            <div class="dds-inner">
+              <div class="dds-nav"><div class="dds-logo"></div><div class="dds-links"><span></span><span></span><span></span><span class="dds-cta"></span></div></div>
+              <div class="dds-hero">
+                <div class="dds-h1"></div>
+                <div class="dds-h2"></div>
+                <div class="dds-sub"></div>
+                <div class="dds-btns"><div class="dds-btn-p"></div><div class="dds-btn-o"></div></div>
+                <div class="dds-stats"><div></div><div></div><div></div><div></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="device-desktop-stand"></div>
+          <div class="device-desktop-base"></div>
+        </div>
+        <!-- Phone mockup -->
+        <div class="device-phone">
+          <div class="device-phone-frame">
+            <div class="device-phone-notch"></div>
+            <div class="device-phone-screen">
+              <div class="dps-nav"><div class="dps-logo"></div><div class="dps-burger"><span></span><span></span></div></div>
+              <div class="dps-hero">
+                <div class="dps-h1"></div>
+                <div class="dps-h2"></div>
+                <div class="dps-sub"></div>
+                <div class="dps-btn"></div>
+              </div>
+              <div class="dps-cards"><div></div><div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="showcase-pulses" aria-hidden="true">
+        <div class="sp sp1"></div>
+        <div class="sp sp2"></div>
+        <div class="sp sp3"></div>
+      </div>
+    </div>
+    <div class="showcase-features fi">
+      <div class="sf-item">
+        <div class="sf-icon">⚡</div>
+        <div class="sf-title">Lightning fast</div>
+        <div class="sf-desc">Single-file HTML loads instantly. No WordPress bloat, no plugins, no slow database queries.</div>
+      </div>
+      <div class="sf-item">
+        <div class="sf-icon">📱</div>
+        <div class="sf-title">Mobile-first</div>
+        <div class="sf-desc">Every site is tested on real devices. Looks perfect on iPhone, Android, tablet and desktop.</div>
+      </div>
+      <div class="sf-item">
+        <div class="sf-icon">🔍</div>
+        <div class="sf-title">SEO optimised</div>
+        <div class="sf-desc">Title tags, meta descriptions, Open Graph, schema markup — all included as standard on every build.</div>
+      </div>
+      <div class="sf-item">
+        <div class="sf-icon">✉</div>
+        <div class="sf-title">Enquiry-ready</div>
+        <div class="sf-desc">Every site includes a working contact form, tap-to-call phone link, and WhatsApp button.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY STATICSWIFT -->
+<section id="why">
+  <div class="section-inner">
+    <div class="why-inner">
+      <div class="why-left fi">
+        <span class="section-label">Why StaticSwift</span>
+        <h2 class="section-title">Not just a website.<br><em>A business asset.</em></h2>
+        <p style="font-size:15px;color:var(--muted);line-height:1.75;margin-top:16px;margin-bottom:36px">Most small businesses in the UK don't have a website — or have one that looks like it was built in 2012. Your website is often the first impression customers get. We make sure it counts.</p>
+        <a href="#get-started" class="btn-gold">Start your project →</a>
+      </div>
+      <div class="why-right">
+        <div class="why-item fi">
+          <div class="why-num">01</div>
+          <div class="why-content">
+            <div class="why-title">Your competitors already have one</div>
+            <div class="why-desc">Customers Google every business before they call. Without a professional website, you're losing work to competitors every single day.</div>
+          </div>
+        </div>
+        <div class="why-item fi d1">
+          <div class="why-num">02</div>
+          <div class="why-content">
+            <div class="why-title">First impressions happen in under 3 seconds</div>
+            <div class="why-desc">A poor website signals an unprofessional business. A great one builds instant trust and makes customers want to reach out immediately.</div>
+          </div>
+        </div>
+        <div class="why-item fi d2">
+          <div class="why-num">03</div>
+          <div class="why-content">
+            <div class="why-title">You pay once. It works forever.</div>
+            <div class="why-desc">Unlike WordPress or Squarespace — no £30/month subscriptions, no renewal fees, no plugin updates. Buy it once. It's yours.</div>
+          </div>
+        </div>
+        <div class="why-item fi d3">
+          <div class="why-num">04</div>
+          <div class="why-content">
+            <div class="why-title">Done in 24 hours, not 6 weeks</div>
+            <div class="why-desc">Traditional web agencies take months and charge thousands. We deliver a professional, custom website within 24 hours of your enquiry.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section id="compare">
+  <div class="section-inner">
+    <div class="fi">
+      <span class="section-label">The honest comparison</span>
+      <h2 class="section-title">Why not just use<br><em>WordPress or Squarespace?</em></h2>
+    </div>
+    <div class="compare-table fi">
+      <div class="ct-header">
+        <div class="ct-feature"></div>
+        <div class="ct-col ct-us">StaticSwift</div>
+        <div class="ct-col">WordPress</div>
+        <div class="ct-col">Squarespace</div>
+        <div class="ct-col">Web Agency</div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-feature">One-time price</div>
+        <div class="ct-col ct-us"><span class="ct-yes">£149–£299</span></div>
+        <div class="ct-col"><span class="ct-meh">Free but complex</span></div>
+        <div class="ct-col"><span class="ct-no">£0 + £15/mo</span></div>
+        <div class="ct-col"><span class="ct-no">£1,500–£10,000+</span></div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-feature">Monthly fees</div>
+        <div class="ct-col ct-us"><span class="ct-yes">None. Ever.</span></div>
+        <div class="ct-col"><span class="ct-no">Hosting ~£10/mo</span></div>
+        <div class="ct-col"><span class="ct-no">£15–£40/mo</span></div>
+        <div class="ct-col"><span class="ct-no">Hosting + support</span></div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-feature">Delivery time</div>
+        <div class="ct-col ct-us"><span class="ct-yes">24 hours</span></div>
+        <div class="ct-col"><span class="ct-meh">Weeks of DIY</span></div>
+        <div class="ct-col"><span class="ct-meh">Days of DIY</span></div>
+        <div class="ct-col"><span class="ct-no">4–12 weeks</span></div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-feature">Custom design</div>
+        <div class="ct-col ct-us"><span class="ct-yes">Yes — fully bespoke</span></div>
+        <div class="ct-col"><span class="ct-meh">Template-based</span></div>
+        <div class="ct-col"><span class="ct-meh">Template-based</span></div>
+        <div class="ct-col"><span class="ct-yes">Yes, but expensive</span></div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-feature">Technical knowledge needed</div>
+        <div class="ct-col ct-us"><span class="ct-yes">None at all</span></div>
+        <div class="ct-col"><span class="ct-no">High</span></div>
+        <div class="ct-col"><span class="ct-meh">Medium</span></div>
+        <div class="ct-col"><span class="ct-yes">None</span></div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-feature">You pay before seeing it</div>
+        <div class="ct-col ct-us"><span class="ct-yes">No — approve first</span></div>
+        <div class="ct-col"><span class="ct-meh">N/A — DIY</span></div>
+        <div class="ct-col"><span class="ct-no">Yes</span></div>
+        <div class="ct-col"><span class="ct-no">Deposit upfront</span></div>
+      </div>
+      <div class="ct-row">
+        <div class="ct-feature">Page load speed</div>
+        <div class="ct-col ct-us"><span class="ct-yes">Instant</span></div>
+        <div class="ct-col"><span class="ct-no">Slow without plugins</span></div>
+        <div class="ct-col"><span class="ct-meh">Moderate</span></div>
+        <div class="ct-col"><span class="ct-meh">Varies</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
 <section id="how">
   <div class="section-inner">
     <div class="fi">
       <span class="section-label">The process</span>
-      <h2 class="section-title">How it works.</h2>
-      <p class="section-sub">Three steps from enquiry to a live website. No meetings. No lengthy briefing documents. Just results.</p>
+      <h2 class="section-title">Three steps. Done.</h2>
+      <p class="section-sub">From enquiry to a live professional website — without a single meeting, lengthy brief, or upfront payment.</p>
     </div>
     <div class="how-grid">
       <div class="how-step fi">
         <div class="how-num">01</div>
         <h3>Tell us about your business</h3>
-        <p>Fill in our short form — takes about three minutes. Your business name, what you do, and what you want the site to achieve. No design experience needed.</p>
+        <p>Fill in our short form — takes about three minutes. Business name, what you do, what you want the site to achieve. No design experience needed.</p>
+        <div class="how-time">~3 minutes</div>
       </div>
       <div class="how-step fi d1">
         <div class="how-num">02</div>
         <h3>We build and send a preview</h3>
         <p>Within 24 hours you receive a preview link. We design everything — layout, copy, SEO, contact form. You review it before paying a single penny.</p>
+        <div class="how-time">Within 24 hours</div>
       </div>
       <div class="how-step fi d2">
         <div class="how-num">03</div>
         <h3>Approve, pay, go live</h3>
-        <p>Happy with what you see? Approve it, pay once, receive your files. One free revision is included. Then the site is yours — to keep forever.</p>
+        <p>Happy with what you see? Approve it, pay once, and receive your website files. One free revision included. Then it's yours — to keep forever.</p>
+        <div class="how-time">Same day</div>
       </div>
     </div>
     <div class="how-cta-row fi">
@@ -887,6 +1397,28 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
   </div>
 </section>
 
+<!-- CTA BAND -->
+<section id="cta-band">
+  <div class="ctab-inner">
+    <div class="ctab-left fi">
+      <div class="ctab-label">Ready when you are</div>
+      <h2 class="ctab-headline">Your business deserves<br>a website that <em>works.</em></h2>
+    </div>
+    <div class="ctab-right fi d1">
+      <p class="ctab-sub">Start today. See a preview within 24 hours. Pay only when you love it.</p>
+      <div class="ctab-btns">
+        <a href="#get-started" class="ctab-btn-primary">Start your project →</a>
+        <a href="mailto:hello@staticswift.co.uk" class="ctab-btn-secondary">Ask a question</a>
+      </div>
+      <div class="ctab-trust">
+        <span>✓ No upfront payment</span>
+        <span>✓ Preview in 24hrs</span>
+        <span>✓ Free revision</span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- PRICING -->
 <section id="pricing">
   <div class="section-inner">
@@ -905,7 +1437,7 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
           <li>Mobile responsive</li>
           <li>SEO optimised</li>
           <li>Contact form included</li>
-          <li>Delivered in 24 hours</li>
+          <li>Delivered within 24 hours</li>
           <li>1 free revision</li>
           <li>Upload guide included</li>
           <li>Yours to keep forever</li>
@@ -924,7 +1456,7 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
           <li>About / team section</li>
           <li>Premium animations</li>
           <li>Priority build queue</li>
-          <li>Marquee / ticker strip</li>
+          <li>Marquee ticker strip</li>
           <li>Yours to keep forever</li>
         </ul>
         <a href="#get-started" class="btn-gold-full">Get started →</a>
@@ -959,27 +1491,31 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
     <div class="faq-list" id="faq-list">
       <div class="faq-item fi">
         <button class="faq-q" onclick="toggleFaq(this)">Do I pay before seeing the site?<span class="fq-plus">+</span></button>
-        <div class="faq-a">No — you only pay after you've seen and approved the preview. We build first, you pay after.</div>
+        <div class="faq-a">No — you only pay after you've seen and approved the preview. We build first, you pay after. If you're not happy with the preview, you don't pay anything.</div>
       </div>
       <div class="faq-item fi">
         <button class="faq-q" onclick="toggleFaq(this)">What do I need to provide?<span class="fq-plus">+</span></button>
-        <div class="faq-a">Just fill in our short form — takes about three minutes. Business name, what you do, your phone number and email. We handle everything else. No design experience needed.</div>
+        <div class="faq-a">Just fill in our short form — takes about three minutes. Business name, what you do, your phone number and email. We handle all the design and content. No design experience needed.</div>
       </div>
       <div class="faq-item fi">
         <button class="faq-q" onclick="toggleFaq(this)">How quickly will I get a preview?<span class="fq-plus">+</span></button>
-        <div class="faq-a">You'll have a preview within 24 hours of submitting your form. Most clients receive theirs the same day.</div>
+        <div class="faq-a">You'll receive a preview link within 24 hours of submitting your form. Most clients get theirs the same day — often within a few hours.</div>
       </div>
       <div class="faq-item fi">
         <button class="faq-q" onclick="toggleFaq(this)">What if I want changes?<span class="fq-plus">+</span></button>
-        <div class="faq-a">One free revision is included. Just tell us what you'd like changed after seeing the preview and we'll update it.</div>
+        <div class="faq-a">One free revision is included with every order. Just tell us what you'd like changed after seeing the preview and we'll update it promptly.</div>
       </div>
       <div class="faq-item fi">
         <button class="faq-q" onclick="toggleFaq(this)">Are there really no monthly fees?<span class="fq-plus">+</span></button>
-        <div class="faq-a">None at all. You pay once and the site is yours forever. Hosting on Netlify is free. The only optional cost is a domain name (around £10–15 per year from any registrar).</div>
+        <div class="faq-a">None at all — ever. You pay once and the site is yours to keep forever. Hosting on Netlify is completely free. The only optional cost is a domain name (around £10–15/year from any registrar).</div>
       </div>
       <div class="faq-item fi">
-        <button class="faq-q" onclick="toggleFaq(this)">Can I use my own domain?<span class="fq-plus">+</span></button>
-        <div class="faq-a">Yes. Every delivery includes a full step-by-step guide to connecting your domain. Or add the hosting add-on for £29 and we'll do it all for you.</div>
+        <button class="faq-q" onclick="toggleFaq(this)">Can I use my own domain name?<span class="fq-plus">+</span></button>
+        <div class="faq-a">Yes. Every delivery includes a full step-by-step guide for connecting your domain. Or add the hosting add-on for £29 and we'll handle the entire setup for you.</div>
+      </div>
+      <div class="faq-item fi">
+        <button class="faq-q" onclick="toggleFaq(this)">What types of businesses do you work with?<span class="fq-plus">+</span></button>
+        <div class="faq-a">Any UK small business. We've built for plumbers, barbers, photographers, dog groomers, personal trainers, takeaways, driving instructors, accountants — if you're a local business that needs a professional web presence, we can help.</div>
       </div>
     </div>
   </div>
@@ -1299,6 +1835,7 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
     </form>
   </div>
 </section>
+
 
 
 
