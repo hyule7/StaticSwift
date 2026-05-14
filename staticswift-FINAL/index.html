@@ -450,7 +450,40 @@ function tf(b){const a=b.nextElementSibling,o=b.classList.contains('open');docum
 const _o=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');_o.unobserve(e.target)}})},{threshold:0.04,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.r').forEach(el=>_o.observe(el));
 window.addEventListener('scroll',()=>{const h=document.querySelector('.hbrowser');if(h){const p=h.getBoundingClientRect();const r=Math.max(0,Math.min(8,(p.top/window.innerHeight)*6));h.style.transform='rotateX('+r+'deg)'}},{passive:true});
-async function sq(e){e.preventDefault();const f=e.target,b=f.querySelector('.cf-btn');b.textContent='Sending...';b.disabled=true;const d=new FormData(f),j={};for(const[k,v]of d.entries())j[k]=v;j.source='contact-form';j.stage='new-lead';j.createdAt=new Date().toISOString();try{const r=await fetch('/.netlify/functions/handle-intake',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(j)});const res=await r.json();if(res.ok){f.style.display='none';document.getElementById('qf-ok').style.display='block'}else{b.textContent='Error — try again';b.disabled=false;b.style.background='#dc2626'}}catch{b.textContent='Network error';b.disabled=false;b.style.background='#dc2626'}}
+async function sq(e){
+  e.preventDefault();
+  const f=e.target,b=f.querySelector('.cf-btn');
+  b.textContent='Sending...';b.disabled=true;
+  const d=new FormData(f),j={};
+  for(const[k,v]of d.entries())j[k]=v;
+  j.source='contact-form';j.stage='new-lead';j.createdAt=new Date().toISOString();
+  try{
+    const r=await fetch('/.netlify/functions/handle-intake',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(j)
+    });
+    if(!r.ok){
+      b.textContent='Server error ('+r.status+') — try again';
+      b.disabled=false;b.style.background='#dc2626';
+      console.error('handle-intake HTTP',r.status);
+      return;
+    }
+    const res=await r.json();
+    if(res.ok){
+      f.style.display='none';
+      document.getElementById('qf-ok').style.display='block';
+    }else{
+      b.textContent='Save failed — try again';
+      b.disabled=false;b.style.background='#dc2626';
+      console.error('handle-intake error:',res.error);
+    }
+  }catch(err){
+    b.textContent='Network error — try again';
+    b.disabled=false;b.style.background='#dc2626';
+    console.error('Form submit error:',err);
+  }
+}
 </script>
 </body>
 </html>
