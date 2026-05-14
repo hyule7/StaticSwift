@@ -1812,177 +1812,129 @@ footer{background:var(--ink);border-top:1px solid var(--border);padding:80px 72p
 </a>
 
 <script>
-// ==========================================
-// CONFIGURATION — Edit these values
-// ==========================================
-const ANNOUNCEMENT_ACTIVE = true;
-const ANNOUNCEMENT_TEXT = 'Limited spaces this week — only 3 Starter sites available. Get yours now.';
-const SITE_COUNT = 12;
-const WHATSAPP_NUMBER = '447502731799';
+// ── CONFIGURATION ──
+const ADMIN_PW = 'Harry2001!';
 
-// ==========================================
-// INIT
-// ==========================================
-document.getElementById('announcement-bar').textContent = ANNOUNCEMENT_TEXT;
-if (!ANNOUNCEMENT_ACTIVE) document.getElementById('announcement-bar').style.display = 'none';
-document.getElementById('site-count').textContent = SITE_COUNT;
-document.getElementById('whatsapp-btn').href = `https://wa.me/${WHATSAPP_NUMBER}?text=Hi%20I%20am%20interested%20in%20a%20StaticSwift%20website`;
+// ── MOBILE MENU ──
+function closeMobileMenu() {
+  document.getElementById('mobile-menu').classList.remove('open');
+}
+document.getElementById('menu-btn').addEventListener('click', function() {
+  document.getElementById('mobile-menu').classList.toggle('open');
+});
 
-// ==========================================
-// HEADER SCROLL SHRINK
-// ==========================================
-const header = document.getElementById('main-header');
-const headerCta = document.getElementById('header-cta');
+// ── FAQ ACCORDION ──
+function toggleFaq(btn) {
+  const ans = btn.nextElementSibling;
+  const wasOpen = btn.classList.contains('open');
+  document.querySelectorAll('.faq-q').forEach(q => {
+    q.classList.remove('open');
+    q.nextElementSibling.classList.remove('open');
+  });
+  if (!wasOpen) { btn.classList.add('open'); ans.classList.add('open'); }
+}
+
+// ── SCROLL FADE-IN OBSERVER ──
+const _obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+}, { threshold: 0.07 });
+document.querySelectorAll('.fi').forEach(el => _obs.observe(el));
+
+// ── CHAR COUNTERS ──
+document.querySelectorAll('textarea[data-maxlength]').forEach(el => {
+  const maxLen = parseInt(el.getAttribute('data-maxlength'));
+  const cid = el.id ? 'cc-' + el.id.replace('f-', '') : null;
+  if (!cid) return;
+  const counter = document.getElementById(cid);
+  if (!counter) return;
+  const update = () => {
+    const len = el.value.length;
+    counter.textContent = len + ' / ' + maxLen;
+    counter.style.color = len > maxLen * 0.9 ? '#ef4444' : len > maxLen * 0.75 ? '#f59e0b' : 'var(--dim)';
+  };
+  el.addEventListener('input', update);
+  update();
+});
+
+// ── STICKY NAV ──
 window.addEventListener('scroll', () => {
-  if (window.scrollY > 80) {
-    header.classList.add('scrolled');
-    headerCta.style.display = 'inline-block';
-  } else {
-    header.classList.remove('scrolled');
-    headerCta.style.display = 'none';
-  }
+  const nav = document.getElementById('nav');
+  if (nav) nav.classList.toggle('scrolled', window.scrollY > 30);
 }, { passive: true });
 
-// ==========================================
-// MOBILE NAV
-// ==========================================
-const hamburger = document.getElementById('hamburger');
-const mobileNav = document.getElementById('mobile-nav');
-hamburger.addEventListener('click', () => {
-  const open = mobileNav.classList.toggle('open');
-  hamburger.setAttribute('aria-expanded', open);
-});
-function closeMobileNav() { mobileNav.classList.remove('open'); hamburger.setAttribute('aria-expanded', false); }
-
-// ==========================================
-// RADIO OPTION VISUAL STATE
-// ==========================================
-document.querySelectorAll('.radio-option input[type="radio"]').forEach(radio => {
-  radio.addEventListener('change', () => {
-    document.querySelectorAll(`input[name="${radio.name}"]`).forEach(r => {
-      r.closest('.radio-option').classList.toggle('selected', r.checked);
-    });
-  });
-});
-
-// ==========================================
-// SAVINGS CALCULATOR
-// ==========================================
-document.getElementById('monthly-cost').addEventListener('input', function() {
-  const val = parseFloat(this.value);
-  if (isNaN(val) || val < 0) {
-    document.getElementById('calc-year').textContent = '—';
-    document.getElementById('calc-3yr').textContent = '—';
-    document.getElementById('calc-saving').textContent = '—';
-    document.getElementById('calc-equiv').textContent = '';
-    return;
-  }
-  const year = val * 12;
-  const threeYr = val * 36;
-  const saving = threeYr - 149;
-  document.getElementById('calc-year').textContent = `£${year.toFixed(0)}`;
-  document.getElementById('calc-3yr').textContent = `£${threeYr.toFixed(0)}`;
-  if (saving > 0) {
-    document.getElementById('calc-saving').textContent = `£${saving.toFixed(0)}`;
-    const months = Math.floor(saving / 50);
-    if (months > 0) {
-      document.getElementById('calc-equiv').textContent = `That saving is equivalent to ${months} months of marketing budget.`;
-    } else {
-      document.getElementById('calc-equiv').textContent = '';
-    }
-  } else {
-    document.getElementById('calc-saving').textContent = 'Already saving!';
-    document.getElementById('calc-equiv').textContent = "You're ahead of the game.";
-  }
-});
-
-// ==========================================
-// NURTURE FORM
-// ==========================================
-document.getElementById('nurture-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const email = document.getElementById('nurture-email').value.trim();
-  if (!email) return;
-  try {
-    await fetch('/.netlify/functions/nurture-signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
-  } catch(err) {}
-  document.getElementById('nurture-form').style.display = 'none';
-  document.getElementById('nurture-thanks').style.display = 'block';
-});
-
-// ==========================================
-// MULTI-STEP FORM
-// ==========================================
+// ── FORM STEP LOGIC ──
 let currentStep = 1;
 const totalSteps = 4;
-const stepLabels = [
-  'About You & Your Business',
-  'Design & Style',
-  'Content & Contact',
-  'Choose Your Package'
-];
+const stepLabels = ['About You & Your Business', 'Design & Style', 'Content & Contact', 'Choose Your Package'];
 
 function goToStep(n) {
-  document.getElementById(`step-${currentStep}`).classList.remove('active');
+  document.querySelectorAll('.form-step').forEach((s, i) => {
+    s.classList.toggle('active', i + 1 === n);
+  });
+  document.querySelectorAll('.fp-step').forEach((s, i) => {
+    s.classList.toggle('active', i < n);
+  });
   currentStep = n;
-  document.getElementById(`step-${currentStep}`).classList.add('active');
-  const pct = Math.round((n / totalSteps) * 100);
-  document.getElementById('progress-fill').style.width = `${pct}%`;
-  document.getElementById('step-label').textContent = `Step ${n} of ${totalSteps} — ${stepLabels[n-1]}`;
-  document.getElementById('step-pct').textContent = `${pct}%`;
-  const progressBar = document.querySelector('.progress-bar-wrap');
-  progressBar.setAttribute('aria-valuenow', n);
-  window.scrollTo({ top: document.getElementById('get-started').offsetTop - 80, behavior: 'smooth' });
+  const container = document.getElementById('get-started');
+  if (container) container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showErr(fieldId, errId) {
+  const f = document.getElementById(fieldId);
+  const e = document.getElementById(errId);
+  if (f) f.style.borderColor = 'var(--red, #ef4444)';
+  if (e) e.style.display = 'block';
+}
+function clearErr(errId) {
+  const e = document.getElementById(errId);
+  if (e) e.style.display = 'none';
+}
+function clearField(fieldId) {
+  const f = document.getElementById(fieldId);
+  if (f) f.style.borderColor = '';
 }
 
 function validateStep(step) {
   let valid = true;
-  const clearErr = (id) => { const el = document.getElementById(id); if(el) el.style.display = 'none'; };
-  const showErr = (fieldId, errId) => {
-    const field = document.getElementById(fieldId);
-    const err = document.getElementById(errId);
-    if (field && err) {
-      field.classList.add('error');
-      err.style.display = 'block';
-      if (valid) { field.focus(); valid = false; }
-    }
-  };
-  const clearField = (fieldId) => { const f = document.getElementById(fieldId); if(f) f.classList.remove('error'); };
-
   if (step === 1) {
     clearErr('err-name'); clearField('f-name');
     clearErr('err-bizname'); clearField('f-bizname');
-    clearErr('err-biztype'); clearField('f-biztype');
-    clearErr('err-bizdesc'); clearField('f-bizdesc');
+    clearErr('err-biztype');
     clearErr('err-location'); clearField('f-location');
-    if (!document.getElementById('f-name').value.trim()) showErr('f-name', 'err-name');
-    if (!document.getElementById('f-bizname').value.trim()) showErr('f-bizname', 'err-bizname');
-    if (!document.getElementById('f-biztype').value) showErr('f-biztype', 'err-biztype');
-    if (!document.getElementById('f-bizdesc').value.trim()) showErr('f-bizdesc', 'err-bizdesc');
-    if (!document.getElementById('f-location').value.trim()) showErr('f-location', 'err-location');
+    clearErr('err-bizdesc');
+    const name = document.getElementById('f-name');
+    const bizname = document.getElementById('f-bizname');
+    const biztype = document.getElementById('f-biztype');
+    const location = document.getElementById('f-location');
+    const bizdesc = document.getElementById('f-bizdesc');
+    if (!name || !name.value.trim()) { showErr('f-name', 'err-name'); if (valid) { if (name) name.focus(); valid = false; } }
+    if (!bizname || !bizname.value.trim()) { showErr('f-bizname', 'err-bizname'); if (valid) { if (bizname) bizname.focus(); valid = false; } }
+    if (!biztype || !biztype.value) { if (document.getElementById('err-biztype')) document.getElementById('err-biztype').style.display = 'block'; if (valid) { if (biztype) biztype.focus(); valid = false; } }
+    if (!location || !location.value.trim()) { showErr('f-location', 'err-location'); if (valid) { if (location) location.focus(); valid = false; } }
+    if (!bizdesc || !bizdesc.value.trim()) { showErr('f-bizdesc', 'err-bizdesc'); if (valid) { if (bizdesc) bizdesc.focus(); valid = false; } }
   }
   if (step === 4) {
     clearErr('err-package');
     clearErr('err-email'); clearField('f-email');
-    clearErr('err-whatsapp');
+    clearErr('err-whatsapp'); clearField('f-whatsapp');
     clearErr('err-terms');
     const pkg = document.querySelector('input[name="package"]:checked');
     if (!pkg) {
-      document.getElementById('err-package').style.display = 'block';
-      if (valid) { document.getElementById('package-group').focus(); valid = false; }
+      const ep = document.getElementById('err-package');
+      if (ep) ep.style.display = 'block';
+      if (valid) valid = false;
     }
-    const email = document.getElementById('f-email').value.trim();
-    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    if (!emailOk) showErr('f-email', 'err-email');
-    const whatsapp = document.getElementById('f-whatsapp').value.trim();
-    if (!whatsapp) { showErr('f-whatsapp', 'err-whatsapp'); if (valid) { document.getElementById('f-whatsapp').focus(); valid = false; } }
-    if (!document.getElementById('f-terms').checked) {
-      document.getElementById('err-terms').style.display = 'block';
-      if (valid) { document.getElementById('f-terms').focus(); valid = false; }
+    const email = document.getElementById('f-email');
+    const emailVal = email ? email.value.trim() : '';
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal);
+    if (!emailOk) { showErr('f-email', 'err-email'); if (valid) { if (email) email.focus(); valid = false; } }
+    const wa = document.getElementById('f-whatsapp');
+    if (!wa || !wa.value.trim()) { showErr('f-whatsapp', 'err-whatsapp'); if (valid) { if (wa) wa.focus(); valid = false; } }
+    const terms = document.getElementById('f-terms');
+    if (!terms || !terms.checked) {
+      const et = document.getElementById('err-terms');
+      if (et) et.style.display = 'block';
+      if (valid) { if (terms) terms.focus(); valid = false; }
     }
   }
   return valid;
@@ -1996,195 +1948,55 @@ function prevStep(current) {
   if (current > 1) goToStep(current - 1);
 }
 
-// Char counters
-function initCharCounters() {
-  document.querySelectorAll('textarea[data-maxlength], input[data-maxlength]').forEach(el => {
-    const maxLen = parseInt(el.getAttribute('data-maxlength'));
-    const counterId = el.id ? 'cc-' + el.id.replace('f-', '') : null;
-    if (!counterId) return;
-    const counter = document.getElementById(counterId);
-    if (!counter) return;
-    const update = () => {
-      const len = el.value.length;
-      counter.textContent = len + ' / ' + maxLen;
-      counter.style.color = len > maxLen * 0.9 ? '#ef4444' : len > maxLen * 0.75 ? '#f59e0b' : 'var(--muted)';
-    };
-    el.addEventListener('input', update);
-    update();
-  });
-}
-document.addEventListener('DOMContentLoaded', initCharCounters);
+// ── FORM SUBMIT ──
+const intakeForm = document.getElementById('intake-form');
+if (intakeForm) {
+  intakeForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    if (!validateStep(4)) return;
+    const honeypot = this.querySelector('[name="bot-field"]');
+    if (honeypot && honeypot.value) return;
 
-// ==========================================
-// FORM SUBMIT
-// ==========================================
-document.getElementById('intake-form').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  if (!validateStep(4)) return;
-  const honeypot = this.querySelector('[name="bot-field"]').value;
-  if (honeypot) return;
+    const submitBtn = this.querySelector('.btn-submit');
+    if (submitBtn) { submitBtn.textContent = 'Sending...'; submitBtn.disabled = true; }
 
-  const submitBtn = this.querySelector('.btn-submit');
-  submitBtn.textContent = 'Sending...';
-  submitBtn.disabled = true;
+    const formData = new FormData(this);
+    const clientName = formData.get('name') || '';
+    const clientEmail = formData.get('delivery_email') || '';
 
-  const formData = new FormData(this);
-  const clientName = formData.get('name') || '';
-  const clientEmail = formData.get('delivery_email') || '';
-
-  // Multi-value checkbox fields — must use getAll() not entries()
-  const MULTI_FIELDS = ['website_goals', 'vibe', 'sections', 'contact_methods'];
-
-  const jsonData = {};
-  // First pass — all single-value fields
-  for (const [key, value] of formData.entries()) {
-    if (typeof value === 'string' && !MULTI_FIELDS.includes(key) && key !== 'terms') {
-      jsonData[key] = value;
+    const MULTI_FIELDS = ['website_goals', 'vibe', 'sections', 'contact_methods'];
+    const jsonData = {};
+    for (const [key, value] of formData.entries()) {
+      if (typeof value === 'string' && !MULTI_FIELDS.includes(key) && key !== 'terms') {
+        jsonData[key] = value;
+      }
     }
-  }
-  // Second pass — multi-value checkbox fields (join as comma-separated string for storage)
-  for (const key of MULTI_FIELDS) {
-    const vals = formData.getAll(key).filter(v => v);
-    if (vals.length > 0) jsonData[key] = vals.join(', ');
-  }
+    for (const key of MULTI_FIELDS) {
+      const vals = formData.getAll(key).filter(v => v);
+      if (vals.length > 0) jsonData[key] = vals.join(', ');
+    }
 
-  try {
-    const resp = await fetch('/.netlify/functions/handle-intake', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(jsonData)
-    });
-    const result = await resp.json();
-    if (!result.ok) {
-      // Save failed — show error, don't redirect
-      submitBtn.textContent = 'Something went wrong — please try again';
-      submitBtn.disabled = false;
-      submitBtn.style.background = '#ef4444';
-      console.error('Intake save error:', result.error);
+    try {
+      const resp = await fetch('/.netlify/functions/handle-intake', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(jsonData)
+      });
+      const result = await resp.json();
+      if (!result.ok) {
+        if (submitBtn) { submitBtn.textContent = 'Something went wrong — please try again'; submitBtn.disabled = false; submitBtn.style.background = '#ef4444'; }
+        console.error('Intake save error:', result.error);
+        return;
+      }
+    } catch (err) {
+      if (submitBtn) { submitBtn.textContent = 'Network error — please try again'; submitBtn.disabled = false; submitBtn.style.background = '#ef4444'; }
+      console.error('Intake fetch error:', err);
       return;
     }
-  } catch(err) {
-    // Network error — still redirect, submission may have gone through
-    console.error('Intake fetch error:', err);
-  }
 
-  window.location.href = '/thank-you.html?name=' + encodeURIComponent(clientName) + '&email=' + encodeURIComponent(clientEmail);
-});
-
-// Mobile menu
-function closeMobileMenu() {
-  document.getElementById('mobile-menu').classList.remove('open');
-}
-document.getElementById('menu-btn').addEventListener('click', function() {
-  document.getElementById('mobile-menu').classList.toggle('open');
-});
-
-// FAQ toggle
-function toggleFaq(btn) {
-  const answer = btn.nextElementSibling;
-  const isOpen = btn.classList.contains('open');
-  // Close all
-  document.querySelectorAll('.faq-q').forEach(q => {
-    q.classList.remove('open');
-    q.nextElementSibling.classList.remove('open');
-  });
-  // Open this one if it was closed
-  if (!isOpen) {
-    btn.classList.add('open');
-    answer.classList.add('open');
-  }
-}
-
-// Fade-in observer
-const _observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
-}, { threshold: 0.08 });
-document.querySelectorAll('.fi').forEach(el => _observer.observe(el));
-
-// Char counters
-function initCharCounters() {
-  document.querySelectorAll('textarea[data-maxlength], input[data-maxlength]').forEach(el => {
-    const maxLen = parseInt(el.getAttribute('data-maxlength'));
-    const counterId = el.id ? 'cc-' + el.id.replace('f-', '') : null;
-    if (!counterId) return;
-    const counter = document.getElementById(counterId);
-    if (!counter) return;
-    const update = () => {
-      const len = el.value.length;
-      counter.textContent = len + ' / ' + maxLen;
-      counter.style.color = len > maxLen * 0.9 ? '#ef4444' : len > maxLen * 0.75 ? '#f59e0b' : 'var(--text-dim)';
-    };
-    el.addEventListener('input', update);
-    update();
+    window.location.href = '/thank-you.html?name=' + encodeURIComponent(clientName) + '&email=' + encodeURIComponent(clientEmail);
   });
 }
-document.addEventListener('DOMContentLoaded', initCharCounters);
-
-// Sticky nav style on scroll
-window.addEventListener('scroll', () => {
-  document.getElementById('nav').style.borderBottomColor = 
-    window.scrollY > 20 ? 'rgba(255,255,255,.1)' : 'var(--border)';
-}, { passive: true });
-
-// ── RUNTIME JS ──────────────────────────────────────
-// Mobile menu
-function closeMM() { document.getElementById('mobile-menu').classList.remove('open'); }
-document.getElementById('menu-btn').addEventListener('click', function() {
-  document.getElementById('mobile-menu').classList.toggle('open');
-});
-
-// FAQ accordion
-function toggleFaq(btn) {
-  const ans = btn.nextElementSibling;
-  const isOpen = btn.classList.contains('open');
-  document.querySelectorAll('.faq-q').forEach(q => {
-    q.classList.remove('open');
-    q.nextElementSibling.classList.remove('open');
-  });
-  if (!isOpen) { btn.classList.add('open'); ans.classList.add('open'); }
-}
-
-// Fade-in observer
-const _obs = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
-}, { threshold: 0.07 });
-document.querySelectorAll('.fi,.fi-l').forEach(el => _obs.observe(el));
-
-// How-steps hover activation
-document.querySelectorAll('.how-step').forEach((step, i) => {
-  step.addEventListener('mouseenter', () => {
-    document.querySelectorAll('.how-step').forEach(s => s.classList.remove('active-step'));
-    step.classList.add('active-step');
-  });
-});
-if (document.querySelector('.how-step')) {
-  document.querySelector('.how-step').classList.add('active-step');
-}
-
-// Char counters
-function initCharCounters() {
-  document.querySelectorAll('textarea[data-maxlength], input[data-maxlength]').forEach(el => {
-    const maxLen = parseInt(el.getAttribute('data-maxlength'));
-    const counterId = el.id ? 'cc-' + el.id.replace('f-', '') : null;
-    if (!counterId) return;
-    const counter = document.getElementById(counterId);
-    if (!counter) return;
-    const update = () => {
-      const len = el.value.length;
-      counter.textContent = len + ' / ' + maxLen;
-      counter.style.color = len > maxLen * .9 ? '#f56565' : len > maxLen * .75 ? '#f59e0b' : 'var(--dim)';
-    };
-    el.addEventListener('input', update);
-    update();
-  });
-}
-document.addEventListener('DOMContentLoaded', initCharCounters);
-
-// Nav scroll
-window.addEventListener('scroll', () => {
-  const nav = document.getElementById('nav');
-  nav.style.borderBottomColor = window.scrollY > 20 ? 'rgba(255,255,255,.1)' : 'rgba(255,255,255,.06)';
-}, { passive: true });
 </script>
 </body>
 </html>
