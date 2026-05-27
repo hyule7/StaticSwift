@@ -2014,31 +2014,159 @@ function toggleSEO(idx) {
 }
 
 // ==========================================
-// LIVE VISITORS WIDGET  (NEW)
+// LIVE VISITORS WIDGET — self-hosted analytics (no GA needed)
 // ==========================================
+let selfAnalyticsCache = null;
 async function loadVisitorWidget() {
   const widget = document.getElementById('live-widget');
   if (!widget) return;
   try {
-    const r = await fetch('/.netlify/functions/analytics-data', {
+    const r = await fetch('/.netlify/functions/analytics-self?days=30', {
       headers: { 'x-admin-password': ADMIN_PW }
     });
     if (!r.ok) { widget.style.display = 'none'; return; }
     const d = await r.json();
-    if (d.unavailable) { widget.style.display = 'none'; return; }
+    if (!d.ok) { widget.style.display = 'none'; return; }
+    selfAnalyticsCache = d;
     widget.style.display = 'block';
     document.getElementById('lv-sessions').textContent = (d.overview.sessions || 0).toLocaleString();
-    document.getElementById('lv-users').textContent = (d.overview.users || 0).toLocaleString();
+    document.getElementById('lv-users').textContent = (d.overview.visitors || 0).toLocaleString();
     document.getElementById('lv-pageviews').textContent = (d.overview.pageviews || 0).toLocaleString();
     document.getElementById('lv-bounce').textContent = (d.overview.bounceRate || 0) + '%';
-    // Top page right now
+    const live = document.getElementById('lv-live');
+    if (live) live.textContent = (d.overview.live || 0);
+    const todayEl = document.getElementById('lv-today');
+    if (todayEl) todayEl.textContent = (d.overview.today || 0);
     const topEl = document.getElementById('lv-top-page');
     if (topEl && d.topPages && d.topPages.length) {
-      topEl.textContent = d.topPages[0].path + ' (' + d.topPages[0].views.toLocaleString() + ')';
+      topEl.textContent = d.topPages[0].path + ' (' + d.topPages[0].views.toLocaleString() + ' views)';
+    } else if (topEl) {
+      topEl.textContent = '—';
+    }
+    // Sparkline (last 7 days)
+    const spark = document.getElementById('lv-spark');
+    if (spark && d.series && d.series.length) {
+      drawSparkline(spark, d.series.slice(-14).map(s => s.views));
     }
   } catch {
     widget.style.display = 'none';
   }
+}
+
+function drawSparkline(svg, values) {
+  if (!values || !values.length) { svg.innerHTML = ''; return; }
+  const max = Math.max(1, ...values);
+  const w = svg.clientWidth || 320;
+  const h = svg.clientHeight || 36;
+  const step = w / Math.max(1, values.length - 1);
+  const pts = values.map((v, i) => [i * step, h - (v / max) * (h - 4) - 2]);
+  const path = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+  const area = path + ' L ' + w + ',' + h + ' L 0,' + h + ' Z';
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  svg.innerHTML = `<defs><linearGradient id="lvg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#00C8E0" stop-opacity=".5"/><stop offset="1" stop-color="#00C8E0" stop-opacity="0"/></linearGradient></defs>
+    <path d="${area}" fill="url(#lvg)"></path>
+    <path d="${path}" fill="none" stroke="#00C8E0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>`;
+}
+
+// Renders the full Analytics tab from self-hosted data
+async function loadSelfAnalytics() {
+  const status = document.getElementById('analytics-status');
+  if (status) status.textContent = 'Loading…';
+  try {
+    const r = await fetch('/.netlify/functions/analytics-self?days=30', {
+      headers: { 'x-admin-password': ADMIN_PW }
+    });
+    const d = await r.json();
+    if (!d.ok) {
+      if (status) status.textContent = 'No analytics yet — visit your site to record traffic';
+      return;
+    }
+    selfAnalyticsCache = d;
+    // Top numbers
+    const setT = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    setT('sa-pageviews', d.overview.pageviews.toLocaleString());
+    setT('sa-visitors', d.overview.visitors.toLocaleString());
+    setT('sa-sessions', d.overview.sessions.toLocaleString());
+    setT('sa-duration', Math.floor(d.overview.avgDuration/60) + 'm ' + (d.overview.avgDuration%60) + 's');
+    setT('sa-bounce', d.overview.bounceRate + '%');
+    setT('sa-live', d.overview.live);
+    setT('sa-today', d.overview.today);
+    setT('sa-forms', d.overview.formSubmits);
+    setT('sa-ctas', d.overview.ctaClicks);
+
+    // Series chart
+    const chart = document.getElementById('sa-chart');
+    if (chart && d.series) drawSeriesChart(chart, d.series);
+
+    // Top pages
+    const pagesEl = document.getElementById('sa-pages');
+    if (pagesEl) {
+      pagesEl.innerHTML = d.topPages.length
+        ? d.topPages.map(p => `<div class="sa-row"><span class="sa-row-l">${escapeHTML(p.path)}</span><span class="sa-row-r">${p.views.toLocaleString()} <span style="color:var(--dim)">(${p.visitors})</span></span></div>`).join('')
+        : '<div class="empty">No data yet</div>';
+    }
+
+    // Referrers
+    const refsEl = document.getElementById('sa-refs');
+    if (refsEl) {
+      refsEl.innerHTML = d.topReferrers.length
+        ? d.topReferrers.map(r => `<div class="sa-row"><span class="sa-row-l">${escapeHTML(r.host)}</span><span class="sa-row-r">${r.count.toLocaleString()}</span></div>`).join('')
+        : '<div class="empty">No referrers yet — most traffic is direct</div>';
+    }
+
+    // Countries
+    const cEl = document.getElementById('sa-countries');
+    if (cEl) {
+      cEl.innerHTML = d.countries.length
+        ? d.countries.map(c => `<div class="sa-row"><span class="sa-row-l">${escapeHTML(c.name)}</span><span class="sa-row-r">${c.count.toLocaleString()}</span></div>`).join('')
+        : '<div class="empty">No country data yet</div>';
+    }
+
+    // Devices
+    const dvEl = document.getElementById('sa-devices');
+    if (dvEl) {
+      const total = d.devices.reduce((s,x)=>s+x.count,0) || 1;
+      dvEl.innerHTML = d.devices.map(x => {
+        const pct = Math.round(x.count/total*100);
+        return `<div class="sa-row"><span class="sa-row-l">${escapeHTML(x.name)} <span style="color:var(--dim);font-size:11px">${pct}%</span></span><span class="sa-row-r">${x.count.toLocaleString()}</span></div>
+        <div style="height:3px;background:var(--dark3);border-radius:2px;margin:2px 0 8px;overflow:hidden"><div style="height:100%;width:${pct}%;background:var(--cyan);border-radius:2px"></div></div>`;
+      }).join('');
+    }
+
+    // Browsers
+    const bEl = document.getElementById('sa-browsers');
+    if (bEl) {
+      bEl.innerHTML = d.browsers.length
+        ? d.browsers.map(b => `<div class="sa-row"><span class="sa-row-l">${escapeHTML(b.name)}</span><span class="sa-row-r">${b.count.toLocaleString()}</span></div>`).join('')
+        : '<div class="empty">No data yet</div>';
+    }
+
+    if (status) status.textContent = 'Updated ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) + ' · ' + d.rangeDays + 'd';
+  } catch (err) {
+    if (status) status.textContent = 'Error: ' + err.message;
+  }
+}
+
+function drawSeriesChart(svg, series) {
+  const w = svg.clientWidth || 720;
+  const h = svg.clientHeight || 180;
+  const pad = 30;
+  const innerW = w - pad * 2;
+  const innerH = h - pad * 2;
+  const max = Math.max(1, ...series.map(s => s.views));
+  const step = innerW / Math.max(1, series.length - 1);
+  const pts = series.map((s, i) => [pad + i * step, pad + (innerH - (s.views / max) * innerH)]);
+  const path = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+  const area = path + ` L ${pad+innerW},${pad+innerH} L ${pad},${pad+innerH} Z`;
+  const ticks = [0, 0.5, 1].map(t => pad + innerH - t * innerH);
+  svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  svg.innerHTML = `
+    <defs><linearGradient id="csg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#00C8E0" stop-opacity=".35"/><stop offset="1" stop-color="#00C8E0" stop-opacity="0"/></linearGradient></defs>
+    ${ticks.map(y => `<line x1="${pad}" x2="${w-pad}" y1="${y}" y2="${y}" stroke="rgba(255,255,255,.05)" stroke-width="1"/>`).join('')}
+    <path d="${area}" fill="url(#csg)"></path>
+    <path d="${path}" fill="none" stroke="#00C8E0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
+    ${pts.map((p,i) => i === pts.length-1 ? `<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="#00C8E0"/>` : '').join('')}
+  `;
 }
 
 // ==========================================
@@ -2132,7 +2260,7 @@ function showPage(id, btn) {
   const target = document.getElementById('page-' + id);
   if (target) target.classList.add('active');
   if (btn) btn.classList.add('active');
-  if (id === 'analytics') loadAnalytics();
+  if (id === 'analytics') { loadSelfAnalytics(); loadAnalytics(); }
   if (id === 'outreach') { renderProspects(); renderDorkPicker(); }
   if (id === 'seo') renderSEOChecklist();
   if (id === 'backlinks') renderDirectories();

@@ -687,6 +687,13 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}
 .cmdk-item:hover,.cmdk-item.focus{background:var(--surface)}
 .cmdk-item .cmdk-kind{margin-left:auto;font-size:10px;color:var(--dim);font-family:'DM Mono',monospace;text-transform:uppercase}
 
+/* ── SELF-ANALYTICS ROWS ───────────────────────────────── */
+.sa-list{font-size:13px;max-height:340px;overflow-y:auto}
+.sa-row{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border);gap:10px;font-size:13px}
+.sa-row:last-child{border-bottom:none}
+.sa-row-l{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.sa-row-r{font-family:'DM Mono',monospace;color:var(--cyan);font-weight:700;flex-shrink:0}
+
 /* ── OUTREACH SPECIFIC ─────────────────────────────────── */
 .outreach-tools{
   background:linear-gradient(135deg,var(--surface),var(--surface2));

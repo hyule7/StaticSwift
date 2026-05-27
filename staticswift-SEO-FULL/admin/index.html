@@ -113,20 +113,25 @@
         <div class="stat-card"><div class="label">Total Clients</div><div class="value" id="stat-total">—</div></div>
       </div>
 
-      <!-- LIVE VISITORS WIDGET -->
+      <!-- LIVE VISITORS WIDGET (self-hosted analytics) -->
       <div class="live-widget" id="live-widget" style="display:none">
         <div class="live-widget-head">
-          <div class="live-widget-title"><span class="live-dot"></span>Site Visitors (last 30 days)</div>
-          <button class="btn-ghost" style="font-size:11px;padding:6px 12px" onclick="loadVisitorWidget()">↻ Live</button>
+          <div class="live-widget-title">
+            <span class="live-dot"></span>
+            Site traffic — <span id="lv-live" style="color:var(--green);font-weight:800;margin:0 4px">0</span> live now
+          </div>
+          <button class="btn-ghost" style="font-size:11px;padding:6px 12px" onclick="loadVisitorWidget()">↻ Refresh</button>
         </div>
         <div class="live-grid">
-          <div class="live-stat"><span class="live-stat-num" id="lv-sessions">—</span><span class="live-stat-lbl">Sessions</span></div>
-          <div class="live-stat"><span class="live-stat-num" id="lv-users">—</span><span class="live-stat-lbl">Visitors</span></div>
-          <div class="live-stat"><span class="live-stat-num" id="lv-pageviews">—</span><span class="live-stat-lbl">Page views</span></div>
+          <div class="live-stat"><span class="live-stat-num" id="lv-today">—</span><span class="live-stat-lbl">Today</span></div>
+          <div class="live-stat"><span class="live-stat-num" id="lv-pageviews">—</span><span class="live-stat-lbl">30d page views</span></div>
+          <div class="live-stat"><span class="live-stat-num" id="lv-users">—</span><span class="live-stat-lbl">30d visitors</span></div>
+          <div class="live-stat"><span class="live-stat-num" id="lv-sessions">—</span><span class="live-stat-lbl">30d sessions</span></div>
           <div class="live-stat"><span class="live-stat-num" id="lv-bounce">—</span><span class="live-stat-lbl">Bounce %</span></div>
         </div>
-        <div style="margin-top:14px;font-size:12px;color:var(--muted)">
-          <strong style="color:var(--text)">Top page now:</strong> <span id="lv-top-page">—</span>
+        <svg id="lv-spark" style="width:100%;height:36px;margin-top:14px;display:block"></svg>
+        <div style="margin-top:10px;font-size:12px;color:var(--muted)">
+          <strong style="color:var(--text)">Top page:</strong> <span id="lv-top-page">—</span>
         </div>
       </div>
 
@@ -256,10 +261,66 @@
         <h1 class="page-title">Analytics</h1>
         <div style="display:flex;gap:8px;align-items:center">
           <span id="analytics-status" style="font-size:12px;color:var(--muted)">Loading...</span>
-          <button class="btn-ghost" style="font-size:12px;padding:7px 14px" onclick="loadAnalytics()">Refresh</button>
+          <button class="btn-ghost" style="font-size:12px;padding:7px 14px" onclick="loadSelfAnalytics()">↻ Refresh</button>
           <button class="btn-ghost" style="font-size:12px;padding:7px 14px" onclick="pingSitemaps()">Ping Sitemaps</button>
         </div>
       </div>
+
+      <!-- SELF-HOSTED ANALYTICS — no Google tag needed -->
+      <div style="background:linear-gradient(135deg,rgba(0,200,224,.06),rgba(0,0,0,0));border:1px solid rgba(0,200,224,.18);border-radius:14px;padding:18px 20px;margin-bottom:18px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)">
+        <span style="color:var(--cyan);font-weight:700">●</span>
+        Self-hosted analytics — your data, stored in Netlify Blobs, no Google needed. Privacy-preserving (no cross-day tracking).
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:18px">
+        <div class="stat-card"><div class="label">● Live now</div><div class="value" id="sa-live" style="color:var(--green)">—</div><div class="sub">In the last 5 minutes</div></div>
+        <div class="stat-card"><div class="label">Today</div><div class="value" id="sa-today">—</div><div class="sub">Page views</div></div>
+        <div class="stat-card"><div class="label">30d Page Views</div><div class="value" id="sa-pageviews">—</div></div>
+        <div class="stat-card"><div class="label">30d Visitors</div><div class="value" id="sa-visitors">—</div></div>
+        <div class="stat-card"><div class="label">30d Sessions</div><div class="value" id="sa-sessions">—</div></div>
+        <div class="stat-card"><div class="label">Avg duration</div><div class="value" id="sa-duration">—</div></div>
+        <div class="stat-card"><div class="label">Bounce</div><div class="value" id="sa-bounce">—</div></div>
+        <div class="stat-card"><div class="label">Form submits</div><div class="value" id="sa-forms" style="color:var(--cyan)">—</div></div>
+        <div class="stat-card"><div class="label">CTA clicks</div><div class="value" id="sa-ctas">—</div></div>
+      </div>
+
+      <!-- Traffic chart -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace">Daily traffic — last 30 days</div>
+        </div>
+        <svg id="sa-chart" style="width:100%;height:180px;display:block"></svg>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace">Top pages</div>
+          <div id="sa-pages" class="sa-list"><div class="loading">Loading</div></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace">Where they came from</div>
+          <div id="sa-refs" class="sa-list"><div class="loading">Loading</div></div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace">Countries</div>
+          <div id="sa-countries" class="sa-list"><div class="loading">Loading</div></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace">Devices</div>
+          <div id="sa-devices" class="sa-list"><div class="loading">Loading</div></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace">Browsers</div>
+          <div id="sa-browsers" class="sa-list"><div class="loading">Loading</div></div>
+        </div>
+      </div>
+
+      <details style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 20px;margin-bottom:18px">
+        <summary style="cursor:pointer;font-size:13px;color:var(--muted);font-weight:600">Google Analytics + Search Console (optional)</summary>
+        <p style="font-size:12px;color:var(--dim);margin:10px 0 14px;line-height:1.6">If you connect GA4 and Search Console, their data appears below. Not required — self-hosted analytics above already covers most of what you need.</p>
 
       <div style="margin-bottom:20px">
         <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace;margin-bottom:12px">Google Analytics — Last 30 Days</div>
@@ -314,6 +375,7 @@
           GOOGLE_SA_KEY=<span style="color:var(--cyan)">base64-encoded-private-key</span>
         </div>
       </div>
+      </details>
     </div>
 
     <!-- INBOX -->
