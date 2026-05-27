@@ -6,11 +6,51 @@
 [build.environment]
   NODE_VERSION = "18"
 
+# Global security headers
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "SAMEORIGIN"
     X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# Cache admin static assets aggressively (versioned via ?v= query)
+[[headers]]
+  for = "/admin/admin.css"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+[[headers]]
+  for = "/admin/admin.js"
+  [headers.values]
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
+
+# Admin HTML — never cache (always fresh shell)
+[[headers]]
+  for = "/admin/*.html"
+  [headers.values]
+    Cache-Control = "no-store, must-revalidate"
+    X-Robots-Tag = "noindex, nofollow"
+
+# Public HTML — short cache so updates ship quickly
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=300, must-revalidate"
+
+# Sitemaps — light cache
+[[headers]]
+  for = "/sitemap*.xml"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+    Content-Type = "application/xml; charset=utf-8"
+
+# robots.txt
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
 
 [[redirects]]
   from = "/admin"
