@@ -8,18 +8,19 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { to, subject, body, fromMailbox } = JSON.parse(event.body || '{}');
+    const { to, subject, body, fromMailbox, mode, inReplyTo, references } = JSON.parse(event.body || '{}');
     if (!to || !body) return { statusCode: 400, body: JSON.stringify({ error: 'to and body required' }) };
 
-    // Validate / sanitize. Strip CRLF from headers to prevent injection,
-    // basic shape-check on `to`, and HTML-escape the body before <br/> conversion.
     const safe = s => String(s == null ? '' : s).replace(/[\r\n]+/g, ' ').trim();
     const toAddr = safe(to);
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(toAddr)) {
       return { statusCode: 400, body: JSON.stringify({ error: 'invalid to address' }) };
     }
     const rawSubject = safe(subject || '(no subject)');
-    const finalSubject = rawSubject.startsWith('Re:') ? rawSubject : 'Re: ' + rawSubject;
+    const isReply = mode === 'reply' || !!inReplyTo;
+    const finalSubject = !isReply
+      ? rawSubject
+      : (rawSubject.toLowerCase().startsWith('re:') ? rawSubject : 'Re: ' + rawSubject);
     const escapeHtml = s => String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -41,14 +42,23 @@ exports.handler = async (event) => {
       tls: { rejectUnauthorized: false },
     });
 
-    await transporter.sendMail({
+    const mailOpts = {
       from: '"StaticSwift" <' + fromAddr + '>',
       to: toAddr,
       subject: finalSubject,
       html: '<div style="font-family:sans-serif;max-width:600px;line-height:1.6">' + safeBodyHtml + '<br><br><span style="color:#888;font-size:12px">StaticSwift — staticswift.co.uk</span></div>',
       text: body,
       replyTo: fromAddr,
-    });
+      headers: {
+        'List-Unsubscribe': '<mailto:' + fromAddr + '?subject=unsubscribe>, <https://staticswift.co.uk/unsubscribe>',
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      },
+    };
+    if (isReply && inReplyTo) {
+      mailOpts.inReplyTo = inReplyTo;
+      mailOpts.references = references || inReplyTo;
+    }
+    await transporter.sendMail(mailOpts);
 
     return { statusCode: 200, body: JSON.stringify({ ok: true }) };
   } catch (err) {

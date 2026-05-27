@@ -1182,7 +1182,7 @@ async function sendReply(to, subject) {
     const r = await fetch('/.netlify/functions/send-reply', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
-      body: JSON.stringify({ to, subject: subject || '(no subject)', body, fromMailbox })
+      body: JSON.stringify({ to, subject: subject || '(no subject)', body, fromMailbox, mode: 'reply' })
     });
     const d = await r.json();
     if (d.ok) {
@@ -1228,36 +1228,48 @@ async function sendPortalReply() {
 async function handleFileSelect(input, fileType) {
   const file = input.files[0];
   if (!file) return;
-  if (!file.name.endsWith('.html') && !file.name.endsWith('.zip')) {
-    alert('Please select an HTML or ZIP file.');
+  const lower = file.name.toLowerCase();
+  if (!lower.endsWith('.html') && !lower.endsWith('.htm') && !lower.endsWith('.zip')) {
+    alert('Please select a .html or .zip file.');
+    input.value = '';
     return;
   }
-  if (!currentClientId) { alert('No client selected.'); return; }
+  if (!currentClientId) { alert('No client selected.'); input.value = ''; return; }
+
+  // Netlify Lambda body limit ≈ 6 MB; base64 inflates by ~33% — keep raw under 4 MB
+  const MAX_RAW = 4 * 1024 * 1024;
+  if (file.size > MAX_RAW) {
+    alert('File is ' + (file.size / 1024 / 1024).toFixed(1) + ' MB — too big for direct upload (4 MB max).\n\nReduce inline base64 images or split the build, then try again.');
+    input.value = '';
+    return;
+  }
 
   const statusEl = document.getElementById(fileType + '-upload-status');
   const dropEl = document.getElementById(fileType + '-drop');
   statusEl.style.display = 'block';
   statusEl.style.color = 'var(--muted)';
-  statusEl.textContent = 'Reading file...';
+  statusEl.textContent = 'Reading ' + (file.size / 1024).toFixed(0) + ' KB…';
   dropEl.style.borderColor = 'var(--cyan)';
 
   try {
     const base64 = await new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = e => resolve(e.target.result.split(',')[1]);
-      reader.onerror = reject;
+      reader.onerror = () => reject(new Error('Could not read file'));
       reader.readAsDataURL(file);
     });
 
-    statusEl.textContent = 'Uploading...';
+    statusEl.textContent = 'Uploading to blob store…';
 
     const r = await fetch('/.netlify/functions/upload-preview', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
       body: JSON.stringify({ clientId: currentClientId, fileType, htmlBase64: base64, filename: file.name })
     });
-    const data = await r.json();
-    if (!data.ok) throw new Error(data.error || 'Upload failed');
+    let data;
+    try { data = await r.json(); }
+    catch { throw new Error('Server returned ' + r.status + ' (non-JSON). Check function logs.'); }
+    if (!r.ok || !data.ok) throw new Error(data?.error || ('Upload failed: HTTP ' + r.status));
 
     const uploadedUrl = data.previewUrl;
     const downloadUrl = data.cdnUrl || data.previewUrl;
@@ -1486,7 +1498,7 @@ async function sendTicketReply(to, subject, prefix) {
   try {
     const r = await fetch('/.netlify/functions/send-reply', {
       method:'POST', headers:{'Content-Type':'application/json','x-admin-password':ADMIN_PW},
-      body:JSON.stringify({ to, subject: (prefix||'Re: ')+(subject || '(no subject)'), body, fromMailbox })
+      body:JSON.stringify({ to, subject: subject || '(no subject)', body, fromMailbox, mode: 'reply' })
     });
     const d = await r.json();
     if (d.ok) { status.style.color='var(--green)'; status.textContent='Sent!'; bodyEl.value=''; }
