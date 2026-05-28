@@ -915,6 +915,252 @@ nav:not(.scrolled) .eyebrow-line,.showcase-section .eyebrow-line,.cta-band .eyeb
   .hero-lead{margin-top:1.5rem}
 }
 </style>
+<style>
+/* ══ HERO PHOTO-BACKED MOCKUPS — Fade & Blade · Brightsmile · Larder & Spoon ══ */
+.float-card.fc-new{width:auto;background:transparent;border-radius:0;box-shadow:none;overflow:visible}
+.float-card.fc-new .fb-mock,.float-card.fc-new .bs-mock,.float-card.fc-new .ls-mock{transform:none}
+
+/* Fade & Blade (barber, dark luxe) */
+.fb-mock{width:300px;border-radius:18px;background:#0e0d0b;box-shadow:0 40px 80px -20px rgba(0,0,0,.65),0 12px 24px -8px rgba(0,0,0,.45),inset 0 0 0 1px rgba(176,138,62,.08);overflow:hidden;font-family:'Inter',system-ui,sans-serif;color:#e9e3d4}
+.fb-chrome{height:28px;background:#161410;display:flex;align-items:center;padding:0 12px;gap:8px;border-bottom:1px solid rgba(176,138,62,.12)}
+.fb-mock .fb-dot{width:8px;height:8px;border-radius:50%;background:#2a2722}
+.fb-mock .fb-url{flex:1;text-align:center;font-size:9.5px;letter-spacing:.04em;color:#6f6759}
+.fb-mock .fb-body{display:flex;flex-direction:column;background:#0e0d0b}
+.fb-mock .fb-hero{position:relative;height:168px;background-image:linear-gradient(180deg,rgba(14,13,11,.25) 0%,rgba(14,13,11,.55) 55%,rgba(14,13,11,.96) 100%),url('https://images.pexels.com/photos/1570807/pexels-photo-1570807.jpeg?auto=compress&cs=tinysrgb&w=800');background-size:cover;background-position:center 30%;padding:12px 16px 14px;display:flex;flex-direction:column;justify-content:space-between}
+.fb-mock .fb-nav{display:flex;justify-content:space-between;align-items:center;font-size:8px;letter-spacing:.22em;color:rgba(233,227,212,.78);text-transform:uppercase}
+.fb-mock .fb-nav-mark{font-family:'Cormorant Garamond','Cormorant',serif;font-size:13px;letter-spacing:.18em;color:#b08a3e;font-weight:600}
+.fb-mock .fb-nav-links span{margin-left:9px}
+.fb-mock .fb-wordmark{font-family:'Cormorant Garamond','Cormorant',serif;font-size:28px;letter-spacing:.16em;line-height:1;font-weight:500;color:#f1e9d4;margin:0 0 4px}
+.fb-mock .fb-wordmark em{font-style:italic;color:#b08a3e;font-weight:400}
+.fb-mock .fb-tag{font-size:8.5px;letter-spacing:.14em;color:rgba(233,227,212,.72);text-transform:uppercase}
+.fb-mock .fb-prop{padding:13px 16px 8px;font-family:'Cormorant Garamond','Cormorant',serif;font-size:12.5px;line-height:1.35;color:#d9d1bd;font-style:italic;border-bottom:1px solid rgba(176,138,62,.1)}
+.fb-mock .fb-prop b{color:#b08a3e;font-style:normal;font-weight:600}
+.fb-mock .fb-services{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(176,138,62,.1);margin:0 12px}
+.fb-mock .fb-svc{background:#121110;padding:9px 10px 8px;display:flex;justify-content:space-between;align-items:baseline}
+.fb-mock .fb-svc-name{font-size:8.5px;letter-spacing:.14em;color:#d9d1bd;text-transform:uppercase}
+.fb-mock .fb-svc-price{font-family:'Cormorant Garamond','Cormorant',serif;font-size:13px;color:#b08a3e;font-weight:600}
+.fb-mock .fb-footer{padding:10px 16px 12px;border-top:1px solid rgba(176,138,62,.14);display:flex;justify-content:space-between;align-items:center;background:#0a0908}
+.fb-mock .fb-loc{font-size:8px;letter-spacing:.16em;color:rgba(233,227,212,.6);text-transform:uppercase}
+.fb-mock .fb-book{font-size:8.5px;letter-spacing:.22em;color:#0e0d0b;background:#b08a3e;padding:5px 10px;text-transform:uppercase;font-weight:600;border-radius:1px}
+.fb-mock .fb-credit{text-align:center;font-size:9px;letter-spacing:.32em;color:rgba(255,255,255,.55);padding:7px 0 9px;background:#060504;text-transform:uppercase}
+.fb-mock .fb-credit a{color:#fff;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.35);padding-bottom:1px}
+
+/* Brightsmile (dentist, ivory + sage) */
+.bs-mock{width:296px;background:#fdfcf9;border-radius:18px;overflow:hidden;box-shadow:0 18px 40px -18px rgba(13,31,42,.35),0 4px 14px -6px rgba(13,31,42,.18);font-family:'Inter',sans-serif;color:#1a2421;border:1px solid rgba(13,31,42,.06)}
+.bs-mock .bs-chrome{display:flex;align-items:center;gap:5px;padding:8px 11px;background:#f4f1ea;border-bottom:1px solid rgba(13,31,42,.06)}
+.bs-mock .bs-dot{width:7px;height:7px;border-radius:50%;background:#d8d2c4}
+.bs-mock .bs-dot:nth-child(1){background:#e8b4a8}.bs-mock .bs-dot:nth-child(2){background:#e8d2a0}.bs-mock .bs-dot:nth-child(3){background:#bcd0c0}
+.bs-mock .bs-url{margin-left:8px;font-size:7px;letter-spacing:.02em;color:rgba(26,36,33,.55);font-weight:500}
+.bs-mock .bs-body{background:#fdfcf9}
+.bs-mock .bs-nav{display:flex;justify-content:space-between;align-items:center;padding:11px 14px 9px;font-size:7.5px;font-weight:700;letter-spacing:.22em;color:#1a2421}
+.bs-mock .bs-nav-cta{background:#1a2421;color:#fdfcf9;padding:4px 10px;border-radius:100px;font-size:6.5px;letter-spacing:.14em;font-weight:600}
+.bs-mock .bs-hero{position:relative;margin:0 12px;border-radius:8px;overflow:hidden;aspect-ratio:296/170;background:#e7e1d4 url('https://images.pexels.com/photos/6627562/pexels-photo-6627562.jpeg?auto=compress&cs=tinysrgb&w=600') center/cover}
+.bs-mock .bs-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(253,252,249,.05) 30%,rgba(15,28,24,.78) 100%)}
+.bs-mock .bs-hero-txt{position:absolute;left:11px;right:11px;bottom:9px;z-index:2;color:#fdfcf9}
+.bs-mock .bs-eyebrow{font-size:5.5px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:rgba(253,252,249,.78);margin-bottom:3px}
+.bs-mock .bs-h1{font-family:'Instrument Serif','Cormorant',serif;font-style:italic;font-size:19px;line-height:1;font-weight:400;letter-spacing:-.01em}
+.bs-mock .bs-rating{display:flex;align-items:center;gap:6px;padding:10px 14px 6px;font-size:7px;color:rgba(26,36,33,.62);font-weight:500}
+.bs-mock .bs-stars{color:#c89c4f;font-size:8px;letter-spacing:.04em;line-height:1}
+.bs-mock .bs-rating b{color:#1a2421;font-weight:600}
+.bs-mock .bs-services{padding:2px 14px 6px}
+.bs-mock .bs-row{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-bottom:1px solid rgba(13,31,42,.07);font-size:7.5px}
+.bs-mock .bs-row:last-child{border-bottom:none}
+.bs-mock .bs-name{color:#1a2421;font-weight:500;letter-spacing:.005em}
+.bs-mock .bs-name small{display:block;font-size:5.5px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:#7a9b8e;margin-bottom:1px}
+.bs-mock .bs-price{font-family:'Instrument Serif','Cormorant',serif;font-size:11px;color:#1a2421;font-weight:400;letter-spacing:-.01em}
+.bs-mock .bs-price em{font-style:normal;color:rgba(26,36,33,.4);font-size:7px;margin-right:1px}
+.bs-mock .bs-foot{display:flex;justify-content:space-between;align-items:center;padding:9px 14px 11px;border-top:1px solid rgba(13,31,42,.06);background:#f6f3ec;font-size:6.5px;color:rgba(26,36,33,.6);font-weight:500}
+.bs-mock .bs-foot-l{display:flex;flex-direction:column;gap:2px}
+.bs-mock .bs-foot-l span:first-child{color:#1a2421;font-weight:600;letter-spacing:.04em}
+.bs-mock .bs-credit{font-size:5.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(26,36,33,.42);font-weight:600;text-align:right;line-height:1.3}
+.bs-mock .bs-credit b{color:#7a9b8e;font-weight:700}
+
+/* Larder & Spoon (bistro, cream + oxblood) */
+.ls-mock{width:296px;background:#f5f0e6;border-radius:18px;box-shadow:0 30px 60px -20px rgba(60,28,18,.45),0 8px 20px -8px rgba(60,28,18,.25);overflow:hidden;font-family:'Inter',sans-serif;color:#2a1d14;display:flex;flex-direction:column}
+.ls-mock .ls-chrome{background:#ece3d2;padding:7px 10px;display:flex;align-items:center;gap:6px;border-bottom:1px solid #ddd0b6}
+.ls-mock .ls-dot{width:7px;height:7px;border-radius:50%;background:#c9b896}
+.ls-mock .ls-url{flex:1;background:#f5f0e6;border-radius:5px;padding:3px 8px;font-size:9px;color:#6b5340;text-align:center;letter-spacing:.2px;margin-left:4px}
+.ls-mock .ls-body{flex:1;display:flex;flex-direction:column;background:#f5f0e6}
+.ls-mock .ls-brand{text-align:center;padding:14px 16px 8px}
+.ls-mock .ls-wordmark{font-family:'Cormorant Garamond','Cormorant',serif;font-style:italic;font-weight:500;font-size:26px;line-height:1;color:#2a1d14;letter-spacing:.3px}
+.ls-mock .ls-amp{color:#8b3a2f;font-weight:400}
+.ls-mock .ls-nav{margin-top:8px;font-size:8.5px;letter-spacing:1.4px;text-transform:uppercase;color:#6b5340;display:flex;justify-content:center;gap:10px}
+.ls-mock .ls-nav i{color:#c9b896;font-style:normal}
+.ls-mock .ls-hero{position:relative;height:130px;margin:8px 14px 0;border-radius:4px;overflow:hidden;background:linear-gradient(180deg,rgba(20,10,5,.15) 0%,rgba(20,10,5,.55) 100%),url('https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg?auto=compress&cs=tinysrgb&w=600') center/cover}
+.ls-mock .ls-headline{position:absolute;left:12px;right:12px;bottom:10px;font-family:'Cormorant Garamond','Cormorant',serif;font-style:italic;font-weight:400;color:#f5f0e6;font-size:16px;line-height:1.15;text-shadow:0 1px 4px rgba(0,0,0,.4)}
+.ls-mock .ls-menu{padding:12px 16px 0;flex:1}
+.ls-mock .ls-eyebrow{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#8b3a2f;margin-bottom:8px;font-weight:600}
+.ls-mock .ls-dish{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid #e2d6bd;font-size:10px;gap:8px}
+.ls-mock .ls-dish:last-child{border-bottom:none}
+.ls-mock .ls-dish-name{font-family:'Cormorant Garamond','Cormorant',serif;font-style:italic;font-size:12px;color:#2a1d14;line-height:1.2;flex:1}
+.ls-mock .ls-dish-price{font-size:10px;color:#8b3a2f;font-weight:600;letter-spacing:.3px;white-space:nowrap}
+.ls-mock .ls-foot{background:#ece3d2;border-top:1px solid #ddd0b6;padding:8px 14px;font-size:8px;letter-spacing:.8px;color:#6b5340;display:flex;justify-content:space-between;align-items:center}
+.ls-mock .ls-foot-meta{display:flex;gap:6px}
+.ls-mock .ls-foot-meta i{color:#c9b896;font-style:normal}
+.ls-mock .ls-credit{color:#8b3a2f;font-weight:600;letter-spacing:.6px}
+
+/* Mobile: scale mockups down */
+@media(max-width:768px){
+  .fb-mock,.bs-mock,.ls-mock{width:220px;transform:scale(.92);transform-origin:top right}
+  .fb-mock .fb-hero{height:140px}
+  .ls-mock .ls-hero{height:110px}
+}
+
+/* ══ ss:brand-home-v1 — brand prominence (eyebrow + floater + marquee) ══ */
+.ss-hero-eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:'Inter',system-ui,sans-serif;font-size:11px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.55);padding:7px 14px;border:1px solid rgba(255,255,255,.12);border-radius:100px;background:rgba(255,255,255,.02);margin-bottom:18px}
+.ss-hero-eyebrow .ss-sigil-mini{width:9px;height:9px;flex-shrink:0}
+.ss-hero-eyebrow .ss-sigil-mini polygon{fill:var(--cyan,#7be3d1);opacity:.85}
+.ss-hero-eyebrow b{font-weight:700;color:#fff;letter-spacing:.16em}
+.ss-hero-eyebrow .ss-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,.3);flex-shrink:0}
+
+.ss-floater{position:fixed;right:clamp(14px,2.5vw,28px);bottom:clamp(14px,2.5vw,28px);z-index:90;display:flex;align-items:center;gap:9px;padding:9px 14px 9px 11px;background:rgba(10,10,10,.78);color:#fff;border:1px solid rgba(255,255,255,.08);border-radius:100px;backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);font-family:'Inter',system-ui,sans-serif;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;opacity:0;transform:translateY(10px) scale(.96);transition:opacity .5s cubic-bezier(.19,1,.22,1),transform .5s cubic-bezier(.19,1,.22,1);box-shadow:0 12px 32px rgba(0,0,0,.25)}
+.ss-floater.is-visible{opacity:1;transform:none}
+.ss-floater:hover{color:var(--cyan-2,#a3f0e2);border-color:rgba(167,255,234,.3)}
+.ss-floater .ss-sigil-rot{display:inline-block;width:18px;height:18px;animation:ssSigilSpin 14s linear infinite;transform-origin:50% 50%}
+.ss-floater .ss-sigil-rot polygon{fill:var(--cyan,#7be3d1);opacity:.85}
+@keyframes ssSigilSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.ss-floater .ss-sigil-rot{animation:none}.ss-floater{transition:opacity .3s}}
+@media(max-width:560px){.ss-floater{padding:8px 12px 8px 10px;font-size:10px;letter-spacing:.14em}}
+
+.marquee-item.is-brand{color:var(--cyan-2,#a3f0e2);letter-spacing:.32em;font-weight:700}
+.marquee-item.is-brand .marquee-dot{background:var(--cyan,#7be3d1);opacity:1}
+
+/* ══ TRUST BAND — under reviews ══ */
+.trust-band-v2{background:#f7f5f0;padding:0 2rem 5rem}
+.trust-band-v2-inner{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid rgba(15,17,23,.14);border-bottom:1px solid rgba(15,17,23,.14)}
+.trust-band-v2-cell{padding:2.2rem 1.6rem;border-right:1px solid rgba(15,17,23,.14);display:flex;flex-direction:column;align-items:flex-start;gap:.35rem;min-height:160px;justify-content:center}
+.trust-band-v2-cell:last-child{border-right:none}
+.trust-band-v2-eyebrow{font-family:'Inter',sans-serif;font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;color:#7a8094;font-weight:600;margin-bottom:.45rem}
+.trust-band-v2-num{font-family:'Cormorant',serif;font-weight:400;font-size:clamp(2rem,3.4vw,2.7rem);line-height:1;letter-spacing:-.025em;color:#06070b;display:flex;align-items:baseline;gap:.4rem}
+.trust-band-v2-num small{font-family:'Inter',sans-serif;font-size:.78rem;font-weight:600;color:#7a8094;letter-spacing:.02em}
+.trust-band-v2-stars{color:#f4b400;font-size:1.1rem;letter-spacing:.04em;line-height:1;margin-left:.4rem}
+.trust-band-v2-label{font-family:'Inter',sans-serif;font-size:.74rem;font-weight:500;color:#7a8094;line-height:1.4}
+.trust-band-v2-label strong{color:#06070b;font-weight:600;display:block;font-size:.82rem;margin-bottom:.08rem}
+.trust-band-v2-founder{display:flex;align-items:center;gap:.95rem}
+.trust-band-v2-portrait{width:48px;height:48px;border-radius:50%;flex-shrink:0;background:url("https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=200") center/cover;border:1px solid rgba(15,17,23,.14)}
+.trust-band-v2-founder-name{font-family:'Cormorant',serif;font-style:italic;font-weight:500;font-size:1.3rem;color:#06070b;line-height:1.05}
+.trust-band-v2-founder-loc{font-family:'Inter',sans-serif;font-size:.72rem;color:#7a8094}
+@media(max-width:900px){.trust-band-v2{padding:0 1.4rem 4rem}.trust-band-v2-inner{grid-template-columns:repeat(2,1fr)}.trust-band-v2-cell{border-bottom:1px solid rgba(15,17,23,.14);min-height:130px;padding:1.6rem 1.2rem}.trust-band-v2-cell:nth-child(2n){border-right:none}.trust-band-v2-cell:nth-child(5){grid-column:1 / -1;border-bottom:none}}
+
+/* ══ SHOWCASE NICHE VARIANTS — 6 distinct identities ══ */
+.sn-root{position:relative;width:100%;height:100%;overflow:hidden;font-family:'Inter',sans-serif;color:#111}
+.sn-root *{box-sizing:border-box}
+.sn-foot-credit{opacity:.55;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase}
+/* Barber — Fade & Blade */
+.sn-barber{background:#15110d;color:#e8dfce}
+.sn-barber .sn-nav{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.8rem;border-bottom:1px solid rgba(212,175,55,.18)}
+.sn-barber .sn-mark{font-family:'Cormorant',serif;font-style:italic;font-weight:500;font-size:1.35rem;letter-spacing:.02em;color:#d4af37}
+.sn-barber .sn-menu{display:flex;gap:1.6rem;font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:#a89a7a}
+.sn-barber .sn-cta{border:1px solid #d4af37;color:#d4af37;padding:.5rem 1.1rem;font-size:.65rem;letter-spacing:.2em;text-transform:uppercase}
+.sn-barber .sn-hero{position:relative;height:230px;overflow:hidden}
+.sn-barber .sn-hero img{width:100%;height:100%;object-fit:cover;filter:grayscale(.4) contrast(1.05) brightness(.7)}
+.sn-barber .sn-hero-copy{position:absolute;left:1.8rem;bottom:1.6rem;right:1.8rem}
+.sn-barber .sn-headline{font-family:'Cormorant',serif;font-weight:400;font-size:2.4rem;line-height:1;color:#f4ecd8}
+.sn-barber .sn-headline em{color:#d4af37;font-style:italic}
+.sn-barber .sn-sub{font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:#a89a7a;margin-top:.7rem}
+.sn-barber .sn-services{padding:1.4rem 1.8rem;display:flex;flex-direction:column;gap:.55rem}
+.sn-barber .sn-svc{display:grid;grid-template-columns:1fr auto;padding:.55rem 0;border-bottom:1px dashed rgba(212,175,55,.18);font-size:.82rem}
+.sn-barber .sn-svc-name{font-family:'Cormorant',serif;font-size:1rem;color:#e8dfce}
+.sn-barber .sn-svc-desc{font-size:.68rem;color:#7d7259;letter-spacing:.06em}
+.sn-barber .sn-svc-price{color:#d4af37;font-variant-numeric:tabular-nums;font-weight:600}
+.sn-barber .sn-foot{display:flex;justify-content:space-between;align-items:center;padding:.85rem 1.8rem;border-top:1px solid rgba(212,175,55,.14);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:#7d7259}
+/* Cafe — Three Beans */
+.sn-cafe{background:#f3ebe0;color:#3a2a1e}
+.sn-cafe .sn-nav{display:flex;justify-content:space-between;align-items:center;padding:1.1rem 1.8rem}
+.sn-cafe .sn-mark{font-family:'Cormorant',serif;font-weight:500;font-size:1.4rem;color:#3a2a1e}
+.sn-cafe .sn-mark span{font-family:'Caveat','Brush Script MT',cursive;font-size:1.6rem;color:#c45a3b;margin-left:.15em}
+.sn-cafe .sn-menu{display:flex;gap:1.4rem;font-size:.78rem;color:#6b5544}
+.sn-cafe .sn-cta{background:#c45a3b;color:#f3ebe0;padding:.5rem 1rem;border-radius:100px;font-size:.7rem;font-weight:600}
+.sn-cafe .sn-hero{display:grid;grid-template-columns:1.1fr .9fr;gap:0;align-items:stretch}
+.sn-cafe .sn-hero-copy{padding:1.6rem 1.6rem 1.4rem 1.8rem}
+.sn-cafe .sn-headline{font-family:'Cormorant',serif;font-weight:400;font-size:2.1rem;line-height:1.05;color:#2c1e14}
+.sn-cafe .sn-signature{font-family:'Caveat','Brush Script MT',cursive;color:#c45a3b;font-size:1.4rem;display:block;margin-top:.3rem}
+.sn-cafe .sn-sub{font-size:.78rem;color:#6b5544;margin-top:.8rem;line-height:1.5}
+.sn-cafe .sn-hero img{width:100%;height:215px;object-fit:cover}
+.sn-cafe .sn-services{padding:1rem 1.8rem 1.2rem;display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;border-top:1px dashed #d6c4ad}
+.sn-cafe .sn-svc{padding:.5rem .2rem}
+.sn-cafe .sn-svc-name{font-family:'Cormorant',serif;font-size:1rem;color:#2c1e14}
+.sn-cafe .sn-svc-price{color:#c45a3b;font-size:.78rem;font-weight:600;display:block;margin:.15rem 0 .25rem}
+.sn-cafe .sn-svc-desc{font-size:.68rem;color:#7d6650;line-height:1.4}
+.sn-cafe .sn-foot{display:flex;justify-content:space-between;align-items:center;padding:.8rem 1.8rem;background:#e9dfce;font-size:.7rem;color:#6b5544}
+/* Photo — Lila Vance */
+.sn-photo{background:#f7f5ef;color:#0d0d0d}
+.sn-photo .sn-nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 2rem;border-bottom:1px solid rgba(0,0,0,.08)}
+.sn-photo .sn-mark{font-size:.74rem;letter-spacing:.42em;text-transform:uppercase;font-weight:600}
+.sn-photo .sn-menu{display:flex;gap:2rem;font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;color:#666}
+.sn-photo .sn-cta{font-size:.66rem;letter-spacing:.28em;text-transform:uppercase;color:#0d0d0d;border-bottom:1px solid #00b8d4;padding-bottom:.15rem}
+.sn-photo .sn-hero{display:grid;grid-template-columns:1.4fr 1fr;gap:1.4rem;padding:1.6rem 2rem}
+.sn-photo .sn-hero img{width:100%;height:300px;object-fit:cover;filter:grayscale(.95) contrast(1.04)}
+.sn-photo .sn-hero-copy{display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:.4rem}
+.sn-photo .sn-eyebrow{font-size:.62rem;letter-spacing:.42em;text-transform:uppercase;color:#00b8d4;margin-bottom:1rem}
+.sn-photo .sn-headline{font-family:'Inter',sans-serif;font-weight:700;font-size:1.05rem;letter-spacing:.32em;line-height:1.5;text-transform:uppercase;color:#0d0d0d}
+.sn-photo .sn-caption{font-family:'Cormorant',serif;font-style:italic;font-size:.95rem;color:#444;margin-top:1.1rem;line-height:1.55;border-top:1px solid #00b8d4;padding-top:.9rem;max-width:18rem}
+.sn-photo .sn-services{padding:.4rem 2rem 1.4rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;border-top:1px solid rgba(0,0,0,.08)}
+.sn-photo .sn-svc{padding-top:1rem}
+.sn-photo .sn-svc-num{font-family:'Cormorant',serif;font-style:italic;color:#00b8d4;font-size:.85rem;display:block;margin-bottom:.3rem}
+.sn-photo .sn-svc-name{font-size:.68rem;letter-spacing:.32em;text-transform:uppercase;font-weight:600;color:#0d0d0d}
+.sn-photo .sn-svc-desc{font-family:'Cormorant',serif;font-style:italic;font-size:.84rem;color:#555;margin-top:.4rem;line-height:1.4}
+.sn-photo .sn-svc-price{font-size:.65rem;letter-spacing:.22em;text-transform:uppercase;color:#888;margin-top:.35rem;display:block}
+.sn-photo .sn-foot{display:flex;justify-content:space-between;padding:1rem 2rem;border-top:1px solid rgba(0,0,0,.08);font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:#888}
+/* Gym — Iron Order */
+.sn-gym{background:#0a0a0a;color:#fff}
+.sn-gym .sn-nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 1.8rem;border-bottom:2px solid #c8201f}
+.sn-gym .sn-mark{font-family:'Oswald','Impact',sans-serif;font-weight:700;font-size:1.5rem;letter-spacing:.04em;text-transform:uppercase}
+.sn-gym .sn-mark span{color:#c8201f}
+.sn-gym .sn-menu{display:flex;gap:1.4rem;font-family:'Oswald','Impact',sans-serif;font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:#bbb}
+.sn-gym .sn-cta{background:#c8201f;color:#fff;padding:.55rem 1.1rem;font-family:'Oswald','Impact',sans-serif;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;clip-path:polygon(8% 0,100% 0,92% 100%,0% 100%)}
+.sn-gym .sn-hero{position:relative;height:235px;overflow:hidden}
+.sn-gym .sn-hero img{width:100%;height:100%;object-fit:cover;filter:contrast(1.15) brightness(.55) saturate(.85)}
+.sn-gym .sn-hero-copy{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding-left:1.8rem}
+.sn-gym .sn-headline{font-family:'Oswald','Impact',sans-serif;font-weight:700;font-size:3.4rem;line-height:.85;letter-spacing:-.01em;text-transform:uppercase}
+.sn-gym .sn-headline span{color:#c8201f;display:block}
+.sn-gym .sn-sub{font-family:'Oswald','Impact',sans-serif;font-size:.78rem;letter-spacing:.36em;text-transform:uppercase;color:#888;margin-top:.9rem}
+.sn-gym .sn-services{display:grid;grid-template-columns:repeat(4,1fr);background:#0a0a0a;border-top:1px solid #1a1a1a}
+.sn-gym .sn-svc{padding:1rem .9rem;border-right:1px solid #1a1a1a;text-align:left}
+.sn-gym .sn-svc:last-child{border-right:0}
+.sn-gym .sn-svc-name{font-family:'Oswald','Impact',sans-serif;font-size:.92rem;letter-spacing:.14em;text-transform:uppercase;color:#fff}
+.sn-gym .sn-svc-price{display:block;color:#c8201f;font-family:'Oswald','Impact',sans-serif;font-size:1.05rem;margin:.3rem 0 .35rem;letter-spacing:.05em}
+.sn-gym .sn-svc-desc{font-size:.66rem;color:#777;letter-spacing:.08em;line-height:1.4}
+.sn-gym .sn-foot{display:flex;justify-content:space-between;align-items:center;padding:.85rem 1.8rem;background:#000;border-top:2px solid #c8201f;font-family:'Oswald','Impact',sans-serif;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:#888}
+/* Florist — Wildbloom */
+.sn-florist{background:#f8f1ea;color:#3d2f33}
+.sn-florist .sn-nav{display:flex;justify-content:space-between;align-items:center;padding:1.4rem 2.2rem}
+.sn-florist .sn-mark{font-family:'Cormorant',serif;font-style:italic;font-weight:400;font-size:1.65rem;color:#7b5258;letter-spacing:-.01em}
+.sn-florist .sn-menu{display:flex;gap:1.6rem;font-size:.74rem;color:#8a7a78;letter-spacing:.04em}
+.sn-florist .sn-cta{font-family:'Cormorant',serif;font-style:italic;font-size:.92rem;color:#7b5258;border-bottom:1px solid #c9a59a;padding-bottom:.1rem}
+.sn-florist .sn-hero{display:grid;grid-template-columns:.7fr 1fr;gap:2rem;padding:1.4rem 2.2rem 1.8rem;align-items:center}
+.sn-florist .sn-hero-copy{padding-right:.6rem}
+.sn-florist .sn-eyebrow{font-size:.66rem;letter-spacing:.32em;text-transform:uppercase;color:#9aa392;margin-bottom:1rem}
+.sn-florist .sn-headline{font-family:'Cormorant',serif;font-style:italic;font-weight:400;font-size:2rem;line-height:1.1;color:#3d2f33}
+.sn-florist .sn-sub{font-size:.8rem;color:#7d6e72;margin-top:.95rem;line-height:1.6;font-style:italic}
+.sn-florist .sn-hero img{width:100%;height:235px;object-fit:cover;border-radius:2px}
+.sn-florist .sn-services{padding:1rem 2.2rem 1.4rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;border-top:1px solid rgba(123,82,88,.12)}
+.sn-florist .sn-svc{padding-top:.9rem}
+.sn-florist .sn-svc-name{font-family:'Cormorant',serif;font-style:italic;font-size:1.05rem;color:#3d2f33}
+.sn-florist .sn-svc-price{display:block;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:#9aa392;margin:.25rem 0 .35rem}
+.sn-florist .sn-svc-desc{font-size:.72rem;color:#7d6e72;line-height:1.45}
+.sn-florist .sn-foot{display:flex;justify-content:space-between;padding:.95rem 2.2rem;background:#efe5d9;font-size:.7rem;color:#8a7a78;font-style:italic}
+/* Plumber — Riverside Plumbing */
+.sn-plumber{background:#0e2438;color:#fff}
+.sn-plumber .sn-nav{display:flex;justify-content:space-between;align-items:center;padding:.95rem 1.8rem;background:#091a2a;border-bottom:3px solid #f5b800}
+.sn-plumber .sn-mark{font-weight:800;font-size:.95rem;letter-spacing:.16em;text-transform:uppercase}
+.sn-plumber .sn-mark span{color:#f5b800}
+.sn-plumber .sn-badges{display:flex;gap:.4rem}
+.sn-plumber .sn-badge{font-size:.55rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;border:1px solid rgba(245,184,0,.45);color:#f5b800;padding:.25rem .5rem;border-radius:2px}
+.sn-plumber .sn-cta{background:#f5b800;color:#0e2438;padding:.55rem 1rem;font-size:.7rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.sn-plumber .sn-hero{position:relative;height:200px;overflow:hidden;border-bottom:3px solid #f5b800}
+.sn-plumber .sn-hero img{width:100%;height:100%;object-fit:cover;filter:saturate(.85) brightness(.65)}
+.sn-plumber .sn-hero-copy{position:absolute;left:1.8rem;right:1.8rem;bottom:1.4rem}
+.sn-plumber .sn-strip{display:inline-block;background:#f5b800;color:#0e2438;font-size:.62rem;font-weight:800;letter-spacing:.22em;text-transform:uppercase;padding:.22rem .6rem;margin-bottom:.7rem}
+.sn-plumber .sn-headline{font-weight:800;font-size:1.55rem;line-height:1.05;text-transform:uppercase}
+.sn-plumber .sn-sub{font-size:.74rem;letter-spacing:.06em;color:#a8c0d6;margin-top:.5rem;font-weight:500}
+.sn-plumber .sn-services{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(245,184,0,.2)}
+.sn-plumber .sn-svc{background:#0e2438;padding:1rem 1.1rem}
+.sn-plumber .sn-svc-name{font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#f5b800}
+.sn-plumber .sn-svc-price{display:block;font-size:.92rem;font-weight:700;color:#fff;margin:.3rem 0 .35rem;letter-spacing:.02em}
+.sn-plumber .sn-svc-desc{font-size:.66rem;color:#a8c0d6;line-height:1.45}
+.sn-plumber .sn-foot{display:flex;justify-content:space-between;align-items:center;padding:.85rem 1.8rem;background:#091a2a;border-top:1px solid rgba(245,184,0,.18);font-size:.66rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#a8c0d6}
+</style>
 </head>
 <body>
 
@@ -973,14 +1219,26 @@ nav:not(.scrolled) .eyebrow-line,.showcase-section .eyebrow-line,.cta-band .eyeb
         <span>STATICSWIFT STUDIO · UK</span>
       </div>
 
+      <div class="ss-hero-eyebrow" role="text" aria-label="StaticSwift Studio, established 2024, Manchester">
+        <svg class="ss-sigil-mini" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <polygon points="14,1 27,7.5 27,20.5 14,27 1,20.5 1,7.5" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".5"/>
+          <polygon points="14,6 22,10 22,18 14,22 6,18 6,10"/>
+        </svg>
+        <b>StaticSwift Studio</b>
+        <span class="ss-dot"></span>
+        <span>Est. 2024</span>
+        <span class="ss-dot"></span>
+        <span>Manchester</span>
+      </div>
+
       <h1 class="hero-headline">
         <span class="line"><span>Cinematic</span></span>
         <span class="line"><span><em>websites</em> for</span></span>
         <span class="line"><span>UK small</span></span>
-        <span class="line"><span><span class="underline">businesses</span>.</span></span>
+        <span class="line"><span><span class="underline">businesses</span></span></span>
       </h1>
 
-      <p class="hero-sub">Handcrafted static sites that load in under a second. From £149, live in 24 hours. No payment until you see your free preview.</p>
+      <p class="hero-sub">Built by hand, live tomorrow, £149 once. You only pay if it earns its keep.</p>
 
       <!-- Hero lead-capture form (above the fold) -->
       <div class="hero-lead">
@@ -998,7 +1256,7 @@ nav:not(.scrolled) .eyebrow-line,.showcase-section .eyebrow-line,.cta-band .eyeb
               <option>Other</option>
             </select>
             <input type="text" id="hf-loc" name="location" placeholder="City / town" required autocomplete="address-level2" aria-label="City or town">
-            <button type="submit" class="hl-submit">Get Free Preview →</button>
+            <button type="submit" class="hl-submit">Build my preview</button>
           </div>
           <div class="hero-lead-fine">
             <span>No payment upfront</span>
@@ -1017,85 +1275,184 @@ nav:not(.scrolled) .eyebrow-line,.showcase-section .eyebrow-line,.cta-band .eyeb
       </div>
     </div>
 
-    <!-- Floating stacked mockups (rendered mini-sites, not stock photos) -->
+    <!-- Floating photo-backed device mockups (Fade & Blade · Brightsmile · Larder & Spoon) -->
     <div class="hero-side" aria-hidden="true">
-      <div class="float-card fc-1">
-        <div class="fc-chrome"><span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-url">fadeandblade.co.uk</span></div>
-        <div class="fc-mini fc-barber">
-          <div class="fcm-hero">
-            <span class="fcm-brand">FADE &amp; BLADE</span>
-            <h4 class="fcm-h1">Precision cuts.<br><em>Classic style.</em></h4>
+      <div class="float-card fc-1 fc-new">
+        <div class="fb-mock">
+          <div class="fb-chrome">
+            <span class="fb-dot"></span><span class="fb-dot"></span><span class="fb-dot"></span>
+            <span class="fb-url">fadeandblade.co.uk</span>
           </div>
-          <div class="fcm-grid">
-            <div class="fcm-svc"><strong>Cut</strong><span>£18</span></div>
-            <div class="fcm-svc"><strong>Fade</strong><span>£22</span></div>
-            <div class="fcm-svc"><strong>Beard</strong><span>£12</span></div>
+          <div class="fb-body">
+            <div class="fb-hero">
+              <div class="fb-nav">
+                <span class="fb-nav-mark">F&amp;B</span>
+                <span class="fb-nav-links"><span>Cuts</span><span>Story</span><span>Book</span></span>
+              </div>
+              <div>
+                <h1 class="fb-wordmark">FADE &amp; <em>BLADE</em></h1>
+                <div class="fb-tag">Est. Manchester &middot; Master Barbers</div>
+              </div>
+            </div>
+            <div class="fb-prop">Old-school cuts. <b>New-school standards.</b><br>Walk in sharp, leave sharper.</div>
+            <div class="fb-services">
+              <div class="fb-svc"><span class="fb-svc-name">Skin Fade</span><span class="fb-svc-price">&pound;22</span></div>
+              <div class="fb-svc"><span class="fb-svc-name">Gent's Cut</span><span class="fb-svc-price">&pound;18</span></div>
+              <div class="fb-svc"><span class="fb-svc-name">Hot Towel Shave</span><span class="fb-svc-price">&pound;35</span></div>
+              <div class="fb-svc"><span class="fb-svc-name">Beard Trim</span><span class="fb-svc-price">&pound;14</span></div>
+            </div>
+            <div class="fb-footer">
+              <span class="fb-loc">Northern Quarter, MCR</span>
+              <span class="fb-book">Book Online</span>
+            </div>
+            <div class="fb-credit">Built by <a href="https://staticswift.co.uk">StaticSwift</a></div>
           </div>
-          <div class="fcm-foot"><span>Manchester</span><span>Book online</span></div>
         </div>
       </div>
-      <div class="float-card fc-2">
-        <div class="fc-chrome"><span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-url">brightsmile-dental.co.uk</span></div>
-        <div class="fc-mini fc-dentist">
-          <div class="fcm-nav"><span>BRIGHTSMILE</span><span>Book</span></div>
-          <div class="fcm-hero">
-            <div class="fcm-eyebrow">Family dentistry</div>
-            <h4 class="fcm-h1">Smiles you&rsquo;ll <em>love</em>.</h4>
-            <p class="fcm-p">Modern, gentle care in Leeds. NHS &amp; private appointments.</p>
+
+      <div class="float-card fc-2 fc-new">
+        <div class="bs-mock">
+          <div class="bs-chrome">
+            <span class="bs-dot"></span><span class="bs-dot"></span><span class="bs-dot"></span>
+            <span class="bs-url">brightsmile-dental.co.uk</span>
           </div>
-          <div class="fcm-row">
-            <span class="fcm-btn">New patient</span>
-            <span class="fcm-rating">4.9 · 312 reviews</span>
+          <div class="bs-body">
+            <div class="bs-nav">
+              <span>BRIGHTSMILE</span>
+              <span class="bs-nav-cta">Book</span>
+            </div>
+            <div class="bs-hero">
+              <div class="bs-hero-txt">
+                <div class="bs-eyebrow">Marylebone Dental Co.</div>
+                <div class="bs-h1">Smiles you&rsquo;ll love.</div>
+              </div>
+            </div>
+            <div class="bs-rating">
+              <span class="bs-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+              <span><b>4.9</b> &mdash; 312 Google reviews</span>
+            </div>
+            <div class="bs-services">
+              <div class="bs-row">
+                <span class="bs-name"><small>Cosmetic</small>Teeth whitening</span>
+                <span class="bs-price"><em>from</em>&pound;390</span>
+              </div>
+              <div class="bs-row">
+                <span class="bs-name"><small>Orthodontics</small>Invisalign &reg;</span>
+                <span class="bs-price"><em>from</em>&pound;2,400</span>
+              </div>
+              <div class="bs-row">
+                <span class="bs-name"><small>Restorative</small>Composite bonding</span>
+                <span class="bs-price"><em>per tooth</em>&pound;180</span>
+              </div>
+            </div>
+            <div class="bs-foot">
+              <div class="bs-foot-l">
+                <span>Marylebone, London W1</span>
+                <span>Open today until 6pm</span>
+              </div>
+              <div class="bs-credit">Built by<br><b>StaticSwift</b></div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="float-card fc-3">
-        <div class="fc-chrome"><span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-url">rapidpipes.co.uk</span></div>
-        <div class="fc-mini fc-plumber">
-          <div class="fcm-hero">
-            <span class="fcm-tag">24/7 · Gas Safe</span>
-            <h4 class="fcm-h1">Boiler down?<br><em>We&rsquo;re on it.</em></h4>
-            <div class="fcm-call">☎ Call 0113 000 000</div>
+
+      <div class="float-card fc-3 fc-new">
+        <div class="ls-mock">
+          <div class="ls-chrome">
+            <span class="ls-dot"></span><span class="ls-dot"></span><span class="ls-dot"></span>
+            <div class="ls-url">larderandspoon.co.uk</div>
           </div>
-          <div class="fcm-trust"><span>No call-out fee</span><span>47 min avg</span></div>
+          <div class="ls-body">
+            <div class="ls-brand">
+              <div class="ls-wordmark">Larder <span class="ls-amp">&amp;</span> Spoon</div>
+              <div class="ls-nav">
+                <span>Menu</span><i>/</i><span>Reservations</span><i>/</i><span>About</span>
+              </div>
+            </div>
+            <div class="ls-hero">
+              <div class="ls-headline">Honest food,<br>made with love.</div>
+            </div>
+            <div class="ls-menu">
+              <div class="ls-eyebrow">Tonight's menu</div>
+              <div class="ls-dish">
+                <span class="ls-dish-name">Hand-rolled cavatelli, brown butter &amp; sage</span>
+                <span class="ls-dish-price">&pound;14</span>
+              </div>
+              <div class="ls-dish">
+                <span class="ls-dish-name">Whole plaice, capers, lemon</span>
+                <span class="ls-dish-price">&pound;19</span>
+              </div>
+              <div class="ls-dish">
+                <span class="ls-dish-name">Burnt basque cheesecake</span>
+                <span class="ls-dish-price">&pound;8</span>
+              </div>
+            </div>
+            <div class="ls-foot">
+              <div class="ls-foot-meta">
+                <span>St Werburghs, Bristol</span><i>&middot;</i><span>Wed&ndash;Sun, 5pm</span>
+              </div>
+              <span class="ls-credit">by StaticSwift</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="scroll-cue" aria-hidden="true">
-    <span>Scroll</span>
-    <span class="scue-line"></span>
-  </div>
 </section>
 
 <!-- ══ MARQUEE ══ -->
 <div class="marquee-strip" aria-hidden="true">
   <div class="marquee-track">
     <span class="marquee-item">Barbers<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Restaurants<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Photographers<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Personal Trainers<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Plumbers<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Dog Groomers<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Tattoo Studios<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Cafés<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Electricians<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Cleaning Companies<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Florists<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Driving Instructors<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
+    <!-- duplicate set for seamless loop -->
     <span class="marquee-item">Barbers<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Restaurants<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Photographers<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Personal Trainers<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Plumbers<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Dog Groomers<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Tattoo Studios<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Cafés<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Electricians<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Cleaning Companies<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Florists<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
     <span class="marquee-item">Driving Instructors<span class="marquee-dot"></span></span>
+    <span class="marquee-item is-brand">StaticSwift<span class="marquee-dot"></span></span>
   </div>
 </div>
 
@@ -1128,23 +1485,184 @@ nav:not(.scrolled) .eyebrow-line,.showcase-section .eyebrow-line,.cta-band .eyeb
       </div>
     </div>
 
-    <div class="showcase-cta-row reveal">
-      <span class="showcase-stat">⚡ <strong>1.2s</strong> avg load</span>
-      <span class="showcase-stat">🔥 <strong>92+</strong> Lighthouse score</span>
-      <span class="showcase-stat">📱 <strong>Mobile-first</strong> always</span>
-    </div>
   </div>
 </section>
 
-<!-- ══ STATS ROW ══ -->
-<div class="stats-row" aria-label="Studio stats">
-  <div class="stats-grid">
-    <div class="stat-cell"><span class="stat-num" data-count="247">0</span><span class="stat-label">Sites Shipped</span></div>
-    <div class="stat-cell"><span class="stat-num" data-count="24"><span data-prefix>~</span>0<small>hrs</small></span><span class="stat-label">Average Delivery</span></div>
-    <div class="stat-cell"><span class="stat-num" data-count="98">0<small>%</small></span><span class="stat-label">Client Approval</span></div>
-    <div class="stat-cell"><span class="stat-num">£<span data-count="149">0</span></span><span class="stat-label">From, One-Time</span></div>
+<!-- ══ SHOWCASE NICHE TEMPLATES — consumed by renderNiche() ══ -->
+<template id="sn-template-barber">
+  <div class="sn-root sn-barber">
+    <div class="sn-nav">
+      <span class="sn-mark" data-bind="brand"></span>
+      <div class="sn-menu"><span>Services</span><span>Barbers</span><span>Book</span></div>
+      <span class="sn-cta">Book a chair</span>
+    </div>
+    <div class="sn-hero">
+      <img alt="" loading="lazy" data-img="hero.image">
+      <div class="sn-hero-copy">
+        <h3 class="sn-headline" data-bind="hero.copy"></h3>
+        <div class="sn-sub" data-bind="tagline"></div>
+      </div>
+    </div>
+    <div class="sn-services" data-list="services">
+      <div class="sn-svc" data-item>
+        <div><div class="sn-svc-name">{{name}}</div><div class="sn-svc-desc">{{desc}}</div></div>
+        <div class="sn-svc-price">{{price}}</div>
+      </div>
+    </div>
+    <div class="sn-foot">
+      <span data-bind="location"></span>
+      <span class="sn-foot-credit">by StaticSwift</span>
+    </div>
   </div>
-</div>
+</template>
+
+<template id="sn-template-cafe">
+  <div class="sn-root sn-cafe">
+    <div class="sn-nav">
+      <span class="sn-mark">Three<span data-bind="signature">Beans</span></span>
+      <div class="sn-menu"><span>Menu</span><span>The Beans</span><span>Find Us</span></div>
+      <span class="sn-cta">Order ahead</span>
+    </div>
+    <div class="sn-hero">
+      <div class="sn-hero-copy">
+        <h3 class="sn-headline" data-bind="hero.copy"></h3>
+        <span class="sn-signature">— and a quiet seat by the window.</span>
+        <p class="sn-sub" data-bind="tagline"></p>
+      </div>
+      <img alt="" loading="lazy" data-img="hero.image">
+    </div>
+    <div class="sn-services" data-list="services">
+      <div class="sn-svc" data-item>
+        <div class="sn-svc-name">{{name}}</div>
+        <span class="sn-svc-price">{{price}}</span>
+        <div class="sn-svc-desc">{{desc}}</div>
+      </div>
+    </div>
+    <div class="sn-foot">
+      <span data-bind="hours"></span>
+      <span class="sn-foot-credit">by StaticSwift</span>
+    </div>
+  </div>
+</template>
+
+<template id="sn-template-photo">
+  <div class="sn-root sn-photo">
+    <div class="sn-nav">
+      <span class="sn-mark" data-bind="brand"></span>
+      <div class="sn-menu"><span>Work</span><span>Index</span><span>About</span></div>
+      <span class="sn-cta">Enquire</span>
+    </div>
+    <div class="sn-hero">
+      <img alt="" loading="lazy" data-img="hero.image">
+      <div class="sn-hero-copy">
+        <div class="sn-eyebrow">Series · 2026</div>
+        <h3 class="sn-headline">Portraiture<br>without<br>performance</h3>
+        <p class="sn-caption" data-bind="hero.copy"></p>
+      </div>
+    </div>
+    <div class="sn-services" data-list="services">
+      <div class="sn-svc" data-item>
+        <span class="sn-svc-num">{{num}}</span>
+        <div class="sn-svc-name">{{name}}</div>
+        <p class="sn-svc-desc">{{desc}}</p>
+        <span class="sn-svc-price">{{price}}</span>
+      </div>
+    </div>
+    <div class="sn-foot">
+      <span data-bind="trust"></span>
+      <span class="sn-foot-credit">by StaticSwift</span>
+    </div>
+  </div>
+</template>
+
+<template id="sn-template-gym">
+  <div class="sn-root sn-gym">
+    <div class="sn-nav">
+      <span class="sn-mark">IRON<span> ORDER</span></span>
+      <div class="sn-menu"><span>Membership</span><span>Coaches</span><span>Schedule</span></div>
+      <span class="sn-cta">Start Trial</span>
+    </div>
+    <div class="sn-hero">
+      <img alt="" loading="lazy" data-img="hero.image">
+      <div class="sn-hero-copy">
+        <h3 class="sn-headline" data-bind="hero.copy"></h3>
+        <div class="sn-sub" data-bind="tagline"></div>
+      </div>
+    </div>
+    <div class="sn-services" data-list="services">
+      <div class="sn-svc" data-item>
+        <div class="sn-svc-name">{{name}}</div>
+        <span class="sn-svc-price">{{price}}</span>
+        <div class="sn-svc-desc">{{desc}}</div>
+      </div>
+    </div>
+    <div class="sn-foot">
+      <span data-bind="hours"></span>
+      <span class="sn-foot-credit">by StaticSwift</span>
+    </div>
+  </div>
+</template>
+
+<template id="sn-template-florist">
+  <div class="sn-root sn-florist">
+    <div class="sn-nav">
+      <span class="sn-mark" data-bind="brand"></span>
+      <div class="sn-menu"><span>Shop</span><span>Weddings</span><span>Journal</span><span>Visit</span></div>
+      <span class="sn-cta">Order a posy</span>
+    </div>
+    <div class="sn-hero">
+      <div class="sn-hero-copy">
+        <div class="sn-eyebrow">A Brighton flower studio</div>
+        <h3 class="sn-headline" data-bind="hero.copy"></h3>
+        <p class="sn-sub" data-bind="tagline"></p>
+      </div>
+      <img alt="" loading="lazy" data-img="hero.image">
+    </div>
+    <div class="sn-services" data-list="services">
+      <div class="sn-svc" data-item>
+        <div class="sn-svc-name">{{name}}</div>
+        <span class="sn-svc-price">{{price}}</span>
+        <p class="sn-svc-desc">{{desc}}</p>
+      </div>
+    </div>
+    <div class="sn-foot">
+      <span data-bind="trust"></span>
+      <span class="sn-foot-credit">by StaticSwift</span>
+    </div>
+  </div>
+</template>
+
+<template id="sn-template-plumber">
+  <div class="sn-root sn-plumber">
+    <div class="sn-nav">
+      <span class="sn-mark">RIVERSIDE<span> PLUMBING</span></span>
+      <div class="sn-badges">
+        <span class="sn-badge">Gas Safe</span>
+        <span class="sn-badge">CIPHE</span>
+      </div>
+      <span class="sn-cta">Call 01904</span>
+    </div>
+    <div class="sn-hero">
+      <img alt="" loading="lazy" data-img="hero.image">
+      <div class="sn-hero-copy">
+        <span class="sn-strip" data-bind="hero.strip"></span>
+        <h3 class="sn-headline" data-bind="hero.copy"></h3>
+        <div class="sn-sub" data-bind="tagline"></div>
+      </div>
+    </div>
+    <div class="sn-services" data-list="services">
+      <div class="sn-svc" data-item>
+        <div class="sn-svc-name">{{name}}</div>
+        <span class="sn-svc-price">{{price}}</span>
+        <p class="sn-svc-desc">{{desc}}</p>
+      </div>
+    </div>
+    <div class="sn-foot">
+      <span data-bind="trust"></span>
+      <span class="sn-foot-credit">by StaticSwift</span>
+    </div>
+  </div>
+</template>
 
 <!-- ══ 03 · CONTACT ══ -->
 <section class="contact-section" id="contact">
@@ -1637,6 +2155,42 @@ nav:not(.scrolled) .eyebrow-line,.showcase-section .eyebrow-line,.cta-band .eyeb
   </div>
 </section>
 
+<!-- ══ TRUST BAND — 5 signals below reviews ══ -->
+<div class="trust-band-v2" aria-label="Trust signals">
+  <div class="trust-band-v2-inner">
+    <div class="trust-band-v2-cell">
+      <span class="trust-band-v2-eyebrow">Google</span>
+      <div class="trust-band-v2-num">4.9<span class="trust-band-v2-stars">★★★★★</span></div>
+      <span class="trust-band-v2-label">89 verified reviews</span>
+    </div>
+    <div class="trust-band-v2-cell">
+      <span class="trust-band-v2-eyebrow">First reply</span>
+      <div class="trust-band-v2-num">47<small>min</small></div>
+      <span class="trust-band-v2-label">average · 7 days a week</span>
+    </div>
+    <div class="trust-band-v2-cell">
+      <span class="trust-band-v2-eyebrow">Live sites</span>
+      <div class="trust-band-v2-num">247</div>
+      <span class="trust-band-v2-label">shipped this year</span>
+    </div>
+    <div class="trust-band-v2-cell">
+      <span class="trust-band-v2-eyebrow">Built by</span>
+      <div class="trust-band-v2-founder">
+        <div class="trust-band-v2-portrait" aria-hidden="true"></div>
+        <div>
+          <div class="trust-band-v2-founder-name">Harry Yule</div>
+          <div class="trust-band-v2-founder-loc">StaticSwift · Manchester</div>
+        </div>
+      </div>
+    </div>
+    <div class="trust-band-v2-cell">
+      <span class="trust-band-v2-eyebrow">Delivery</span>
+      <div class="trust-band-v2-num">24<small>hrs</small></div>
+      <span class="trust-band-v2-label">brief in → preview out</span>
+    </div>
+  </div>
+</div>
+
 <!-- ══ CTA BAND ══ -->
 <section class="cta-band">
   <div class="cta-band-bg" aria-hidden="true">
@@ -2023,8 +2577,119 @@ window.sqHero = async (e) => {
 /* ─────────────────────────────────────── */
 /*  LIVING SHOWCASE — niche switcher
 /* ─────────────────────────────────────── */
-const NICHES = {
+const SITES = {
   barber: {
+    url: 'fadeandblade.co.uk',
+    brand: 'Fade &amp; Blade',
+    tagline: 'Northern Quarter, Manchester',
+    hero: {
+      image: 'https://images.pexels.com/photos/1570807/pexels-photo-1570807.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      copy: 'Sharp <em>old-school</em> cuts.<br>No nonsense, no upsell.'
+    },
+    services: [
+      { name:'The Full Service', price:'£32', desc:'Cut, hot towel, beard line-up' },
+      { name:'Skin Fade',        price:'£24', desc:'Zero to scissor, blended clean' },
+      { name:'Classic Cut',      price:'£19', desc:'Wash, cut, finish — 30 min' },
+      { name:'Beard Sculpt',     price:'£14', desc:'Cut-throat razor + balm' }
+    ],
+    trust: 'Walk-ins after 11 · Booking by appointment',
+    location: '42 Tib Street, Manchester M4',
+    hours: 'Tue–Sat 9–7'
+  },
+  cafe: {
+    url: 'threebeans.uk',
+    brand: 'Three',
+    signature: 'Beans',
+    tagline: 'A little corner of Stockbridge.',
+    hero: {
+      image: 'https://images.pexels.com/photos/1813466/pexels-photo-1813466.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      copy: 'Single-origin coffee, slow mornings,<br>and a sourdough loaf worth queuing for.'
+    },
+    services: [
+      { name:'Flat White',         price:'£3.40', desc:'Square Mile Red Brick blend' },
+      { name:'Cardamom Bun',       price:'£3.80', desc:'Baked in-house each morning' },
+      { name:'Eggs on Sourdough',  price:'£8.50', desc:'Two poached, smoked salt, chive' }
+    ],
+    trust: 'Independent · No oat milk surcharge',
+    location: '11 Raeburn Place, Edinburgh',
+    hours: 'Wed–Sun · 7am to 3pm'
+  },
+  photo: {
+    url: 'lilavance.photography',
+    brand: 'Lila Vance',
+    tagline: 'Portrait &amp; Editorial, London',
+    hero: {
+      image: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      copy: 'Quiet portraiture for people who don&rsquo;t love being photographed.'
+    },
+    services: [
+      { num:'01', name:'Portrait Sitting', price:'from £420', desc:'Two hours, twelve final frames, your home or my studio.' },
+      { num:'02', name:'Editorial',        price:'on request', desc:'Half-day commissions for magazines, press kits, label artwork.' },
+      { num:'03', name:'Couples &amp; Family', price:'from £560', desc:'Documentary, never posed. Mornings work best.' }
+    ],
+    trust: 'Selected work: The Gentlewoman, AnOther, Loose Lips Mag',
+    location: 'Studio in Hackney Wick',
+    hours: 'By appointment only'
+  },
+  gym: {
+    url: 'ironorder.gym',
+    brand: 'IRON',
+    accent: 'ORDER',
+    tagline: 'Strength club. Digbeth, Birmingham.',
+    hero: {
+      image: 'https://images.pexels.com/photos/703016/pexels-photo-703016.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      copy: 'Show up.<span>Lift heavy.</span>'
+    },
+    services: [
+      { name:'Membership',  price:'£59/mo',  desc:'24/7 access · all kit included' },
+      { name:'Open Gym',    price:'£12/day', desc:'Drop-in pass · no contract' },
+      { name:'1-to-1 Coach',price:'£55/hr',  desc:'Programmed strength block' },
+      { name:'Powerlifting',price:'£75/mo',  desc:'Squad meets · Mon Wed Fri' }
+    ],
+    trust: 'Affiliated · British Powerlifting',
+    location: 'Unit 7, Floodgate St, B5',
+    hours: 'Open 05:00 – 23:00 daily'
+  },
+  florist: {
+    url: 'wildbloom.studio',
+    brand: 'Wildbloom',
+    tagline: 'A flower studio in Kemptown, Brighton.',
+    hero: {
+      image: 'https://images.pexels.com/photos/1666069/pexels-photo-1666069.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      copy: 'Seasonal stems, gathered slowly, arranged honestly.'
+    },
+    services: [
+      { name:'The Posy',       price:'from £24',     desc:'A handful of whatever&rsquo;s loveliest this week.' },
+      { name:'Studio Bouquet', price:'from £48',     desc:'A larger statement, wrapped in waxed paper.' },
+      { name:'Weddings',       price:'consultation', desc:'Intimate days, considered florals. Six couples a year.' }
+    ],
+    trust: 'British-grown stems wherever we can',
+    location: 'St James&rsquo;s Street, Brighton',
+    hours: 'Thursday to Saturday, 10–5'
+  },
+  plumber: {
+    url: 'riversideplumbing.co.uk',
+    brand: 'RIVERSIDE',
+    accent: 'PLUMBING',
+    tagline: 'Family-run, York &amp; surrounding villages.',
+    hero: {
+      image: 'https://images.pexels.com/photos/8486958/pexels-photo-8486958.jpeg?auto=compress&cs=tinysrgb&w=1200',
+      copy: 'Local plumbers. Real prices. Same day where we can.',
+      strip: 'No call-out fee · Fixed quotes'
+    },
+    services: [
+      { name:'Emergency',     price:'from £95',  desc:'Burst pipe, no heat, no water — same-day response.' },
+      { name:'Boiler Repair', price:'from £140', desc:'Gas Safe registered. Worcester, Vaillant, Ideal.' },
+      { name:'Bathroom Fit',  price:'free quote', desc:'Full strip-out, supply &amp; install, tiling partners.' }
+    ],
+    trust: 'Gas Safe 567812 · CIPHE Member · 12-month workmanship guarantee',
+    location: 'Covering York, Tadcaster, Wetherby',
+    hours: 'Office 7am–6pm · 24/7 emergency line'
+  }
+};
+
+const NICHES_LEGACY_UNUSED = {
+  _legacy_ignore: {
     url: 'fadeandblade.co.uk',
     theme: 'theme-barber',
     brand: 'FADE &amp; BLADE',
@@ -2125,47 +2790,42 @@ const NICHES = {
 let currentNiche = 'barber';
 window.currentNiche = 'barber';
 
-const renderNiche = (key) => {
-  const n = NICHES[key];
-  if (!n) return;
+function renderNiche(key){
+  const data = SITES[key]; if(!data) return;
   const sf = document.getElementById('sf-content');
-  const url = document.getElementById('sf-url');
-  if (!sf || !url) return;
+  const urlEl = document.getElementById('sf-url');
+  const tpl = document.getElementById('sn-template-' + key);
+  if(!sf || !urlEl || !tpl) return;
   sf.classList.add('swap');
   setTimeout(() => {
-    url.textContent = n.url;
-    sf.innerHTML = `
-      <div class="preview-hero ${n.theme}">
-        <img src="${n.hero}" alt="" loading="lazy">
-        <div class="preview-hero-overlay">
-          <div class="ph-nav">
-            <span class="ph-brand">${n.brand}</span>
-            <div class="ph-menu">${n.menu.map(m=>`<span>${m}</span>`).join('')}</div>
-            <span class="ph-cta">${n.cta}</span>
-          </div>
-          <div>
-            <h3 class="ph-headline">${n.headline}</h3>
-            <p class="ph-tagline">${n.tagline}</p>
-          </div>
-        </div>
-      </div>
-      <div class="preview-services">
-        ${n.services.map(s => `
-          <div class="ps-cell">
-            <img src="${s.img}" alt="${s.name}" loading="lazy">
-            <div class="ps-cell-label">${s.name}<span class="ps-cell-price">${s.price}</span></div>
-          </div>`).join('')}
-      </div>
-      <div class="preview-footer">
-        <span>${n.footer}</span>
-        <span style="color:var(--cyan-dim);font-weight:600">Built in 24h · staticswift.co.uk</span>
-      </div>
-    `;
+    urlEl.textContent = data.url;
+    const node = tpl.content.cloneNode(true);
+    node.querySelectorAll('[data-bind]').forEach(el => {
+      const path = el.dataset.bind;
+      const val = path.split('.').reduce((o,k) => (o ? o[k] : undefined), data);
+      if(val !== undefined) el.innerHTML = val;
+    });
+    node.querySelectorAll('[data-img]').forEach(el => {
+      const path = el.dataset.img;
+      const val = path.split('.').reduce((o,k) => (o ? o[k] : undefined), data);
+      if(val) el.setAttribute('src', val);
+    });
+    node.querySelectorAll('[data-list="services"]').forEach(listEl => {
+      const itemTpl = listEl.querySelector('[data-item]');
+      if(!itemTpl) return;
+      const itemHTML = itemTpl.outerHTML;
+      itemTpl.remove();
+      listEl.innerHTML += data.services.map(svc => {
+        return itemHTML.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, k) => svc[k] || '');
+      }).join('');
+    });
+    sf.innerHTML = '';
+    sf.appendChild(node);
     sf.classList.remove('swap');
   }, 220);
   document.querySelectorAll('.showcase-tab').forEach(t => t.classList.toggle('on', t.dataset.niche === key));
   currentNiche = key; window.currentNiche = key;
-};
+}
 
 document.querySelectorAll('.showcase-tab').forEach(t => {
   t.addEventListener('click', () => renderNiche(t.dataset.niche));
@@ -2176,7 +2836,7 @@ renderNiche('barber');
 let rotateTimer;
 const startRotate = () => {
   clearInterval(rotateTimer);
-  const keys = Object.keys(NICHES);
+  const keys = Object.keys(SITES);
   rotateTimer = setInterval(() => {
     const i = keys.indexOf(currentNiche);
     renderNiche(keys[(i+1) % keys.length]);
@@ -2520,6 +3180,30 @@ window.setStage = setStage;
 if (document.readyState === 'complete') initGsap();
 else window.addEventListener('load', initGsap);
 
+})();
+</script>
+<a class="ss-floater" id="ssFloater" href="#top" aria-label="StaticSwift — back to top">
+  <svg class="ss-sigil-rot" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+    <polygon points="14,1 27,7.5 27,20.5 14,27 1,20.5 1,7.5" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".4"/>
+    <polygon points="14,6 22,10 22,18 14,22 6,18 6,10"/>
+    <polygon points="14,10 18,12 18,16 14,18 10,16 10,12" opacity=".55"/>
+  </svg>
+  <span>StaticSwift</span>
+</a>
+<script>
+(function(){
+  var f = document.getElementById('ssFloater'); if (!f) return;
+  var threshold = Math.max(280, Math.round(window.innerHeight * 0.55));
+  function check(){
+    if (window.scrollY > threshold) f.classList.add('is-visible');
+    else f.classList.remove('is-visible');
+  }
+  window.addEventListener('scroll', check, { passive: true });
+  window.addEventListener('resize', function(){
+    threshold = Math.max(280, Math.round(window.innerHeight * 0.55));
+    check();
+  });
+  check();
 })();
 </script>
 </body>
