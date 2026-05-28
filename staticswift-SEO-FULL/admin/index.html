@@ -92,57 +92,87 @@
       <div class="topbar-right">
         <span class="revenue-badge" id="month-revenue">£0 this month</span>
         <button class="refresh-btn" onclick="refreshData()">↻ Refresh</button>
-        <button class="refresh-btn" onclick="testSubmission()" style="border-color:#f59e0b;color:#f59e0b" title="Send a test lead">⚡ Test</button>
       </div>
     </div>
 
     <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
-      <div class="page-header">
-        <h1 class="page-title">Dashboard</h1>
-        <div style="display:flex;gap:8px">
-          <button class="btn-primary" onclick="showPage('new-order',document.querySelector('[data-page=&quot;new-order&quot;]'))">+ New Order</button>
-          <button class="btn-ghost" onclick="exportData()">Export Excel</button>
-        </div>
+      <!-- QUICK ACTIONS BAR -->
+      <div class="quick-actions">
+        <button class="qa-btn primary" onclick="showPage('new-order',document.querySelector('[data-page=&quot;new-order&quot;]'))">+ New Client</button>
+        <button class="qa-btn" onclick="quickInvoice()">£ New Invoice</button>
+        <button class="qa-btn" onclick="quickBroadcast()">✉ Broadcast Email</button>
+        <button class="qa-btn" onclick="exportLeadsCSV()">⬇ Export Leads CSV</button>
+        <div class="qa-spacer"></div>
+        <div class="qa-meta" id="dash-meta">—</div>
       </div>
 
-      <div class="stats-row" id="dash-stats">
-        <div class="stat-card"><div class="label">New Leads Today</div><div class="value" id="stat-leads">—</div></div>
-        <div class="stat-card"><div class="label">Active Jobs</div><div class="value" id="stat-active">—</div></div>
-        <div class="stat-card"><div class="label">Paid This Month</div><div class="value" id="stat-revenue">—</div></div>
-        <div class="stat-card"><div class="label">Total Clients</div><div class="value" id="stat-total">—</div></div>
-      </div>
-
-      <!-- LIVE VISITORS WIDGET (self-hosted analytics) -->
-      <div class="live-widget" id="live-widget" style="display:none">
-        <div class="live-widget-head">
-          <div class="live-widget-title">
-            <span class="live-dot"></span>
-            Site traffic — <span id="lv-live" style="color:var(--green);font-weight:800;margin:0 4px">0</span> live now
+      <!-- REVENUE TILE + URGENT TILE -->
+      <div class="dash-top-row">
+        <div class="rev-tile">
+          <div class="rev-tile-head">Last 30 days</div>
+          <div class="rev-tile-grid">
+            <div><div class="rev-tile-num" id="rev-collected">£0</div><div class="rev-tile-lbl">Collected</div></div>
+            <div><div class="rev-tile-num" id="rev-invoiced" style="color:var(--text)">£0</div><div class="rev-tile-lbl">Invoiced</div></div>
+            <div><div class="rev-tile-num" id="rev-outstanding" style="color:var(--amber)">£0</div><div class="rev-tile-lbl">Outstanding</div></div>
           </div>
-          <button class="btn-ghost" style="font-size:11px;padding:6px 12px" onclick="loadVisitorWidget()">↻ Refresh</button>
+          <div class="rev-tile-foot" id="rev-mrr">—</div>
         </div>
-        <div class="live-grid">
-          <div class="live-stat"><span class="live-stat-num" id="lv-today">—</span><span class="live-stat-lbl">Today</span></div>
-          <div class="live-stat"><span class="live-stat-num" id="lv-pageviews">—</span><span class="live-stat-lbl">30d page views</span></div>
-          <div class="live-stat"><span class="live-stat-num" id="lv-users">—</span><span class="live-stat-lbl">30d visitors</span></div>
-          <div class="live-stat"><span class="live-stat-num" id="lv-sessions">—</span><span class="live-stat-lbl">30d sessions</span></div>
-          <div class="live-stat"><span class="live-stat-num" id="lv-bounce">—</span><span class="live-stat-lbl">Bounce %</span></div>
-        </div>
-        <svg id="lv-spark" style="width:100%;height:36px;margin-top:14px;display:block"></svg>
-        <div style="margin-top:10px;font-size:12px;color:var(--muted)">
-          <strong style="color:var(--text)">Top page:</strong> <span id="lv-top-page">—</span>
+        <div class="urgent-tile">
+          <div class="urgent-tile-head">
+            <span>Urgent</span>
+            <span class="urgent-count" id="urgent-count">0</span>
+          </div>
+          <div id="urgent-list"><div class="loading">Loading</div></div>
         </div>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
-        <div class="tasks-section" style="margin:0">
-          <h3>Urgent Tasks</h3>
-          <div id="tasks-list"><div class="loading">Loading</div></div>
+      <!-- CONVERSION FUNNEL -->
+      <div class="funnel-card">
+        <div class="funnel-head">
+          <div class="funnel-title">Conversion funnel</div>
+          <div class="funnel-toggle" id="funnel-toggle">
+            <button data-range="7" class="active">7d</button>
+            <button data-range="30">30d</button>
+            <button data-range="90">90d</button>
+          </div>
         </div>
-        <div class="tasks-section" style="margin:0">
-          <h3>Recent Activity</h3>
-          <div class="activity-feed" id="activity-feed"><div class="loading">Loading</div></div>
+        <div class="funnel-body" id="funnel-body"><div class="loading">Loading funnel</div></div>
+      </div>
+
+      <!-- TODAY'S LEADS + REPLY QUEUE -->
+      <div class="dash-mid-row">
+        <div class="dash-panel">
+          <div class="dash-panel-head">
+            <h3>Today's leads <span class="panel-count" id="leads-count">0</span></h3>
+            <button class="link-btn" onclick="showPage('pipeline',document.querySelector('[data-page=&quot;pipeline&quot;]'))">View pipeline →</button>
+          </div>
+          <div id="todays-leads"><div class="loading">Loading</div></div>
+        </div>
+        <div class="dash-panel">
+          <div class="dash-panel-head">
+            <h3>Reply queue <span class="panel-count" id="reply-count">0</span></h3>
+            <button class="link-btn" onclick="showPage('inbox',document.querySelector('[data-page=&quot;inbox&quot;]'));loadInbox()">Open inbox →</button>
+          </div>
+          <div id="reply-queue"><div class="loading">Click "Refresh" to load inbox</div></div>
+        </div>
+      </div>
+
+      <!-- SEARCH CONSOLE MOVERS -->
+      <div class="dash-mid-row">
+        <div class="dash-panel">
+          <div class="dash-panel-head">
+            <h3>Top search queries <span class="panel-count" id="gsc-count">0</span></h3>
+            <button class="link-btn" onclick="showPage('analytics',document.querySelector('[data-page=&quot;analytics&quot;]'))">All →</button>
+          </div>
+          <div id="gsc-movers"><div class="loading">Loading Search Console…</div></div>
+        </div>
+        <div class="dash-panel">
+          <div class="dash-panel-head">
+            <h3>Site traffic <span class="panel-count" id="live-count" style="color:var(--green)">0 live</span></h3>
+            <button class="link-btn" onclick="showPage('analytics',document.querySelector('[data-page=&quot;analytics&quot;]'))">Details →</button>
+          </div>
+          <div id="dash-traffic"><div class="loading">Loading</div></div>
         </div>
       </div>
     </div>

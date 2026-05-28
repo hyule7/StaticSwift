@@ -216,8 +216,11 @@ async function initApp() {
     renderPrompts();
     initCommandPalette();
     initGlobalSearch();
-    loadVisitorWidget();
-    setInterval(loadVisitorWidget, 60_000);
+    // Refresh dashboard analytics + GSC every 60s
+    setInterval(() => {
+      dashAnalyticsCache = null;
+      renderDashTraffic();
+    }, 60_000);
   } catch (err) {
     console.error('Init error:', err);
   }
@@ -230,10 +233,11 @@ async function refreshData() {
     await fetchClients();
     const banner = document.getElementById('offline-banner');
     if (banner) banner.remove();
+    dashAnalyticsCache = null;
+    dashGscCache = null;
     renderDashboard();
     renderPipeline();
     renderRevenue();
-    loadVisitorWidget();
     if (currentClientId) {
       const fresh = allClients.find(c => c.clientId === currentClientId);
       if (fresh) openClient(currentClientId);
@@ -243,24 +247,43 @@ async function refreshData() {
 }
 
 // ==========================================
-// DASHBOARD
+// DASHBOARD — focused on daily decisions
 // ==========================================
-function renderDashboard() {
-  const now = new Date();
-  const todayStr = now.toDateString();
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+let funnelRange = 7;
+let dashAnalyticsCache = null;
+let dashGscCache = null;
 
-  const leadsToday = allClients.filter(c => new Date(c.createdAt).toDateString() === todayStr).length;
-  const active = allClients.filter(c => !['paid','complete','archived'].includes(c.stage)).length;
+function renderDashboard() {
+  const now = Date.now();
+  const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).getTime();
+  const last30 = now - 30 * 86400000;
+
+  // Revenue tile (last 30 days)
+  const paidLast30 = allClients.filter(c => c.paid && c.paidAt && new Date(c.paidAt).getTime() >= last30);
+  const invoicedLast30 = allClients.filter(c =>
+    (c.invoiceSentAt && new Date(c.invoiceSentAt).getTime() >= last30) ||
+    (c.paid && c.paidAt && new Date(c.paidAt).getTime() >= last30)
+  );
+  const collected = paidLast30.reduce((s, c) => s + (c.amount || (c.package === 'advanced' ? 299 : 149)), 0);
+  const invoicedSum = invoicedLast30.reduce((s, c) => s + (c.amount || (c.package === 'advanced' ? 299 : 149)), 0);
+  const outstanding = allClients.filter(c => c.stage === 'invoice-sent' && !c.paid)
+    .reduce((s, c) => s + (c.amount || (c.package === 'advanced' ? 299 : 149)), 0);
+
+  setText('rev-collected', '£' + collected);
+  setText('rev-invoiced', '£' + invoicedSum);
+  setText('rev-outstanding', '£' + outstanding);
+
+  // Hosting MRR-style estimate: count of clients with hosting_addon === 'yes' x £29
+  const hostingCount = allClients.filter(c => c.hosting_addon === 'yes' && c.paid).length;
+  setText('rev-mrr', hostingCount + ' on hosting · ~£' + (hostingCount * 29) + '/mo recurring');
+
+  // Topbar month total
   const paidMonth = allClients.filter(c => c.paid && c.paidAt && new Date(c.paidAt).getTime() >= monthStart)
     .reduce((s, c) => s + (c.amount || 149), 0);
+  setText('month-revenue', '£' + paidMonth + ' this month');
+  setText('dash-meta', allClients.length + ' clients · ' + paidMonth + ' GBP this month');
 
-  document.getElementById('stat-leads').textContent = leadsToday;
-  document.getElementById('stat-active').textContent = active;
-  document.getElementById('stat-revenue').textContent = '£' + paidMonth;
-  document.getElementById('stat-total').textContent = allClients.length;
-  document.getElementById('month-revenue').textContent = '£' + paidMonth + ' this month';
-  // Update sidebar nav badges
+  // Sidebar badge
   const newCountEl = document.getElementById('nav-count-pipeline');
   if (newCountEl) {
     const newLeads = allClients.filter(c => c.stage === 'new-lead').length;
@@ -268,42 +291,347 @@ function renderDashboard() {
     else newCountEl.classList.remove('has-count');
   }
 
-  // Tasks
-  const tasks = [];
+  // Urgent list
+  renderUrgent();
+
+  // Today's leads
+  renderTodaysLeads();
+
+  // Funnel
+  renderFunnel(funnelRange);
+
+  // Reply queue (uses any cached inbox)
+  renderReplyQueue();
+
+  // GSC + traffic panels (lazy fetch)
+  renderDashTraffic();
+  renderGscMovers();
+}
+
+function setText(id, v) { const el = document.getElementById(id); if (el) el.textContent = v; }
+
+function renderUrgent() {
+  const list = document.getElementById('urgent-list');
+  if (!list) return;
   const ts = Date.now();
+  const urgents = [];
   allClients.forEach(c => {
-    const hrs = c.createdAt ? (ts - new Date(c.createdAt).getTime()) / 3600000 : 0;
-    if (c.stage === 'new-lead' && hrs < 4) {
-      tasks.push({ label: `New lead: ${c.business_name || c.name} — start building`, urgency: 'green', id: c.clientId });
-    }
+    const bn = c.business_name || c.name || 'Client';
     if (c.stage === 'preview-sent' && c.previewSentAt) {
       const h = (ts - new Date(c.previewSentAt).getTime()) / 3600000;
-      if (h >= 48) tasks.push({ label: `${c.business_name} — preview sent ${Math.round(h)}hrs ago, no payment`, urgency: 'red', id: c.clientId });
+      if (h >= 48) urgents.push({ label: bn + ' — preview, no response', age: Math.round(h) + 'h', id: c.clientId, sort: h });
     }
-    if (c.stage === 'invoice-sent' && c.invoiceSentAt) {
+    if (c.stage === 'invoice-sent' && !c.paid && c.invoiceSentAt) {
       const d = (ts - new Date(c.invoiceSentAt).getTime()) / 86400000;
-      if (d >= 3) tasks.push({ label: `${c.business_name} — invoice ${Math.round(d)} days old`, urgency: 'amber', id: c.clientId });
+      if (d >= 3) urgents.push({ label: bn + ' — invoice unpaid', age: Math.round(d) + 'd', id: c.clientId, sort: d * 24 });
+    }
+    if (c.stage === 'new-lead' && c.createdAt) {
+      const h = (ts - new Date(c.createdAt).getTime()) / 3600000;
+      if (h >= 24) urgents.push({ label: bn + ' — lead not replied', age: Math.round(h) + 'h', id: c.clientId, sort: h });
+    }
+    if (c.changeRequest && !c.changeRequestRepliedAt) {
+      urgents.push({ label: bn + ' — change request', age: 'open', id: c.clientId, sort: 9999 });
     }
   });
+  urgents.sort((a, b) => b.sort - a.sort);
+  setText('urgent-count', urgents.length);
+  list.innerHTML = urgents.length
+    ? urgents.slice(0, 6).map(u =>
+        `<div class="urg-row" onclick="openClient('${u.id}')">
+          <span class="urg-lbl">${escapeHTML(u.label)}</span>
+          <span class="urg-age">${escapeHTML(u.age)}</span>
+        </div>`).join('')
+    : '<div class="dash-empty">All caught up.</div>';
+}
 
-  const tl = document.getElementById('tasks-list');
-  tl.innerHTML = tasks.length
-    ? tasks.map(t => `<div class="task-item">
-        <span class="task-label">${escapeHTML(t.label)}</span>
-        <span class="urgency u-${t.urgency}">${t.urgency}</span>
-        <button class="task-btn" onclick="openClient('${t.id}')">Open</button>
-      </div>`).join('')
-    : '<div style="color:var(--muted);font-size:13px;padding:8px">No urgent tasks. All caught up. ✨</div>';
+function renderTodaysLeads() {
+  const list = document.getElementById('todays-leads');
+  if (!list) return;
+  const since = Date.now() - 24 * 3600 * 1000;
+  const leads = allClients
+    .filter(c => c.createdAt && new Date(c.createdAt).getTime() >= since)
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  setText('leads-count', leads.length);
+  if (!leads.length) {
+    list.innerHTML = '<div class="dash-empty">No new leads in the last 24 hours.</div>';
+    return;
+  }
+  list.innerHTML = leads.slice(0, 8).map(c => {
+    const biz = escapeHTML(c.business_name || c.name || '—');
+    const meta = escapeHTML([c.business_type, c.location].filter(Boolean).join(' · ') || (c.delivery_email || ''));
+    const replied = c.firstReplyAt ? '<span class="lead-btn" style="background:rgba(34,197,94,.1);color:var(--green);border-color:rgba(34,197,94,.25);cursor:default">Replied ✓</span>' :
+      `<button class="lead-btn" onclick="event.stopPropagation();sendFirstReply('${c.clientId}',this)">Send first reply</button>`;
+    return `<div class="lead-row" onclick="openClient('${c.clientId}')" style="cursor:pointer">
+      <div class="lead-main">
+        <div class="lead-biz">${biz}</div>
+        <div class="lead-meta">${meta}</div>
+      </div>
+      <span class="lead-time">${timeAgo(c.createdAt)}</span>
+      ${replied}
+    </div>`;
+  }).join('');
+}
 
-  const feed = document.getElementById('activity-feed');
-  const recent = [...allClients].slice(0, 8);
-  feed.innerHTML = recent.length
-    ? recent.map(c => `<div class="activity-item" onclick="openClient('${c.clientId}')" style="cursor:pointer">
-        <div class="activity-dot"></div>
-        <span><strong>${escapeHTML(c.business_name || c.name || '—')}</strong> — ${STAGE_LABELS[c.stage] || c.stage}</span>
-        <span class="activity-time">${timeAgo(c.createdAt)}</span>
-      </div>`).join('')
-    : '<div style="color:var(--muted);font-size:13px">No clients yet. Submit a test intake form at your live site.</div>';
+function renderFunnel(range) {
+  const body = document.getElementById('funnel-body');
+  if (!body) return;
+  const since = Date.now() - range * 86400000;
+  const visits = dashAnalyticsCache?.series
+    ? dashAnalyticsCache.series.slice(-range).reduce((s, d) => s + (d.views || 0), 0)
+    : null;
+  const formSubmits = dashAnalyticsCache?.overview?.formSubmits ?? null;
+  // Form views = CTA clicks if available (proxy), else null
+  const formViews = dashAnalyticsCache?.overview?.ctaClicks ?? null;
+  const intakesInRange = allClients.filter(c => c.createdAt && new Date(c.createdAt).getTime() >= since && c.source === 'intake-form').length;
+  const paidInRange = allClients.filter(c => c.paid && c.paidAt && new Date(c.paidAt).getTime() >= since).length;
+
+  const steps = [
+    { lbl: 'Visits', val: visits, hint: range + 'd page views' },
+    { lbl: 'Form views', val: formViews, hint: 'CTA clicks on intake' },
+    { lbl: 'Form submits', val: Math.max(formSubmits ?? 0, intakesInRange), hint: 'Leads received' },
+    { lbl: 'Paid clients', val: paidInRange, hint: range + 'd' },
+  ];
+  const top = Math.max(1, ...steps.map(s => s.val || 0));
+  body.innerHTML = steps.map((s, i) => {
+    const prev = i > 0 ? steps[i - 1].val : null;
+    const pct = (prev && prev > 0 && s.val != null) ? ((s.val / prev) * 100).toFixed(1) + '% from prev' : (i === 0 ? s.hint : '—');
+    const barH = s.val != null ? Math.max(8, Math.round((s.val / top) * 100)) : 8;
+    return `<div class="funnel-step">
+      <div class="fbar" style="height:${barH}%"></div>
+      <div class="fcontent">
+        <div class="fnum">${s.val == null ? '—' : Number(s.val).toLocaleString()}</div>
+        <div class="flbl">${s.lbl}</div>
+        <div class="fpct">${pct}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderReplyQueue() {
+  const list = document.getElementById('reply-queue');
+  if (!list) return;
+  const items = [];
+  const ts = Date.now();
+  // Inbox emails (unread proxy — incoming emails, sorted by age)
+  if (Array.isArray(inboxEmails) && inboxEmails.length) {
+    inboxEmails.slice(0, 30).forEach(e => {
+      const ageH = (ts - new Date(e.date).getTime()) / 3600000;
+      items.push({
+        kind: 'inbox',
+        from: e.from || '—',
+        subj: e.subject || '(no subject)',
+        ageH,
+        click: () => { showPage('inbox', document.querySelector('[data-page="inbox"]')); loadInbox(); }
+      });
+    });
+  }
+  // Portal messages waiting reply
+  allClients.forEach(c => {
+    if (Array.isArray(c.portalMessages)) {
+      const last = c.portalMessages[c.portalMessages.length - 1];
+      if (last && last.from === 'client') {
+        const ageH = (ts - new Date(last.sentAt).getTime()) / 3600000;
+        items.push({
+          kind: 'portal',
+          from: (c.name || c.business_name || 'Client') + ' (portal)',
+          subj: (last.notes || last.text || '').slice(0, 80),
+          ageH,
+          click: () => openClient(c.clientId)
+        });
+      }
+    }
+    if (c.changeRequest && !c.changeRequestRepliedAt) {
+      const ageH = c.changeRequestAt ? (ts - new Date(c.changeRequestAt).getTime()) / 3600000 : 999;
+      items.push({
+        kind: 'change',
+        from: (c.business_name || c.name) + ' (change request)',
+        subj: c.changeRequest.slice(0, 80),
+        ageH,
+        click: () => openClient(c.clientId)
+      });
+    }
+  });
+  items.sort((a, b) => b.ageH - a.ageH);
+  setText('reply-count', items.length);
+  if (!items.length) {
+    list.innerHTML = '<div class="dash-empty">Nothing waiting for a reply. Click Refresh on the inbox tab to pull mail.</div>';
+    return;
+  }
+  list.innerHTML = items.slice(0, 8).map((it, idx) => {
+    const cls = it.ageH > 48 ? 'late' : it.ageH > 24 ? 'warn' : 'fresh';
+    const ageLbl = it.ageH < 1 ? Math.round(it.ageH * 60) + 'm' :
+                   it.ageH < 24 ? Math.round(it.ageH) + 'h' :
+                   Math.round(it.ageH / 24) + 'd';
+    return `<div class="reply-row" data-rqi="${idx}">
+      <div class="r-main">
+        <div class="r-from">${escapeHTML(it.from)}</div>
+        <div class="r-subj">${escapeHTML(it.subj)}</div>
+      </div>
+      <span class="r-age ${cls}">${ageLbl}</span>
+    </div>`;
+  }).join('');
+  // Attach handlers
+  list.querySelectorAll('.reply-row').forEach(node => {
+    const i = parseInt(node.dataset.rqi, 10);
+    node.addEventListener('click', () => items[i].click());
+  });
+}
+
+function renderDashTraffic() {
+  const box = document.getElementById('dash-traffic');
+  if (!box) return;
+  if (!dashAnalyticsCache) {
+    fetch('/.netlify/functions/analytics-self?days=30', { headers: { 'x-admin-password': ADMIN_PW } })
+      .then(r => r.json())
+      .then(d => { if (d.ok) { dashAnalyticsCache = d; renderDashTraffic(); renderFunnel(funnelRange); } })
+      .catch(() => { box.innerHTML = '<div class="dash-empty">Traffic data unavailable.</div>'; });
+    return;
+  }
+  const ov = dashAnalyticsCache.overview || {};
+  setText('live-count', (ov.live || 0) + ' live');
+  const topPage = (dashAnalyticsCache.topPages && dashAnalyticsCache.topPages[0]) || null;
+  box.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px">
+      <div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800">${(ov.today || 0).toLocaleString()}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:4px">Today</div></div>
+      <div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800">${(ov.pageviews || 0).toLocaleString()}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:4px">30d views</div></div>
+      <div><div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800">${(ov.visitors || 0).toLocaleString()}</div><div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:4px">Visitors</div></div>
+    </div>
+    <svg id="dash-spark" style="width:100%;height:48px;display:block"></svg>
+    <div style="margin-top:10px;font-size:12px;color:var(--muted)"><strong style="color:var(--text)">Top page:</strong> ${topPage ? escapeHTML(topPage.path) + ' (' + topPage.views + ')' : '—'}</div>
+  `;
+  const spark = document.getElementById('dash-spark');
+  if (spark && dashAnalyticsCache.series) drawSparkline(spark, dashAnalyticsCache.series.slice(-14).map(s => s.views));
+}
+
+function renderGscMovers() {
+  const box = document.getElementById('gsc-movers');
+  if (!box) return;
+  if (!dashGscCache) {
+    fetch('/.netlify/functions/search-console-data', { headers: { 'x-admin-password': ADMIN_PW } })
+      .then(r => r.json())
+      .then(d => {
+        if (d.unavailable) {
+          box.innerHTML = '<div class="dash-empty">Search Console not connected. <a href="#" onclick="showPage(\'analytics\',document.querySelector(\'[data-page=&quot;analytics&quot;]\'));return false">Set up →</a></div>';
+          return;
+        }
+        dashGscCache = d;
+        renderGscMovers();
+      })
+      .catch(() => { box.innerHTML = '<div class="dash-empty">Search Console unavailable.</div>'; });
+    return;
+  }
+  const queries = dashGscCache.topQueries || [];
+  setText('gsc-count', queries.length);
+  if (!queries.length) {
+    box.innerHTML = '<div class="dash-empty">No query data yet — new sites take 4–16 weeks to populate.</div>';
+    return;
+  }
+  const site = 'https://staticswift.co.uk/';
+  box.innerHTML = queries.slice(0, 10).map(q => {
+    const searchUrl = 'https://www.google.com/search?q=' + encodeURIComponent(q.query + ' site:staticswift.co.uk');
+    return `<div class="gsc-row">
+      <a href="${searchUrl}" target="_blank" rel="noopener" title="Open in Google">${escapeHTML(q.query)}</a>
+      <span class="gsc-impr">${(q.impressions || 0).toLocaleString()} impr</span>
+      <span class="gsc-pos">#${q.position}</span>
+    </div>`;
+  }).join('');
+}
+
+// Wire funnel toggle
+document.addEventListener('click', e => {
+  const btn = e.target.closest('#funnel-toggle button');
+  if (!btn) return;
+  document.querySelectorAll('#funnel-toggle button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  funnelRange = parseInt(btn.dataset.range, 10) || 7;
+  renderFunnel(funnelRange);
+});
+
+// ==========================================
+// DASHBOARD ACTIONS
+// ==========================================
+async function sendFirstReply(clientId, btn) {
+  const c = allClients.find(x => x.clientId === clientId);
+  if (!c) return;
+  const firstName = (c.name || 'there').split(' ')[0];
+  const biz = c.business_name || 'your business';
+  const body = `Hi ${firstName},\n\nThanks for getting in touch about ${biz} — I'm Harry from StaticSwift. I've reviewed your brief and I'll start work on your preview today. You'll see a link within 24 hours (please check your junk folder).\n\nAnything you want me to know before I start, just reply here.\n\nThanks,\nHarry`;
+  const subject = `Your StaticSwift order — ${biz}`;
+  if (!confirm(`Send first reply to ${c.delivery_email}?`)) return;
+  if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
+  try {
+    const r = await fetch('/.netlify/functions/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ clientId, emailType: 'custom', customSubject: subject, customBody: body })
+    });
+    const d = await r.json();
+    if (d.ok) {
+      await updateClient(clientId, { firstReplyAt: new Date().toISOString() });
+      const idx = allClients.findIndex(x => x.clientId === clientId);
+      if (idx >= 0) allClients[idx].firstReplyAt = new Date().toISOString();
+      renderTodaysLeads();
+    } else {
+      alert('Failed: ' + (d.error || 'unknown'));
+      if (btn) { btn.textContent = 'Send first reply'; btn.disabled = false; }
+    }
+  } catch (err) {
+    alert('Network error: ' + err.message);
+    if (btn) { btn.textContent = 'Send first reply'; btn.disabled = false; }
+  }
+}
+
+function quickInvoice() {
+  const unpaid = allClients.filter(c => !c.paid && !['archived', 'complete'].includes(c.stage));
+  if (!unpaid.length) { alert('No unpaid clients to invoice. Add a new order first.'); return; }
+  const list = unpaid.slice(0, 20).map((c, i) => (i + 1) + '. ' + (c.business_name || c.name)).join('\n');
+  const choice = prompt('Pick a client to invoice (number):\n\n' + list);
+  const idx = parseInt(choice, 10) - 1;
+  if (isNaN(idx) || !unpaid[idx]) return;
+  openClient(unpaid[idx].clientId);
+  setTimeout(() => panelAction('invoice'), 200);
+}
+
+function quickBroadcast() {
+  const subject = prompt('Broadcast subject:');
+  if (!subject) return;
+  const body = prompt('Message body (plain text). Will be sent to all paid clients with email.');
+  if (!body) return;
+  const recipients = allClients.filter(c => c.paid && c.delivery_email);
+  if (!recipients.length) { alert('No paid clients to email.'); return; }
+  if (!confirm('Send to ' + recipients.length + ' paid clients?')) return;
+  let sent = 0, failed = 0;
+  Promise.all(recipients.map(c =>
+    fetch('/.netlify/functions/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ clientId: c.clientId, emailType: 'custom', customSubject: subject, customBody: body })
+    }).then(r => r.json()).then(d => { if (d.ok) sent++; else failed++; }).catch(() => { failed++; })
+  )).then(() => alert('Broadcast complete. Sent: ' + sent + ', failed: ' + failed));
+}
+
+function exportLeadsCSV() {
+  if (!allClients.length) { alert('No clients to export.'); return; }
+  const rows = [['Business','Name','Email','Phone','Type','Location','Source','Package','Stage','Amount','Paid','CreatedAt']];
+  allClients.forEach(c => {
+    rows.push([
+      c.business_name || '', c.name || '', c.delivery_email || '', c.phone || '',
+      c.business_type || '', c.location || '', c.source || '',
+      c.package || '', c.stage || '',
+      c.amount || (c.package === 'advanced' ? 299 : 149),
+      c.paid ? 'yes' : 'no',
+      c.createdAt || ''
+    ]);
+  });
+  const csv = rows.map(r => r.map(v => {
+    const s = String(v).replace(/"/g, '""');
+    return /[",\n]/.test(s) ? '"' + s + '"' : s;
+  }).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'staticswift-leads-' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click(); URL.revokeObjectURL(url);
 }
 
 // ==========================================
@@ -1060,6 +1388,7 @@ async function loadInbox() {
     inboxEmails = await r.json();
     inboxLoaded = true;
     renderInbox();
+    renderReplyQueue();
     detectProspectReplies(inboxEmails);
   } catch(err) {
     list.innerHTML = '<div style="padding:24px;color:var(--red);font-size:13px">Failed to load: ' + err.message + '</div>';
@@ -2023,46 +2352,6 @@ function toggleSEO(idx) {
   if (i >= 0) seoProgress.splice(i, 1); else seoProgress.push(idx);
   localStorage.setItem('ss_seo', JSON.stringify(seoProgress));
   renderSEOChecklist();
-}
-
-// ==========================================
-// LIVE VISITORS WIDGET — self-hosted analytics (no GA needed)
-// ==========================================
-let selfAnalyticsCache = null;
-async function loadVisitorWidget() {
-  const widget = document.getElementById('live-widget');
-  if (!widget) return;
-  try {
-    const r = await fetch('/.netlify/functions/analytics-self?days=30', {
-      headers: { 'x-admin-password': ADMIN_PW }
-    });
-    if (!r.ok) { widget.style.display = 'none'; return; }
-    const d = await r.json();
-    if (!d.ok) { widget.style.display = 'none'; return; }
-    selfAnalyticsCache = d;
-    widget.style.display = 'block';
-    document.getElementById('lv-sessions').textContent = (d.overview.sessions || 0).toLocaleString();
-    document.getElementById('lv-users').textContent = (d.overview.visitors || 0).toLocaleString();
-    document.getElementById('lv-pageviews').textContent = (d.overview.pageviews || 0).toLocaleString();
-    document.getElementById('lv-bounce').textContent = (d.overview.bounceRate || 0) + '%';
-    const live = document.getElementById('lv-live');
-    if (live) live.textContent = (d.overview.live || 0);
-    const todayEl = document.getElementById('lv-today');
-    if (todayEl) todayEl.textContent = (d.overview.today || 0);
-    const topEl = document.getElementById('lv-top-page');
-    if (topEl && d.topPages && d.topPages.length) {
-      topEl.textContent = d.topPages[0].path + ' (' + d.topPages[0].views.toLocaleString() + ' views)';
-    } else if (topEl) {
-      topEl.textContent = '—';
-    }
-    // Sparkline (last 7 days)
-    const spark = document.getElementById('lv-spark');
-    if (spark && d.series && d.series.length) {
-      drawSparkline(spark, d.series.slice(-14).map(s => s.views));
-    }
-  } catch {
-    widget.style.display = 'none';
-  }
 }
 
 function drawSparkline(svg, values) {

@@ -709,6 +709,211 @@ footer::before{content:'';position:absolute;top:0;left:50%;transform:translateX(
   .hero-ctas{gap:.5rem}
   .btn{padding:.7rem 1.2rem;font-size:.82rem}
 }
+
+/* ──────────────────────────────────────────────────────────── */
+/* ░░░ HERO LEAD FORM (above the fold) ░░░ */
+/* ──────────────────────────────────────────────────────────── */
+.hero-lead{margin-top:2rem;opacity:0;animation:fadeUp 1.1s var(--spring) .85s forwards;position:relative;z-index:2}
+.hero-lead-label{display:flex;align-items:center;gap:.65rem;margin-bottom:.85rem;font-family:'Inter',sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.hero-lead-label::before{content:'';width:24px;height:1px;background:var(--cyan);opacity:.85}
+.hero-lead-form{display:grid;grid-template-columns:1.1fr 1.3fr 1fr 1fr auto;gap:.5rem;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:.55rem;backdrop-filter:blur(20px);box-shadow:0 12px 40px rgba(0,0,0,.35)}
+.hero-lead-form input,.hero-lead-form select{background:rgba(255,255,255,.04);border:1px solid transparent;border-radius:10px;padding:.85rem 1rem;font-family:'Inter',sans-serif;font-size:.9rem;color:#fff;outline:none;transition:border-color .25s,background .25s;-webkit-appearance:none;appearance:none;width:100%;min-width:0}
+.hero-lead-form input::placeholder{color:rgba(255,255,255,.45)}
+.hero-lead-form select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23ffffff80' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px;color-scheme:dark}
+.hero-lead-form select option{background:var(--ink-2);color:#fff}
+.hero-lead-form input:focus,.hero-lead-form select:focus{border-color:var(--cyan);background:rgba(0,198,255,.06)}
+.hero-lead-form input:invalid{box-shadow:none}
+.hero-lead-form .hl-submit{background:var(--cyan);color:var(--ink);border:none;border-radius:10px;padding:.85rem 1.4rem;font-family:'Inter',sans-serif;font-weight:700;font-size:.85rem;letter-spacing:.01em;cursor:pointer;white-space:nowrap;transition:transform .3s var(--spring),box-shadow .3s,background .3s;display:inline-flex;align-items:center;gap:.45rem;justify-content:center}
+.hero-lead-form .hl-submit:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 12px 32px rgba(0,198,255,.4)}
+.hero-lead-form .hl-submit:disabled{opacity:.65;cursor:wait}
+.hero-lead-fine{display:flex;align-items:center;flex-wrap:wrap;gap:1.2rem;margin-top:.9rem;font-family:'Inter',sans-serif;font-size:.74rem;color:rgba(255,255,255,.5)}
+.hero-lead-fine span{display:flex;align-items:center;gap:.4rem}
+.hero-lead-fine span::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--cyan);opacity:.8}
+#hl-ok{display:none;background:linear-gradient(135deg,rgba(34,197,94,.1),rgba(0,198,255,.06));border:1px solid rgba(34,197,94,.35);border-radius:14px;padding:1.25rem 1.4rem;color:#fff;font-family:'Inter',sans-serif}
+#hl-ok strong{display:block;font-family:'Cormorant',serif;font-size:1.4rem;margin-bottom:.3rem;font-weight:500}
+#hl-ok p{color:rgba(255,255,255,.7);font-size:.88rem;line-height:1.5}
+@media(max-width:900px){
+  .hero-lead-form{grid-template-columns:1fr 1fr;padding:.5rem;gap:.45rem}
+  .hero-lead-form .hl-submit{grid-column:span 2}
+}
+@media(max-width:520px){
+  .hero-lead-form{grid-template-columns:1fr}
+  .hero-lead-form .hl-submit{grid-column:span 1}
+  .hero-lead-fine{gap:.85rem;font-size:.7rem}
+}
+
+/* ──────────────────────────────────────────────────────────── */
+/* ░░░ BEFORE/AFTER — improved handle + html mockup panes ░░░ */
+/* ──────────────────────────────────────────────────────────── */
+.ba-slider{background:#111;cursor:ew-resize}
+.ba-slider .ba-pane{padding:0;display:block;overflow:hidden}
+.ba-pane.before-pane{filter:none;background:#e8e1cf}
+.ba-pane.after-pane{background:#0d1218;clip-path:inset(0 0 0 var(--slider,50%))}
+.ba-slider .ba-pane-tag{position:absolute;top:14px;font-family:'Inter',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:.35rem .85rem;border-radius:100px;backdrop-filter:blur(6px);z-index:5;pointer-events:none}
+.ba-pane.before-pane .ba-pane-tag{left:14px;background:rgba(255,255,255,.85);color:#444}
+.ba-pane.after-pane .ba-pane-tag{right:14px;background:var(--cyan);color:var(--ink)}
+/* ugly "before" GeoCities-style mockup */
+.ba-old{position:absolute;inset:0;font-family:'Times New Roman',serif;color:#000;background:repeating-linear-gradient(45deg,#f0e7d0 0,#f0e7d0 10px,#e8dfc4 10px,#e8dfc4 20px);padding:42px 18px 18px;overflow:hidden}
+.ba-old-bar{background:#1a1a8a;color:#ffff66;padding:6px 10px;font-weight:bold;font-size:14px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;text-align:center;border:2px outset #aaa}
+.ba-old-h1{color:#cc0000;font-size:28px;font-weight:bold;text-shadow:2px 2px 0 #ffff66;margin:8px 0 12px;text-align:center;font-family:'Comic Sans MS','Times New Roman',serif}
+.ba-old-blink{color:#0000ff;font-weight:bold;font-size:13px;text-decoration:underline;margin:8px 0;text-align:center;animation:baBlink 1.4s steps(2) infinite}
+@keyframes baBlink{50%{opacity:.3}}
+.ba-old-cols{display:grid;grid-template-columns:90px 1fr;gap:8px;font-size:12px;line-height:1.45}
+.ba-old-nav{background:#ddd;border:2px outset #ccc;padding:6px 4px;display:flex;flex-direction:column;gap:3px}
+.ba-old-nav a{color:#0000ff;text-decoration:underline;font-size:11px}
+.ba-old-body{background:#fffde8;border:2px inset #ccc;padding:8px;color:#222}
+.ba-old-body p{margin:0 0 6px;font-size:11px;line-height:1.4}
+.ba-old-img{width:100%;height:60px;background:#888;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;margin:6px 0}
+.ba-old-foot{position:absolute;bottom:6px;left:18px;right:18px;text-align:center;font-size:10px;color:#666;font-family:'Times New Roman',serif}
+.ba-old-counter{display:inline-block;background:#000;color:#0f0;padding:1px 5px;font-family:'Courier New',monospace;font-size:10px;letter-spacing:.1em;margin-left:6px}
+/* clean "after" StaticSwift-style mockup */
+.ba-new{position:absolute;inset:0;background:linear-gradient(160deg,#0d1218 0%,#0a0e14 100%);color:#fff;font-family:'Inter',sans-serif;overflow:hidden}
+.ba-new::after{content:'';position:absolute;top:-30%;right:-20%;width:60%;height:80%;background:radial-gradient(ellipse,rgba(0,198,255,.18) 0%,transparent 65%);pointer-events:none}
+.ba-new-nav{display:flex;justify-content:space-between;align-items:center;padding:14px 22px;border-bottom:1px solid rgba(255,255,255,.08)}
+.ba-new-brand{font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase}
+.ba-new-cta{background:var(--cyan);color:var(--ink);padding:5px 12px;border-radius:100px;font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.ba-new-body{padding:24px 22px;position:relative;z-index:2}
+.ba-new-eyebrow{font-size:9px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan-2);margin-bottom:10px}
+.ba-new-h1{font-family:'Cormorant',serif;font-size:clamp(1.4rem,3.4vw,2.3rem);font-weight:400;line-height:1;letter-spacing:-.02em;margin-bottom:10px;max-width:88%}
+.ba-new-h1 em{color:var(--cyan-2);font-style:italic;font-weight:300}
+.ba-new-p{font-size:.78rem;color:rgba(255,255,255,.6);line-height:1.5;max-width:78%;margin-bottom:14px}
+.ba-new-meta{display:flex;gap:.8rem;font-size:9px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.15em}
+.ba-new-meta span{display:flex;align-items:center;gap:.3rem}
+.ba-new-meta span::before{content:'';width:4px;height:4px;border-radius:50%;background:#22c55e}
+
+/* —— grab handle —— */
+.ba-handle{position:absolute;top:0;bottom:0;left:var(--slider,50%);width:2px;background:#fff;transform:translateX(-50%);pointer-events:none;box-shadow:0 0 32px rgba(255,255,255,.55),0 0 0 1px rgba(0,198,255,.4)}
+.ba-handle::before{content:'';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:54px;height:54px;border-radius:50%;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.4),0 0 0 4px rgba(255,255,255,.18),0 0 0 1px rgba(0,198,255,.5)}
+.ba-handle::after{content:'';position:absolute;left:50%;top:50%;width:24px;height:24px;transform:translate(-50%,-50%);background:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23061018' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='15 6 9 12 15 18'/%3E%3Cpolyline points='9 6 3 12 9 18' opacity='0' /%3E%3C/svg%3E"),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23061018' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 6 15 12 9 18'/%3E%3C/svg%3E");background-repeat:no-repeat,no-repeat;background-position:left center,right center;background-size:50% 100%,50% 100%}
+.ba-handle-arrows{display:none}
+.ba-slider:active .ba-handle::before{transform:translate(-50%,-50%) scale(1.08)}
+@media(max-width:768px){
+  .ba-old{padding:36px 12px 14px}
+  .ba-old-h1{font-size:18px}
+  .ba-old-cols{grid-template-columns:60px 1fr;gap:6px}
+  .ba-old-nav a{font-size:9px}
+  .ba-old-body p{font-size:10px}
+  .ba-old-foot{font-size:8px;bottom:4px}
+  .ba-new-body{padding:18px 16px}
+  .ba-new-h1{font-size:1.25rem}
+  .ba-new-p{font-size:.72rem;max-width:92%}
+  .ba-handle::before{width:46px;height:46px}
+}
+
+/* ──────────────────────────────────────────────────────────── */
+/* ░░░ HERO MOCKUPS — multi-device + content (replaces stock photos) ░░░ */
+/* ──────────────────────────────────────────────────────────── */
+/* Override stock-photo float cards with rendered mini-sites */
+.fc-1,.fc-2,.fc-3{box-shadow:0 36px 80px rgba(0,0,0,.55),0 12px 30px rgba(0,0,0,.4)}
+.fc-mini{position:absolute;inset:30px 0 0;overflow:hidden;background:#fff}
+/* Barber mini site */
+.fc-mini.fc-barber{background:linear-gradient(180deg,#1a1714 0%,#2b251f 100%);color:#f7f0e1}
+.fc-mini.fc-barber .fcm-hero{height:88px;background:linear-gradient(135deg,#1a1714 0%,#3d2f24 100%);padding:14px;position:relative;overflow:hidden}
+.fc-mini.fc-barber .fcm-hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 80% 20%,rgba(212,175,55,.15),transparent 60%);pointer-events:none}
+.fc-mini.fc-barber .fcm-brand{font-family:'Inter',sans-serif;font-size:8px;font-weight:800;letter-spacing:.28em;color:#d4af37}
+.fc-mini.fc-barber .fcm-h1{font-family:'Cormorant',serif;font-size:18px;line-height:1;margin-top:6px;font-weight:400;letter-spacing:-.02em}
+.fc-mini.fc-barber .fcm-h1 em{color:#d4af37;font-style:italic}
+.fc-mini.fc-barber .fcm-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:rgba(0,0,0,.3);margin-top:8px}
+.fc-mini.fc-barber .fcm-svc{background:#1f1a15;padding:8px 6px;text-align:center}
+.fc-mini.fc-barber .fcm-svc strong{font-family:'Inter',sans-serif;font-size:8px;letter-spacing:.05em;display:block;color:#f7f0e1}
+.fc-mini.fc-barber .fcm-svc span{font-family:'Cormorant',serif;font-size:12px;color:#d4af37;display:block;margin-top:2px}
+.fc-mini.fc-barber .fcm-foot{padding:6px 12px;font-size:7px;font-family:'Inter',sans-serif;letter-spacing:.12em;color:rgba(247,240,225,.55);text-transform:uppercase;display:flex;justify-content:space-between;border-top:1px solid rgba(255,255,255,.08)}
+/* Dentist mini site (tablet) */
+.fc-mini.fc-dentist{background:#f4f1eb;color:#0d1f2a}
+.fc-mini.fc-dentist .fcm-nav{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;font-family:'Inter',sans-serif;font-size:7px;font-weight:700;letter-spacing:.18em;color:#0d1f2a;border-bottom:1px solid rgba(13,31,42,.08)}
+.fc-mini.fc-dentist .fcm-nav span:last-child{background:#0d1f2a;color:#fff;padding:3px 8px;border-radius:100px;font-size:6px;letter-spacing:.12em}
+.fc-mini.fc-dentist .fcm-hero{padding:12px;background:linear-gradient(160deg,#e7e1d4 0%,#f4f1eb 100%);position:relative;min-height:74px}
+.fc-mini.fc-dentist .fcm-eyebrow{font-family:'Inter',sans-serif;font-size:6px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:#0a8a7a;margin-bottom:5px}
+.fc-mini.fc-dentist .fcm-h1{font-family:'Cormorant',serif;font-size:16px;line-height:1;letter-spacing:-.02em;font-weight:400}
+.fc-mini.fc-dentist .fcm-h1 em{font-style:italic;color:#0a8a7a}
+.fc-mini.fc-dentist .fcm-p{font-family:'Inter',sans-serif;font-size:7px;color:rgba(13,31,42,.6);margin-top:4px;line-height:1.4;max-width:80%}
+.fc-mini.fc-dentist .fcm-row{display:flex;gap:5px;padding:0 12px 10px;align-items:center}
+.fc-mini.fc-dentist .fcm-btn{background:#0d1f2a;color:#fff;font-family:'Inter',sans-serif;font-size:6px;font-weight:700;padding:5px 9px;border-radius:100px;letter-spacing:.12em;text-transform:uppercase}
+.fc-mini.fc-dentist .fcm-rating{font-family:'Inter',sans-serif;font-size:6px;color:rgba(13,31,42,.55);display:flex;align-items:center;gap:3px}
+.fc-mini.fc-dentist .fcm-rating::before{content:'★★★★★';color:#d4af37;letter-spacing:.05em}
+/* Plumber mini site (phone) */
+.fc-mini.fc-plumber{background:#0a1c30;color:#fff}
+.fc-mini.fc-plumber .fcm-hero{padding:12px;background:linear-gradient(180deg,#0a1c30 0%,#152b45 100%);position:relative;min-height:80px}
+.fc-mini.fc-plumber .fcm-tag{display:inline-block;font-family:'Inter',sans-serif;font-size:6px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#fbbf24;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);padding:2px 6px;border-radius:100px;margin-bottom:5px}
+.fc-mini.fc-plumber .fcm-h1{font-family:'Cormorant',serif;font-size:15px;font-weight:400;line-height:1;letter-spacing:-.02em}
+.fc-mini.fc-plumber .fcm-h1 em{color:#fbbf24;font-style:italic}
+.fc-mini.fc-plumber .fcm-call{margin-top:6px;background:#fbbf24;color:#0a1c30;text-align:center;font-family:'Inter',sans-serif;font-size:8px;font-weight:800;letter-spacing:.08em;padding:7px;border-radius:6px}
+.fc-mini.fc-plumber .fcm-trust{padding:8px 12px;font-size:7px;color:rgba(255,255,255,.55);font-family:'Inter',sans-serif;letter-spacing:.08em;display:flex;justify-content:space-between;border-top:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.2)}
+.fc-mini.fc-plumber .fcm-trust span::before{content:'✓ ';color:#22c55e;font-weight:700}
+
+/* ──────────────────────────────────────────────────────────── */
+/* ░░░ PREMIUM PASS — editorial type, asymmetric layouts ░░░ */
+/* ──────────────────────────────────────────────────────────── */
+.section-headline{font-size:clamp(2.5rem,6vw,5.6rem);line-height:.94;letter-spacing:-.025em}
+section{padding:clamp(80px,12vw,180px) 0}
+.hero{padding:clamp(80px,9vw,112px) 2rem clamp(60px,8vw,96px)}
+
+/* —— refined cyan use — only on primary CTAs, strip decoration —— */
+.eyebrow-line{background:rgba(15,17,23,.18)}
+nav:not(.scrolled) .eyebrow-line,.showcase-section .eyebrow-line,.cta-band .eyebrow-line{background:rgba(255,255,255,.2)}
+.label{color:var(--ink);opacity:.55}
+.label-d{color:var(--ink);opacity:.55}
+.showcase-section .label{color:rgba(255,255,255,.55)}
+.cta-band-eyebrow{color:rgba(255,255,255,.55)}
+.cta-band::after{display:none}
+
+/* —— asymmetric Why grid —— */
+.why-section{padding-top:clamp(80px,12vw,180px)}
+.why-grid{grid-template-rows:auto}
+.why-card{background:transparent;border:none;border-radius:0;padding:2rem 0;border-top:1px solid var(--line-d);box-shadow:none}
+.why-card:hover{transform:none;box-shadow:none}
+.why-card.wc-1{grid-column:span 4;background:var(--ink);color:#fff;padding:2.5rem;border-top:none;border-radius:18px}
+.why-card.wc-2{grid-column:span 2;padding-left:2rem}
+.why-card.wc-3{grid-column:span 6;background:transparent;color:var(--ink);padding:2rem 0;border-radius:0;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+.why-card.wc-3 .why-num,.why-card.wc-3 h3,.why-card.wc-3 p{color:var(--ink)}
+.why-card.wc-3 .why-num{color:rgba(15,17,23,.15)}
+.why-card.wc-4{grid-column:span 3;padding-left:0}
+.why-card.wc-5{grid-column:span 3;background:transparent;padding-left:2rem}
+.why-num{font-size:5rem;margin-bottom:1rem;opacity:.22}
+.why-card.wc-1 .why-num{opacity:.55;color:rgba(255,255,255,.4)}
+.why-card.wc-3 h3{font-size:1.75rem}
+.why-card-img{margin-top:1.5rem;border-radius:12px;filter:grayscale(.4)}
+
+/* —— asymmetric Process header —— */
+.process-text .section-headline{font-size:clamp(2.2rem,5vw,4rem)}
+.process-frame{grid-template-columns:1fr 1.5fr}
+.process-stage{background:transparent;border-radius:0;border:none;border-left:1px solid var(--line-d);padding:1.2rem 1.5rem;border-top:none}
+.process-stage.on{background:transparent;border-left-color:var(--cyan);box-shadow:none}
+.process-stage::before{display:none}
+.process-stage.on .ps-title{color:var(--ink)}
+.process-stage:not(.on) .ps-title{color:rgba(15,17,23,.5)}
+
+/* —— pricing tighten —— */
+.pricing-card{border-radius:18px}
+.pricing-card.featured{transform:none}
+.pricing-card.featured:hover{transform:translateY(-6px)}
+
+/* —— reviews marquee —— */
+.reviews-marquee{margin-top:3rem;overflow:hidden;position:relative;mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.reviews-marquee-track{display:flex;gap:1.5rem;width:max-content;animation:rmqScroll 48s linear infinite;will-change:transform}
+.reviews-marquee:hover .reviews-marquee-track{animation-play-state:paused}
+@keyframes rmqScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.reviews-marquee .review-card{flex-shrink:0;width:340px}
+
+/* —— body texture overlay strengthened on flat surfaces —— */
+.ba-section,.why-section,.reviews-section,.faq-section{position:relative}
+.ba-section::after,.why-section::after,.reviews-section::after,.faq-section::after{content:'';position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)'/%3E%3C/svg%3E");opacity:.022;mix-blend-mode:multiply;pointer-events:none}
+
+/* —— GSAP word reveal —— */
+.gsap-word{display:inline-block;overflow:hidden;vertical-align:bottom}
+.gsap-word > span{display:inline-block;transform:translateY(110%)}
+
+@media(max-width:1100px){
+  .why-card.wc-3{grid-column:span 4;grid-template-columns:1fr}
+  .why-card.wc-4,.why-card.wc-5{grid-column:span 2}
+}
+@media(max-width:768px){
+  .why-card,.why-card.wc-1,.why-card.wc-2,.why-card.wc-3,.why-card.wc-4,.why-card.wc-5{padding:1.75rem 0;grid-template-columns:1fr}
+  .why-card.wc-1{padding:2rem;border-radius:16px}
+  .why-grid{gap:0}
+  .reviews-marquee .review-card{width:280px}
+  .hero-lead{margin-top:1.5rem}
+}
 </style>
 </head>
 <body>
@@ -777,46 +982,83 @@ footer::before{content:'';position:absolute;top:0;left:50%;transform:translateX(
 
       <p class="hero-sub">Handcrafted static sites that load in under a second. From £149, live in 24 hours. No payment until you see your free preview.</p>
 
-      <div class="hero-ctas">
-        <a href="#contact" class="btn btn-cyan magnetic">Get My Free Preview →</a>
-        <a href="#showcase" class="btn btn-ghost-d magnetic">See It In Action</a>
+      <!-- Hero lead-capture form (above the fold) -->
+      <div class="hero-lead">
+        <div class="hero-lead-label">Start your free 24h preview</div>
+        <form id="hf" onsubmit="sqHero(event)" novalidate>
+          <div class="hero-lead-form">
+            <input type="text" id="hf-name" name="name" placeholder="Your name" required autocomplete="name" aria-label="Your name">
+            <input type="email" id="hf-email" name="delivery_email" placeholder="you@email.com" required autocomplete="email" aria-label="Email address">
+            <select id="hf-type" name="business_type" required aria-label="Business type">
+              <option value="" disabled selected>Trade…</option>
+              <option>Restaurant</option><option>Barber</option><option>Photographer</option>
+              <option>Personal Trainer</option><option>Plumber</option><option>Electrician</option>
+              <option>Dog Groomer</option><option>Tattoo Studio</option><option>Café</option>
+              <option>Cleaning Company</option><option>Florist</option><option>Driving Instructor</option>
+              <option>Other</option>
+            </select>
+            <input type="text" id="hf-loc" name="location" placeholder="City / town" required autocomplete="address-level2" aria-label="City or town">
+            <button type="submit" class="hl-submit">Get Free Preview →</button>
+          </div>
+          <div class="hero-lead-fine">
+            <span>No payment upfront</span>
+            <span>Reply within 1 hour</span>
+            <span>You own the files</span>
+          </div>
+        </form>
+        <div id="hl-ok" role="alert">
+          <strong>Got it. Sit tight.</strong>
+          <p>Your free preview lands in your inbox within 24 hours. We may message you to ask a couple of quick questions first.</p>
+        </div>
+      </div>
+
+      <div class="hero-ctas" style="margin-top:1.25rem">
+        <a href="#showcase" class="btn btn-ghost-d magnetic">Or see it in action ↓</a>
       </div>
     </div>
 
-    <!-- Floating stacked mockups -->
+    <!-- Floating stacked mockups (rendered mini-sites, not stock photos) -->
     <div class="hero-side" aria-hidden="true">
       <div class="float-card fc-1">
         <div class="fc-chrome"><span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-url">fadeandblade.co.uk</span></div>
-        <div class="fc-body">
-          <img src="https://images.pexels.com/photos/1570807/pexels-photo-1570807.jpeg?auto=compress&cs=tinysrgb&w=600" alt="" loading="eager">
-          <div class="fc-overlay">
-            <span class="fc-biz">FADE &amp; BLADE</span>
-            <span class="fc-tag">Precision cuts.<br>Classic style.</span>
+        <div class="fc-mini fc-barber">
+          <div class="fcm-hero">
+            <span class="fcm-brand">FADE &amp; BLADE</span>
+            <h4 class="fcm-h1">Precision cuts.<br><em>Classic style.</em></h4>
           </div>
+          <div class="fcm-grid">
+            <div class="fcm-svc"><strong>Cut</strong><span>£18</span></div>
+            <div class="fcm-svc"><strong>Fade</strong><span>£22</span></div>
+            <div class="fcm-svc"><strong>Beard</strong><span>£12</span></div>
+          </div>
+          <div class="fcm-foot"><span>Manchester</span><span>Book online</span></div>
         </div>
-        <div class="fc-foot"><span>Manchester · From £18</span><span class="fc-pill">Live</span></div>
       </div>
       <div class="float-card fc-2">
-        <div class="fc-chrome"><span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-url">emmawells.com</span></div>
-        <div class="fc-body">
-          <img src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=400" alt="" loading="lazy">
-          <div class="fc-overlay">
-            <span class="fc-biz">EMMA WELLS</span>
-            <span class="fc-tag">Portraits that<br>feel like you.</span>
+        <div class="fc-chrome"><span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-url">brightsmile-dental.co.uk</span></div>
+        <div class="fc-mini fc-dentist">
+          <div class="fcm-nav"><span>BRIGHTSMILE</span><span>Book</span></div>
+          <div class="fcm-hero">
+            <div class="fcm-eyebrow">Family dentistry</div>
+            <h4 class="fcm-h1">Smiles you&rsquo;ll <em>love</em>.</h4>
+            <p class="fcm-p">Modern, gentle care in Leeds. NHS &amp; private appointments.</p>
+          </div>
+          <div class="fcm-row">
+            <span class="fcm-btn">New patient</span>
+            <span class="fcm-rating">4.9 · 312 reviews</span>
           </div>
         </div>
-        <div class="fc-foot"><span>Leeds · From £150</span><span class="fc-pill">Live</span></div>
       </div>
       <div class="float-card fc-3">
-        <div class="fc-chrome"><span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-url">peakfitness.uk</span></div>
-        <div class="fc-body">
-          <img src="https://images.pexels.com/photos/703016/pexels-photo-703016.jpeg?auto=compress&cs=tinysrgb&w=400" alt="" loading="lazy">
-          <div class="fc-overlay">
-            <span class="fc-biz">PEAK FITNESS</span>
-            <span class="fc-tag">Train harder.</span>
+        <div class="fc-chrome"><span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-dot"></span><span class="fc-url">rapidpipes.co.uk</span></div>
+        <div class="fc-mini fc-plumber">
+          <div class="fcm-hero">
+            <span class="fcm-tag">24/7 · Gas Safe</span>
+            <h4 class="fcm-h1">Boiler down?<br><em>We&rsquo;re on it.</em></h4>
+            <div class="fcm-call">☎ Call 0113 000 000</div>
           </div>
+          <div class="fcm-trust"><span>No call-out fee</span><span>47 min avg</span></div>
         </div>
-        <div class="fc-foot"><span>Birmingham · £40/hr</span><span class="fc-pill">Live</span></div>
       </div>
     </div>
   </div>
@@ -987,46 +1229,117 @@ footer::before{content:'';position:absolute;top:0;left:50%;transform:translateX(
     <div class="ba-grid">
 
       <div class="reveal">
-        <div class="ba-slider" data-ba style="background-image:url('https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=1400')">
+        <div class="ba-slider" data-ba role="img" aria-label="Before and after website comparison for Giuseppe's Ristorante">
           <div class="ba-pane before-pane">
             <span class="ba-pane-tag">Before · 2014</span>
-            <span class="ba-pane-headline">Welcome to Giuseppe's Ristorante — call to book a table</span>
+            <div class="ba-old">
+              <div class="ba-old-bar">★ GIUSEPPE'S RISTORANTE ★ Welcome!</div>
+              <div class="ba-old-h1">Best Italian in Bristol!!</div>
+              <div class="ba-old-blink">~~ NEW: Now Open Sundays! ~~</div>
+              <div class="ba-old-cols">
+                <div class="ba-old-nav">
+                  <a href="#">Home</a><a href="#">Menu</a><a href="#">About Us</a><a href="#">Photos</a><a href="#">Contact</a>
+                </div>
+                <div class="ba-old-body">
+                  <p><b>Welcome to our website!!</b></p>
+                  <p>We serve authentic Italian food made by our family. Call 0117 000 0000 to book a table.</p>
+                  <div class="ba-old-img">[ photo of pasta.jpg ]</div>
+                  <p>Open Tue-Sun 5pm-late.</p>
+                </div>
+              </div>
+              <div class="ba-old-foot">Last updated: 14/06/2014 · Visitors:<span class="ba-old-counter">000147</span> · Best viewed in IE6 1024x768</div>
+            </div>
           </div>
-          <div class="ba-pane after-pane" style="background:linear-gradient(135deg,rgba(6,7,11,.55),rgba(6,7,11,.1));backdrop-filter:saturate(1.4)">
+          <div class="ba-pane after-pane">
             <span class="ba-pane-tag">After · Today</span>
-            <span class="ba-pane-headline" style="align-self:flex-end;text-align:right">Honest food, made with love. Book online in seconds.</span>
+            <div class="ba-new">
+              <div class="ba-new-nav"><span class="ba-new-brand">GIUSEPPE'S</span><span class="ba-new-cta">Book a Table</span></div>
+              <div class="ba-new-body">
+                <div class="ba-new-eyebrow">Bristol · Family Italian since 1994</div>
+                <h3 class="ba-new-h1">Honest food, <em>made with love</em>.</h3>
+                <p class="ba-new-p">Wood-fired pizza, hand-rolled pasta, and a wine list our nonna would approve of. Bookings live, 24/7.</p>
+                <div class="ba-new-meta"><span>Open tonight</span><span>4.9 · 218 reviews</span></div>
+              </div>
+            </div>
           </div>
-          <div class="ba-handle"><span class="ba-handle-arrows">‹›</span></div>
+          <div class="ba-handle" aria-hidden="true"></div>
         </div>
         <div class="ba-caption"><strong>Giuseppe's Ristorante</strong> — Bristol Italian restaurant · +15 bookings in week 1</div>
       </div>
 
       <div class="reveal" style="transition-delay:.1s">
-        <div class="ba-slider" data-ba style="background-image:url('https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=1400')">
+        <div class="ba-slider" data-ba role="img" aria-label="Before and after website comparison for Sarah Mitchell Photography">
           <div class="ba-pane before-pane">
             <span class="ba-pane-tag">Before · 2017</span>
-            <span class="ba-pane-headline">Sarah Mitchell Photography — gallery | prices | contact</span>
+            <div class="ba-old">
+              <div class="ba-old-bar">SARAH MITCHELL PHOTOGRAPHY</div>
+              <div class="ba-old-h1" style="color:#5a3a8a">Sarah Mitchell Photo</div>
+              <div class="ba-old-blink" style="color:#5a3a8a">CLICK HERE for prices!</div>
+              <div class="ba-old-cols">
+                <div class="ba-old-nav">
+                  <a href="#">Gallery</a><a href="#">About</a><a href="#">Prices</a><a href="#">Blog</a><a href="#">Contact</a>
+                </div>
+                <div class="ba-old-body">
+                  <p><b>About me:</b></p>
+                  <p>I'm Sarah and I take photos of weddings, families, pets and events in the Leeds area. Email me for a quote.</p>
+                  <div class="ba-old-img">[ DSC_0234.jpg ]</div>
+                  <p>Email: sarah@hotmail.co.uk</p>
+                </div>
+              </div>
+              <div class="ba-old-foot">© 2017 · Site built with FrontPage · Visitors:<span class="ba-old-counter">000092</span></div>
+            </div>
           </div>
-          <div class="ba-pane after-pane" style="background:linear-gradient(135deg,rgba(40,30,40,.55),rgba(40,30,40,.05))">
+          <div class="ba-pane after-pane">
             <span class="ba-pane-tag">After · Today</span>
-            <span class="ba-pane-headline" style="align-self:flex-end;text-align:right">Portraits that feel like you.</span>
+            <div class="ba-new" style="background:linear-gradient(160deg,#2a1f2a 0%,#1a121a 100%)">
+              <div class="ba-new-nav"><span class="ba-new-brand">SARAH MITCHELL</span><span class="ba-new-cta" style="background:#fff;color:#1a121a">Enquire</span></div>
+              <div class="ba-new-body">
+                <div class="ba-new-eyebrow" style="color:#f5b8d8">Leeds · Portrait &amp; Wedding</div>
+                <h3 class="ba-new-h1">Portraits that <em style="color:#f5b8d8">feel like you</em>.</h3>
+                <p class="ba-new-p">Documentary-style portraits, real light, real moments. Limited 2026 slots.</p>
+                <div class="ba-new-meta"><span>Bookings open</span><span>Featured in Vogue</span></div>
+              </div>
+            </div>
           </div>
-          <div class="ba-handle"><span class="ba-handle-arrows">‹›</span></div>
+          <div class="ba-handle" aria-hidden="true"></div>
         </div>
         <div class="ba-caption"><strong>Sarah Mitchell</strong> — Leeds wedding photographer · 3× enquiry rate</div>
       </div>
 
       <div class="reveal" style="transition-delay:.2s">
-        <div class="ba-slider" data-ba style="background-image:url('https://images.pexels.com/photos/703016/pexels-photo-703016.jpeg?auto=compress&cs=tinysrgb&w=1400')">
+        <div class="ba-slider" data-ba role="img" aria-label="Before and after website comparison for Peak Fitness">
           <div class="ba-pane before-pane">
             <span class="ba-pane-tag">Before · 2019</span>
-            <span class="ba-pane-headline">Jamie Thompson PT — about | services | contact</span>
+            <div class="ba-old" style="background:repeating-linear-gradient(0deg,#fff,#fff 24px,#e8e8e8 24px,#e8e8e8 25px)">
+              <div class="ba-old-bar" style="background:#444;color:#fff">JAMIE THOMPSON PERSONAL TRAINER</div>
+              <div class="ba-old-h1" style="color:#000;text-shadow:none;font-family:Arial,sans-serif">Welcome.</div>
+              <div class="ba-old-blink" style="color:#cc0000">→ Free consultation - email today ←</div>
+              <div class="ba-old-cols">
+                <div class="ba-old-nav">
+                  <a href="#">Home</a><a href="#">About</a><a href="#">Services</a><a href="#">FAQ</a><a href="#">Email</a>
+                </div>
+                <div class="ba-old-body">
+                  <p>I am a qualified personal trainer based in Manchester. I have been training clients since 2014.</p>
+                  <div class="ba-old-img">[ me_at_gym.jpg ]</div>
+                  <p>Prices: One-to-one £30 per hour. Block of 10 £270.</p>
+                </div>
+              </div>
+              <div class="ba-old-foot">Site by my cousin · Last update Apr 2019</div>
+            </div>
           </div>
-          <div class="ba-pane after-pane" style="background:linear-gradient(135deg,rgba(0,0,0,.55),rgba(0,0,0,.05))">
+          <div class="ba-pane after-pane">
             <span class="ba-pane-tag">After · Today</span>
-            <span class="ba-pane-headline" style="align-self:flex-end;text-align:right">Train harder. Live better.</span>
+            <div class="ba-new" style="background:linear-gradient(160deg,#0a0a0a 0%,#1a0a0a 100%)">
+              <div class="ba-new-nav"><span class="ba-new-brand">PEAK FITNESS</span><span class="ba-new-cta" style="background:#ef4444;color:#fff">Start Trial</span></div>
+              <div class="ba-new-body">
+                <div class="ba-new-eyebrow" style="color:#fda4a4">Manchester · 1-on-1 PT</div>
+                <h3 class="ba-new-h1">Train harder. <em style="color:#fda4a4">Live better.</em></h3>
+                <p class="ba-new-p">No-nonsense coaching for adults who want strength and focus. First session on us.</p>
+                <div class="ba-new-meta"><span>Slots open</span><span>97% client retention</span></div>
+              </div>
+            </div>
           </div>
-          <div class="ba-handle"><span class="ba-handle-arrows">‹›</span></div>
+          <div class="ba-handle" aria-hidden="true"></div>
         </div>
         <div class="ba-caption"><strong>Peak Fitness</strong> — Manchester personal trainer · Sold out coaching slots</div>
       </div>
@@ -1226,35 +1539,99 @@ footer::before{content:'';position:absolute;top:0;left:50%;transform:translateX(
       </div>
     </div>
 
-    <div class="reviews-grid reveal-stagger">
-      <div class="review-card">
-        <div class="review-head">
-          <div class="review-avatar">S</div>
-          <div class="review-head-text"><strong>Sarah M.</strong><span>Photographer · Leeds</span></div>
-          <div class="stars" aria-label="5 stars" style="margin-left:auto">★★★★★</div>
+    <div class="reviews-marquee reveal" aria-label="Client reviews">
+      <div class="reviews-marquee-track">
+        <div class="review-card">
+          <div class="review-head">
+            <div class="review-avatar">S</div>
+            <div class="review-head-text"><strong>Sarah M.</strong><span>Photographer · Leeds</span></div>
+            <div class="stars" aria-label="5 stars" style="margin-left:auto">★★★★★</div>
+          </div>
+          <p class="review-text">"Looks more expensive than it cost. Our photography clients now find us on Google — something our old Wix site never managed."</p>
+          <div class="review-meta"><span>Advanced · £299</span><span>Verified</span></div>
         </div>
-        <p class="review-text">"Looks more expensive than it cost. Our photography clients now find us on Google — something our old Wix site never managed."</p>
-        <div class="review-meta"><span>Advanced · £299</span><span>Verified</span></div>
-      </div>
-
-      <div class="review-card">
-        <div class="review-head">
-          <div class="review-avatar">J</div>
-          <div class="review-head-text"><strong>Jamie T.</strong><span>Plumber · Manchester</span></div>
-          <div class="stars" aria-label="5 stars" style="margin-left:auto">★★★★★</div>
+        <div class="review-card">
+          <div class="review-head">
+            <div class="review-avatar">J</div>
+            <div class="review-head-text"><strong>Jamie T.</strong><span>Plumber · Manchester</span></div>
+            <div class="stars" aria-label="5 stars" style="margin-left:auto">★★★★★</div>
+          </div>
+          <p class="review-text">"Live in 24 hours like they said. Four call-outs from it the first week. Wish I'd done it years ago."</p>
+          <div class="review-meta"><span>Starter · £149</span><span>Verified</span></div>
         </div>
-        <p class="review-text">"Live in 24 hours like they said. Four call-outs from it the first week. Wish I'd done it years ago."</p>
-        <div class="review-meta"><span>Starter · £149</span><span>Verified</span></div>
-      </div>
-
-      <div class="review-card">
-        <div class="review-head">
-          <div class="review-avatar">P</div>
-          <div class="review-head-text"><strong>Priya K.</strong><span>Dog Groomer · Birmingham</span></div>
-          <div class="stars" aria-label="5 stars" style="margin-left:auto">★★★★★</div>
+        <div class="review-card">
+          <div class="review-head">
+            <div class="review-avatar">P</div>
+            <div class="review-head-text"><strong>Priya K.</strong><span>Dog Groomer · Birmingham</span></div>
+            <div class="stars" aria-label="5 stars" style="margin-left:auto">★★★★★</div>
+          </div>
+          <p class="review-text">"Exactly what a small business needs. Fast, clean, mine forever. No monthly fees — that sealed it."</p>
+          <div class="review-meta"><span>Starter · £149</span><span>Verified</span></div>
         </div>
-        <p class="review-text">"Exactly what a small business needs. Fast, clean, mine forever. No monthly fees — that sealed it."</p>
-        <div class="review-meta"><span>Starter · £149</span><span>Verified</span></div>
+        <div class="review-card">
+          <div class="review-head">
+            <div class="review-avatar">M</div>
+            <div class="review-head-text"><strong>Marco R.</strong><span>Restaurant · Bristol</span></div>
+            <div class="stars" aria-label="5 stars" style="margin-left:auto">★★★★★</div>
+          </div>
+          <p class="review-text">"Fifteen new bookings in the first week. Best £149 we've ever spent on the business."</p>
+          <div class="review-meta"><span>Starter · £149</span><span>Verified</span></div>
+        </div>
+        <div class="review-card">
+          <div class="review-head">
+            <div class="review-avatar">E</div>
+            <div class="review-head-text"><strong>Ellie W.</strong><span>Florist · Bath</span></div>
+            <div class="stars" aria-label="5 stars" style="margin-left:auto">★★★★★</div>
+          </div>
+          <p class="review-text">"Harry got the brief in one. Felt like a couture fitting, not a website job. Same-day orders went up 40%."</p>
+          <div class="review-meta"><span>Advanced · £299</span><span>Verified</span></div>
+        </div>
+        <!-- duplicates for seamless loop -->
+        <div class="review-card" aria-hidden="true">
+          <div class="review-head">
+            <div class="review-avatar">S</div>
+            <div class="review-head-text"><strong>Sarah M.</strong><span>Photographer · Leeds</span></div>
+            <div class="stars" style="margin-left:auto">★★★★★</div>
+          </div>
+          <p class="review-text">"Looks more expensive than it cost. Our photography clients now find us on Google — something our old Wix site never managed."</p>
+          <div class="review-meta"><span>Advanced · £299</span><span>Verified</span></div>
+        </div>
+        <div class="review-card" aria-hidden="true">
+          <div class="review-head">
+            <div class="review-avatar">J</div>
+            <div class="review-head-text"><strong>Jamie T.</strong><span>Plumber · Manchester</span></div>
+            <div class="stars" style="margin-left:auto">★★★★★</div>
+          </div>
+          <p class="review-text">"Live in 24 hours like they said. Four call-outs from it the first week. Wish I'd done it years ago."</p>
+          <div class="review-meta"><span>Starter · £149</span><span>Verified</span></div>
+        </div>
+        <div class="review-card" aria-hidden="true">
+          <div class="review-head">
+            <div class="review-avatar">P</div>
+            <div class="review-head-text"><strong>Priya K.</strong><span>Dog Groomer · Birmingham</span></div>
+            <div class="stars" style="margin-left:auto">★★★★★</div>
+          </div>
+          <p class="review-text">"Exactly what a small business needs. Fast, clean, mine forever. No monthly fees — that sealed it."</p>
+          <div class="review-meta"><span>Starter · £149</span><span>Verified</span></div>
+        </div>
+        <div class="review-card" aria-hidden="true">
+          <div class="review-head">
+            <div class="review-avatar">M</div>
+            <div class="review-head-text"><strong>Marco R.</strong><span>Restaurant · Bristol</span></div>
+            <div class="stars" style="margin-left:auto">★★★★★</div>
+          </div>
+          <p class="review-text">"Fifteen new bookings in the first week. Best £149 we've ever spent on the business."</p>
+          <div class="review-meta"><span>Starter · £149</span><span>Verified</span></div>
+        </div>
+        <div class="review-card" aria-hidden="true">
+          <div class="review-head">
+            <div class="review-avatar">E</div>
+            <div class="review-head-text"><strong>Ellie W.</strong><span>Florist · Bath</span></div>
+            <div class="stars" style="margin-left:auto">★★★★★</div>
+          </div>
+          <p class="review-text">"Harry got the brief in one. Felt like a couture fitting, not a website job. Same-day orders went up 40%."</p>
+          <div class="review-meta"><span>Advanced · £299</span><span>Verified</span></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1442,6 +1819,10 @@ footer::before{content:'';position:absolute;top:0;left:50%;transform:translateX(
   </div>
 </footer>
 
+<!-- ══ GSAP libs (deferred, fail-safe) ══ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
 <!-- ══ WORK MODAL (rendered into) ══ -->
 <div class="work-modal" id="work-modal" role="dialog" aria-modal="true" aria-label="Site preview" onclick="if(event.target===this)closeWorkModal()">
   <div class="wm-dialog" id="wm-dialog">
@@ -1576,7 +1957,7 @@ window.tf = (btn) => {
   }
 };
 
-/* —— FORM submit —— */
+/* —— FORM submit (long form at #contact) —— */
 window.sq = async (e) => {
   e.preventDefault();
   const btn = e.target.querySelector('button[type=submit]');
@@ -1590,12 +1971,50 @@ window.sq = async (e) => {
       body: JSON.stringify(data)
     });
     if (r.ok) {
+      if (typeof gtag === 'function') {
+        gtag('event', 'form_submit', {form_location: 'contact', business_type: data.business_type || '', package: data.package || ''});
+        gtag('event', 'generate_lead', {currency:'GBP', value: data.package==='advanced'?299:149, form_location:'contact'});
+      }
       document.getElementById('qf').style.display='none';
       document.getElementById('qf-ok').style.display='block';
       document.getElementById('qf-ok').scrollIntoView({behavior:'smooth',block:'center'});
     } else throw new Error('Server error');
   } catch(err) {
     btn.textContent = 'Something went wrong — try again';
+    btn.disabled = false;
+    setTimeout(() => { btn.textContent = orig; }, 3000);
+  }
+};
+
+/* —— HERO FORM submit (compact, above the fold) —— */
+window.sqHero = async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('.hl-submit');
+  const orig = btn.textContent;
+  btn.textContent = 'Sending…'; btn.disabled = true;
+  const data = Object.fromEntries(new FormData(form));
+  data.source='index-hero'; data.stage='new'; data.createdAt=new Date().toISOString();
+  data.business_name = data.business_name || (data.name ? data.name + "'s business" : '');
+  try {
+    const r = await fetch('/.netlify/functions/handle-intake', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    });
+    if (r.ok) {
+      if (typeof gtag === 'function') {
+        gtag('event', 'form_submit', {form_location: 'hero', business_type: data.business_type || ''});
+        gtag('event', 'generate_lead', {currency:'GBP', value:149, form_location:'hero'});
+      }
+      form.style.display='none';
+      const ok = document.getElementById('hl-ok');
+      ok.style.display='block';
+      // pre-fill the long contact form for any further interaction
+      const map = {'f-name':data.name,'f-email':data.delivery_email,'f-type':data.business_type,'f-loc':data.location};
+      Object.entries(map).forEach(([id,val]) => { const el = document.getElementById(id); if (el && val) el.value = val; });
+    } else throw new Error('Server error');
+  } catch(err) {
+    btn.textContent = 'Try again →';
     btn.disabled = false;
     setTimeout(() => { btn.textContent = orig; }, 3000);
   }
@@ -2015,6 +2434,91 @@ window.closeWorkModal = () => {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeWorkModal();
 });
+
+/* ─────────────────────────────────────── */
+/*  GSAP motion (loaded async — wrapped) */
+/* ─────────────────────────────────────── */
+const initGsap = () => {
+  if (reduceMotion || !window.gsap || !window.ScrollTrigger) return;
+  const { gsap, ScrollTrigger } = window;
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Section headings: subtle fade-up
+  gsap.utils.toArray('.section-headline').forEach(el => {
+    gsap.fromTo(el, {y:40, opacity:0}, {
+      y:0, opacity:1, duration:1.1, ease:'power3.out',
+      scrollTrigger:{trigger:el, start:'top 85%', once:true}
+    });
+  });
+
+  // Showcase frame zoom/parallax
+  const sf = document.querySelector('.showcase-frame');
+  if (sf) {
+    gsap.fromTo(sf, {scale:.94, y:60}, {
+      scale:1, y:0, ease:'none',
+      scrollTrigger:{trigger:'.showcase-section', start:'top 80%', end:'top 30%', scrub:.8}
+    });
+  }
+
+  // Hero side mockups parallax on scroll
+  const heroSide = document.querySelector('.hero-side');
+  if (heroSide && window.innerWidth > 900) {
+    gsap.to(heroSide, {
+      y:-80, ease:'none',
+      scrollTrigger:{trigger:'.hero', start:'top top', end:'bottom top', scrub:true}
+    });
+  }
+
+  // Process: pin + horizontal scrub on desktop
+  const procSec2 = document.querySelector('.process-section');
+  const procStages = document.querySelectorAll('.process-stage');
+  if (procSec2 && procStages.length && window.innerWidth > 1100) {
+    const stageCount = procStages.length;
+    ScrollTrigger.create({
+      trigger: procSec2,
+      start: 'top top',
+      end: `+=${stageCount * 600}`,
+      pin: true,
+      scrub: 0.6,
+      onUpdate: self => {
+        const idx = Math.min(stageCount - 1, Math.floor(self.progress * stageCount));
+        if (window.setStage && stageIdx !== idx) window.setStage(idx);
+      }
+    });
+    clearInterval(stageAuto);
+  }
+
+  // Work cells: stagger reveal
+  gsap.utils.toArray('.work-cell').forEach((el, i) => {
+    gsap.fromTo(el, {y:50, opacity:0}, {
+      y:0, opacity:1, duration:.9, ease:'power3.out', delay:(i%3)*.08,
+      scrollTrigger:{trigger:el, start:'top 88%', once:true}
+    });
+  });
+
+  // Why cards: stagger
+  gsap.utils.toArray('.why-card').forEach((el, i) => {
+    gsap.fromTo(el, {y:40, opacity:0}, {
+      y:0, opacity:1, duration:.9, ease:'power3.out', delay:i*.06,
+      scrollTrigger:{trigger:el, start:'top 90%', once:true}
+    });
+  });
+
+  // CTA band headline fade
+  const ctaH = document.querySelector('.cta-band-headline');
+  if (ctaH) {
+    gsap.fromTo(ctaH, {y:60, opacity:0}, {
+      y:0, opacity:1, duration:1.2, ease:'power3.out',
+      scrollTrigger:{trigger:'.cta-band', start:'top 75%', once:true}
+    });
+  }
+};
+
+// expose setStage for ScrollTrigger
+window.setStage = setStage;
+
+if (document.readyState === 'complete') initGsap();
+else window.addEventListener('load', initGsap);
 
 })();
 </script>

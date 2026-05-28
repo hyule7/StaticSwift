@@ -79,6 +79,8 @@ a{color:var(--gold);text-decoration:none}
   .page-header{padding:16px 20px}
 }
 </style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4BZHQMG0RF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-4BZHQMG0RF');</script>
 </head>
 <body>
 <div class="page-header">
@@ -103,7 +105,7 @@ a{color:var(--gold);text-decoration:none}
         <div class="fg"><label>Business Name <span class="req">*</span></label><input type="text" name="business_name" id="f-bizname" maxlength="60" required placeholder="e.g. Smith Plumbing"></div>
       </div>
       <div class="row2">
-        <div class="fg"><label>Business Type <span class="req">*</span></label><select name="business_type" id="f-biztype" required><option value="">Select type...</option><option>Barber / Hair Salon</option><option>Beauty / Nail Bar</option><option>Plumber</option><option>Electrician</option><option>Builder / Roofer</option><option>Cleaner</option><option>Gardener / Landscaper</option><option>Photographer</option><option>Personal Trainer / Gym</option><option>Cafe / Restaurant</option><option>Dog Groomer</option><option>Tattoo Studio</option><option>Driving Instructor</option><option>Accountant</option><option>Therapist</option><option>Mechanic</option><option>Florist</option><option>Retailer</option><option>Other</option></select></div>
+        <div class="fg"><label>Business Type <span class="req">*</span></label><select name="business_type" id="f-biztype" required><option value="accountant">Accountant</option><option value="architect">Architect</option><option value="bakery">Bakery</option><option value="barber">Barber / Hair Salon</option><option value="beauty-salon">Beauty / Nail Bar</option><option value="blacksmith">Blacksmith</option><option value="builder">Builder / Roofer</option><option value="butcher">Butcher</option><option value="cafe">Cafe / Restaurant</option><option value="cake-maker">Cake Maker</option><option value="detailer">Car Detailer</option><option value="carpenter">Carpenter</option><option value="carpet-cleaner">Carpet Cleaner</option><option value="caterer">Caterer</option><option value="childminder">Childminder</option><option value="chiropractor">Chiropractor</option><option value="cleaner">Cleaner</option><option value="cleaning-company">Cleaning Company</option><option value="coach">Coach</option><option value="consultant">Consultant</option><option value="counsellor">Counsellor</option><option value="dentist">Dentist</option><option value="dj">DJ / Entertainer</option><option value="dog-groomer">Dog Groomer</option><option value="dog-walker">Dog Walker</option><option value="driving-instructor">Driving Instructor</option><option value="dry-cleaner">Dry Cleaner</option><option value="electrician">Electrician</option><option value="estate-agent">Estate Agent</option><option value="event-planner">Event Planner</option><option value="farrier">Farrier</option><option value="financial-advisor">Financial Advisor</option><option value="florist">Florist</option><option value="food-truck">Food Truck</option><option value="gardener">Gardener / Landscaper</option><option value="glazier">Glazier</option><option value="graphic-designer">Graphic Designer</option><option value="gym">Gym</option><option value="hairdresser">Hairdresser</option><option value="handyman">Handyman</option><option value="jeweller">Jeweller</option><option value="joiner">Joiner</option><option value="landscaper">Landscaper</option><option value="laundrette">Laundrette</option><option value="locksmith">Locksmith</option><option value="massage">Massage Therapist</option><option value="mechanic">Mechanic</option><option value="mobile-hairdresser">Mobile Hairdresser</option><option value="mortgage-broker">Mortgage Broker</option><option value="music-teacher">Music Teacher</option><option value="nail-salon">Nail Salon</option><option value="nursery">Nursery / Pre-school</option><option value="nutritionist">Nutritionist</option><option value="optician">Optician</option><option value="osteopath">Osteopath</option><option value="painter-decorator">Painter &amp; Decorator</option><option value="personal-trainer">Personal Trainer</option><option value="pest-control">Pest Control</option><option value="photographer">Photographer</option><option value="physio">Physiotherapist</option><option value="physiotherapist">Physiotherapist</option><option value="pilates-instructor">Pilates Instructor</option><option value="plasterer">Plasterer</option><option value="plumber">Plumber</option><option value="podiatrist">Podiatrist</option><option value="printer">Printer</option><option value="pub">Pub / Bar</option><option value="removals">Removals</option><option value="mover">Removals / Mover</option><option value="restaurant">Restaurant</option><option value="retail">Retail / Shop</option><option value="roofer">Roofer</option><option value="scaffolder">Scaffolder</option><option value="seamstress">Seamstress / Tailor</option><option value="shoe-repair">Shoe Repair</option><option value="skip-hire">Skip Hire</option><option value="solicitor">Solicitor</option><option value="tailor">Tailor</option><option value="tattoo-studio">Tattoo Studio</option><option value="taxi">Taxi</option><option value="therapist">Therapist</option><option value="tiler">Tiler</option><option value="tree-surgeon">Tree Surgeon</option><option value="tutor">Tutor</option><option value="upholsterer">Upholsterer</option><option value="vet">Vet</option><option value="videographer">Videographer</option><option value="web-designer">Web Designer</option><option value="wedding-planner">Wedding Planner</option><option value="window-cleaner">Window Cleaner</option><option value="yoga-instructor">Yoga Instructor</option><option value="yoga-studio">Yoga Studio</option><option value="other" selected>Other</option></select></div>
         <div class="fg"><label>Town / City <span class="req">*</span></label><input type="text" name="location" id="f-location" maxlength="60" required placeholder="e.g. Manchester"></div>
       </div>
       <div class="fg"><label>What does your business do? <span class="req">*</span></label><textarea name="business_description" id="f-bizdesc" maxlength="220" data-max="220" required placeholder="e.g. We offer emergency plumbing and boiler servicing across Manchester. Available 7 days a week."></textarea><div class="counter" id="cc-bizdesc">0 / 220</div></div>
@@ -310,6 +312,66 @@ document.getElementById('order-form').addEventListener('submit',async function(e
     }else{btn.textContent='Error — try again';btn.disabled=false;btn.style.background='#dc2626'}
   }catch{btn.textContent='Network error — try again';btn.disabled=false;btn.style.background='#dc2626'}
 });
+
+// ss:order-hydrate-v1 — pre-fill from ?niche=X&city=Y
+(function(){
+  try{
+    var p=new URLSearchParams(window.location.search);
+    var niche=(p.get('niche')||'').toLowerCase();
+    var city=p.get('city')||'';
+    var bt=document.getElementById('f-biztype');
+    if(bt&&niche){
+      var found=false;
+      for(var i=0;i<bt.options.length;i++){
+        if((bt.options[i].value||'').toLowerCase()===niche){bt.selectedIndex=i;found=true;break;}
+      }
+      if(!found){
+        for(var j=0;j<bt.options.length;j++){
+          if((bt.options[j].value||'').toLowerCase()==='other'){bt.selectedIndex=j;break;}
+        }
+      }
+    }
+    var loc=document.getElementById('f-location');
+    if(loc&&city&&!loc.value){
+      // Slug -> Title Case (handle "stoke-on-trent" etc.).
+      var small={on:1,in:1,upon:1,under:1,super:1,next:1,le:1,la:1,of:1,by:1,the:1};
+      loc.value=city.split('-').map(function(w,i){
+        if(i>0&&small[w])return w;
+        return w.charAt(0).toUpperCase()+w.slice(1);
+      }).join('-');
+    }
+    // Set hidden source field so we know which SEO page they came from.
+    var f=document.getElementById('order-form');
+    if(f&&niche&&!f.querySelector('input[name="source_page"]')){
+      var h=document.createElement('input');h.type='hidden';h.name='source_page';h.value='seo-'+niche+'-'+city;
+      f.appendChild(h);
+    }
+  }catch(e){}
+})();
+
+// ss:order-lead-event-v1 — fire generate_lead on successful submit
+(function(){
+  var f=document.getElementById('order-form');if(!f)return;
+  f.addEventListener('submit',function(){
+    // Defer so this runs AFTER the existing submit handler, which is async.
+    // We poll for the visible #ok element which is the success signal.
+    var start=Date.now();
+    var iv=setInterval(function(){
+      var ok=document.getElementById('ok');
+      if(ok&&ok.style.display==='block'){
+        clearInterval(iv);
+        try{
+          var p=new URLSearchParams(window.location.search);
+          var src=(p.get('niche')?'seo-'+p.get('niche')+'-'+(p.get('city')||''):'order-form-full');
+          var bt=document.getElementById('f-biztype');var loc=document.getElementById('f-location');
+          if(typeof gtag==='function')gtag('event','generate_lead',{value:149,currency:'GBP',source:src,business_type:bt&&bt.value,location:loc&&loc.value});
+          window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'lead_submit',form_id:'order_full',source:src});
+        }catch(e){}
+      } else if(Date.now()-start>15000){clearInterval(iv);}
+    },200);
+  });
+})();
+
 </script>
 </body>
 </html>
