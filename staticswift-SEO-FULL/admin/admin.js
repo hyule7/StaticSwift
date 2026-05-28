@@ -210,20 +210,32 @@ async function saveClient(data) {
 async function initApp() {
   try {
     await fetchClients();
-    renderDashboard();
-    renderPipeline();
-    renderRevenue();
-    renderPrompts();
-    initCommandPalette();
-    initGlobalSearch();
-    // Refresh dashboard analytics + GSC every 60s
-    setInterval(() => {
-      dashAnalyticsCache = null;
-      renderDashTraffic();
-    }, 60_000);
   } catch (err) {
-    console.error('Init error:', err);
+    console.error('[initApp] fetchClients failed — rendering empty state:', err);
+    allClients = Array.isArray(allClients) ? allClients : [];
+    showOfflineBanner('Could not load clients from server. Some pages will be empty until you click Refresh.');
   }
+  // Render all pages regardless of fetch outcome — otherwise users see
+  // permanent "Loading..." placeholders when the backend is unreachable.
+  try { renderDashboard(); } catch (e) { console.error('renderDashboard:', e); }
+  try { renderPipeline(); } catch (e) { console.error('renderPipeline:', e); }
+  try { renderRevenue(); } catch (e) { console.error('renderRevenue:', e); }
+  try { renderPrompts(); } catch (e) { console.error('renderPrompts:', e); }
+  try { initCommandPalette(); } catch (e) { console.error('initCommandPalette:', e); }
+  try { initGlobalSearch(); } catch (e) { console.error('initGlobalSearch:', e); }
+  setInterval(() => {
+    dashAnalyticsCache = null;
+    renderDashTraffic();
+  }, 60_000);
+}
+
+function showOfflineBanner(msg) {
+  if (document.getElementById('offline-banner')) return;
+  const banner = document.createElement('div');
+  banner.id = 'offline-banner';
+  banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:#f59e0b;color:#07090f;padding:10px 20px;font-size:13px;font-weight:600;text-align:center';
+  banner.textContent = '⚠ ' + msg;
+  document.body.prepend(banner);
 }
 
 async function refreshData() {

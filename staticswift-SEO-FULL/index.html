@@ -364,8 +364,10 @@ nav:not(.scrolled) .ham-bar{background:#fff}
 /* ░░░ BEFORE/AFTER DRAG SLIDER ░░░ */
 /* ──────────────────────────────────────────────────────────── */
 .ba-section{background:var(--white)}
-.ba-grid{display:flex;flex-direction:column;gap:3rem;margin-top:2rem}
-.ba-slider{position:relative;width:100%;aspect-ratio:16/9;border-radius:18px;overflow:hidden;background:#222;cursor:ew-resize;box-shadow:var(--shadow-1);user-select:none;touch-action:none}
+.ba-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:2rem}
+@media(max-width:1080px){.ba-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){.ba-grid{grid-template-columns:1fr;gap:2.4rem}}
+.ba-slider{position:relative;width:100%;aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:#222;cursor:ew-resize;box-shadow:var(--shadow-1);user-select:none;touch-action:none}
 .ba-slider .ba-pane{position:absolute;inset:0;background-size:cover;background-position:center;display:flex;flex-direction:column;justify-content:space-between;padding:1.4rem 1.8rem;color:#fff}
 .ba-pane.after-pane{clip-path:inset(0 0 0 var(--slider,50%))}
 .ba-pane.before-pane{filter:grayscale(.92) contrast(.85)}
