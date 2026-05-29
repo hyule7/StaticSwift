@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/admin/admin.css?v=9">
+<link rel="stylesheet" href="/admin/admin.css?v=10">
 </head>
 <body>
 
@@ -685,7 +685,19 @@
         </div>
         <div id="email-test-result" style="display:none;padding:14px;background:var(--dark3);border:1px solid var(--border);border-radius:8px;margin-top:8px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.6;white-space:pre-wrap;overflow:auto;max-height:340px"></div>
         <p style="margin:8px 0 0;font-size:11px;color:var(--dim);line-height:1.55">
-          Diagnoses env vars (SMTP_USER, SMTP_PASS, ADMIN_PASSWORD), verifies SMTP connect, then sends one real test email so you can confirm delivery. Sends to your SMTP_USER inbox by default.
+          Diagnoses env vars (SMTP_USER, SMTP_PASS, ADMIN_PASSWORD), verifies SMTP connect, then sends one real test email so you can confirm delivery.
+        </p>
+      </div>
+
+      <!-- ════ DELIVERABILITY CHECK — SPF / DKIM / DMARC / MX ════ -->
+      <div class="outreach-tools" style="border:1px solid rgba(167,139,250,.3);background:linear-gradient(160deg,rgba(167,139,250,.06),rgba(0,0,0,0));margin-bottom:18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:10px">
+          <h3 style="color:var(--purple);margin:0">🛡 Deliverability check — SPF / DKIM / DMARC</h3>
+          <button onclick="checkDeliverability()" class="btn-primary" style="background:var(--purple);color:#fff">Check now</button>
+        </div>
+        <pre id="deliverability-result" style="display:none;padding:14px;background:var(--dark3);border:1px solid var(--border);border-radius:8px;margin-top:8px;font-family:'DM Mono',monospace;font-size:11px;line-height:1.6;white-space:pre-wrap;overflow:auto;max-height:400px"></pre>
+        <p style="margin:8px 0 0;font-size:11px;color:var(--dim);line-height:1.55">
+          Without SPF + DKIM + DMARC set up, cold outreach lands in spam. Check your sending domain and fix any missing signals before scaling outreach.
         </p>
       </div>
 
@@ -999,6 +1011,6 @@
   </div>
 </div>
 
-<script src="/admin/admin.js?v=9" defer></script>
+<script src="/admin/admin.js?v=10" defer></script>
 </body>
 </html>

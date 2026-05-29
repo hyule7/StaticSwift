@@ -4845,3 +4845,79 @@ window.showPage = function(id, btn) {
 
 // Run once on load too in case user lands on outreach
 setTimeout(() => { try { assignOutreachTabs(); const t = localStorage.getItem('ss_outreach_tab') || 'autopilot'; switchOutreachTab(t); } catch(e) {} }, 1500);
+
+/* ════════════════════════════════════════════════════════════════
+   DEEP-RESEARCH HELPERS — Companies House · Domain age · Deliverability
+   ════════════════════════════════════════════════════════════════ */
+
+async function lookupCompaniesHouse(prospectId) {
+  const p = prospects.find(x => x.id === prospectId);
+  if (!p) return;
+  if (!p.bizname) { alert('Need a business name first.'); return; }
+  try {
+    const r = await fetch('/.netlify/functions/companies-house', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ name: p.bizname }),
+    });
+    const d = await r.json();
+    p.chStatus = d.status;
+    p.chIsLtd = !!d.isLtdCompany;
+    p.chPecrSafe = !!d.pecrSafe;
+    p.chCompanyNumber = d.companyNumber || '';
+    p.chIncorporated = d.incorporated || '';
+    p.chVerdict = d.verdict || '';
+    saveProspects(); renderProspectsTable();
+    alert((d.pecrSafe ? '✓ PECR-SAFE' : '⚠ Not PECR-safe') + '\n\n' + d.verdict);
+  } catch (e) { alert('Companies House lookup failed: ' + e.message); }
+}
+
+async function lookupDomainAge(prospectId) {
+  const p = prospects.find(x => x.id === prospectId);
+  if (!p?.website) { alert('No website on record.'); return; }
+  try {
+    const r = await fetch('/.netlify/functions/domain-age', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ domain: p.website }),
+    });
+    const d = await r.json();
+    if (d.ok) {
+      p.domainAge = d.ageYears;
+      p.domainBand = d.ageBand;
+      p.domainRegistered = d.registered;
+      saveProspects(); renderProspectsTable();
+      alert(d.verdict + '\n\nRegistered: ' + new Date(d.registered).toLocaleDateString('en-GB') + '\nAge: ' + d.ageYears + ' years\nRegistrar: ' + (d.registrar || 'unknown'));
+    } else { alert('Lookup failed: ' + d.error); }
+  } catch (e) { alert('Domain lookup failed: ' + e.message); }
+}
+
+async function checkDeliverability() {
+  const domain = prompt('Check deliverability for which domain? (your sending domain — e.g. staticswift.co.uk)', 'staticswift.co.uk');
+  if (!domain) return;
+  try {
+    const r = await fetch('/.netlify/functions/deliverability', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ domain }),
+    });
+    const d = await r.json();
+    const lines = [d.verdict, '', 'Score: ' + d.passing + '/' + d.total, ''];
+    Object.entries(d.checks).forEach(([k, v]) => {
+      lines.push((v.pass ? '✓' : '✗') + ' ' + k.toUpperCase() + ': ' + v.detail);
+      if (!v.pass) lines.push('  Fix: ' + v.fix);
+      lines.push('');
+    });
+    const result = document.getElementById('deliverability-result');
+    if (result) {
+      result.style.display = 'block';
+      result.style.color = d.passing === 4 ? 'var(--green)' : d.passing >= 2 ? 'var(--amber)' : 'var(--red)';
+      result.textContent = lines.join('\n');
+    } else {
+      alert(lines.join('\n'));
+    }
+  } catch (e) { alert('Check failed: ' + e.message); }
+}
+
+['lookupCompaniesHouse','lookupDomainAge','checkDeliverability']
+  .forEach(fn => { try { if (typeof eval(fn) === 'function') window[fn] = eval(fn); } catch(e){} });
