@@ -116,4 +116,14 @@ async function incrementInvoiceCounter() {
   return next;
 }
 
-module.exports = { getClients, saveClient, getClient, updateClient, getInvoiceCounter, incrementInvoiceCounter, readDB, writeDB };
+async function deleteClient(clientId) {
+  const db = await readDB();
+  const clients = Array.isArray(db.clients) ? db.clients : [];
+  const before = clients.length;
+  const next = clients.filter(c => c.clientId !== clientId);
+  if (next.length === before) throw new Error('Client not found: ' + clientId);
+  await writeDB({ ...db, clients: next });
+  return { ok: true, removed: clientId };
+}
+
+module.exports = { getClients, saveClient, getClient, updateClient, deleteClient, getInvoiceCounter, incrementInvoiceCounter, readDB, writeDB };

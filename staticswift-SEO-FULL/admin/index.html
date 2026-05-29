@@ -503,9 +503,101 @@
         </div>
         <div id="dork-grid" class="dork-grid"></div>
         <p style="margin-top:12px;font-size:12px;color:var(--dim);line-height:1.5">
-          ⚡ Each query opens in a new tab — sift through results, copy promising leads, then "+ Add Prospect" here.
-          Look for businesses with no website, outdated sites, or Facebook-only presence.
+          ⚡ Each query opens in a new tab — sift through results, copy promising leads, then analyze + add below.
         </p>
+      </div>
+
+      <!-- ════ SITE ANALYZER — single URL ════ -->
+      <div class="outreach-tools" style="border:1px solid rgba(0,200,224,.22);background:linear-gradient(160deg,rgba(0,200,224,.06),rgba(0,0,0,0))">
+        <h3 style="color:var(--cyan)">🔍 Site analyzer — score + extract contacts</h3>
+        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+          <input type="url" id="analyze-url" placeholder="https://example-barber-shop.co.uk" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:7px;font-size:13px;flex:1;min-width:280px" autocomplete="url">
+          <button class="btn-primary" onclick="runAnalyze()" id="analyze-btn" style="white-space:nowrap">Analyze →</button>
+        </div>
+        <div id="analyze-result" style="display:none;background:var(--dark3);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:10px"></div>
+        <p style="margin-top:12px;font-size:11px;color:var(--dim);line-height:1.55">
+          Legal: only fetches publicly-served HTML. Extracted emails/phones must be published by the business on that page (public information). Use the templates below to outreach manually — never bulk-send without consent.
+        </p>
+      </div>
+
+      <!-- ════ ALWAYS-ON SCANNING AGENT — queue + auto-worker ════ -->
+      <div class="outreach-tools" style="border:1px solid rgba(34,197,94,.3);background:linear-gradient(160deg,rgba(34,197,94,.05),rgba(0,0,0,0));margin-bottom:18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:10px">
+          <h3 style="color:var(--green);margin:0">🤖 Always-on scanner — feeds your pipeline 24/7</h3>
+          <div id="queue-stats" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted)">
+            <span id="queue-pending" style="color:var(--cyan);font-weight:700">0</span> queued ·
+            <span id="queue-scanned" style="color:var(--green);font-weight:700">0</span> scanned ·
+            <span id="queue-prospects" style="color:var(--purple);font-weight:700">0</span> added
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center">
+          <button id="queue-toggle" onclick="toggleScanWorker()" class="btn-primary" style="background:var(--green);color:#000">▶ Start scanner</button>
+          <button onclick="seedQueueFromGoogle()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:9px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">+ Seed queue from current Google search</button>
+          <button onclick="addUrlsToQueueModal()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:9px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">+ Paste URLs</button>
+          <button onclick="clearScanQueue()" style="background:var(--surface2);color:var(--red);border:1px solid var(--border);padding:9px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Clear queue</button>
+          <span id="queue-status" style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-left:auto"></span>
+        </div>
+        <p style="margin:0;font-size:11px;color:var(--dim);line-height:1.55">
+          Worker scans 5 URLs in parallel every 30s while this tab is open. Auto-adds sites scoring &lt;70 with extracted contacts. Survives page refresh — queue persists in storage.
+        </p>
+      </div>
+
+      <!-- ════ BATCH AGENT — paste many URLs, scan in parallel, sort by score ════ -->
+      <div class="outreach-tools" style="border:1px solid rgba(34,197,94,.22);background:linear-gradient(160deg,rgba(34,197,94,.06),rgba(0,0,0,0))">
+        <h3 style="color:var(--green)">⚡ Batch scanner — paste many URLs, get scored prospects</h3>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start;margin-bottom:14px">
+          <textarea id="batch-urls" placeholder="Paste 10-200 URLs, one per line. e.g.&#10;https://daves-plumbing.co.uk&#10;sarahs-barber-edinburgh.co.uk&#10;..." style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:7px;font-size:13px;flex:1;min-width:280px;min-height:120px;font-family:'DM Mono',monospace;line-height:1.5"></textarea>
+          <div style="display:flex;flex-direction:column;gap:8px;min-width:160px">
+            <label style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace">Concurrency</label>
+            <select id="batch-concurrency" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:7px;font-size:13px">
+              <option value="3">3 (gentle)</option>
+              <option value="5" selected>5 (balanced)</option>
+              <option value="8">8 (fast)</option>
+              <option value="12">12 (aggressive)</option>
+            </select>
+            <button class="btn-primary" onclick="runBatchScan()" id="batch-run-btn">Start scan →</button>
+            <button onclick="stopBatchScan()" id="batch-stop-btn" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:8px 12px;border-radius:7px;font-size:12px;cursor:pointer;font-family:inherit;display:none">Stop</button>
+          </div>
+        </div>
+        <div id="batch-progress" style="display:none;padding:12px;background:var(--dark3);border:1px solid var(--border);border-radius:8px;margin-bottom:12px;font-family:'DM Mono',monospace;font-size:12px"></div>
+        <div id="batch-results" style="display:none"></div>
+        <p style="margin-top:12px;font-size:11px;color:var(--dim);line-height:1.55">
+          Each URL is fetched once, scored, and (if it looks like a prospect) automatically added to your prospect pool. Sort by score to surface the weakest sites — those are your best outreach targets.
+        </p>
+      </div>
+
+      <!-- ════ OUTREACH TEMPLATES — PECR-compliant, merge fields ════ -->
+      <div class="outreach-tools" style="border:1px solid rgba(167,139,250,.22);background:linear-gradient(160deg,rgba(167,139,250,.06),rgba(0,0,0,0))">
+        <h3 style="color:var(--purple)">✉ Outreach templates — personalised, legal, copy-paste</h3>
+        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center">
+          <select id="tmpl-pick" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:7px;font-size:13px;flex:1;min-width:220px">
+            <option value="cold-observation">Cold — specific observation</option>
+            <option value="cold-light">Cold — light intro</option>
+            <option value="followup-1">Follow-up #1 (5 days later)</option>
+            <option value="followup-2">Follow-up #2 (12 days later)</option>
+            <option value="post-analysis">Post site-analyzer (uses scan findings)</option>
+          </select>
+          <select id="tmpl-prospect" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:7px;font-size:13px;flex:1;min-width:220px">
+            <option value="">— pick a prospect to merge —</option>
+          </select>
+          <button class="btn-primary" onclick="generateTemplate()" style="white-space:nowrap">Generate →</button>
+        </div>
+        <div id="tmpl-result" style="display:none">
+          <div style="margin-bottom:8px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace">Subject</div>
+          <input id="tmpl-subject" style="width:100%;background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:7px;font-size:13px;margin-bottom:14px" readonly>
+          <div style="margin-bottom:8px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace;display:flex;justify-content:space-between;align-items:center">
+            <span>Body — review before sending</span>
+            <button onclick="copyTmpl()" style="background:var(--cyan);color:var(--ink);border:0;padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">Copy</button>
+          </div>
+          <textarea id="tmpl-body" style="width:100%;min-height:340px;background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.6;font-family:'DM Sans',sans-serif;resize:vertical" readonly></textarea>
+          <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+            <a id="tmpl-mailto" href="#" target="_blank" rel="noopener" style="background:var(--cyan);color:var(--ink);padding:9px 16px;border-radius:7px;font-size:13px;font-weight:700;text-decoration:none">Open in mail app ↗</a>
+            <button onclick="markProspectSent()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:9px 16px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">I sent this — log it ✓</button>
+          </div>
+          <p style="margin-top:10px;font-size:11px;color:var(--dim);line-height:1.5">
+            Always review before sending. The footer includes the PECR-required sender identity + opt-out — leave it in. Send from your real mailbox so replies come back to you.
+          </p>
+        </div>
       </div>
 
       <!-- Stats bar -->
@@ -517,32 +609,56 @@
         <div class="stat-card" style="flex:1;min-width:90px"><div class="label">Converted</div><div class="value" id="os-converted">0</div></div>
       </div>
 
-      <!-- Two-pane layout -->
-      <div style="display:grid;grid-template-columns:260px 1fr;gap:0;border:1px solid var(--border);border-radius:14px;overflow:hidden;min-height:640px">
-        <div style="border-right:1px solid var(--border);display:flex;flex-direction:column">
-          <div style="padding:12px;border-bottom:1px solid var(--border);display:flex;flex-direction:column;gap:8px">
-            <input id="outreach-search" oninput="renderProspects()" placeholder="Search prospects..." style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:7px;font-size:12px;width:100%;outline:none">
-            <select id="outreach-filter" onchange="renderProspects()" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:7px;font-size:12px">
-              <option value="all">All prospects</option>
-              <option value="new">Not contacted</option>
-              <option value="sent">Email sent</option>
-              <option value="replied">Replied</option>
-              <option value="converted">Converted</option>
-              <option value="dead">Dead</option>
-            </select>
+      <!-- ════ COMMAND CENTER — sortable, filterable, bulk-actionable prospects table ════ -->
+      <div style="border:1px solid var(--border);border-radius:14px;overflow:hidden">
+        <!-- Top control bar — search, filter pills, bulk actions -->
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border);background:var(--dark2);display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <input id="outreach-search" oninput="renderProspectsTable()" placeholder="Search business name / email / location…" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:7px;font-size:13px;flex:1;min-width:200px;outline:none">
+          <div style="display:flex;gap:4px;flex-wrap:wrap" id="filter-pills">
+            <button class="filter-pill active" data-f="all" onclick="setProspectFilter('all')">All</button>
+            <button class="filter-pill" data-f="new" onclick="setProspectFilter('new')">New</button>
+            <button class="filter-pill" data-f="lowscore" onclick="setProspectFilter('lowscore')">&lt;40 score</button>
+            <button class="filter-pill" data-f="hasemail" onclick="setProspectFilter('hasemail')">Has email</button>
+            <button class="filter-pill" data-f="sent" onclick="setProspectFilter('sent')">Sent</button>
+            <button class="filter-pill" data-f="replied" onclick="setProspectFilter('replied')">Replied</button>
+            <button class="filter-pill" data-f="converted" onclick="setProspectFilter('converted')">Converted</button>
+            <button class="filter-pill" data-f="dead" onclick="setProspectFilter('dead')">Dead</button>
           </div>
-          <div id="prospect-list" style="overflow-y:auto;flex:1"></div>
         </div>
-        <div id="prospect-detail-pane" style="display:flex;flex-direction:column">
-          <div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;padding:40px;text-align:center">
-            <div>
-              <div style="font-size:32px;margin-bottom:12px">✉</div>
-              <div style="font-weight:600;margin-bottom:6px">Select a prospect</div>
-              <div style="font-size:13px">Click any prospect on the left to view details, research them on Google, and send an email</div>
-            </div>
-          </div>
+        <!-- Bulk action bar — only shows when items selected -->
+        <div id="bulk-bar" style="display:none;padding:10px 16px;border-bottom:1px solid var(--border);background:rgba(0,200,224,.06);align-items:center;gap:10px;flex-wrap:wrap">
+          <span id="bulk-count" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--cyan);font-weight:700">0 selected</span>
+          <button onclick="bulkGenerateTemplate()" style="background:var(--cyan);color:var(--ink);border:0;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">Generate templates</button>
+          <button onclick="bulkMarkSent()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Mark sent</button>
+          <button onclick="bulkSetStatus('replied')" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Mark replied</button>
+          <button onclick="bulkSetStatus('converted')" style="background:var(--surface2);color:var(--green);border:1px solid var(--border);padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Convert →</button>
+          <button onclick="bulkVerifyEmails()" style="background:var(--surface2);color:var(--purple);border:1px solid var(--border);padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Verify emails</button>
+          <button onclick="bulkExportCSV()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Export CSV</button>
+          <button onclick="bulkDelete()" style="background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.3);padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;margin-left:auto">Delete</button>
+        </div>
+        <!-- The table itself -->
+        <div style="overflow-x:auto;max-height:760px;overflow-y:auto">
+          <table id="prospects-table" style="width:100%;border-collapse:collapse;font-size:12px;min-width:1100px">
+            <thead style="position:sticky;top:0;background:var(--dark2);z-index:5;border-bottom:1px solid var(--border)">
+              <tr style="text-align:left">
+                <th style="padding:10px 12px;width:32px"><input type="checkbox" id="bulk-all" onclick="toggleAllBulk(this)"></th>
+                <th class="th-sort" data-sort="score" onclick="sortProspects('score')" style="padding:10px 8px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;font-family:'DM Mono',monospace;width:64px;cursor:pointer">Score</th>
+                <th class="th-sort" data-sort="bizname" onclick="sortProspects('bizname')" style="padding:10px 8px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;font-family:'DM Mono',monospace;cursor:pointer">Business</th>
+                <th class="th-sort" data-sort="email" onclick="sortProspects('email')" style="padding:10px 8px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;font-family:'DM Mono',monospace;cursor:pointer">Contact</th>
+                <th class="th-sort" data-sort="platform" onclick="sortProspects('platform')" style="padding:10px 8px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;font-family:'DM Mono',monospace;cursor:pointer">Platform</th>
+                <th class="th-sort" data-sort="status" onclick="sortProspects('status')" style="padding:10px 8px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;font-family:'DM Mono',monospace;cursor:pointer">Status</th>
+                <th class="th-sort" data-sort="addedAt" onclick="sortProspects('addedAt')" style="padding:10px 8px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;font-family:'DM Mono',monospace;cursor:pointer">Added</th>
+                <th style="padding:10px 8px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;font-family:'DM Mono',monospace">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="prospects-tbody"></tbody>
+          </table>
+          <div id="prospects-empty" style="display:none;padding:60px;text-align:center;color:var(--muted);font-size:14px">No prospects match — try adjusting the filter or paste some URLs into the scanner.</div>
         </div>
       </div>
+      <!-- Hidden legacy elements kept for back-compat with existing flows -->
+      <div id="prospect-list" style="display:none"></div>
+      <div id="prospect-detail-pane" style="display:none"></div>
 
       <!-- Add prospect modal -->
       <div id="add-prospect-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:1000;align-items:center;justify-content:center">
@@ -682,6 +798,7 @@
             <button class="action-btn" onclick="panelAction('next-stage')">Next Stage →</button>
             <button class="action-btn success" onclick="panelAction('paid')">Mark Paid</button>
             <button class="action-btn danger" onclick="panelAction('archive')">Archive</button>
+            <button class="action-btn danger" onclick="panelAction('delete')" style="border-color:rgba(239,68,68,.6);background:rgba(239,68,68,.08)">Delete forever</button>
           </div>
           <div id="panel-action-msg" style="font-size:13px;margin-top:10px;display:none"></div>
         </div>

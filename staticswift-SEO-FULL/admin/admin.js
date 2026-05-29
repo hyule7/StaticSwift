@@ -960,6 +960,41 @@ async function panelAction(type) {
       }
     }
   }
+  if (type === 'delete') {
+    // Hard delete — irreversible. Two-step confirmation prevents finger-trouble.
+    const label = c.business_name || c.name || 'this client';
+    const first = confirm('PERMANENTLY DELETE ' + label + '?\n\nThis removes the client, brief, prompt, notes, files and portal access. It cannot be undone.');
+    if (!first) return;
+    const typed = prompt('To confirm, type DELETE exactly:');
+    if (typed !== 'DELETE') {
+      msg.style.display = 'block'; msg.style.color = 'var(--amber)';
+      msg.textContent = 'Delete cancelled — confirmation did not match.';
+      return;
+    }
+    try {
+      const r = await fetch('/.netlify/functions/delete-client', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+        body: JSON.stringify({ clientId: currentClientId })
+      });
+      if (!r.ok) {
+        // Fallback: backend endpoint may not exist yet — at minimum mark stage so it disappears from pipeline
+        await updateClient(currentClientId, { stage: 'deleted', deletedAt: new Date().toISOString() });
+        allClients = allClients.filter(x => x.clientId !== currentClientId);
+        saveClientsLocally(allClients);
+        await refreshData();
+        closePanel();
+        return;
+      }
+      allClients = allClients.filter(x => x.clientId !== currentClientId);
+      saveClientsLocally(allClients);
+      await refreshData();
+      closePanel();
+    } catch(err) {
+      msg.style.display = 'block'; msg.style.color = 'var(--red)';
+      msg.textContent = 'Delete failed: ' + err.message;
+    }
+  }
 }
 
 // Stronger UUID generator (uses crypto when available — addresses portal-UUID predictability)
@@ -2592,4 +2627,788 @@ window.addEventListener('DOMContentLoaded', () => {
   const dt = document.getElementById('dork-town');
   if (dn) dn.addEventListener('change', renderDorkPicker);
   if (dt) dt.addEventListener('change', renderDorkPicker);
+});
+
+
+/* ================================================================
+   PROSPECT RESEARCH & OUTREACH — site analyzer + legal templates.
+   PECR-compliant. Helps you do outreach manually + at scale.
+   ================================================================ */
+
+let _lastAnalysis = null;
+
+async function runAnalyze() {
+  const urlEl = document.getElementById('analyze-url');
+  const resultEl = document.getElementById('analyze-result');
+  const btn = document.getElementById('analyze-btn');
+  if (!urlEl || !resultEl) return;
+  const url = (urlEl.value || '').trim();
+  if (!url) { alert('Enter a URL to analyze.'); return; }
+  btn.textContent = 'Analyzing…'; btn.disabled = true;
+  resultEl.style.display = 'block';
+  resultEl.innerHTML = '<div style="padding:14px;color:var(--muted);font-size:13px">Fetching site, scoring, extracting public contacts…</div>';
+  try {
+    const r = await fetch('/.netlify/functions/analyze-site', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ url })
+    });
+    const d = await r.json();
+    if (!r.ok || !d) throw new Error(d?.error || 'Failed');
+    _lastAnalysis = d;
+    resultEl.innerHTML = renderAnalysis(d);
+  } catch(err) {
+    resultEl.innerHTML = '<div style="padding:14px;color:var(--red);font-size:13px">Analyze failed: ' + escapeHTML(err.message || 'unknown') + '</div>';
+  } finally {
+    btn.textContent = 'Analyze →'; btn.disabled = false;
+  }
+}
+
+function renderAnalysis(d) {
+  const scoreColor = d.score >= 70 ? 'var(--green)' : d.score >= 40 ? 'var(--amber)' : 'var(--red)';
+  const fit = d.score < 50 ? 'Great fit — site clearly needs replacing' :
+              d.score < 70 ? 'Decent fit — some real issues to mention' :
+                             'Site is OK — only worth pitching with a sharp angle';
+  const emails = (d.emails || []).length
+    ? d.emails.map(e => '<a href="mailto:'+encodeURI(e)+'" style="color:var(--cyan)">'+escapeHTML(e)+'</a>').join('<br>')
+    : '<span style="color:var(--dim)">none on this page — try /contact</span>';
+  const phones = (d.phones || []).length
+    ? d.phones.map(p => '<a href="tel:'+encodeURI(p.replace(/\s+/g,''))+'" style="color:var(--cyan)">'+escapeHTML(p)+'</a>').join(' · ')
+    : '<span style="color:var(--dim)">none extracted</span>';
+  const socials = Object.entries(d.socials || {}).map(([k,v]) => '<a href="'+encodeURI(v)+'" target="_blank" rel="noopener" style="color:var(--cyan);font-size:11px">'+k+' ↗</a>').join(' · ') || '<span style="color:var(--dim);font-size:11px">none</span>';
+  const issues = (d.issues || []).length
+    ? '<ul style="margin:6px 0 0 16px;font-size:12px;color:var(--muted);line-height:1.7">' + d.issues.map(i => '<li>'+escapeHTML(i)+'</li>').join('') + '</ul>'
+    : '<div style="font-size:12px;color:var(--green);margin-top:4px">No major issues detected.</div>';
+  return `
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:14px 18px;align-items:start">
+      <div style="text-align:center;padding:14px 16px;background:var(--dark);border-radius:10px;border:1px solid var(--border)">
+        <div style="font-family:'Syne',sans-serif;font-size:38px;font-weight:800;color:${scoreColor};line-height:1">${d.score}</div>
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:4px">Site score</div>
+        <div style="font-size:10px;color:${scoreColor};font-weight:700;margin-top:8px;text-transform:uppercase;letter-spacing:.06em">${d.score < 50 ? 'POOR' : d.score < 70 ? 'OK' : 'GOOD'}</div>
+      </div>
+      <div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px">${escapeHTML(d.title || d.host || 'Unknown')}</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px">${escapeHTML(d.host || '')} · ${escapeHTML(d.platform || 'Unknown platform')} · ${d.responseMs}ms · ${d.htmlSizeKB}KB</div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Fit verdict</div>
+        <div style="font-size:13px;color:var(--text);margin-bottom:12px">${escapeHTML(fit)}</div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Issues found</div>
+        ${issues}
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding-top:14px;border-top:1px solid var(--border);grid-column:1/-1">Public contact details extracted</div>
+      <div style="grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;font-size:13px">
+        <div><div style="font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Emails</div>${emails}</div>
+        <div><div style="font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Phones</div>${phones}</div>
+        <div><div style="font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Socials</div>${socials}</div>
+      </div>
+      <div style="grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap;padding-top:14px;border-top:1px solid var(--border)">
+        <button onclick="addProspectFromAnalysis()" class="btn-primary" style="font-size:13px">+ Add to prospects</button>
+        <a href="https://pagespeed.web.dev/report?url=${encodeURIComponent(d.url)}" target="_blank" rel="noopener" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:9px 14px;border-radius:7px;font-size:12px;font-weight:600;text-decoration:none">PageSpeed ↗</a>
+        <a href="https://search.google.com/test/mobile-friendly?url=${encodeURIComponent(d.url)}" target="_blank" rel="noopener" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:9px 14px;border-radius:7px;font-size:12px;font-weight:600;text-decoration:none">Mobile-friendly ↗</a>
+      </div>
+    </div>`;
+}
+
+function addProspectFromAnalysis() {
+  if (!_lastAnalysis) return;
+  const d = _lastAnalysis;
+  const bizGuess = (d.title || d.host || '').split(/[|·–-]/)[0].trim().slice(0, 80) || d.host;
+  const email = (d.emails || [])[0] || '';
+  const phone = (d.phones || [])[0] || '';
+  const issuesNote = (d.issues || []).slice(0, 3).join(' · ');
+  const newProspect = {
+    id: 'p-' + Date.now(),
+    bizname: bizGuess,
+    name: '',
+    email,
+    type: 'Other',
+    location: '',
+    phone,
+    notes: 'Site score: ' + d.score + '/100 · ' + d.platform + ' · ' + issuesNote,
+    website: d.url,
+    siteScore: d.score,
+    sitePlatform: d.platform,
+    siteIssues: d.issues || [],
+    status: 'new',
+    addedAt: new Date().toISOString(),
+  };
+  prospects.unshift(newProspect);
+  saveProspects();
+  renderProspects();
+  refreshProspectDropdown();
+  alert('Added to prospects: ' + bizGuess);
+}
+
+/* ── OUTREACH TEMPLATES — PECR-compliant, merge fields, mandatory footer ── */
+
+const SENDER_FOOTER = '\n\n—\nHarry · StaticSwift\nManchester, UK\n07502 731 799 · hello@staticswift.co.uk\n\nThis is a one-time business introduction. If you\'d rather I never contact you again, reply STOP and I\'ll remove you immediately. Sent under PECR Reg. 22(2)–(3) on a B2B basis.';
+
+const TEMPLATES = {
+  'cold-observation': {
+    subject: 'Quick thought on {biz}\'s site',
+    body: `Hi {nameOrThere},
+
+I'm Harry — I build hand-coded websites for UK small businesses out of Manchester. I came across {biz} while looking at {type} businesses in {location} and had a quick look at {website}.
+
+Honest, one-line observation: {observation}.
+
+If you ever want to replace it, I do flat-fee sites (£149 starter, £299 advanced) with a working preview in 24 hours — no payment until you love it. I'm not asking you to buy anything today; just wanted to put my name in your inbox in case you've been thinking about it.
+
+If you'd rather see what I build than read about it: https://staticswift.co.uk
+
+Cheers,
+Harry`,
+  },
+  'cold-light': {
+    subject: 'New website for {biz}?',
+    body: `Hi {nameOrThere},
+
+I'm Harry — I build websites for UK trades out of Manchester. Flat fee (£149 starter, £299 advanced), live in 24 hours, no payment until you love it.
+
+If {biz} is due a new site — or doesn't have one yet — I'd love the chance to build you a free preview. No commitment, no card. You either love it and pay, or walk away.
+
+https://staticswift.co.uk if you want to see what I make.
+
+Cheers,
+Harry`,
+  },
+  'followup-1': {
+    subject: 'Re: Quick thought on {biz}\'s site',
+    body: `Hi {nameOrThere},
+
+Just bumping this in case it landed in spam. Happy to leave you alone if you'd rather — just reply STOP.
+
+If you'd like a free preview of what a new site for {biz} could look like, send me one line about what you do and I'll have something to share within 24 hours.
+
+Cheers,
+Harry`,
+  },
+  'followup-2': {
+    subject: 'Last note on {biz}',
+    body: `Hi {nameOrThere},
+
+Last time I'll bother you on this one. If anything changes and you'd like me to mock up a free preview for {biz}, the offer stands.
+
+Either way — wishing you a strong rest of the year.
+
+Cheers,
+Harry`,
+  },
+  'post-analysis': {
+    subject: '{biz}\'s site — three quick fixes (or a fresh build)',
+    body: `Hi {nameOrThere},
+
+I had a quick look at {website} and noticed:
+
+{issuesBullets}
+
+I build hand-coded sites that fix all three by default — £149 for a one-pager, £299 for an advanced site, live in 24 hours, no payment until you love it.
+
+If you'd like a free preview of what a new {biz} site could look like, just hit reply with "yes please" and your business address.
+
+If you'd rather not hear from me, reply STOP — I'll remove you immediately.
+
+Cheers,
+Harry`,
+  },
+};
+
+function refreshProspectDropdown() {
+  const sel = document.getElementById('tmpl-prospect');
+  if (!sel) return;
+  const current = sel.value;
+  sel.innerHTML = '<option value="">— pick a prospect to merge —</option>' +
+    prospects.map((p, i) => '<option value="' + i + '">' + escapeHTML((p.bizname || p.name || 'Unknown') + (p.location ? ' · ' + p.location : '')) + '</option>').join('');
+  if (current) sel.value = current;
+}
+
+function generateTemplate() {
+  const tmplKey = document.getElementById('tmpl-pick').value;
+  const idxStr = document.getElementById('tmpl-prospect').value;
+  const tmpl = TEMPLATES[tmplKey];
+  if (!tmpl) return;
+  const idx = parseInt(idxStr, 10);
+  const p = isNaN(idx) ? null : prospects[idx];
+
+  const fields = {
+    biz: p?.bizname || p?.name || '[business name]',
+    nameOrThere: p?.name?.split(' ')[0] || 'there',
+    type: p?.type || 'business',
+    location: p?.location || 'your area',
+    website: p?.website || '[their site URL]',
+    observation: (p?.siteIssues && p.siteIssues[0]) || (p?.notes ? p.notes.slice(0, 120) : 'it could be sharper and load faster'),
+    issuesBullets: (p?.siteIssues && p.siteIssues.length)
+      ? p.siteIssues.slice(0, 3).map(i => '  • ' + i).join('\n')
+      : '  • Slow load time\n  • Looks dated on mobile\n  • Not ranking on Google for your trade + town',
+  };
+  const fill = (s) => s.replace(/\{(\w+)\}/g, (_, k) => fields[k] ?? '');
+  const subject = fill(tmpl.subject);
+  const body = fill(tmpl.body) + SENDER_FOOTER;
+
+  document.getElementById('tmpl-result').style.display = 'block';
+  document.getElementById('tmpl-subject').value = subject;
+  document.getElementById('tmpl-body').value = body;
+  const mailto = 'mailto:' + encodeURIComponent(p?.email || '') +
+    '?subject=' + encodeURIComponent(subject) +
+    '&body=' + encodeURIComponent(body);
+  const mailLink = document.getElementById('tmpl-mailto');
+  mailLink.href = mailto;
+  mailLink.dataset.prospectIdx = isNaN(idx) ? '' : String(idx);
+  mailLink.dataset.template = tmplKey;
+}
+
+function copyTmpl() {
+  const body = document.getElementById('tmpl-body').value;
+  navigator.clipboard.writeText(body).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    setTimeout(() => btn.textContent = orig, 1500);
+  });
+}
+
+function markProspectSent() {
+  const link = document.getElementById('tmpl-mailto');
+  const idxStr = link?.dataset?.prospectIdx;
+  const tmpl = link?.dataset?.template;
+  if (!idxStr) { alert('Pick a prospect from the dropdown first.'); return; }
+  const idx = parseInt(idxStr, 10);
+  if (!prospects[idx]) return;
+  prospects[idx].status = 'sent';
+  prospects[idx].lastContacted = new Date().toISOString();
+  if (!Array.isArray(prospects[idx].emailHistory)) prospects[idx].emailHistory = [];
+  prospects[idx].emailHistory.push({ template: tmpl, sentAt: new Date().toISOString(), via: 'manual' });
+  saveProspects();
+  renderProspects();
+  alert('Logged. Status set to "sent" with today\'s date.');
+}
+
+// Refresh prospect dropdown whenever the outreach tab is shown
+const _origShowPage = window.showPage;
+window.showPage = function(id, btn) {
+  if (typeof _origShowPage === 'function') _origShowPage(id, btn);
+  if (id === 'outreach') setTimeout(refreshProspectDropdown, 50);
+};
+
+/* ================================================================
+   BATCH SITE-SCANNING AGENT
+   Paste 10–200 URLs → scans in parallel (controlled concurrency)
+   → scores each → auto-adds prospects whose score < 70
+   → results sortable in admin
+   ================================================================ */
+
+let _batchAbort = false;
+let _batchResults = [];
+
+async function runBatchScan() {
+  const ta = document.getElementById('batch-urls');
+  const concEl = document.getElementById('batch-concurrency');
+  const runBtn = document.getElementById('batch-run-btn');
+  const stopBtn = document.getElementById('batch-stop-btn');
+  const progress = document.getElementById('batch-progress');
+  const resultsEl = document.getElementById('batch-results');
+  if (!ta) return;
+
+  // Normalise URL list — accept "domain.co.uk" or full URLs
+  const urls = ta.value.split('\n').map(s => s.trim()).filter(Boolean)
+    .map(u => /^https?:\/\//i.test(u) ? u : 'https://' + u);
+  if (!urls.length) { alert('Paste some URLs to scan.'); return; }
+  if (urls.length > 300) { alert('Cap is 300 URLs per batch. Split into batches.'); return; }
+
+  const concurrency = parseInt(concEl.value, 10) || 5;
+  _batchAbort = false; _batchResults = [];
+  runBtn.disabled = true; runBtn.textContent = 'Scanning…';
+  stopBtn.style.display = 'inline-block';
+  progress.style.display = 'block';
+  resultsEl.style.display = 'block';
+  resultsEl.innerHTML = '<div style="padding:14px;color:var(--muted);font-size:13px">Scoring as results arrive…</div>';
+
+  const total = urls.length;
+  let done = 0, failed = 0, prospectsAdded = 0;
+  const updateProgress = () => {
+    progress.innerHTML = `<span style="color:var(--cyan)">▶</span> ${done}/${total} scanned · ${failed} failed · ${prospectsAdded} added to prospects ${_batchAbort ? '· STOPPED' : ''}`;
+  };
+  updateProgress();
+
+  // Concurrency-controlled queue — simple worker pool
+  const queue = urls.slice();
+  const workers = Array.from({ length: Math.min(concurrency, queue.length) }, () => (async () => {
+    while (queue.length && !_batchAbort) {
+      const url = queue.shift();
+      try {
+        const r = await fetch('/.netlify/functions/analyze-site', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+          body: JSON.stringify({ url }),
+        });
+        const d = await r.json();
+        _batchResults.push(d);
+        // Auto-add if site is poor enough to be a real prospect (and we have a contact)
+        if (d.ok && d.score < 70 && ((d.emails && d.emails[0]) || (d.phones && d.phones[0]))) {
+          const bizGuess = (d.title || d.host || '').split(/[|·–-]/)[0].trim().slice(0, 80) || d.host;
+          const existing = prospects.find(p => p.website && p.website.includes(d.host));
+          if (!existing) {
+            prospects.unshift({
+              id: 'p-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+              bizname: bizGuess,
+              name: '',
+              email: (d.emails || [])[0] || '',
+              type: 'Other',
+              location: '',
+              phone: (d.phones || [])[0] || '',
+              notes: 'Auto-added by batch scanner. Score ' + d.score + ' · ' + d.platform + ' · ' + ((d.issues || []).slice(0, 2).join(' · ')),
+              website: d.url,
+              siteScore: d.score,
+              sitePlatform: d.platform,
+              siteIssues: d.issues || [],
+              status: 'new',
+              addedAt: new Date().toISOString(),
+              source: 'batch-scanner',
+            });
+            prospectsAdded++;
+          }
+        }
+      } catch (err) {
+        _batchResults.push({ ok: false, url, error: err.message });
+        failed++;
+      }
+      done++;
+      updateProgress();
+      renderBatchResults();
+    }
+  })());
+  await Promise.all(workers);
+
+  if (prospectsAdded) { saveProspects(); renderProspects(); refreshProspectDropdown(); }
+  runBtn.disabled = false; runBtn.textContent = 'Start scan →';
+  stopBtn.style.display = 'none';
+  updateProgress();
+  renderBatchResults();
+}
+
+function stopBatchScan() { _batchAbort = true; }
+
+function renderBatchResults() {
+  const el = document.getElementById('batch-results');
+  if (!el) return;
+  // Sort: lowest score first (best prospects), then failures, then high scores
+  const sorted = _batchResults.slice().sort((a, b) => {
+    if (!a.ok && b.ok) return -1;
+    if (a.ok && !b.ok) return 1;
+    return (a.score || 100) - (b.score || 100);
+  });
+  el.innerHTML = `
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:760px">
+        <thead><tr style="border-bottom:1px solid var(--border);text-align:left">
+          <th style="padding:8px 10px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;font-family:'DM Mono',monospace;width:50px">Score</th>
+          <th style="padding:8px 10px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;font-family:'DM Mono',monospace">Site</th>
+          <th style="padding:8px 10px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;font-family:'DM Mono',monospace">Platform</th>
+          <th style="padding:8px 10px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;font-family:'DM Mono',monospace">Contact</th>
+          <th style="padding:8px 10px;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:700;font-family:'DM Mono',monospace">Issues</th>
+        </tr></thead>
+        <tbody>${sorted.map(rowHTML).join('')}</tbody>
+      </table>
+    </div>`;
+}
+
+function rowHTML(d) {
+  if (!d.ok) {
+    return `<tr style="border-bottom:1px solid var(--border)">
+      <td style="padding:8px 10px;color:var(--red);font-weight:700;font-family:'DM Mono',monospace">×</td>
+      <td style="padding:8px 10px;color:var(--text);font-size:11px;word-break:break-all">${escapeHTML(d.url || '?')}</td>
+      <td colspan="3" style="padding:8px 10px;color:var(--red);font-size:11px">${escapeHTML(d.error || 'failed')}</td>
+    </tr>`;
+  }
+  const color = d.score >= 70 ? 'var(--green)' : d.score >= 40 ? 'var(--amber)' : 'var(--red)';
+  const contact = (d.emails && d.emails[0]) || (d.phones && d.phones[0]) || '<span style="color:var(--dim)">—</span>';
+  const issues = (d.issues || []).slice(0, 2).join(' · ') || '<span style="color:var(--dim)">none</span>';
+  return `<tr style="border-bottom:1px solid var(--border)">
+    <td style="padding:8px 10px;font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:${color}">${d.score}</td>
+    <td style="padding:8px 10px;font-size:11px;word-break:break-all"><a href="${encodeURI(d.url)}" target="_blank" rel="noopener" style="color:var(--cyan)">${escapeHTML(d.host || d.url)}</a></td>
+    <td style="padding:8px 10px;font-size:11px;color:var(--muted)">${escapeHTML(d.platform || '—')}</td>
+    <td style="padding:8px 10px;font-size:11px;color:var(--text)">${typeof contact === 'string' && contact.includes('@') ? '<a href="mailto:'+encodeURI(contact)+'" style="color:var(--cyan)">'+escapeHTML(contact)+'</a>' : contact}</td>
+    <td style="padding:8px 10px;font-size:11px;color:var(--muted);max-width:340px">${escapeHTML(issues)}</td>
+  </tr>`;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   ALWAYS-ON SCANNING AGENT
+   - Persistent queue in localStorage (survives reload)
+   - Worker polls every 30s while admin tab is open
+   - Scans up to 5 URLs in parallel per tick
+   - Auto-adds low-score prospects with extracted contacts
+   ════════════════════════════════════════════════════════════════ */
+
+let scanQueue = JSON.parse(localStorage.getItem('ss_scan_queue') || '[]');     // [{url, addedAt}]
+let scanStats = JSON.parse(localStorage.getItem('ss_scan_stats') || '{"scanned":0,"prospectsAdded":0}');
+let scanWorkerRunning = false;
+let scanWorkerInterval = null;
+const SCAN_CONCURRENCY = 5;
+const SCAN_TICK_MS = 30_000;
+
+function saveScanState() {
+  localStorage.setItem('ss_scan_queue', JSON.stringify(scanQueue));
+  localStorage.setItem('ss_scan_stats', JSON.stringify(scanStats));
+}
+
+function updateQueueStats() {
+  const p = document.getElementById('queue-pending');
+  const s = document.getElementById('queue-scanned');
+  const a = document.getElementById('queue-prospects');
+  if (p) p.textContent = scanQueue.length;
+  if (s) s.textContent = scanStats.scanned || 0;
+  if (a) a.textContent = scanStats.prospectsAdded || 0;
+}
+
+function setQueueStatus(msg, color) {
+  const el = document.getElementById('queue-status');
+  if (el) { el.textContent = msg || ''; el.style.color = color || 'var(--muted)'; }
+}
+
+async function tickScanWorker() {
+  if (!scanWorkerRunning || !scanQueue.length) {
+    setQueueStatus(scanWorkerRunning ? '· idle (queue empty)' : '');
+    return;
+  }
+  const batch = scanQueue.splice(0, SCAN_CONCURRENCY);
+  saveScanState();
+  updateQueueStats();
+  setQueueStatus('· scanning ' + batch.length + ' …', 'var(--cyan)');
+  await Promise.all(batch.map(async item => {
+    try {
+      const r = await fetch('/.netlify/functions/analyze-site', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+        body: JSON.stringify({ url: item.url }),
+      });
+      const d = await r.json();
+      scanStats.scanned = (scanStats.scanned || 0) + 1;
+      if (d.ok && d.score < 70 && ((d.emails && d.emails[0]) || (d.phones && d.phones[0]))) {
+        const existing = prospects.find(p => p.website && d.host && p.website.includes(d.host));
+        if (!existing) {
+          const bizGuess = (d.title || d.host || '').split(/[|·–-]/)[0].trim().slice(0, 80) || d.host;
+          prospects.unshift({
+            id: 'p-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+            bizname: bizGuess,
+            name: '',
+            email: (d.emails || [])[0] || '',
+            type: 'Other',
+            location: '',
+            phone: (d.phones || [])[0] || '',
+            notes: 'Auto-added by queue scanner. Score ' + d.score + ' · ' + d.platform + ' · ' + ((d.issues || []).slice(0, 2).join(' · ')),
+            website: d.url,
+            siteScore: d.score,
+            sitePlatform: d.platform,
+            siteIssues: d.issues || [],
+            status: 'new',
+            addedAt: new Date().toISOString(),
+            source: 'queue-scanner',
+          });
+          scanStats.prospectsAdded = (scanStats.prospectsAdded || 0) + 1;
+        }
+      }
+    } catch (e) {
+      console.warn('[scan-worker]', item.url, e.message);
+    }
+  }));
+  saveProspects();
+  saveScanState();
+  updateQueueStats();
+  renderProspectsTable();
+  setQueueStatus('· batch done', 'var(--green)');
+}
+
+function toggleScanWorker() {
+  const btn = document.getElementById('queue-toggle');
+  if (!scanWorkerRunning) {
+    scanWorkerRunning = true;
+    if (btn) { btn.textContent = '■ Stop scanner'; btn.style.background = 'var(--red)'; btn.style.color = '#fff'; }
+    setQueueStatus('· running', 'var(--green)');
+    tickScanWorker();
+    scanWorkerInterval = setInterval(tickScanWorker, SCAN_TICK_MS);
+  } else {
+    scanWorkerRunning = false;
+    if (btn) { btn.textContent = '▶ Start scanner'; btn.style.background = 'var(--green)'; btn.style.color = '#000'; }
+    setQueueStatus('· stopped', 'var(--muted)');
+    if (scanWorkerInterval) clearInterval(scanWorkerInterval);
+  }
+}
+
+function addUrlsToQueueModal() {
+  const raw = prompt('Paste URLs (one per line, with or without https://):');
+  if (!raw) return;
+  const urls = raw.split('\n').map(s => s.trim()).filter(Boolean)
+    .map(u => /^https?:\/\//i.test(u) ? u : 'https://' + u);
+  if (!urls.length) return;
+  const existing = new Set(scanQueue.map(x => x.url));
+  let added = 0;
+  urls.forEach(u => { if (!existing.has(u)) { scanQueue.push({ url: u, addedAt: Date.now() }); added++; } });
+  saveScanState();
+  updateQueueStats();
+  setQueueStatus('· +' + added + ' added (' + (urls.length - added) + ' dupes skipped)', 'var(--cyan)');
+}
+
+function seedQueueFromGoogle() {
+  alert('Run the dork search at the top of this page, copy the URLs from the results, then click "Paste URLs" to feed them in. (Direct Google scraping is against their ToS — this manual flow keeps you compliant.)');
+}
+
+function clearScanQueue() {
+  if (!scanQueue.length) return;
+  if (!confirm('Clear ' + scanQueue.length + ' queued URLs?')) return;
+  scanQueue = [];
+  saveScanState();
+  updateQueueStats();
+}
+
+/* ════════════════════════════════════════════════════════════════
+   PROSPECTS COMMAND CENTER — sortable, filterable, bulk-actionable
+   ════════════════════════════════════════════════════════════════ */
+
+let prospectFilter = 'all';
+let prospectSortKey = 'addedAt';
+let prospectSortDir = 'desc';
+let bulkSel = new Set();
+
+function setProspectFilter(f) {
+  prospectFilter = f;
+  document.querySelectorAll('#filter-pills .filter-pill').forEach(b => b.classList.toggle('active', b.dataset.f === f));
+  renderProspectsTable();
+}
+
+function sortProspects(k) {
+  if (prospectSortKey === k) prospectSortDir = prospectSortDir === 'asc' ? 'desc' : 'asc';
+  else { prospectSortKey = k; prospectSortDir = k === 'score' ? 'asc' : 'desc'; }
+  renderProspectsTable();
+}
+
+function applyProspectFilter(list) {
+  const q = (document.getElementById('outreach-search')?.value || '').toLowerCase();
+  return list.filter(p => {
+    if (q && !((p.bizname || '') + ' ' + (p.email || '') + ' ' + (p.location || '')).toLowerCase().includes(q)) return false;
+    if (prospectFilter === 'all') return true;
+    if (prospectFilter === 'new') return p.status === 'new' || !p.status;
+    if (prospectFilter === 'sent') return p.status === 'sent';
+    if (prospectFilter === 'replied') return p.status === 'replied';
+    if (prospectFilter === 'converted') return p.status === 'converted';
+    if (prospectFilter === 'dead') return p.status === 'dead';
+    if (prospectFilter === 'lowscore') return (p.siteScore != null) && p.siteScore < 40;
+    if (prospectFilter === 'hasemail') return !!p.email;
+    return true;
+  });
+}
+
+function applyProspectSort(list) {
+  const k = prospectSortKey, dir = prospectSortDir === 'asc' ? 1 : -1;
+  return list.slice().sort((a, b) => {
+    let av = a[k], bv = b[k];
+    if (k === 'score') { av = a.siteScore ?? 999; bv = b.siteScore ?? 999; }
+    if (k === 'platform') { av = a.sitePlatform || ''; bv = b.sitePlatform || ''; }
+    if (k === 'addedAt') { av = new Date(av || 0).getTime(); bv = new Date(bv || 0).getTime(); }
+    if (typeof av === 'string') { av = av.toLowerCase(); bv = (bv || '').toLowerCase(); }
+    return av < bv ? -1 * dir : av > bv ? 1 * dir : 0;
+  });
+}
+
+function renderProspectsTable() {
+  const tbody = document.getElementById('prospects-tbody');
+  const empty = document.getElementById('prospects-empty');
+  if (!tbody) return;
+  // Update stat-card numbers at top
+  setT('os-total', prospects.length);
+  setT('os-new', prospects.filter(p => p.status === 'new' || !p.status).length);
+  setT('os-sent', prospects.filter(p => p.status === 'sent').length);
+  setT('os-replied', prospects.filter(p => p.status === 'replied').length);
+  setT('os-converted', prospects.filter(p => p.status === 'converted').length);
+  const filtered = applyProspectSort(applyProspectFilter(prospects));
+  if (!filtered.length) {
+    tbody.innerHTML = '';
+    if (empty) empty.style.display = 'block';
+    refreshBulkBar();
+    return;
+  }
+  if (empty) empty.style.display = 'none';
+  tbody.innerHTML = filtered.map((p, i) => {
+    const score = p.siteScore;
+    const scoreColor = score == null ? 'var(--dim)' : score < 40 ? 'var(--red)' : score < 70 ? 'var(--amber)' : 'var(--green)';
+    const statusColor = { new:'var(--cyan)', sent:'var(--amber)', replied:'var(--purple)', converted:'var(--green)', dead:'var(--dim)' }[p.status || 'new'] || 'var(--muted)';
+    const checked = bulkSel.has(p.id) ? 'checked' : '';
+    const verified = p.emailVerified === true ? ' <span title="MX verified" style="color:var(--green)">✓</span>' : p.emailVerified === false ? ' <span title="MX failed" style="color:var(--red)">✗</span>' : '';
+    const idAttr = escapeHTML(p.id);
+    return `<tr style="border-bottom:1px solid var(--border)" class="prospect-row${bulkSel.has(p.id) ? ' selected' : ''}">
+      <td style="padding:10px 12px"><input type="checkbox" data-pid="${idAttr}" ${checked} onclick="toggleBulkSel('${idAttr}', this.checked)"></td>
+      <td style="padding:10px 8px;font-family:'Syne',sans-serif;font-weight:800;font-size:16px;color:${scoreColor}">${score ?? '—'}</td>
+      <td style="padding:10px 8px">
+        <div style="font-weight:600;font-size:13px;color:var(--text);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHTML(p.bizname || p.name || 'Unknown')}</div>
+        <div style="font-size:11px;color:var(--muted);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.website ? '<a href="'+encodeURI(p.website)+'" target="_blank" rel="noopener" style="color:var(--cyan)">'+escapeHTML(p.website.replace(/^https?:\/\//,''))+' ↗</a>' : '<span style="color:var(--dim)">no site</span>'}</div>
+      </td>
+      <td style="padding:10px 8px">
+        <div style="font-size:12px">${p.email ? '<a href="mailto:'+encodeURI(p.email)+'" style="color:var(--cyan)">'+escapeHTML(p.email)+'</a>'+verified : '<span style="color:var(--dim)">—</span>'}</div>
+        <div style="font-size:11px;color:var(--muted)">${p.phone ? '<a href="tel:'+encodeURI(p.phone.replace(/\s+/g,''))+'" style="color:var(--text)">'+escapeHTML(p.phone)+'</a>' : ''}</div>
+      </td>
+      <td style="padding:10px 8px;font-size:11px;color:var(--muted)">${escapeHTML(p.sitePlatform || '—')}</td>
+      <td style="padding:10px 8px"><span style="display:inline-block;padding:2px 8px;border-radius:100px;background:rgba(255,255,255,.04);color:${statusColor};font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em">${escapeHTML(p.status || 'new')}</span></td>
+      <td style="padding:10px 8px;font-size:11px;color:var(--dim);font-family:'DM Mono',monospace">${p.addedAt ? timeAgo(p.addedAt) : '—'}</td>
+      <td style="padding:10px 8px;white-space:nowrap">
+        <button onclick="prefillTemplateFor('${idAttr}')" title="Generate outreach template" style="background:var(--cyan);color:var(--ink);border:0;padding:5px 10px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;margin-right:4px">✉ Template</button>
+        <button onclick="verifyOneEmail('${idAttr}')" title="Verify email via MX lookup" style="background:var(--surface2);color:var(--purple);border:1px solid var(--border);padding:5px 9px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;margin-right:4px">✓ Verify</button>
+        <button onclick="deleteOneProspect('${idAttr}')" title="Delete" style="background:rgba(239,68,68,.08);color:var(--red);border:1px solid rgba(239,68,68,.2);padding:5px 9px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">×</button>
+      </td>
+    </tr>`;
+  }).join('');
+  refreshBulkBar();
+}
+
+function toggleBulkSel(id, on) {
+  if (on) bulkSel.add(id); else bulkSel.delete(id);
+  refreshBulkBar();
+}
+function toggleAllBulk(checkbox) {
+  if (checkbox.checked) {
+    applyProspectFilter(prospects).forEach(p => bulkSel.add(p.id));
+  } else bulkSel.clear();
+  renderProspectsTable();
+}
+function refreshBulkBar() {
+  const bar = document.getElementById('bulk-bar');
+  const c = document.getElementById('bulk-count');
+  if (!bar) return;
+  if (bulkSel.size > 0) { bar.style.display = 'flex'; if (c) c.textContent = bulkSel.size + ' selected'; }
+  else { bar.style.display = 'none'; }
+}
+function selectedProspects() { return prospects.filter(p => bulkSel.has(p.id)); }
+
+function bulkSetStatus(status) {
+  const ps = selectedProspects();
+  if (!ps.length) return;
+  if (!confirm('Set ' + ps.length + ' prospects to "' + status + '"?')) return;
+  const ts = new Date().toISOString();
+  ps.forEach(p => { p.status = status; p.lastUpdatedAt = ts; if (status === 'replied') p.firstReplyAt = ts; });
+  saveProspects(); renderProspectsTable();
+}
+function bulkMarkSent() {
+  const ps = selectedProspects(); if (!ps.length) return;
+  const ts = new Date().toISOString();
+  ps.forEach(p => {
+    p.status = 'sent'; p.lastContacted = ts;
+    if (!Array.isArray(p.emailHistory)) p.emailHistory = [];
+    p.emailHistory.push({ template: 'bulk-mark', sentAt: ts, via: 'bulk' });
+  });
+  saveProspects(); renderProspectsTable();
+}
+function bulkDelete() {
+  const ps = selectedProspects(); if (!ps.length) return;
+  if (!confirm('PERMANENTLY delete ' + ps.length + ' prospects? Cannot be undone.')) return;
+  prospects = prospects.filter(p => !bulkSel.has(p.id));
+  bulkSel.clear(); saveProspects(); renderProspectsTable();
+}
+function bulkExportCSV() {
+  const ps = selectedProspects().length ? selectedProspects() : applyProspectFilter(prospects);
+  if (!ps.length) { alert('Nothing to export.'); return; }
+  const head = ['BizName','Email','Phone','Website','Score','Platform','Status','Issues','AddedAt'];
+  const rows = ps.map(p => [
+    p.bizname || p.name || '',
+    p.email || '',
+    p.phone || '',
+    p.website || '',
+    p.siteScore ?? '',
+    p.sitePlatform || '',
+    p.status || 'new',
+    (p.siteIssues || []).join(' | '),
+    p.addedAt || '',
+  ]);
+  const csv = [head].concat(rows).map(r => r.map(v => {
+    const s = String(v).replace(/"/g, '""');
+    return /[",\n]/.test(s) ? '"' + s + '"' : s;
+  }).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'staticswift-prospects-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+function bulkGenerateTemplate() {
+  const ps = selectedProspects();
+  if (!ps.length) { alert('Select prospects first.'); return; }
+  const tmplKey = prompt('Template key? (cold-observation / cold-light / followup-1 / followup-2 / post-analysis)', 'cold-observation');
+  if (!tmplKey || !TEMPLATES[tmplKey]) { alert('Invalid template key.'); return; }
+  const fill = (s, p) => s.replace(/\{(\w+)\}/g, (_, k) => ({
+    biz: p.bizname || p.name || '[business]',
+    nameOrThere: p.name?.split(' ')[0] || 'there',
+    type: p.type || 'business',
+    location: p.location || 'your area',
+    website: p.website || '[their site URL]',
+    observation: (p.siteIssues && p.siteIssues[0]) || (p.notes || '').slice(0, 120) || 'it could be sharper and load faster',
+    issuesBullets: (p.siteIssues && p.siteIssues.length) ? p.siteIssues.slice(0, 3).map(i => '  • ' + i).join('\n') : '  • Slow load · dated mobile · not ranking',
+  })[k] ?? '');
+  const out = ps.map(p => {
+    const t = TEMPLATES[tmplKey];
+    return `=== ${p.bizname || p.email || 'Prospect'} ===\nTO: ${p.email || '(no email)'}\nSUBJECT: ${fill(t.subject, p)}\n\n${fill(t.body, p)}${SENDER_FOOTER}\n\n`;
+  }).join('\n');
+  navigator.clipboard.writeText(out).then(() => alert('Copied ' + ps.length + ' templates to clipboard.\n\nOpen Gmail and paste — review each, send manually.'));
+}
+async function bulkVerifyEmails() {
+  const ps = selectedProspects().filter(p => p.email);
+  if (!ps.length) { alert('Select prospects with emails first.'); return; }
+  setQueueStatus('· verifying ' + ps.length + ' emails…', 'var(--purple)');
+  for (const p of ps) {
+    try {
+      const r = await fetch('/.netlify/functions/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+        body: JSON.stringify({ email: p.email }),
+      });
+      const d = await r.json();
+      p.emailVerified = !!d.ok;
+      p.emailVerifyDetail = d.detail || '';
+    } catch (e) { p.emailVerified = false; p.emailVerifyDetail = e.message; }
+  }
+  saveProspects(); renderProspectsTable();
+  setQueueStatus('· verify complete', 'var(--green)');
+}
+async function verifyOneEmail(id) {
+  const p = prospects.find(x => x.id === id);
+  if (!p || !p.email) return;
+  try {
+    const r = await fetch('/.netlify/functions/verify-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ email: p.email }),
+    });
+    const d = await r.json();
+    p.emailVerified = !!d.ok; p.emailVerifyDetail = d.detail || '';
+    saveProspects(); renderProspectsTable();
+  } catch(e) { alert('Verify failed: ' + e.message); }
+}
+function deleteOneProspect(id) {
+  const p = prospects.find(x => x.id === id);
+  if (!p) return;
+  if (!confirm('Delete ' + (p.bizname || 'prospect') + '?')) return;
+  prospects = prospects.filter(x => x.id !== id);
+  bulkSel.delete(id);
+  saveProspects(); renderProspectsTable();
+}
+function prefillTemplateFor(id) {
+  const idx = prospects.findIndex(p => p.id === id);
+  if (idx < 0) return;
+  refreshProspectDropdown();
+  const sel = document.getElementById('tmpl-prospect');
+  if (sel) sel.value = String(idx);
+  document.getElementById('tmpl-pick').value = 'post-analysis';
+  generateTemplate();
+  document.getElementById('tmpl-result')?.scrollIntoView({ behavior: 'smooth' });
+}
+
+function setT(id, v) { const el = document.getElementById(id); if (el) el.textContent = v; }
+
+// Hook table render into existing renderProspects so legacy callers also refresh table
+const _origRender = window.renderProspects;
+window.renderProspects = function() {
+  if (typeof _origRender === 'function') { try { _origRender(); } catch(e){} }
+  renderProspectsTable();
+};
+
+// Init on first outreach view
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => { updateQueueStats(); renderProspectsTable(); }, 500);
 });

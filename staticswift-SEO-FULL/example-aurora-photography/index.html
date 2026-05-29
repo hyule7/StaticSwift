@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Aurora Photography — Wedding &amp; Portrait Photographer in Edinburgh</title>
+<meta name="description" content="Documentary wedding and portrait photography in Edinburgh and the Scottish Borders. Natural light, real moments, no awkward poses. Limited bookings for 2026.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#13110d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --ink:#13110d; --bone:#f1ece1; --paper:#fbf8f1; --accent:#a86c4d; --accent-soft:rgba(168,108,77,.16); --line:rgba(19,17,13,.08); --muted:#5a554e; --dim:#9a948b; }
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; -webkit-font-smoothing:antialiased; }
+body { background:var(--paper); color:var(--ink); font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif; line-height:1.6; font-size:16px; }
+h1,h2,h3,h4 { font-family:'Instrument Serif',Georgia,serif; font-weight:400; line-height:1; letter-spacing:-.025em; }
+a { color:inherit; text-decoration:none; }
+::selection { background:var(--ink); color:#fff; }
+img { max-width:100%; display:block; }
+.btn { display:inline-flex; align-items:center; gap:.45rem; padding:1rem 1.8rem; border-radius:980px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; transition:all .25s cubic-bezier(.16,1,.3,1); cursor:pointer; border:0; letter-spacing:.01em; }
+.btn-dark { background:var(--ink); color:#fff; }
+.btn-dark:hover { background:#000; transform:translateY(-2px); box-shadow:0 14px 32px rgba(0,0,0,.18); }
+.btn-ghost { background:transparent; color:var(--ink); border:1.5px solid rgba(19,17,13,.18); }
+.btn-ghost:hover { border-color:var(--ink); background:var(--ink); color:#fff; }
+
+/* NAV */
+.nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:20px 36px; display:flex; justify-content:space-between; align-items:center; background:rgba(251,248,241,.78); backdrop-filter:saturate(180%) blur(14px); -webkit-backdrop-filter:saturate(180%) blur(14px); border-bottom:1px solid transparent; transition:.3s; }
+.nav.scrolled { background:rgba(251,248,241,.94); border-bottom-color:var(--line); padding:14px 36px; }
+.nav-mark { font-family:'Instrument Serif',serif; font-size:22px; font-style:italic; letter-spacing:-.02em; }
+.nav-mark span { color:var(--accent); }
+.nav-links { display:flex; gap:36px; align-items:center; }
+.nav-links a { font-size:13px; font-weight:500; color:var(--ink); letter-spacing:.02em; transition:color .2s; }
+.nav-links a:hover { color:var(--accent); }
+.nav-cta { background:var(--ink); color:#fff; padding:.55rem 1.2rem; border-radius:980px; font-size:12px; font-weight:600; letter-spacing:.02em; transition:.25s; }
+.nav-cta:hover { background:#000; transform:translateY(-1px); }
+@media(max-width:820px){ .nav-links { display:none; } .nav, .nav.scrolled { padding:14px 18px; } }
+
+/* HERO — full-bleed editorial */
+.hero { position:relative; min-height:100vh; display:flex; align-items:flex-end; padding:140px 36px 80px; overflow:hidden; }
+.hero-bg { position:absolute; inset:0; z-index:0; background-image:url('https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&w=1800'); background-size:cover; background-position:center; filter:saturate(.9) brightness(.85) contrast(1.02); }
+.hero-bg::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.1) 0%,rgba(0,0,0,.5) 100%); }
+.hero-inner { position:relative; z-index:1; max-width:1240px; margin:0 auto; width:100%; color:#fff; display:grid; grid-template-columns:1.4fr 1fr; gap:60px; align-items:end; }
+.hero-text-block { max-width:880px; }
+.hero-eyebrow { display:inline-flex; align-items:center; gap:10px; font-size:12px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:#fff; margin-bottom:36px; padding:8px 18px; background:rgba(255,255,255,.1); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.18); border-radius:980px; }
+.hero-eyebrow .pulse { width:8px; height:8px; border-radius:50%; background:#cce5b8; box-shadow:0 0 12px rgba(204,229,184,.7); animation:pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:.6; transform:scale(1.2); } }
+.hero-h1 { font-size:clamp(58px,9vw,148px); margin-bottom:24px; max-width:980px; line-height:.95; }
+.hero-h1 em { color:var(--accent); font-style:italic; font-weight:400; }
+.hero-sub { font-size:clamp(16px,1.4vw,20px); line-height:1.5; color:rgba(255,255,255,.85); max-width:520px; margin-bottom:42px; font-weight:400; }
+.hero-ctas { display:flex; flex-wrap:wrap; gap:14px; }
+.hero-ctas .btn-dark { background:#fff; color:var(--ink); }
+.hero-ctas .btn-dark:hover { background:#fff; transform:translateY(-2px); }
+.hero-ctas .btn-ghost { color:#fff; border-color:rgba(255,255,255,.4); }
+.hero-ctas .btn-ghost:hover { background:rgba(255,255,255,.08); border-color:#fff; }
+.hero-meta { font-family:'DM Sans',sans-serif; font-size:13px; color:rgba(255,255,255,.7); padding-bottom:8px; }
+.hero-meta strong { display:block; color:#fff; font-weight:600; margin-bottom:6px; font-size:15px; }
+.hero-meta .stars { color:#fcd34d; letter-spacing:.05em; }
+@media(max-width:820px){ .hero-inner { grid-template-columns:1fr; gap:32px; } .hero { padding:120px 18px 60px; } }
+
+/* MARQUEE — clients & press */
+.press { padding:54px 36px; background:var(--ink); color:rgba(255,255,255,.55); display:flex; align-items:center; gap:54px; overflow:hidden; }
+.press-label { font-size:11px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; flex-shrink:0; }
+.press-marquee { display:flex; gap:54px; flex-wrap:wrap; font-family:'Instrument Serif',serif; font-style:italic; font-size:22px; color:rgba(255,255,255,.7); }
+
+/* SECTION SHELL */
+.section { padding:140px 36px; }
+.section.cream { background:var(--bone); }
+.section-inner { max-width:1240px; margin:0 auto; }
+.eyebrow { font-size:11px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--accent); margin-bottom:28px; }
+.section-h2 { font-size:clamp(40px,5.5vw,80px); margin-bottom:32px; max-width:920px; }
+.section-h2 em { font-style:italic; color:var(--accent); }
+.section-lead { font-size:18px; line-height:1.6; color:var(--muted); max-width:600px; margin-bottom:80px; }
+@media(max-width:820px){ .section { padding:80px 18px; } .section-lead { margin-bottom:48px; font-size:16px; } }
+
+/* GALLERY — large editorial */
+.gallery { display:grid; grid-template-columns:repeat(6,1fr); gap:14px; }
+.gallery-cell { position:relative; aspect-ratio:1/1; border-radius:8px; overflow:hidden; cursor:pointer; transition:transform .5s cubic-bezier(.16,1,.3,1); }
+.gallery-cell:hover { transform:translateY(-4px); }
+.gallery-cell img { width:100%; height:100%; object-fit:cover; transition:transform 1.2s cubic-bezier(.16,1,.3,1); filter:saturate(.95) brightness(.96); }
+.gallery-cell:hover img { transform:scale(1.06); filter:saturate(1.05) brightness(1); }
+.gallery-cell.lg { grid-column:span 2; grid-row:span 2; aspect-ratio:1/1; }
+.gallery-cell.wide { grid-column:span 3; aspect-ratio:3/2; }
+@media(max-width:820px){ .gallery { grid-template-columns:repeat(2,1fr); } .gallery-cell.lg, .gallery-cell.wide { grid-column:span 2; aspect-ratio:1/1; } }
+
+/* COLLECTIONS — bento with portraits */
+.collections-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:32px; }
+.collection-card { display:flex; flex-direction:column; gap:18px; }
+.collection-img { aspect-ratio:3/4; border-radius:14px; overflow:hidden; background:var(--ink); }
+.collection-img img { width:100%; height:100%; object-fit:cover; filter:saturate(.95); transition:transform 1s cubic-bezier(.16,1,.3,1); }
+.collection-card:hover .collection-img img { transform:scale(1.05); }
+.collection-h3 { font-size:32px; margin-bottom:4px; }
+.collection-meta { font-size:12px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--accent); margin-bottom:8px; }
+.collection-text { font-size:15px; line-height:1.6; color:var(--muted); }
+.collection-price { font-family:'Instrument Serif',serif; font-size:22px; font-style:italic; color:var(--ink); margin-top:10px; }
+@media(max-width:820px){ .collections-grid { grid-template-columns:1fr; gap:48px; } }
+
+/* ABOUT — editorial split */
+.about { display:grid; grid-template-columns:1fr 1.2fr; gap:80px; align-items:center; }
+.about-img { aspect-ratio:4/5; border-radius:14px; overflow:hidden; background-image:url('https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=1100'); background-size:cover; background-position:center; box-shadow:0 40px 80px -30px rgba(0,0,0,.2); }
+.about-body p { font-size:17px; line-height:1.7; color:var(--muted); margin-bottom:22px; max-width:560px; }
+.about-body p:last-of-type { margin-bottom:36px; }
+.about-body p strong { color:var(--ink); font-weight:600; }
+.about-sig { display:flex; align-items:center; gap:16px; padding-top:24px; border-top:1px solid var(--line); margin-top:12px; }
+.about-sig-mark { font-family:'Instrument Serif',serif; font-style:italic; font-size:36px; color:var(--accent); }
+.about-sig-meta { display:flex; flex-direction:column; gap:2px; }
+.about-sig-name { font-family:'Instrument Serif',serif; font-size:22px; }
+.about-sig-role { font-size:12px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase; font-weight:600; }
+@media(max-width:820px){ .about { grid-template-columns:1fr; gap:40px; } }
+
+/* TESTIMONIALS */
+.reviews { display:grid; grid-template-columns:repeat(2,1fr); gap:24px; }
+.review { padding:36px; background:var(--paper); border:1px solid var(--line); border-radius:18px; display:flex; flex-direction:column; gap:20px; }
+.review-stars { color:#d4a574; font-size:14px; letter-spacing:.12em; }
+.review-text { font-family:'Instrument Serif',serif; font-style:italic; font-size:24px; line-height:1.35; color:var(--ink); }
+.review-by { display:flex; align-items:center; gap:14px; padding-top:18px; border-top:1px solid var(--line); }
+.review-avatar { width:48px; height:48px; border-radius:50%; background:linear-gradient(135deg,var(--accent),#7d4f37); display:flex; align-items:center; justify-content:center; font-family:'Instrument Serif',serif; font-size:22px; color:#fff; font-style:italic; }
+.review-meta { display:flex; flex-direction:column; gap:2px; }
+.review-name { font-size:15px; font-weight:600; }
+.review-loc { font-size:13px; color:var(--muted); }
+@media(max-width:820px){ .reviews { grid-template-columns:1fr; } }
+
+/* FAQ */
+.faq-list { max-width:880px; }
+.faq-item { border-top:1px solid var(--line); padding:28px 0; cursor:pointer; }
+.faq-item:last-child { border-bottom:1px solid var(--line); }
+.faq-q { display:flex; justify-content:space-between; align-items:flex-start; gap:24px; }
+.faq-q h3 { font-family:'Instrument Serif',serif; font-size:24px; line-height:1.15; flex:1; color:var(--ink); }
+.faq-q-icon { width:32px; height:32px; border-radius:50%; border:1.5px solid var(--ink); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; transition:.3s; font-family:'Instrument Serif',serif; }
+.faq-item.open .faq-q-icon { background:var(--ink); color:#fff; transform:rotate(45deg); }
+.faq-a { max-height:0; overflow:hidden; transition:max-height .5s cubic-bezier(.16,1,.3,1), padding-top .3s; }
+.faq-item.open .faq-a { max-height:300px; padding-top:18px; }
+.faq-a p { font-size:16px; line-height:1.7; color:var(--muted); max-width:720px; }
+
+/* BOOK CTA */
+.book-cta { padding:180px 36px; background:var(--ink); color:#fff; text-align:center; position:relative; overflow:hidden; }
+.book-cta::before { content:""; position:absolute; inset:0; background:radial-gradient(ellipse 60% 50% at 50% 30%,rgba(168,108,77,.18),transparent 70%); }
+.book-cta-inner { position:relative; z-index:1; max-width:880px; margin:0 auto; }
+.book-cta .eyebrow { color:var(--accent); }
+.book-cta h2 { font-size:clamp(54px,7vw,108px); margin-bottom:32px; }
+.book-cta h2 em { font-style:italic; color:var(--accent); }
+.book-cta p { font-size:19px; color:rgba(255,255,255,.75); max-width:560px; margin:0 auto 48px; line-height:1.55; }
+.book-cta .btn { padding:1.2rem 2.4rem; font-size:15px; }
+.book-cta .btn-dark { background:#fff; color:var(--ink); }
+.book-cta .btn-dark:hover { background:#fff; transform:translateY(-2px); }
+@media(max-width:820px){ .book-cta { padding:100px 18px; } }
+
+/* FOOTER */
+footer { padding:60px 36px 32px; background:var(--ink); color:#fff; border-top:1px solid rgba(255,255,255,.08); }
+.footer-inner { max-width:1240px; margin:0 auto; display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:48px; padding-bottom:48px; border-bottom:1px solid rgba(255,255,255,.08); }
+.footer-brand { font-family:'Instrument Serif',serif; font-size:32px; font-style:italic; margin-bottom:14px; }
+.footer-brand span { color:var(--accent); }
+.footer-tag { color:rgba(255,255,255,.5); font-size:14px; line-height:1.55; max-width:280px; }
+.footer-col h4 { font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.45); margin-bottom:18px; }
+.footer-col ul { list-style:none; padding:0; display:flex; flex-direction:column; gap:10px; font-size:14px; }
+.footer-col a { color:rgba(255,255,255,.78); transition:color .2s; }
+.footer-col a:hover { color:var(--accent); }
+.footer-credit { max-width:1240px; margin:24px auto 0; font-size:12px; color:rgba(255,255,255,.4); display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+.footer-credit a { color:var(--accent); }
+@media(max-width:820px){ .footer-inner { grid-template-columns:1fr 1fr; } }
+
+/* Scroll reveal */
+.reveal { opacity:0; transform:translate3d(0,24px,0); transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
+.reveal.in { opacity:1; transform:translate3d(0,0,0); }
+@media(prefers-reduced-motion:reduce){ .reveal { opacity:1; transform:none; } }
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <a class="nav-mark" href="#top">Aurora <span>·</span> Photography</a>
+  <div class="nav-links">
+    <a href="#work">Work</a>
+    <a href="#collections">Collections</a>
+    <a href="#about">About</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <a href="#book" class="nav-cta">Enquire for 2026</a>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <div class="hero-text-block">
+      <div class="hero-eyebrow"><span class="pulse"></span>Now booking · 2026 weddings</div>
+      <h1 class="hero-h1">Documentary <em>portraits</em><br>that feel like you.</h1>
+      <p class="hero-sub">Natural light, real moments, no awkward poses. Wedding and portrait photography in Edinburgh and the Scottish Borders since 2017.</p>
+      <div class="hero-ctas">
+        <a href="#book" class="btn btn-dark">Enquire for 2026 →</a>
+        <a href="#work" class="btn btn-ghost">See the work</a>
+      </div>
+    </div>
+    <div class="hero-meta">
+      <strong>10 weddings remaining in 2026</strong>
+      <div><span class="stars">★★★★★</span> 4.9 — 64 verified reviews</div>
+      <div style="margin-top:6px">Edinburgh · Scottish Borders · Beyond on request</div>
+    </div>
+  </div>
+</header>
+
+<section class="press">
+  <div class="press-label">As seen in</div>
+  <div class="press-marquee">
+    <span>Vogue Brides</span><span>Conde Nast Traveller</span><span>Hello! Scotland</span><span>The Knot UK</span><span>British Vogue</span>
+  </div>
+</section>
+
+<section class="section" id="work">
+  <div class="section-inner">
+    <div class="eyebrow reveal">Recent work</div>
+    <h2 class="section-h2 reveal">A few from the <em>past season</em>.</h2>
+    <p class="section-lead reveal">Edinburgh ceremonies, Borders barns, family portraits in golden Highland light. Every couple, every family, photographed as themselves — never as a Pinterest board.</p>
+    <div class="gallery">
+      <div class="gallery-cell lg reveal"><img src="https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Wedding couple portrait" loading="lazy"></div>
+      <div class="gallery-cell reveal"><img src="https://images.pexels.com/photos/265980/pexels-photo-265980.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Bride bouquet detail" loading="lazy"></div>
+      <div class="gallery-cell reveal"><img src="https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Ceremony moment" loading="lazy"></div>
+      <div class="gallery-cell wide reveal"><img src="https://images.pexels.com/photos/2253885/pexels-photo-2253885.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Reception scene" loading="lazy"></div>
+      <div class="gallery-cell reveal"><img src="https://images.pexels.com/photos/3014856/pexels-photo-3014856.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Family portrait outdoor" loading="lazy"></div>
+      <div class="gallery-cell reveal"><img src="https://images.pexels.com/photos/1043471/pexels-photo-1043471.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Wedding rings on book" loading="lazy"></div>
+      <div class="gallery-cell wide reveal"><img src="https://images.pexels.com/photos/1456613/pexels-photo-1456613.jpeg?auto=compress&cs=tinysrgb&w=900" alt="First dance" loading="lazy"></div>
+      <div class="gallery-cell lg reveal"><img src="https://images.pexels.com/photos/265722/pexels-photo-265722.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Engagement portrait" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section cream" id="collections">
+  <div class="section-inner">
+    <div class="eyebrow reveal">Collections &amp; pricing</div>
+    <h2 class="section-h2 reveal">Three honest <em>collections</em>.</h2>
+    <p class="section-lead reveal">No "starting from" prices. No hidden travel fees within 60 miles of Edinburgh. Everything below includes your edited gallery, printable files, and a private online album that lives forever.</p>
+    <div class="collections-grid">
+      <div class="collection-card reveal">
+        <div class="collection-img"><img src="https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Intimate elopement" loading="lazy"></div>
+        <div>
+          <div class="collection-meta">For elopements &amp; small days</div>
+          <h3 class="collection-h3">The Quiet One</h3>
+          <p class="collection-text">4 hours of coverage. Up to 25 guests. 200+ edited images delivered in 4 weeks. Perfect for register-office days and Highland elopements.</p>
+          <div class="collection-price">£1,400</div>
+        </div>
+      </div>
+      <div class="collection-card reveal">
+        <div class="collection-img"><img src="https://images.pexels.com/photos/2253885/pexels-photo-2253885.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Full day wedding"></div>
+        <div>
+          <div class="collection-meta">Most popular</div>
+          <h3 class="collection-h3">The Full Day</h3>
+          <p class="collection-text">8 hours from prep to first dance. 500+ edited images. Online sharing gallery. A 30-page fine-art photobook included.</p>
+          <div class="collection-price">£2,400</div>
+        </div>
+      </div>
+      <div class="collection-card reveal">
+        <div class="collection-img"><img src="https://images.pexels.com/photos/3014856/pexels-photo-3014856.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Wedding weekend"></div>
+        <div>
+          <div class="collection-meta">For destination &amp; multi-day</div>
+          <h3 class="collection-h3">The Weekend</h3>
+          <p class="collection-text">Two days, two photographers. Rehearsal through brunch. 800+ images, two photobooks, and a 3-minute highlight reel.</p>
+          <div class="collection-price">£3,800</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="section-inner">
+    <div class="about">
+      <div class="about-img reveal" aria-label="Sarah, photographer"></div>
+      <div class="about-body">
+        <div class="eyebrow reveal">About</div>
+        <h2 class="section-h2 reveal">Hi, I'm <em>Sarah</em>.</h2>
+        <p class="reveal">I've photographed weddings since 2017. Before that, eight years in editorial portraiture for British and Scottish magazines. I work alone for elopements and small ceremonies, and bring a second photographer when the day deserves two pairs of eyes.</p>
+        <p class="reveal"><strong>What I won't do:</strong> awkward group poses, fake confetti shots, golden-hour clichés, Instagram-preset edits. <strong>What I will do:</strong> spend the whole day with you, take a thousand frames you'll never see, and deliver the few hundred that will outlast every other thing about the day.</p>
+        <div class="about-sig reveal">
+          <div class="about-sig-mark">S.</div>
+          <div class="about-sig-meta">
+            <div class="about-sig-name">Sarah Mitchell</div>
+            <div class="about-sig-role">Photographer · Edinburgh, since 2017</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section cream" id="reviews">
+  <div class="section-inner">
+    <div class="eyebrow reveal">What couples say</div>
+    <h2 class="section-h2 reveal">Four point nine.<br>Sixty-four <em>real reviews</em>.</h2>
+    <p class="section-lead reveal">Verified on Google. Here are three from this season.</p>
+    <div class="reviews">
+      <div class="review reveal">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Sarah was at our wedding for ten hours and we barely noticed her. Then the gallery arrived and we cried for an hour. She saw moments we'd already forgotten."</p>
+        <div class="review-by">
+          <div class="review-avatar">E</div>
+          <div class="review-meta"><div class="review-name">Emma &amp; James</div><div class="review-loc">St Andrews · September 2025</div></div>
+        </div>
+      </div>
+      <div class="review reveal">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"We elopted at Bow Castle and Sarah was the only other person there. Honestly the best decision we made about the day."</p>
+        <div class="review-by">
+          <div class="review-avatar">M</div>
+          <div class="review-meta"><div class="review-name">Maya &amp; Tom</div><div class="review-loc">Scottish Borders · June 2025</div></div>
+        </div>
+      </div>
+      <div class="review reveal">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"I'm a wedding planner. I've worked with twenty photographers in Edinburgh. Sarah is the one I send couples to. Quiet, sharp, kind, brilliant."</p>
+        <div class="review-by">
+          <div class="review-avatar">R</div>
+          <div class="review-meta"><div class="review-name">Rebecca Lawson</div><div class="review-loc">Lawson &amp; Co · Edinburgh</div></div>
+        </div>
+      </div>
+      <div class="review reveal">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Family portraits with two teenagers on the beach at North Berwick. I expected eye-rolls; got a gallery our parents put on the wall."</p>
+        <div class="review-by">
+          <div class="review-avatar">N</div>
+          <div class="review-meta"><div class="review-name">Niall H.</div><div class="review-loc">Edinburgh · April 2025</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="section-inner">
+    <div class="eyebrow reveal">Questions you might have</div>
+    <h2 class="section-h2 reveal">Real answers.</h2>
+    <div class="faq-list">
+      <div class="faq-item reveal" onclick="this.classList.toggle('open')">
+        <div class="faq-q"><h3>How far in advance do I need to book?</h3><div class="faq-q-icon">+</div></div>
+        <div class="faq-a"><p>Most weddings book 6–12 months out. I keep 2–3 spots open each year for shorter timelines and elopements.</p></div>
+      </div>
+      <div class="faq-item reveal" onclick="this.classList.toggle('open')">
+        <div class="faq-q"><h3>What's the booking process?</h3><div class="faq-q-icon">+</div></div>
+        <div class="faq-a"><p>Enquiry form → 30-minute call (free, no pressure) → I send a contract and 25% retainer invoice → date locked in. Final payment a month before the day.</p></div>
+      </div>
+      <div class="faq-item reveal" onclick="this.classList.toggle('open')">
+        <div class="faq-q"><h3>Do you travel outside Edinburgh?</h3><div class="faq-q-icon">+</div></div>
+        <div class="faq-a"><p>Yes — within 60 miles of Edinburgh is included. Further afield (Highlands, North-East England, Northern Ireland) is a flat £200 travel fee. International weddings are quoted individually.</p></div>
+      </div>
+      <div class="faq-item reveal" onclick="this.classList.toggle('open')">
+        <div class="faq-q"><h3>Do you do engagement shoots?</h3><div class="faq-q-icon">+</div></div>
+        <div class="faq-a"><p>Yes — £350 for two hours including 60+ edited images. Included free if you book The Full Day or The Weekend.</p></div>
+      </div>
+      <div class="faq-item reveal" onclick="this.classList.toggle('open')">
+        <div class="faq-q"><h3>What if it rains?</h3><div class="faq-q-icon">+</div></div>
+        <div class="faq-a"><p>It usually does. Some of my best work has been in proper Scottish weather — moody skies, candlelight indoors, umbrellas. I bring weather covers for the gear and a plan B for every shoot list.</p></div>
+      </div>
+      <div class="faq-item reveal" onclick="this.classList.toggle('open')">
+        <div class="faq-q"><h3>When do we get the photos?</h3><div class="faq-q-icon">+</div></div>
+        <div class="faq-a"><p>Sneak peeks (20 images) within 7 days. Full edited gallery within 4 weeks. Printable files and your fine-art book at the 6-week mark.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="book-cta" id="book">
+  <div class="book-cta-inner">
+    <div class="eyebrow">Now booking 2026</div>
+    <h2>Tell me about <em>your day</em>.</h2>
+    <p>Fill in a few details — venue, date, what's important to you — and I'll send my full guide within 24 hours.</p>
+    <a href="mailto:sarah@aurora-photography.co.uk" class="btn btn-dark">Start an enquiry →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">Aurora <span>·</span> Photography</div>
+      <p class="footer-tag">Documentary wedding and portrait photography. Edinburgh and the Scottish Borders since 2017.</p>
+    </div>
+    <div class="footer-col"><h4>Studio</h4><ul><li><a href="#work">Recent work</a></li><li><a href="#about">About Sarah</a></li><li><a href="#reviews">Reviews</a></li></ul></div>
+    <div class="footer-col"><h4>Book</h4><ul><li><a href="#collections">Collections</a></li><li><a href="#book">Enquire</a></li><li><a href="mailto:sarah@aurora-photography.co.uk">sarah@aurora-photography.co.uk</a></li></ul></div>
+    <div class="footer-col"><h4>Studio location</h4><ul><li>14 Thistle Street<br>Edinburgh EH2 1DF</li><li><a href="tel:01312000000">0131 200 0000</a></li></ul></div>
+  </div>
+  <div class="footer-credit">
+    <span>© Aurora Photography 2026 · All photographs &copy; the photographer</span>
+    <span>A StaticSwift example site · <a href="/" target="_top">Get yours →</a></span>
+  </div>
+</footer>
+
+<script>
+const nav = document.getElementById('nav');
+const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 20);
+window.addEventListener('scroll', onScroll, { passive:true });
+onScroll();
+
+if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold:0.1, rootMargin:'0px 0px -8% 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+} else {
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+}
+</script>
+
+</body>
+</html>

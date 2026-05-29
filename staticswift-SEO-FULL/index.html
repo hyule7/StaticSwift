@@ -1672,6 +1672,9 @@ nav#nav.scrolled { background:rgba(255,255,255,.86) !important; border-bottom-co
 nav#nav .nav-cta { background:#0f0f0f !important; color:#fff !important; font-weight:500 !important; padding:.5rem 1.1rem !important; font-size:.84rem !important }
 nav#nav .nav-cta:hover { background:#000 !important }
 nav#nav .nav-links a { font-weight:450 !important; color:#0f0f0f !important; font-size:.85rem !important; border-radius:8px !important }
+nav#nav .nav-links a.nav-link-flag { background:rgba(0,102,204,.1) !important; color:#0066cc !important; font-weight:600 !important; padding:.45rem .85rem !important; }
+nav#nav .nav-links a.nav-link-flag:hover { background:#0066cc !important; color:#ffffff !important; }
+nav#nav .nav-links a.nav-link-flag::before { content:"●"; font-size:.55em; margin-right:.4em; vertical-align:middle; }
 
 /* Hero eyebrow + proof */
 .ss-hero-eyebrow { background:#fff !important; border-color:rgba(0,0,0,.08) !important; box-shadow:0 1px 2px rgba(0,0,0,.02) !important }
@@ -2084,9 +2087,25 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
 .sticky-cta-phone svg { width:16px; height:16px; }
 .sticky-cta-phone:hover { background:#16a34a; transform:scale(1.06); }
 
+/* Hero alt-actions — WhatsApp + phone fallback below the form */
+.hero-alt-actions { display:flex; align-items:center; flex-wrap:wrap; gap:.6rem 1rem; margin-top:1.2rem; font-family:'DM Sans',sans-serif; font-size:.9rem; color:#787774; }
+.hero-alt-or { color:#9a9a9a; font-style:italic; font-family:'Instrument Serif',serif; font-size:1.1rem; }
+.hero-alt-wa { display:inline-flex; align-items:center; gap:.5rem; padding:.6rem 1rem; background:#22c55e; color:#ffffff; border-radius:980px; font-weight:600; text-decoration:none; transition:transform .25s cubic-bezier(.16,1,.3,1), background .25s; }
+.hero-alt-wa svg { width:14px; height:14px; }
+.hero-alt-wa:hover { transform:translateY(-1px); background:#16a34a; }
+.hero-alt-sep { color:#9a9a9a; }
+.hero-alt-call { color:#0f0f0f; text-decoration:none; font-weight:600; border-bottom:1.5px solid #0f0f0f; transition:color .2s, border-color .2s; }
+.hero-alt-call:hover { color:#0066cc; border-bottom-color:#0066cc; }
+
 /* ═══════════════════════════════════════════════════════════════
-   TRUST SECTION — About + Timeline + Post-launch.
-   Sits right before the contact form. Last trust unlock.
+   MEET HARRY — standalone section right after cinema climax.
+   ═══════════════════════════════════════════════════════════════ */
+.meet-section { background:#ffffff; padding:7rem 1.5rem; border-top:1px solid rgba(0,0,0,.06); border-bottom:1px solid rgba(0,0,0,.06); }
+.meet-inner { max-width:1240px; margin:0 auto; }
+@media(max-width:760px){ .meet-section { padding:5rem 1.25rem; } }
+
+/* ═══════════════════════════════════════════════════════════════
+   TRUST SECTION — Timeline + Post-launch (About moved up).
    ═══════════════════════════════════════════════════════════════ */
 .trust-section { background:#ffffff; padding:8rem 1.5rem; border-top:1px solid rgba(0,0,0,.06); }
 .trust-inner { max-width:1240px; margin:0 auto; display:flex; flex-direction:column; gap:8rem; }
@@ -2145,6 +2164,98 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
 .post-card-title { font-family:'Instrument Serif',serif; font-weight:400; font-size:1.5rem; line-height:1.1; letter-spacing:-.02em; color:#0f0f0f; margin-bottom:1rem; }
 .post-card-body { font-family:'DM Sans',sans-serif; font-size:.98rem; line-height:1.6; color:#3a3a3a; }
 @media(max-width:760px){ .post-grid { grid-template-columns:1fr; } .trust-section { padding:5rem 1.25rem; } .trust-inner { gap:5rem; } }
+
+/* ═══════════════════════════════════════════════════════════════
+   COMPARISON — vs Wix vs Facebook page.
+   3-column grid table with row labels in the first column.
+   ═══════════════════════════════════════════════════════════════ */
+.compare-section { background:#ffffff; padding:8rem 1.5rem; border-top:1px solid rgba(0,0,0,.06); }
+.compare-inner { max-width:1240px; margin:0 auto; }
+.compare-head { max-width:780px; margin-bottom:4rem; }
+.compare-title { font-family:'Instrument Serif',serif; font-weight:400; font-size:clamp(2.2rem,4.4vw,3.8rem); line-height:1.05; letter-spacing:-.03em; color:#0f0f0f; margin-bottom:1.2rem; }
+.compare-title em { font-style:italic; color:#0f0f0f; }
+.compare-sub { font-family:'DM Sans',sans-serif; font-size:1.05rem; line-height:1.6; color:#3a3a3a; max-width:560px; }
+/* Grid table: 4 columns. First column = row labels. Then 3 product columns. */
+.compare-grid { display:grid; grid-template-columns:1.2fr 1fr 1fr 1fr; border:1px solid rgba(0,0,0,.08); border-radius:18px; overflow:hidden; background:#ffffff; }
+.cmp-col { padding:1.4rem 1.4rem; border-bottom:1px solid rgba(0,0,0,.06); border-right:1px solid rgba(0,0,0,.06); font-family:'DM Sans',sans-serif; font-size:.92rem; line-height:1.5; }
+.cmp-col:nth-child(4n) { border-right:0; }
+.cmp-col:nth-last-child(-n+4) { border-bottom:0; }
+.cmp-col strong { display:block; font-weight:600; color:#0f0f0f; font-size:1.02rem; margin-bottom:.25rem; }
+.cmp-col span { display:block; color:#787774; font-size:.84rem; line-height:1.45; }
+/* Header row */
+.cmp-col-head { background:#0f0f0f; color:#ffffff; padding:1.6rem 1.4rem; display:flex; flex-direction:column; justify-content:flex-end; gap:.5rem; min-height:90px; }
+.cmp-col-head:first-child { background:#ffffff; color:#0f0f0f; }
+.cmp-col-head:nth-child(2) { background:linear-gradient(160deg,#0066cc 0%,#003d80 100%); }
+.cmp-name { font-family:'Instrument Serif',serif; font-weight:400; font-size:1.25rem; line-height:1.1; letter-spacing:-.02em; color:inherit; }
+.cmp-tag { display:inline-block; font-family:'DM Sans',sans-serif; font-size:.65rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; padding:.3rem .65rem; border-radius:980px; background:#ffffff; color:#0066cc; align-self:flex-start; }
+.cmp-tag-win { background:#22c55e; color:#ffffff; }
+/* Row label */
+.cmp-row-label { background:#fafafa; font-family:'DM Sans',sans-serif; font-weight:600; color:#0f0f0f; font-size:.95rem; display:flex; align-items:center; }
+/* State colours via subtle accent dots */
+.cmp-good strong::before { content:""; display:inline-block; width:8px; height:8px; border-radius:50%; background:#22c55e; margin-right:.55rem; vertical-align:middle; }
+.cmp-mid strong::before { content:""; display:inline-block; width:8px; height:8px; border-radius:50%; background:#f59e0b; margin-right:.55rem; vertical-align:middle; }
+.cmp-bad strong::before { content:""; display:inline-block; width:8px; height:8px; border-radius:50%; background:#ef4444; margin-right:.55rem; vertical-align:middle; }
+/* Mobile: stack into 3 cards, each card shows all rows */
+@media(max-width:880px){
+  .compare-grid { grid-template-columns:1fr; }
+  .cmp-col { border-right:0; }
+  .cmp-col-head { min-height:auto; }
+  .cmp-row-label { padding-top:1.6rem; padding-bottom:.4rem; background:#f5f5f5; font-size:.75rem; text-transform:uppercase; letter-spacing:.1em; color:#787774; }
+}
+/* Footer below the table */
+.compare-footer { margin-top:2.5rem; padding:2rem 2.2rem; background:#0f0f0f; color:#ffffff; border-radius:18px; display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+.compare-footer-text { font-family:'DM Sans',sans-serif; font-size:1rem; line-height:1.55; color:rgba(255,255,255,.85); max-width:760px; }
+.compare-footer-text strong { color:#ffffff; font-weight:700; }
+.compare-cta { display:inline-flex; align-items:center; gap:.4rem; background:#ffffff; color:#0f0f0f; padding:1rem 1.6rem; border-radius:980px; font-family:'DM Sans',sans-serif; font-size:.98rem; font-weight:600; text-decoration:none; transition:transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s; white-space:nowrap; }
+.compare-cta:hover { transform:translateY(-2px); box-shadow:0 14px 32px rgba(255,255,255,.18); }
+@media(max-width:760px){ .compare-section { padding:5rem 1.25rem; } .compare-footer { padding:1.6rem 1.6rem; } }
+
+/* ═══════════════════════════════════════════════════════════════
+   FREE SITE AUDIT — public lead magnet, same engine as admin.
+   ═══════════════════════════════════════════════════════════════ */
+.audit-section { background:#0f0f0f; color:#ffffff; padding:7rem 1.5rem; position:relative; overflow:hidden; }
+.audit-section::before { content:""; position:absolute; inset:0; background:radial-gradient(ellipse 60% 50% at 30% 30%,rgba(0,102,204,.12),transparent 60%),radial-gradient(ellipse 50% 60% at 80% 80%,rgba(34,197,94,.06),transparent 60%); pointer-events:none; }
+.audit-inner { max-width:920px; margin:0 auto; position:relative; z-index:1; text-align:center; }
+.audit-section .meet-eyebrow { color:#7de8ff; justify-content:center; }
+.audit-section .meet-eyebrow::before { background:#7de8ff; }
+.audit-title { font-family:'Instrument Serif',serif; font-weight:400; font-size:clamp(2.6rem,5.4vw,4.6rem); line-height:1; letter-spacing:-.035em; color:#ffffff; margin-bottom:1.4rem; }
+.audit-title em { font-style:italic; color:#7de8ff; }
+.audit-sub { font-family:'DM Sans',sans-serif; font-size:1.1rem; line-height:1.55; color:rgba(255,255,255,.7); max-width:660px; margin:0 auto 2.5rem; }
+.audit-form { max-width:680px; margin:0 auto; }
+.audit-input-row { display:flex; gap:.5rem; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:18px; padding:.55rem; backdrop-filter:blur(10px); }
+.audit-input-row input { flex:1; background:rgba(255,255,255,.04); border:1px solid transparent; border-radius:14px; padding:1rem 1.2rem; font-family:'DM Sans',sans-serif; font-size:1rem; color:#ffffff; outline:none; transition:border-color .2s, background .2s; }
+.audit-input-row input::placeholder { color:rgba(255,255,255,.4); }
+.audit-input-row input:focus { border-color:#7de8ff; background:rgba(0,198,255,.08); }
+.audit-btn { background:#7de8ff; color:#0f0f0f; border:0; border-radius:14px; padding:1rem 1.8rem; font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:700; cursor:pointer; transition:transform .2s cubic-bezier(.16,1,.3,1), background .2s; white-space:nowrap; }
+.audit-btn:hover:not(:disabled) { background:#ffffff; transform:translateY(-1px); }
+.audit-btn:disabled { opacity:.6; cursor:wait; }
+.audit-fine { font-family:'DM Sans',sans-serif; font-size:.84rem; color:rgba(255,255,255,.45); margin-top:1.1rem; letter-spacing:-.005em; }
+@media(max-width:640px){
+  .audit-input-row { flex-direction:column; gap:.4rem; padding:.4rem; }
+  .audit-input-row input { padding:1rem 1rem; }
+  .audit-btn { padding:1rem 1rem; }
+  .audit-section { padding:5rem 1.25rem; }
+}
+/* Result card */
+.audit-result { max-width:760px; margin:2.5rem auto 0; text-align:left; }
+.audit-result.empty { display:none; }
+.audit-card { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.12); border-radius:20px; padding:2rem 2.2rem; }
+.audit-card-top { display:flex; align-items:center; gap:1.8rem; padding-bottom:1.6rem; border-bottom:1px solid rgba(255,255,255,.1); margin-bottom:1.6rem; flex-wrap:wrap; }
+.audit-score { width:120px; height:120px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; background:rgba(255,255,255,.05); border:2px solid currentColor; flex-shrink:0; }
+.audit-score-num { font-family:'Instrument Serif',serif; font-size:3.4rem; font-weight:400; line-height:1; letter-spacing:-.03em; }
+.audit-score-lbl { font-family:'DM Sans',sans-serif; font-size:.62rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; margin-top:.3rem; opacity:.75; }
+.audit-verdict h3 { font-family:'Instrument Serif',serif; font-weight:400; font-size:1.85rem; line-height:1.1; letter-spacing:-.02em; color:#ffffff; margin-bottom:.5rem; }
+.audit-verdict-sub { font-family:'DM Sans',sans-serif; font-size:.95rem; color:rgba(255,255,255,.65); }
+.audit-issues { display:grid; gap:.85rem; margin-bottom:1.6rem; }
+.audit-issue { display:flex; align-items:flex-start; gap:.75rem; font-family:'DM Sans',sans-serif; font-size:.96rem; color:rgba(255,255,255,.85); line-height:1.4; }
+.audit-issue::before { content:""; display:inline-block; width:8px; height:8px; border-radius:50%; background:#ef4444; margin-top:.45rem; flex-shrink:0; box-shadow:0 0 8px rgba(239,68,68,.5); }
+.audit-no-issues { font-family:'Instrument Serif',serif; font-style:italic; font-size:1.2rem; color:#22c55e; padding:.6rem 0; }
+.audit-cta-row { display:flex; gap:.8rem; flex-wrap:wrap; padding-top:1.6rem; border-top:1px solid rgba(255,255,255,.1); }
+.audit-cta-primary { background:#7de8ff; color:#0f0f0f; padding:.95rem 1.6rem; border-radius:980px; font-family:'DM Sans',sans-serif; font-size:.95rem; font-weight:600; text-decoration:none; transition:transform .2s cubic-bezier(.16,1,.3,1), background .2s; display:inline-flex; align-items:center; gap:.5rem; }
+.audit-cta-primary:hover { transform:translateY(-2px); background:#ffffff; }
+.audit-cta-ghost { background:transparent; color:#ffffff; border:1.5px solid rgba(255,255,255,.25); padding:.95rem 1.6rem; border-radius:980px; font-family:'DM Sans',sans-serif; font-size:.95rem; font-weight:600; text-decoration:none; transition:background .2s, border-color .2s; display:inline-flex; align-items:center; gap:.5rem; }
+.audit-cta-ghost:hover { background:rgba(255,255,255,.08); border-color:#ffffff; }
+.audit-error { font-family:'DM Sans',sans-serif; color:#fca5a5; font-size:.95rem; padding:1.2rem 1.6rem; background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.25); border-radius:14px; }
 
 /* Contact form — phone line directly under sub-text */
 .form-call-line { display:flex; align-items:center; flex-wrap:wrap; gap:.55rem 1rem; padding:1rem 1.25rem; background:rgba(0,102,204,.04); border:1px solid rgba(0,102,204,.12); border-radius:14px; margin:1.4rem 0 2rem; font-family:'DM Sans',sans-serif; font-size:.95rem; color:#3a3a3a; }
@@ -2207,6 +2318,7 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
     <span class="nav-logo-name">StaticSwift</span>
   </a>
   <div class="nav-links" role="navigation" aria-label="Primary navigation">
+    <a href="#audit" class="nav-link-flag">Free audit</a>
     <a href="#pricing">Pricing</a>
     <a href="#your-trade">Examples</a>
     <a href="#reviews">Reviews</a>
@@ -2279,13 +2391,22 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
             <input type="text" id="hf-biz" name="business_name" placeholder="Your business name" required aria-label="Business name">
             <input type="text" id="hf-site" name="current_website" placeholder="Current website (or 'none')" required aria-label="Current website URL or none" autocomplete="url">
             <input type="email" id="hf-email" name="delivery_email" placeholder="you@email.com" required aria-label="Email address" autocomplete="email">
-            <input type="tel" id="hf-wa" name="whatsapp" placeholder="WhatsApp / phone (optional)" aria-label="WhatsApp or phone" autocomplete="tel">
-            <button type="submit" class="hl-submit">Send my free preview →</button>
+            <input type="tel" id="hf-wa" name="whatsapp" placeholder="Phone (only if you'd rather talk)" aria-label="Phone — optional" autocomplete="tel">
+            <button type="submit" class="hl-submit">Send my free preview — Harry replies within the hour →</button>
           </div>
           <div class="hero-lead-fine">
-            <span>Reply within the hour</span>
-            <span>Preview live in 24h</span>
-            <span>No payment upfront</span>
+            <span>£149 starter · £299 advanced</span>
+            <span>Preview in 24h</span>
+            <span>No payment until you approve</span>
+          </div>
+          <div class="hero-alt-actions">
+            <span class="hero-alt-or">or</span>
+            <a class="hero-alt-wa" href="https://wa.me/447502731799?text=Hi%20Harry,%20I'd%20like%20a%20free%20preview%20for%20my%20business" target="_blank" rel="noopener">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4l-2.6-1.3c-.2-.1-.5-.1-.7.1l-1.1 1.1c-.2.2-.5.2-.7.1-1.6-.8-2.9-2.1-3.7-3.7-.1-.2 0-.5.1-.7l1.1-1.1c.2-.2.2-.5.1-.7L8.7 5.6c-.1-.3-.4-.5-.7-.5H6.5c-.6 0-1 .5-1 1 0 5.5 4.5 10 10 10 .6 0 1-.4 1-1v-1.5c0-.3-.2-.6-.5-.7z"/></svg>
+              <span>WhatsApp me your business name</span>
+            </a>
+            <span class="hero-alt-sep">·</span>
+            <a class="hero-alt-call" href="tel:+447502731799">Call 07502 731 799</a>
           </div>
         </form>
         <div id="hl-ok" role="alert">
@@ -2515,6 +2636,33 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
     <div class="cv-cue" aria-hidden="true"><span>SCROLL</span><div class="cv-cue-line"></div></div>
   </div>
 </section>
+<!-- ══ MEET HARRY — humanise early, right after the cinema climax ══ -->
+<section class="meet-section" id="meet-harry" aria-label="Meet Harry, the designer">
+  <div class="meet-inner">
+    <div class="trust-meet">
+      <div class="meet-photo" aria-label="Harry, designer">
+        <img src="https://images.pexels.com/photos/5717479/pexels-photo-5717479.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=900" alt="Harry, designer at StaticSwift" loading="lazy" width="900" height="1125">
+      </div>
+      <div class="meet-text">
+        <div class="meet-eyebrow">Who you're hiring</div>
+        <h2 class="meet-title">I'm Harry. <em>I'll build it myself.</em></h2>
+        <p class="meet-body">StaticSwift is one designer working out of Manchester. Not an agency, not a network of freelancers — and <strong>no AI generation, no Wix templates.</strong> Every site is hand-written in real code, by me, at a desk. I do every brief, every preview, every revision. You know exactly who you're talking to from the first message to the day your site goes live.</p>
+        <div class="meet-actions">
+          <a href="tel:+447502731799" class="meet-cta meet-cta-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span>Call me · <strong>07502 731 799</strong></span>
+          </a>
+          <a href="https://wa.me/447502731799" class="meet-cta" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4l-2.6-1.3c-.2-.1-.5-.1-.7.1l-1.1 1.1c-.2.2-.5.2-.7.1-1.6-.8-2.9-2.1-3.7-3.7-.1-.2 0-.5.1-.7l1.1-1.1c.2-.2.2-.5.1-.7L8.7 5.6c-.1-.3-.4-.5-.7-.5H6.5c-.6 0-1 .5-1 1 0 5.5 4.5 10 10 10 .6 0 1-.4 1-1v-1.5c0-.3-.2-.6-.5-.7z"/></svg>
+            <span>WhatsApp</span>
+          </a>
+          <span class="meet-hours">Reply same day · Mon–Sun · 8am–8pm</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ══ 02b · YOUR TRADE — picks a real built page from the niche library ══ -->
 <section class="trade-section" id="your-trade">
   <div class="section-inner">
@@ -2526,15 +2674,15 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
     <div class="trade-bar reveal">
       <label for="trade-pick" class="trade-pick-lbl">I run a…</label>
       <select id="trade-pick" class="trade-pick">
-        <option value="/example-fade-and-blade/" data-label="Barber example">Barber shop</option>
-        <option value="/example-fade-and-blade/" data-label="Plumber example">Plumber</option>
-        <option value="/example-fade-and-blade/" data-label="Electrician example">Electrician</option>
-        <option value="/example-fade-and-blade/" data-label="Photographer example">Photographer</option>
-        <option value="/example-fade-and-blade/" data-label="Restaurant example">Restaurant</option>
-        <option value="/example-fade-and-blade/" data-label="PT example">Personal trainer</option>
-        <option value="/example-fade-and-blade/" data-label="Beauty salon example">Beauty salon</option>
-        <option value="/example-fade-and-blade/" data-label="Café example">Café</option>
-        <option value="/example-fade-and-blade/" data-label="Dog groomer example">Dog groomer</option>
+        <option value="/example-fade-and-blade/" data-tier="starter">Barber shop · Starter £149</option>
+        <option value="/example-fade-and-blade/" data-tier="starter">Plumber · Starter £149</option>
+        <option value="/example-fade-and-blade/" data-tier="starter">Electrician · Starter £149</option>
+        <option value="/example-aurora-photography/" data-tier="advanced">Photographer · Advanced £299</option>
+        <option value="/example-aurora-photography/" data-tier="advanced">Restaurant · Advanced £299</option>
+        <option value="/example-fade-and-blade/" data-tier="starter">Personal trainer · Starter £149</option>
+        <option value="/example-aurora-photography/" data-tier="advanced">Beauty salon · Advanced £299</option>
+        <option value="/example-fade-and-blade/" data-tier="starter">Café · Starter £149</option>
+        <option value="/example-fade-and-blade/" data-tier="starter">Dog groomer · Starter £149</option>
       </select>
       <a class="trade-open" id="trade-open" href="/example-fade-and-blade/" target="_blank" rel="noopener">Open full example ↗</a>
     </div>
@@ -2563,34 +2711,37 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
   </div>
 </section>
 
-<!-- ══ IMAGE STRIP — warm desaturated photos of UK trades (Pexels) ══ -->
-<section class="trades-photos" aria-label="Real UK trades">
-  <div class="tp-inner">
-    <div class="tp-head reveal-up">
-      <div class="tp-eyebrow">Built for trades like yours</div>
-      <h2 class="tp-title">Barbers. Plumbers. Photographers. Cafés.<br><em>Every site, hand-built in 24 hours.</em></h2>
+<!-- ══ PRICE STRIP — visible immediately after hero so buyers don't have to dig ══ -->
+<section class="price-strip" aria-label="Pricing summary">
+  <div class="price-strip-inner">
+    <div class="ps-card ps-starter">
+      <div class="ps-tier">Starter</div>
+      <div class="ps-price"><span class="ps-amt">£149</span><span class="ps-once">once · no monthly</span></div>
+      <ul class="ps-feat">
+        <li>One-page site, hand-built</li>
+        <li>Live in 24 hours</li>
+        <li>Mobile-perfect, fast</li>
+      </ul>
+      <a href="#contact" class="ps-cta">Start with Starter →</a>
     </div>
-    <div class="tp-grid">
-      <figure class="tp-cell tp-cell-tall reveal-up" style="--d:0ms">
-        <img src="https://images.pexels.com/photos/1570807/pexels-photo-1570807.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=900" alt="Barbershop scene" loading="lazy" width="900" height="1200">
-        <figcaption>Barbershops</figcaption>
-      </figure>
-      <figure class="tp-cell reveal-up" style="--d:80ms">
-        <img src="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=900" alt="Cafe interior with morning light" loading="lazy" width="900" height="700">
-        <figcaption>Cafés &amp; restaurants</figcaption>
-      </figure>
-      <figure class="tp-cell reveal-up" style="--d:160ms">
-        <img src="https://images.pexels.com/photos/3727469/pexels-photo-3727469.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=900" alt="Tradesperson at work" loading="lazy" width="900" height="700">
-        <figcaption>Plumbers &amp; trades</figcaption>
-      </figure>
-      <figure class="tp-cell tp-cell-tall reveal-up" style="--d:240ms">
-        <img src="https://images.pexels.com/photos/1264210/pexels-photo-1264210.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=900" alt="Photographer with camera" loading="lazy" width="900" height="1200">
-        <figcaption>Photographers &amp; studios</figcaption>
-      </figure>
+    <div class="ps-card ps-advanced">
+      <div class="ps-badge">Most popular</div>
+      <div class="ps-tier">Advanced</div>
+      <div class="ps-price"><span class="ps-amt">£299</span><span class="ps-once">once · no monthly</span></div>
+      <ul class="ps-feat">
+        <li>Multi-section site + booking link</li>
+        <li>Gallery, services, contact map</li>
+        <li>Live in 24 hours</li>
+      </ul>
+      <a href="#contact" class="ps-cta ps-cta-primary">Start with Advanced →</a>
+    </div>
+    <div class="ps-promise">
+      <div class="ps-promise-mark">No payment upfront</div>
+      <div class="ps-promise-text">You only pay if you love the preview. Don't love it? Walk away. We're that confident.</div>
+      <a href="#faq" class="ps-promise-link">How does that work? →</a>
     </div>
   </div>
 </section>
-
 <!-- ══ PROCESS CINEMA — pinned 3-step narrative. Scenes cross-fade, text steps reveal. ══ -->
 <section class="process-cinema" id="process-cinema" aria-label="How it works">
   <div class="pc-sticky">
@@ -2636,37 +2787,6 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
   </div>
 </section>
 
-<!-- ══ PRICE STRIP — visible immediately after hero so buyers don't have to dig ══ -->
-<section class="price-strip" aria-label="Pricing summary">
-  <div class="price-strip-inner">
-    <div class="ps-card ps-starter">
-      <div class="ps-tier">Starter</div>
-      <div class="ps-price"><span class="ps-amt">£149</span><span class="ps-once">once · no monthly</span></div>
-      <ul class="ps-feat">
-        <li>One-page site, hand-built</li>
-        <li>Live in 24 hours</li>
-        <li>Mobile-perfect, fast</li>
-      </ul>
-      <a href="#contact" class="ps-cta">Start with Starter →</a>
-    </div>
-    <div class="ps-card ps-advanced">
-      <div class="ps-badge">Most popular</div>
-      <div class="ps-tier">Advanced</div>
-      <div class="ps-price"><span class="ps-amt">£299</span><span class="ps-once">once · no monthly</span></div>
-      <ul class="ps-feat">
-        <li>Multi-section site + booking link</li>
-        <li>Gallery, services, contact map</li>
-        <li>Live in 24 hours</li>
-      </ul>
-      <a href="#contact" class="ps-cta ps-cta-primary">Start with Advanced →</a>
-    </div>
-    <div class="ps-promise">
-      <div class="ps-promise-mark">No payment upfront</div>
-      <div class="ps-promise-text">You only pay if you love the preview. Don't love it? Walk away. We're that confident.</div>
-      <a href="#faq" class="ps-promise-link">How does that work? →</a>
-    </div>
-  </div>
-</section>
 
 <!-- ══ MARQUEE ══ -->
 <div class="marquee-strip" aria-hidden="true">
@@ -2962,29 +3082,6 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
 <section class="trust-section" id="about" aria-label="About StaticSwift, timeline, and what happens after launch">
   <div class="trust-inner">
 
-    <!-- ABOUT HARRY -->
-    <div class="trust-meet">
-      <div class="meet-photo" aria-label="Harry, designer">
-        <img src="https://images.pexels.com/photos/5717479/pexels-photo-5717479.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=900" alt="Harry, designer at StaticSwift" loading="lazy" width="900" height="1125">
-      </div>
-      <div class="meet-text">
-        <div class="meet-eyebrow">Who you're hiring</div>
-        <h2 class="meet-title">I'm Harry. <em>I'll build it myself.</em></h2>
-        <p class="meet-body">StaticSwift is one designer working out of Manchester. Not an agency, not a network of freelancers, not AI churning template sites — me, at a desk, building your site by hand. I do every brief, every preview, every revision. You know exactly who you're talking to from the first message to the day your site goes live.</p>
-        <div class="meet-actions">
-          <a href="tel:+447502731799" class="meet-cta meet-cta-primary">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            <span>Call me · <strong>07502 731 799</strong></span>
-          </a>
-          <a href="https://wa.me/447502731799" class="meet-cta" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4l-2.6-1.3c-.2-.1-.5-.1-.7.1l-1.1 1.1c-.2.2-.5.2-.7.1-1.6-.8-2.9-2.1-3.7-3.7-.1-.2 0-.5.1-.7l1.1-1.1c.2-.2.2-.5.1-.7L8.7 5.6c-.1-.3-.4-.5-.7-.5H6.5c-.6 0-1 .5-1 1 0 5.5 4.5 10 10 10 .6 0 1-.4 1-1v-1.5c0-.3-.2-.6-.5-.7z"/></svg>
-            <span>WhatsApp</span>
-          </a>
-          <span class="meet-hours">Reply same day · Mon–Sun · 8am–8pm</span>
-        </div>
-      </div>
-    </div>
-
     <!-- TIMELINE — "When does 24h actually start?" -->
     <div class="trust-timeline">
       <div class="timeline-head">
@@ -3028,7 +3125,7 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
           </div>
         </li>
       </ol>
-      <p class="timeline-note">The 24-hour clock starts the moment I receive your brief (after step 2). Most clients are live within 3 working days end-to-end.</p>
+      <p class="timeline-note"><strong>The 24-hour clock is your preview.</strong> From the moment I receive your brief (after step 2), a working preview lands in your inbox within 24 hours — guaranteed. Going fully live (after your approval and revisions) typically takes another 24–48 hours. Total: preview in 24h, live within 72h.</p>
     </div>
 
     <!-- POST-LAUNCH FAQ — what happens after -->
@@ -3057,6 +3154,84 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
       </div>
     </div>
 
+  </div>
+</section>
+
+<!-- ══ FREE SITE AUDIT — public lead magnet using the same scoring engine ══ -->
+<section class="audit-section" id="audit" aria-label="Free site audit">
+  <div class="audit-inner">
+    <div class="audit-head">
+      <div class="meet-eyebrow">Already got a website?</div>
+      <h2 class="audit-title">Free <em>site audit</em>.<br>30 seconds. No signup.</h2>
+      <p class="audit-sub">Paste your current site below. We'll score it 0–100, find every issue Google penalises, and tell you exactly what's stopping you from ranking. Same engine we use to find prospects — turned on you, for free.</p>
+    </div>
+    <form class="audit-form" id="auditForm" onsubmit="runPublicAudit(event)">
+      <div class="audit-input-row">
+        <input type="url" id="auditUrl" placeholder="your-business.co.uk" required autocomplete="url">
+        <button type="submit" class="audit-btn" id="auditBtn">Audit my site →</button>
+      </div>
+      <div class="audit-fine">No card, no email required to see your score · Real findings, not a sales pitch</div>
+    </form>
+    <div class="audit-result" id="auditResult" aria-live="polite"></div>
+  </div>
+</section>
+
+<!-- ══ COMPARISON — vs Wix vs Facebook page. Addresses Dave's real alternatives. ══ -->
+<section class="compare-section" id="compare" aria-label="StaticSwift vs Wix vs Facebook page">
+  <div class="compare-inner">
+    <div class="compare-head">
+      <div class="meet-eyebrow">Already on Facebook or Wix?</div>
+      <h2 class="compare-title">A small honest comparison.<br><em>You decide.</em></h2>
+      <p class="compare-sub">Most small businesses pick between three things when they're getting found online. Here's the trade-off — straight, no spin.</p>
+    </div>
+    <div class="compare-grid">
+      <!-- Column header row -->
+      <div class="cmp-col cmp-col-head"></div>
+      <div class="cmp-col cmp-col-head">
+        <div class="cmp-name">StaticSwift</div>
+        <div class="cmp-tag cmp-tag-win">Recommended</div>
+      </div>
+      <div class="cmp-col cmp-col-head">
+        <div class="cmp-name">Wix / Squarespace</div>
+      </div>
+      <div class="cmp-col cmp-col-head">
+        <div class="cmp-name">Facebook page only</div>
+      </div>
+
+      <!-- Row: Loads in -->
+      <div class="cmp-col cmp-row-label">Loads in</div>
+      <div class="cmp-col cmp-good"><strong>&lt; 1 second</strong><span>Hand-coded, no framework bloat</span></div>
+      <div class="cmp-col cmp-mid"><strong>3–6 seconds</strong><span>Lots of scripts &amp; trackers</span></div>
+      <div class="cmp-col cmp-mid"><strong>2–4 seconds</strong><span>You're inside their app, not your site</span></div>
+
+      <!-- Row: Google rank -->
+      <div class="cmp-col cmp-row-label">Ranks on Google for "[your trade] [your town]"</div>
+      <div class="cmp-col cmp-good"><strong>Yes — built for SEO</strong><span>Semantic HTML, schema, local-page structure</span></div>
+      <div class="cmp-col cmp-mid"><strong>Sometimes</strong><span>Heavy templates dilute keyword focus</span></div>
+      <div class="cmp-col cmp-bad"><strong>Almost never</strong><span>Facebook ranks below proper websites</span></div>
+
+      <!-- Row: Cost over 3 years -->
+      <div class="cmp-col cmp-row-label">3-year cost</div>
+      <div class="cmp-col cmp-good"><strong>£149 once</strong><span>+ £29/mo hosting only if you want it</span></div>
+      <div class="cmp-col cmp-mid"><strong>£500–£700</strong><span>£14–18/mo, forever, and you don't own the site</span></div>
+      <div class="cmp-col cmp-good"><strong>Free</strong><span>But customers can't book or contact you off-platform</span></div>
+
+      <!-- Row: Looks like your business -->
+      <div class="cmp-col cmp-row-label">Looks like a real business website</div>
+      <div class="cmp-col cmp-good"><strong>Yes</strong><span>Hand-built for your trade, your colours, your photos</span></div>
+      <div class="cmp-col cmp-mid"><strong>Looks like a Wix site</strong><span>Buyers can tell. So can Google.</span></div>
+      <div class="cmp-col cmp-bad"><strong>No</strong><span>Same layout as every other Facebook page on earth</span></div>
+
+      <!-- Row: You own it -->
+      <div class="cmp-col cmp-row-label">You own everything</div>
+      <div class="cmp-col cmp-good"><strong>Yes — code, design, domain</strong><span>Move it anywhere, edit it yourself, no lock-in</span></div>
+      <div class="cmp-col cmp-bad"><strong>No</strong><span>You rent space on their platform. Stop paying, site disappears.</span></div>
+      <div class="cmp-col cmp-bad"><strong>No</strong><span>Meta owns it. They change the rules whenever they like.</span></div>
+    </div>
+    <div class="compare-footer">
+      <p class="compare-footer-text"><strong>The honest take:</strong> if you want speed, real ownership, and to actually show up on Google — pick StaticSwift. If you're happy renting from Wix or Meta forever, that's fine. We're not for everyone.</p>
+      <a href="#contact" class="compare-cta">Start my free preview →</a>
+    </div>
   </div>
 </section>
 
@@ -4522,6 +4697,88 @@ else window.addEventListener('load', initGsap);
    Guards: prefers-reduced-motion respected; passive scroll;
    no layout-triggering properties (transform/opacity only).
    ═══════════════════════════════════════════════════════════════ */
+/* ───────── PUBLIC SITE AUDIT — visitor lead magnet ───────── */
+window.runPublicAudit = async function(ev) {
+  ev.preventDefault();
+  const urlEl = document.getElementById('auditUrl');
+  const btn = document.getElementById('auditBtn');
+  const resEl = document.getElementById('auditResult');
+  if (!urlEl || !btn || !resEl) return;
+  const url = (urlEl.value || '').trim();
+  if (!url) return;
+  btn.disabled = true; btn.textContent = 'Scanning…';
+  resEl.innerHTML = '<div class="audit-card"><div style="color:rgba(255,255,255,.6);font-family:\'DM Sans\',sans-serif">Fetching your site, checking SSL, mobile, speed, SEO basics…</div></div>';
+  resEl.classList.remove('empty');
+  try {
+    const r = await fetch('/.netlify/functions/analyze-site-public', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ url })
+    });
+    const d = await r.json();
+    if (!r.ok || !d) throw new Error(d?.error || 'Audit failed');
+    if (typeof gtag === 'function') gtag('event', 'site_audit_completed', { score: d.score, host: d.host });
+    renderPublicAudit(d);
+  } catch(err) {
+    resEl.innerHTML = '<div class="audit-error">Couldn\'t reach that site — double-check the URL and try again. (' + (err.message || 'unknown') + ')</div>';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Audit my site →';
+  }
+};
+
+function renderPublicAudit(d) {
+  const resEl = document.getElementById('auditResult');
+  if (!resEl) return;
+  const color = d.score >= 70 ? '#22c55e' : d.score >= 40 ? '#f59e0b' : '#ef4444';
+  const verdict = d.score >= 70 ? 'Decent shape.' : d.score >= 40 ? 'Could be a lot sharper.' : 'Time to replace it.';
+  const verdictSub = d.score >= 70
+    ? 'Your site is technically OK. We could still help if you want a fresher look.'
+    : d.score >= 40
+    ? 'Real issues are costing you customers. Fixable with a new build.'
+    : 'Right now you\'re losing customers every day. A new site pays for itself in weeks.';
+  const issuesHTML = (d.issues && d.issues.length)
+    ? d.issues.map(i => '<div class="audit-issue">' + escapeForAudit(i) + '</div>').join('')
+    : '<div class="audit-no-issues">No major issues — well done.</div>';
+  const cta = d.score < 70
+    ? `<a href="#contact" class="audit-cta-primary" onclick="prefillAuditUrl()">Get a free preview of a better version →</a>
+       <a href="tel:+447502731799" class="audit-cta-ghost">Or call Harry · 07502 731 799</a>`
+    : `<a href="#contact" class="audit-cta-primary">Still want a quote? Get a free preview →</a>
+       <a href="tel:+447502731799" class="audit-cta-ghost">Call Harry · 07502 731 799</a>`;
+  resEl.innerHTML = `
+    <div class="audit-card">
+      <div class="audit-card-top">
+        <div class="audit-score" style="color:${color}">
+          <div class="audit-score-num">${d.score}</div>
+          <div class="audit-score-lbl">/ 100</div>
+        </div>
+        <div class="audit-verdict">
+          <h3>${escapeForAudit(d.host || 'Your site')} — ${verdict}</h3>
+          <div class="audit-verdict-sub">${escapeForAudit(verdictSub)}</div>
+        </div>
+      </div>
+      <div class="audit-issues">${issuesHTML}</div>
+      <div class="audit-cta-row">${cta}</div>
+    </div>`;
+  // Stash the audited URL so the contact form pre-fills it
+  try { sessionStorage.setItem('ss_audit_url', d.url || ''); sessionStorage.setItem('ss_audit_score', String(d.score)); } catch(e) {}
+}
+
+function prefillAuditUrl() {
+  // When user clicks "Get a free preview", pre-fill the current-website field in the hero form
+  try {
+    const url = sessionStorage.getItem('ss_audit_url');
+    const score = sessionStorage.getItem('ss_audit_score');
+    const target = document.getElementById('hf-site');
+    if (target && url) target.value = url;
+    const biz = document.getElementById('hf-biz');
+    if (biz && !biz.value) biz.focus();
+    if (typeof gtag === 'function') gtag('event', 'audit_cta_clicked', { score });
+  } catch(e) {}
+}
+
+function escapeForAudit(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 (function appleMotion(){
   const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduce) {
