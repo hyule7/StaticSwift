@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/admin/admin.css?v=7">
+<link rel="stylesheet" href="/admin/admin.css?v=9">
 </head>
 <body>
 
@@ -297,10 +297,12 @@
       </div>
 
       <!-- SELF-HOSTED ANALYTICS — no Google tag needed -->
-      <div style="background:linear-gradient(135deg,rgba(0,200,224,.06),rgba(0,0,0,0));border:1px solid rgba(0,200,224,.18);border-radius:14px;padding:18px 20px;margin-bottom:18px;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)">
+      <div style="background:linear-gradient(135deg,rgba(0,200,224,.06),rgba(0,0,0,0));border:1px solid rgba(0,200,224,.18);border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted);flex-wrap:wrap">
         <span style="color:var(--cyan);font-weight:700">●</span>
-        Self-hosted analytics — your data, stored in Netlify Blobs, no Google needed. Privacy-preserving (no cross-day tracking).
+        <span style="flex:1">Self-hosted analytics — your data, stored in Netlify Blobs, no Google needed. Privacy-preserving (no cross-day tracking).</span>
+        <button onclick="runAnalyticsDebug()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:7px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🔧 Diagnose</button>
       </div>
+      <pre id="analytics-debug-result" style="display:none;background:#000;color:var(--green);padding:14px 18px;border-radius:10px;font-family:'DM Mono',monospace;font-size:11px;line-height:1.6;margin-bottom:18px;max-height:340px;overflow:auto;white-space:pre-wrap"></pre>
 
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:18px">
         <div class="stat-card"><div class="label">● Live now</div><div class="value" id="sa-live" style="color:var(--green)">—</div><div class="sub">In the last 5 minutes</div></div>
@@ -487,8 +489,29 @@
           <button class="btn-ghost" onclick="document.getElementById('csv-upload-input').click()">⬆ Import CSV</button>
           <input type="file" id="csv-upload-input" accept=".csv" style="display:none" onchange="importProspectsCSV(this)">
           <button class="btn-ghost" onclick="exportProspectsCSV()">⬇ Export CSV</button>
-          <button class="btn-ghost" onclick="sendBatchOutreach()">⚡ Send Batch</button>
         </div>
+      </div>
+
+      <!-- ════ SUB-NAV — tabs within Outreach ════ -->
+      <div class="outreach-tabs" id="outreach-tabs">
+        <button class="outreach-tab active" data-otab="autopilot" onclick="switchOutreachTab('autopilot')">
+          <span class="ot-icon">🤖</span><span>Autopilot</span><span class="ot-badge" id="ot-badge-autopilot"></span>
+        </button>
+        <button class="outreach-tab" data-otab="prospects" onclick="switchOutreachTab('prospects')">
+          <span class="ot-icon">📋</span><span>Prospects</span><span class="ot-badge" id="ot-badge-prospects">0</span>
+        </button>
+        <button class="outreach-tab" data-otab="results" onclick="switchOutreachTab('results')">
+          <span class="ot-icon">📊</span><span>Results &amp; activity</span>
+        </button>
+        <button class="outreach-tab" data-otab="discover" onclick="switchOutreachTab('discover')">
+          <span class="ot-icon">🌐</span><span>Discover</span>
+        </button>
+        <button class="outreach-tab" data-otab="templates" onclick="switchOutreachTab('templates')">
+          <span class="ot-icon">✉</span><span>Templates</span>
+        </button>
+        <button class="outreach-tab" data-otab="email-config" onclick="switchOutreachTab('email-config')">
+          <span class="ot-icon">⚙</span><span>Config</span>
+        </button>
       </div>
 
       <!-- GOOGLE PROSPECTING TOOLS -->
@@ -581,7 +604,15 @@
           <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="ap-switch-verify" checked> <span>✓ Verify emails (every 2 min)</span></label>
           <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="ap-switch-sequence" checked> <span>🔁 Queue follow-ups (every 5 min)</span></label>
           <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="ap-switch-autosend"> <span style="color:var(--amber)">📨 Auto-send drafts (B2B opt-in)</span></label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="ap-switch-goodtime" checked> <span>⏰ Send only Tue–Thu 9–12 (2× open rate)</span></label>
           <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="ap-switch-notify" checked> <span>🔔 Browser notifications</span></label>
+        </div>
+        <!-- Action row -->
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          <button onclick="sendAllQueuedDrafts()" class="btn-primary" style="background:var(--amber);color:#000">📨 Send all queued drafts (<span id="ap-drafts-pending">0</span>)</button>
+          <button onclick="clearAllDrafts()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:9px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Clear drafts</button>
+          <button onclick="exportAutopilotReport()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:9px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">⬇ Export CSV</button>
+          <button onclick="resetAutopilotStats()" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border);padding:9px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;margin-left:auto">Reset stats</button>
         </div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:14px">
           <div class="stat-card" style="padding:12px 14px;text-align:center"><div class="label" style="margin-bottom:4px">Discovered</div><div class="value" id="ap-stat-discovered" style="font-size:22px;color:var(--cyan)">0</div></div>
@@ -968,6 +999,6 @@
   </div>
 </div>
 
-<script src="/admin/admin.js?v=7" defer></script>
+<script src="/admin/admin.js?v=9" defer></script>
 </body>
 </html>

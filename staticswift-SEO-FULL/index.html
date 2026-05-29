@@ -2267,6 +2267,43 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
 .form-wa-link { color:#22c55e; font-weight:600; text-decoration:none; transition:color .2s; }
 .form-wa-link:hover { color:#16a34a; }
 
+/* ── EXIT-INTENT popup ── */
+#ss-exit-popup { position:fixed; inset:0; z-index:99999; display:flex; align-items:center; justify-content:center; padding:24px; animation:ssxFade .25s ease-out; }
+.ssx-overlay { position:absolute; inset:0; background:rgba(0,0,0,.65); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); }
+.ssx-card { position:relative; background:#ffffff; border-radius:20px; max-width:520px; width:100%; padding:42px 36px 32px; box-shadow:0 60px 120px -20px rgba(0,0,0,.5), 0 0 0 1px rgba(0,0,0,.05); animation:ssxRise .45s cubic-bezier(.16,1,.3,1); }
+.ssx-close { position:absolute; top:14px; right:14px; background:transparent; border:0; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:18px; color:#787774; transition:background .15s; }
+.ssx-close:hover { background:#f0ede5; color:#0f0f0f; }
+.ssx-eyebrow { font-family:'DM Sans',sans-serif; font-size:.78rem; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:#0066cc; margin-bottom:14px; }
+.ssx-title { font-family:'Instrument Serif',serif; font-weight:400; font-size:clamp(1.8rem,3vw,2.4rem); line-height:1.05; letter-spacing:-.025em; color:#0f0f0f; margin-bottom:14px; }
+.ssx-title em { font-style:italic; color:#0066cc; }
+.ssx-sub { font-family:'DM Sans',sans-serif; font-size:.96rem; line-height:1.55; color:#3a3a3a; margin-bottom:22px; }
+.ssx-form { display:flex; gap:.4rem; margin-bottom:14px; }
+.ssx-form input { flex:1; background:#faf8f3; border:1.5px solid rgba(0,0,0,.1); border-radius:10px; padding:.85rem 1rem; font-family:'DM Sans',sans-serif; font-size:.95rem; color:#0f0f0f; outline:none; transition:border-color .2s; }
+.ssx-form input:focus { border-color:#0f0f0f; background:#fff; }
+.ssx-form button { background:#0f0f0f; color:#fff; border:0; border-radius:10px; padding:.85rem 1.3rem; font-family:'DM Sans',sans-serif; font-size:.92rem; font-weight:600; cursor:pointer; white-space:nowrap; transition:background .2s, transform .2s; }
+.ssx-form button:hover { background:#000; transform:translateY(-1px); }
+.ssx-fine { font-family:'DM Sans',sans-serif; font-size:.82rem; color:#787774; text-align:center; }
+.ssx-fine a { color:#0f0f0f; font-weight:600; }
+.ssx-result { margin-top:14px; }
+.ssx-loading { font-family:'DM Sans',sans-serif; font-size:.92rem; color:#787774; text-align:center; padding:14px; }
+.ssx-error { font-family:'DM Sans',sans-serif; color:#dc2626; font-size:.9rem; padding:10px; }
+.ssx-score-card { display:flex; align-items:center; gap:18px; padding:18px 20px; border:2px solid; border-radius:14px; margin-bottom:14px; }
+.ssx-score { font-family:'Instrument Serif',serif; font-size:2.6rem; font-weight:400; line-height:1; }
+.ssx-score small { font-size:.55em; color:#787774; }
+.ssx-issues { font-family:'DM Sans',sans-serif; font-size:.88rem; color:#3a3a3a; line-height:1.45; }
+.ssx-issues div { padding:2px 0; }
+.ssx-cta { display:flex; align-items:center; justify-content:center; gap:.4rem; background:#0066cc; color:#fff; padding:.95rem 1.3rem; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:.95rem; font-weight:600; text-decoration:none; transition:background .2s, transform .2s; }
+.ssx-cta:hover { background:#003d80; transform:translateY(-1px); }
+@keyframes ssxFade { from { opacity:0; } to { opacity:1; } }
+@keyframes ssxRise { from { transform:translateY(20px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+@media(max-width:720px){ .ssx-card { padding:32px 24px 24px; } .ssx-form { flex-direction:column; } }
+
+/* Live audit social-proof under the audit form */
+.audit-live { margin-top:18px; font-family:'DM Sans',sans-serif; font-size:.84rem; color:rgba(255,255,255,.55); display:flex; align-items:center; justify-content:center; gap:.55rem; min-height:18px; opacity:0; transition:opacity .8s ease; }
+.audit-live.is-in { opacity:1; }
+.audit-live .alive-dot { width:7px; height:7px; border-radius:50%; background:#22c55e; box-shadow:0 0 12px rgba(34,197,94,.7); animation:pulse 1.8s ease-in-out infinite; }
+.audit-live strong { color:#fff; font-weight:700; }
+
 </style>
 </head>
 <body>
@@ -3171,6 +3208,7 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
         <button type="submit" class="audit-btn" id="auditBtn">Audit my site →</button>
       </div>
       <div class="audit-fine">No card, no email required to see your score · Real findings, not a sales pitch</div>
+      <div class="audit-live" id="auditLive" aria-live="polite"></div>
     </form>
     <div class="audit-result" id="auditResult" aria-live="polite"></div>
   </div>
@@ -5179,6 +5217,96 @@ function escapeForAudit(s) {
      Session id persisted in localStorage so we can rejoin the same visitor.
      ════════════════════════════════════════════════════════════════ -->
 <script>
+/* ════════════════════════════════════════════════════════════════
+   EXIT-INTENT POPUP — fires once per session when cursor leaves
+   the top of the viewport (mouse heading to close tab / back arrow).
+   Single offer: free site audit (lower friction than the form).
+   ════════════════════════════════════════════════════════════════ */
+(function exitIntent(){
+  if (location.hostname === 'localhost') return;
+  try { if (sessionStorage.getItem('ss_exit_shown')) return; } catch(e) { return; }
+  if (window.innerWidth < 720) return; // mobile uses sticky CTA instead
+
+  let armed = false;
+  // Arm only after the user has been on the page > 10s and scrolled > 25%
+  setTimeout(() => { armed = true; }, 10000);
+
+  function show() {
+    if (!armed) return;
+    try { if (sessionStorage.getItem('ss_exit_shown')) return; sessionStorage.setItem('ss_exit_shown', '1'); } catch(e){}
+    const wrap = document.createElement('div');
+    wrap.id = 'ss-exit-popup';
+    wrap.innerHTML = `
+      <div class="ssx-overlay" onclick="this.parentElement.remove()"></div>
+      <div class="ssx-card">
+        <button class="ssx-close" onclick="document.getElementById('ss-exit-popup').remove()" aria-label="Close">×</button>
+        <div class="ssx-eyebrow">Before you go —</div>
+        <h2 class="ssx-title">Want a <em>free 30-second audit</em> of your current site?</h2>
+        <p class="ssx-sub">Real score · real issues · no email required. Same engine I use to find prospects, turned on you, for free.</p>
+        <form class="ssx-form" onsubmit="ssExitAudit(event)">
+          <input type="url" id="ssxUrl" placeholder="yourbusiness.co.uk" required>
+          <button type="submit">Audit my site →</button>
+        </form>
+        <div class="ssx-fine">Or call Harry now · <a href="tel:+447502731799">07502 731 799</a></div>
+        <div id="ssxResult" class="ssx-result"></div>
+      </div>`;
+    document.body.appendChild(wrap);
+    if (typeof ssTrack === 'function') ssTrack('exit-intent:shown');
+  }
+
+  document.addEventListener('mouseleave', (e) => {
+    if (e.clientY < 5) show();
+  });
+  // Mobile-ish: fast scroll-up near top triggers
+  let lastY = 0, ups = 0;
+  document.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    if (y < lastY - 80 && y < 400) { ups++; if (ups > 1) show(); }
+    lastY = y;
+  }, { passive: true });
+})();
+
+/* Live "audits this week" counter — fetches public counts (no auth) */
+(async function loadAuditLive(){
+  const el = document.getElementById('auditLive');
+  if (!el) return;
+  try {
+    const r = await fetch('/.netlify/functions/audit-stats');
+    if (!r.ok) return;
+    const d = await r.json();
+    if (!d.ok || !d.thisWeek) return;
+    el.innerHTML = '<span class="alive-dot"></span> <strong>' + d.thisWeek + '</strong> business owners audited their site this week';
+    el.classList.add('is-in');
+  } catch(e) {}
+})();
+
+window.ssExitAudit = async function(ev) {
+  ev.preventDefault();
+  const url = document.getElementById('ssxUrl').value.trim();
+  if (!url) return;
+  const out = document.getElementById('ssxResult');
+  out.innerHTML = '<div class="ssx-loading">Scanning…</div>';
+  if (typeof ssTrack === 'function') ssTrack('exit-intent:submit', { url });
+  try {
+    const r = await fetch('/.netlify/functions/analyze-site-public', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ url })
+    });
+    const d = await r.json();
+    const color = d.score >= 70 ? '#22c55e' : d.score >= 40 ? '#f59e0b' : '#ef4444';
+    out.innerHTML = `
+      <div class="ssx-score-card" style="border-color:${color}">
+        <div class="ssx-score" style="color:${color}">${d.score}<small>/100</small></div>
+        <div class="ssx-issues">${(d.issues || []).slice(0, 3).map(i => '<div>• ' + escapeForExit(i) + '</div>').join('') || '<div>No major issues found.</div>'}</div>
+      </div>
+      <a href="#contact" onclick="sessionStorage.setItem('ss_audit_url','${encodeURIComponent(d.url || url)}');document.getElementById('ss-exit-popup').remove()" class="ssx-cta">Get a free preview of a better version →</a>`;
+    if (typeof ssTrack === 'function') ssTrack('exit-intent:audit-done', { score: d.score });
+  } catch (err) {
+    out.innerHTML = '<div class="ssx-error">Couldn\'t reach that site — try again.</div>';
+  }
+};
+function escapeForExit(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
 (function ssAnalytics(){
   if (location.hostname === 'localhost' || location.hostname.startsWith('127.')) return;
   var ENDPOINT = '/.netlify/functions/track-event';

@@ -2927,7 +2927,93 @@ If you'd rather not hear from me, reply STOP — I'll remove you immediately.
 Cheers,
 Harry`,
   },
+  'free-preview': {
+    label: 'Free preview offer (high-conversion)',
+    subject: 'free mockup for {biz}?',
+    body: `Hi {nameOrThere},
+
+I'm a UK web designer and I'd genuinely like to make you a free mockup of what {biz}'s website could look like — no commitment, no pitch.
+
+Why I'm offering this: I'd rather show you what I make than tell you. If you like it, it's £149 to build properly. If you don't, you keep the mockup as inspiration.
+
+Just hit reply with your address (or just "yes" — I'll grab the details from {website}).
+
+Harry · Manchester
+
+P.S. Turnaround is normally 24 hours.`,
+  },
+  'specific-cta': {
+    label: 'Specific CTA (asks one question)',
+    subject: 'a question about {biz}',
+    body: `Hi {nameOrThere},
+
+What's the one thing about your current site that bothers you most?
+
+Reason: I rebuild sites for UK trades — £149, 24 hours, no payment until you love it — and I'd rather fix the thing that actually annoys you than guess.
+
+If now's not the time, reply STOP and I'll vanish.
+
+Harry · Manchester
+07502 731 799`,
+  },
+  'social-proof': {
+    label: 'Social proof anchor',
+    subject: 'how a local barber tripled bookings',
+    body: `Hi {nameOrThere},
+
+A barber in Manchester ran a Facebook page only — no website. I built him a £149 hand-coded site over a weekend. Eight months later: triple the bookings, 4.9 on Google with 187 reviews, indexes #1 for "barber northern quarter".
+
+That site is at staticswift.co.uk/example-fade-and-blade if you want to see it.
+
+If a similar result for {biz} sounds useful, hit reply — I'll mock up a free preview within 24 hours.
+
+If not, reply STOP and I'll go quiet.
+
+Harry`,
+  },
+  'final-bump': {
+    label: 'Final bump (last-touch)',
+    subject: 'closing the loop on {biz}',
+    body: `Hi {nameOrThere},
+
+I'll close the loop on this — totally fine if it's not the right time.
+
+Just wanted to say: if at any point you want a free preview of what a new {biz} site could look like, my offer still stands. £149 if you love it, walk away if you don't.
+
+Hope business stays busy either way.
+
+Harry · 07502 731 799
+
+P.S. Reply STOP and I'll archive your details for good.`,
+  },
 };
+
+/* Subject A/B variants — pick stable per-prospect so re-generations are consistent */
+const SUBJECT_VARIANTS = {
+  'short-curiosity': ['{biz}', 'one thing about {biz}', 'noticed {biz}'],
+  'specific-signal': ['two things about {biz}', '{biz} — three quick things', 'about your site, {biz}'],
+  'cold-observation': ['Quick thought on {biz}', 'About {biz}\'s site', '{biz} — could be sharper'],
+  'cold-light': ['New site for {biz}?', '{biz}, quick offer', 'Would a new site help {biz}?'],
+  'followup-1': ['Re: {biz}', 'bumping this one', 'just in case'],
+  'followup-2': ['last note on {biz}', 'closing this out', 'final email'],
+  'post-analysis': ['{biz} — three fixes', 'a real audit of {biz}', '{biz}\'s site, honestly'],
+  'free-preview': ['free mockup for {biz}?', 'showing > telling', 'no-strings preview for {biz}'],
+  'specific-cta': ['a question about {biz}', 'one question, {biz}', 'quick one for {nameOrThere}'],
+  'social-proof': ['how a local barber tripled bookings', 'a £149 case study', '{biz} could do this too'],
+  'final-bump': ['closing the loop on {biz}', 'last one, promise', 'archiving — unless?'],
+};
+function pickSubjectVariant(prospectId, tmplKey) {
+  const variants = SUBJECT_VARIANTS[tmplKey];
+  if (!variants || !variants.length) return null;
+  const hash = (prospectId || '').split('').reduce((s, c) => s + c.charCodeAt(0), 0);
+  return variants[hash % variants.length];
+}
+function isGoodSendTimeNow() {
+  const d = new Date();
+  const day = d.getDay();    // 0=Sun
+  const hour = d.getHours(); // local
+  return [2, 3, 4].includes(day) && hour >= 9 && hour < 12;
+}
 
 function refreshProspectDropdown() {
   const sel = document.getElementById('tmpl-prospect');
@@ -2958,7 +3044,10 @@ function generateTemplate() {
       : '  • Slow load time\n  • Looks dated on mobile\n  • Not ranking on Google for your trade + town',
   };
   const fill = (s) => s.replace(/\{(\w+)\}/g, (_, k) => fields[k] ?? '');
-  const subject = fill(tmpl.subject);
+  // A/B subject variant — picks one stable per-prospect to track reply rate by variant
+  const variant = pickSubjectVariant(p?.id, tmplKey);
+  const subject = fill(variant || tmpl.subject);
+  if (p) p.lastSubjectVariant = variant || tmpl.subject;
   // Tracking pixel for open-rate. Only embedded when prospect has an ID.
   const trackPx = p?.id
     ? '\n\n<img src="https://staticswift.co.uk/.netlify/functions/track-open?p=' + encodeURIComponent(p.id) + '&t=' + encodeURIComponent(tmplKey) + '" width="1" height="1" alt="" style="display:block" />'
@@ -4343,6 +4432,12 @@ async function apWorkerSequence() {
     item.step.draftedAt = new Date().toISOString();
     apLog('📝 Draft queued: ' + (item.prospect.bizname || item.prospect.email) + ' · ' + item.step.label, 'info');
     if (autosend) {
+      // Optional: only send during good-window if the toggle is on
+      const goodOnly = document.getElementById('ap-switch-goodtime')?.checked;
+      if (goodOnly && !isGoodSendTimeNow()) {
+        apLog('  ↳ ⏰ outside Tue–Thu 9–12 window — draft held for later', 'warn');
+        continue;
+      }
       try {
         const sent = await apSendDraft(draft);
         if (sent) {
@@ -4474,3 +4569,279 @@ setTimeout(() => {
   if (typeof eval(fn) === 'function') window[fn] = eval(fn);
 });
 
+
+/* ════════════════════════════════════════════════════════════════
+   AUTOPILOT — bulk send, draft management, report export
+   ════════════════════════════════════════════════════════════════ */
+
+function updateDraftsPending() {
+  const el = document.getElementById('ap-drafts-pending');
+  if (el) el.textContent = (autopilotDrafts || []).length;
+}
+
+async function sendAllQueuedDrafts() {
+  if (!autopilotDrafts.length) { alert('No drafts queued.'); return; }
+  const goodOnly = document.getElementById('ap-switch-goodtime')?.checked;
+  if (goodOnly && !isGoodSendTimeNow()) {
+    if (!confirm('You\'re outside the Tue–Thu 9–12 send window. Send anyway? (open-rate may drop)')) return;
+  }
+  if (!confirm('Send ' + autopilotDrafts.length + ' queued drafts via SMTP now?\n\nAll templates include the PECR opt-out + your sender identity.')) return;
+  let sent = 0, failed = 0;
+  const before = autopilotStats.sent;
+  apLog('📨 Bulk send starting · ' + autopilotDrafts.length + ' drafts', 'info');
+  for (const draft of autopilotDrafts.slice()) {
+    try {
+      const ok = await apSendDraft(draft);
+      if (ok) {
+        sent++; autopilotStats.sent++;
+        if (typeof draft.prospectId === 'number' || typeof draft.prospectId === 'string') {
+          markSequenceStepSent(draft.prospectId, draft.stepIndex);
+        }
+        autopilotDrafts = autopilotDrafts.filter(d => d !== draft);
+        apLog('  ↳ ✅ ' + draft.to, 'ok');
+      } else { failed++; apLog('  ↳ ❌ ' + draft.to, 'err'); }
+    } catch(e) { failed++; apLog('  ↳ ❌ ' + draft.to + ': ' + e.message, 'err'); }
+    // Polite throttle — 1s between sends
+    await new Promise(r => setTimeout(r, 1000));
+  }
+  saveAutopilotState(); updateDraftsPending(); apUpdateStats();
+  alert('Sent: ' + sent + ' · Failed: ' + failed);
+  apLog('📨 Bulk send done · ' + sent + ' sent · ' + failed + ' failed', 'ok');
+}
+
+function clearAllDrafts() {
+  if (!autopilotDrafts.length) return;
+  if (!confirm('Clear ' + autopilotDrafts.length + ' queued drafts? Sequences will re-queue them later.')) return;
+  autopilotDrafts = [];
+  saveAutopilotState(); updateDraftsPending();
+}
+
+function exportAutopilotReport() {
+  const head = ['Stat','Value'];
+  const rows = [
+    ['Session start', autopilotStats.sessionStart || ''],
+    ['Discovered', autopilotStats.discovered],
+    ['Scanned', autopilotStats.scanned],
+    ['Prospects added', autopilotStats.prospects],
+    ['Emails verified', autopilotStats.verified],
+    ['Drafts queued (total)', autopilotStats.drafts],
+    ['Emails sent', autopilotStats.sent],
+    ['Targets', autopilotTargets.map(t => t.niche + '/' + t.area + '/' + t.country).join('; ')],
+  ];
+  // Also append all prospect data
+  const prospectHead = ['','','BizName','Email','Phone','Website','Score','Platform','Status','EmailVerified','LastContacted'];
+  const prospectRows = prospects.map(p => ['','',
+    p.bizname || '', p.email || '', p.phone || '', p.website || '',
+    p.siteScore ?? '', p.sitePlatform || '', p.status || 'new',
+    p.emailVerified === true ? 'yes' : p.emailVerified === false ? 'no' : '',
+    p.lastContacted || '',
+  ]);
+  const all = [head, ...rows, ['',''], prospectHead, ...prospectRows];
+  const csv = all.map(r => r.map(v => {
+    const s = String(v).replace(/"/g, '""');
+    return /[",\n]/.test(s) ? '"' + s + '"' : s;
+  }).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'autopilot-report-' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click();
+}
+
+function resetAutopilotStats() {
+  if (!confirm('Reset all autopilot stats? (Prospects and drafts kept.)')) return;
+  autopilotStats = { discovered:0, scanned:0, prospects:0, verified:0, drafts:0, sent:0, sessionStart:new Date().toISOString(), lastTick:null };
+  saveAutopilotState(); apUpdateStats();
+}
+
+['sendAllQueuedDrafts','clearAllDrafts','exportAutopilotReport','resetAutopilotStats','updateDraftsPending']
+  .forEach(fn => { if (typeof eval(fn) === 'function') window[fn] = eval(fn); });
+
+setInterval(updateDraftsPending, 5000);
+setTimeout(updateDraftsPending, 800);
+
+/* ════════════════════════════════════════════════════════════════
+   OUTREACH SUB-TAB ROUTER + ANALYTICS DEBUG + WORKFLOW AGENTS
+   ════════════════════════════════════════════════════════════════ */
+
+// Map: section heading or characteristic class → which tab it lives under
+const OUTREACH_TAB_MAP = [
+  // Autopilot tab
+  { match: el => el.classList?.contains('autopilot-card'), tab: 'autopilot' },
+  { match: el => el.querySelector?.('h3')?.textContent?.includes('Sequence tray'), tab: 'autopilot' },
+  { match: el => el.querySelector?.('h3')?.textContent?.includes('Always-on scanner'), tab: 'autopilot' },
+  // Discover tab
+  { match: el => el.querySelector?.('h3')?.textContent?.includes('Find prospects'), tab: 'discover' },
+  { match: el => el.querySelector?.('h3')?.textContent?.includes('Auto-discover'), tab: 'discover' },
+  { match: el => el.querySelector?.('h3')?.textContent?.includes('Batch scanner'), tab: 'discover' },
+  // Templates tab
+  { match: el => el.querySelector?.('h3')?.textContent?.includes('Site analyzer'), tab: 'templates' },
+  { match: el => el.querySelector?.('h3')?.textContent?.includes('Outreach templates'), tab: 'templates' },
+  // Email-config tab
+  { match: el => el.querySelector?.('h3')?.textContent?.includes('Email config'), tab: 'email-config' },
+];
+
+function assignOutreachTabs() {
+  const pg = document.getElementById('page-outreach');
+  if (!pg) return;
+  // Stats bar + tabs strip + modal stay always-visible
+  pg.querySelectorAll('.outreach-tools, .autopilot-card').forEach(section => {
+    for (const rule of OUTREACH_TAB_MAP) {
+      if (rule.match(section)) { section.dataset.otab = rule.tab; return; }
+    }
+    section.dataset.otab = 'discover'; // safe default
+  });
+  // The command-center prospects table is the big block at the bottom
+  const cc = document.querySelector('#page-outreach > div[style*="border:1px solid var(--border);border-radius:14px"]');
+  if (cc && !cc.dataset.otab) cc.dataset.otab = 'prospects';
+}
+
+function switchOutreachTab(tab) {
+  document.querySelectorAll('#outreach-tabs .outreach-tab').forEach(b => b.classList.toggle('active', b.dataset.otab === tab));
+  document.querySelectorAll('#page-outreach [data-otab]').forEach(el => {
+    el.style.display = (el.dataset.otab === tab) ? '' : 'none';
+  });
+  // Special: render results tab when switched to
+  if (tab === 'results') renderResultsTab();
+  // Persist last-used tab
+  try { localStorage.setItem('ss_outreach_tab', tab); } catch(e){}
+}
+
+function renderResultsTab() {
+  let panel = document.getElementById('results-tab-panel');
+  if (!panel) {
+    panel = document.createElement('div');
+    panel.id = 'results-tab-panel';
+    panel.dataset.otab = 'results';
+    panel.style.cssText = 'display:flex;flex-direction:column;gap:18px;margin-bottom:18px';
+    const pg = document.getElementById('page-outreach');
+    pg?.querySelector('.outreach-tabs')?.after(panel);
+  }
+  const totals = autopilotStats || { discovered:0, scanned:0, prospects:0, verified:0, drafts:0, sent:0 };
+  const recentLogs = Array.from(document.querySelectorAll('#ap-activity > div')).slice(-30).map(d => d.outerHTML).join('') || '<div style="color:var(--dim)">No activity yet — start autopilot to see live results here.</div>';
+  const sessionStart = totals.sessionStart ? new Date(totals.sessionStart).toLocaleString('en-GB') : 'Not started';
+  const uptime = totals.sessionStart ? Math.round((Date.now() - new Date(totals.sessionStart).getTime()) / 60000) : 0;
+  const newToday = prospects.filter(p => {
+    const t = new Date(p.addedAt).getTime();
+    return Date.now() - t < 86400000;
+  }).length;
+  const topScores = prospects.slice().sort((a,b) => (a.siteScore ?? 999) - (b.siteScore ?? 999)).slice(0, 8);
+  panel.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">
+      <div class="stat-card" style="padding:14px"><div class="label">Session start</div><div class="value" style="font-size:14px;font-family:'DM Mono',monospace">${escapeHTML(sessionStart)}</div></div>
+      <div class="stat-card" style="padding:14px"><div class="label">Uptime</div><div class="value">${uptime}<small style="font-size:.5em">min</small></div></div>
+      <div class="stat-card" style="padding:14px"><div class="label">Prospects today</div><div class="value" style="color:var(--green)">${newToday}</div></div>
+      <div class="stat-card" style="padding:14px"><div class="label">Total found</div><div class="value" style="color:var(--cyan)">${totals.discovered}</div></div>
+      <div class="stat-card" style="padding:14px"><div class="label">Sites scanned</div><div class="value" style="color:var(--purple)">${totals.scanned}</div></div>
+      <div class="stat-card" style="padding:14px"><div class="label">Emails verified</div><div class="value">${totals.verified}</div></div>
+      <div class="stat-card" style="padding:14px"><div class="label">Drafts queued</div><div class="value" style="color:var(--amber)">${totals.drafts}</div></div>
+      <div class="stat-card" style="padding:14px"><div class="label">Emails sent</div><div class="value" style="color:var(--green)">${totals.sent}</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:flex;justify-content:space-between;align-items:center">
+          <span>🔥 Top opportunities (lowest score)</span>
+          <button onclick="switchOutreachTab('prospects')" style="background:none;border:0;color:var(--cyan);font-size:11px;cursor:pointer;font-family:inherit">All →</button>
+        </div>
+        <div style="max-height:380px;overflow-y:auto">
+          ${topScores.length ? topScores.map(p => `
+            <div style="padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px">
+              <div style="font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:${(p.siteScore ?? 999) < 40 ? 'var(--red)' : 'var(--amber)'};width:40px">${p.siteScore ?? '—'}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-weight:600;font-size:13px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHTML(p.bizname || 'Unknown')}</div>
+                <div style="font-size:11px;color:var(--muted)">${escapeHTML(p.sitePlatform || '')} · ${p.email ? escapeHTML(p.email) : 'no email'}</div>
+              </div>
+              <button onclick="prefillTemplateFor('${escapeHTML(p.id)}');switchOutreachTab('templates')" style="background:var(--cyan);color:var(--ink);border:0;padding:5px 10px;border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">✉</button>
+            </div>`).join('') : '<div style="padding:20px;color:var(--dim);text-align:center">No prospects yet</div>'}
+        </div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+        <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">📡 Live activity stream</div>
+        <div style="max-height:380px;overflow-y:auto;padding:12px 14px;font-family:'DM Mono',monospace;font-size:11px;line-height:1.7;color:var(--muted);background:#000">
+          ${recentLogs}
+        </div>
+      </div>
+    </div>`;
+}
+
+/* ════ ANALYTICS DEBUG button — diagnoses Blobs + tracker ════ */
+async function runAnalyticsDebug() {
+  const out = document.getElementById('analytics-debug-result');
+  if (!out) return;
+  out.style.display = 'block';
+  out.textContent = 'Running diagnostic…';
+  try {
+    const r = await fetch('/.netlify/functions/analytics-debug', {
+      headers: { 'x-admin-password': ADMIN_PW },
+    });
+    const text = await r.text();
+    out.textContent = text;
+    out.style.color = text.includes('✓ Analytics working') ? 'var(--green)' : 'var(--amber)';
+  } catch (err) {
+    out.textContent = 'Debug failed: ' + err.message;
+    out.style.color = 'var(--red)';
+  }
+}
+
+/* ════ WORKFLOW AGENTS — long-running, status-aware ════ */
+
+// Agent: auto-archive stale prospects (90 days no activity + status=sent)
+function workflowAgentArchiveStale() {
+  const cutoff = Date.now() - 90 * 86400000;
+  let archived = 0;
+  prospects.forEach(p => {
+    const last = new Date(p.lastContacted || p.addedAt).getTime();
+    if (p.status === 'sent' && last < cutoff) { p.status = 'dead'; p.deadReason = 'stale-90d'; archived++; }
+  });
+  if (archived) { saveProspects(); renderProspectsTable(); apLog('🗄 Archived ' + archived + ' stale prospects', 'info'); }
+  return archived;
+}
+
+// Agent: auto-tag prospects by signal richness (★ for hot, ♨ for warm)
+function workflowAgentTagProspects() {
+  let tagged = 0;
+  prospects.forEach(p => {
+    const isHot = (p.siteScore ?? 999) < 30 && p.emailVerified === true && (p.sitePlatform === 'Wix' || p.sitePlatform === 'GoDaddy Builder' || p.sitePlatform === 'No website');
+    const isWarm = (p.siteScore ?? 999) < 50 && p.email;
+    const newTag = isHot ? '🔥hot' : isWarm ? '♨warm' : '';
+    if (p.tag !== newTag) { p.tag = newTag; tagged++; }
+  });
+  if (tagged) { saveProspects(); renderProspectsTable(); }
+  return tagged;
+}
+
+// Run workflows every 10 min while autopilot is on
+function startWorkflowAgents() {
+  if (window._workflowInt) return;
+  window._workflowInt = setInterval(() => {
+    if (!autopilotOn) return;
+    workflowAgentArchiveStale();
+    workflowAgentTagProspects();
+  }, 10 * 60_000);
+}
+
+// Hook into autopilot toggle so workflows track its state
+const _origToggleAutopilot = window.toggleAutopilot;
+window.toggleAutopilot = function(){
+  if (typeof _origToggleAutopilot === 'function') _origToggleAutopilot();
+  if (autopilotOn) startWorkflowAgents();
+};
+
+['switchOutreachTab','renderResultsTab','runAnalyticsDebug','workflowAgentArchiveStale','workflowAgentTagProspects','assignOutreachTabs']
+  .forEach(fn => { try { if (typeof eval(fn) === 'function') window[fn] = eval(fn); } catch(e){} });
+
+// On outreach tab open, assign sections + restore last-used sub-tab
+const _origShowPage2 = window.showPage;
+window.showPage = function(id, btn) {
+  if (typeof _origShowPage2 === 'function') _origShowPage2(id, btn);
+  if (id === 'outreach') {
+    setTimeout(() => {
+      assignOutreachTabs();
+      const last = localStorage.getItem('ss_outreach_tab') || 'autopilot';
+      switchOutreachTab(last);
+    }, 100);
+  }
+};
+
+// Run once on load too in case user lands on outreach
+setTimeout(() => { try { assignOutreachTabs(); const t = localStorage.getItem('ss_outreach_tab') || 'autopilot'; switchOutreachTab(t); } catch(e) {} }, 1500);

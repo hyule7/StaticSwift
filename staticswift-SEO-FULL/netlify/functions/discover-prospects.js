@@ -86,22 +86,24 @@ async function overpassFetch(query) {
 }
 
 function buildOverpassQuery(tags, areaName, country) {
-  // Strategy: use a bounding-box-by-area lookup that's tolerant of name variants.
-  // OSM stores area names under different keys for cities vs regions; we try a
-  // broader filter that accepts city/town/admin_level matches.
-  const filters = tags.map(([k, v]) => `nwr["${k}"="${v}"]["website"](area.search);`).join('\n  ');
+  // Pull ALL matching businesses, not just those with a `website` tag —
+  // most real shops/services don't bother adding their URL to OSM, but they
+  // ARE on OSM (you'll get phone, address, website-if-present). Then we
+  // filter in JS: keep entries with EITHER website OR phone OR contact.
+  const filters = tags.map(([k, v]) => `nwr["${k}"="${v}"](area.search);`).join('\n  ');
   const safeName = areaName.replace(/["\\]/g, '');
   return `
-[out:json][timeout:25];
+[out:json][timeout:30];
 (
   area["name"="${safeName}"]["boundary"="administrative"];
-  area["name"="${safeName}"]["place"~"city|town|village|suburb"];
+  area["name"="${safeName}"]["place"~"city|town|village|suburb|hamlet"];
   area["name:en"="${safeName}"]["boundary"="administrative"];
+  area["alt_name"="${safeName}"]["boundary"="administrative"];
 )->.search;
 (
   ${filters}
 );
-out tags 200;
+out center tags 500;
 `.trim();
 }
 
@@ -131,36 +133,45 @@ exports.handler = async (event) => {
     const query = buildOverpassQuery(tags, area);
     const data = await overpassFetch(query);
     const elements = data.elements || [];
-    // Extract websites + dedupe
-    const seen = new Set();
-    const businesses = [];
+    // Extract everything — websites go to scan queue, no-website businesses
+    // become direct prospects (the best leads — they NEED a site).
+    const seenHosts = new Set();
+    const seenNoSite = new Set();
+    const withWebsite = [];
+    const withoutWebsite = [];
     for (const el of elements) {
       const t = el.tags || {};
-      let website = t.website || t['contact:website'] || t.url;
-      if (!website) continue;
-      if (!/^https?:\/\//i.test(website)) website = 'https://' + website;
-      try {
-        const u = new URL(website);
-        const host = u.hostname.replace(/^www\./, '');
-        if (seen.has(host)) continue;
-        seen.add(host);
-        businesses.push({
-          name: t.name || t['name:en'] || '',
-          website: u.toString(),
-          host,
-          phone: t.phone || t['contact:phone'] || '',
-          email: t.email || t['contact:email'] || '',
-          addr: [t['addr:street'], t['addr:city']].filter(Boolean).join(', '),
-        });
-      } catch { /* invalid URL — skip */ }
+      const name = t.name || t['name:en'] || '';
+      if (!name) continue;
+      const phone = t.phone || t['contact:phone'] || t['contact:mobile'] || '';
+      const email = t.email || t['contact:email'] || '';
+      const addr = [t['addr:housenumber'], t['addr:street'], t['addr:city']].filter(Boolean).join(' ');
+      let website = t.website || t['contact:website'] || t.url || '';
+      if (website && !/^https?:\/\//i.test(website)) website = 'https://' + website;
+      if (website) {
+        try {
+          const u = new URL(website);
+          const host = u.hostname.replace(/^www\./, '');
+          if (seenHosts.has(host)) continue;
+          seenHosts.add(host);
+          withWebsite.push({ name, website: u.toString(), host, phone, email, addr });
+        } catch { continue; }
+      } else if (phone || email) {
+        // No website — these are the HOTTEST leads. Dedupe by name + addr.
+        const key = (name + '|' + addr).toLowerCase();
+        if (seenNoSite.has(key)) continue;
+        seenNoSite.add(key);
+        withoutWebsite.push({ name, phone, email, addr });
+      }
     }
 
-    // Push the URLs into the persistent scan queue
+    // Push the websites into the scan queue
     const db = await readDB();
     if (!Array.isArray(db.scanQueue)) db.scanQueue = [];
+    if (!Array.isArray(db.cronProspects)) db.cronProspects = [];
     const existingUrls = new Set(db.scanQueue.map(x => x.url || x));
     let added = 0;
-    for (const b of businesses) {
+    for (const b of withWebsite) {
       if (existingUrls.has(b.website)) continue;
       db.scanQueue.push({
         url: b.website,
@@ -170,19 +181,47 @@ exports.handler = async (event) => {
       });
       added++;
     }
+    // No-website businesses become direct prospects (highest score = 0, biggest opportunity)
+    let directProspects = 0;
+    const existingHosts = new Set(db.cronProspects.map(p => (p.bizname || '') + '|' + (p.location || '')));
+    for (const b of withoutWebsite) {
+      const key = (b.name + '|' + (b.addr || area)).toLowerCase();
+      if (existingHosts.has(key)) continue;
+      db.cronProspects.unshift({
+        id: 'osm-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+        bizname: b.name,
+        email: b.email,
+        phone: b.phone,
+        website: '',
+        location: b.addr || area,
+        type: niche,
+        siteScore: 0,
+        sitePlatform: 'No website',
+        siteIssues: ['No website at all — easiest pitch'],
+        status: 'new',
+        addedAt: new Date().toISOString(),
+        source: 'osm-no-website',
+        notes: 'Found via OSM in ' + area + '. No website — prime pitch target.',
+      });
+      directProspects++;
+    }
     // Cap at 5000 to keep JSONBin small
     if (db.scanQueue.length > 5000) db.scanQueue = db.scanQueue.slice(-5000);
+    if (db.cronProspects.length > 10000) db.cronProspects = db.cronProspects.slice(0, 10000);
     await writeDB(db);
 
     return {
       statusCode: 200,
       body: JSON.stringify({
         ok: true,
-        found: businesses.length,
+        found: withWebsite.length + withoutWebsite.length,
+        withWebsite: withWebsite.length,
+        withoutWebsite: withoutWebsite.length,
         addedToQueue: added,
+        directProspects,
         queueSize: db.scanQueue.length,
-        sample: businesses.slice(0, 8),
-        note: 'URLs added to scan queue. Cron-scan will process them every 15 min, or start the manual scanner.',
+        sample: [...withWebsite, ...withoutWebsite].slice(0, 8),
+        note: 'URLs queued for scanning. Businesses without websites added as direct prospects (highest-value leads).',
       }),
     };
   } catch (err) {

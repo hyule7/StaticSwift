@@ -1057,3 +1057,36 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}
 /* Animated stat card pop when value changes */
 @keyframes statPop { 0%{transform:scale(1)} 50%{transform:scale(1.15);color:var(--cyan)} 100%{transform:scale(1)} }
 .stat-card .value.pop { animation: statPop .5s cubic-bezier(.16,1,.3,1); }
+
+/* ── OUTREACH SUB-TABS ── */
+.outreach-tabs {
+  display: flex; gap: 4px; margin-bottom: 22px;
+  border: 1px solid var(--border); border-radius: 12px;
+  padding: 4px; background: var(--dark2);
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.outreach-tab {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; border: 0; color: var(--muted);
+  padding: 9px 16px; border-radius: 8px;
+  font-size: 13px; font-weight: 500; font-family: 'DM Sans', sans-serif;
+  cursor: pointer; transition: all .2s; white-space: nowrap;
+  position: relative;
+}
+.outreach-tab:hover:not(.active) { color: var(--text); background: rgba(255,255,255,.03); }
+.outreach-tab.active {
+  background: var(--cyan); color: var(--ink); font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0,200,224,.25);
+}
+.outreach-tab .ot-icon { font-size: 14px; }
+.outreach-tab .ot-badge {
+  background: var(--surface2); color: var(--muted);
+  font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 700;
+  padding: 1px 7px; border-radius: 100px; min-width: 18px; text-align: center;
+}
+.outreach-tab.active .ot-badge { background: rgba(0,0,0,.18); color: var(--ink); }
+@media(max-width: 720px) {
+  .outreach-tabs { padding: 3px; }
+  .outreach-tab { padding: 8px 11px; font-size: 11.5px; }
+  .outreach-tab span:not(.ot-icon):not(.ot-badge) { display: none; }
+}
