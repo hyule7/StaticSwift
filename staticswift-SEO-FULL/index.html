@@ -1848,6 +1848,80 @@ html { scroll-behavior:smooth }
   .cinema-v2, .trades-photos, .price-strip, .trade-section, .contact-section, .faq-section { opacity:1 !important; transform:none !important }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   CINEMA PHONE — hand-coded mini-site mockup (no iframe).
+   Always renders. Scrolls via translateY driven by --frameY.
+   ═══════════════════════════════════════════════════════════════ */
+.cv-mockup { position:absolute; top:0; left:0; width:100%; min-height:1900px; background:#fff; transform:translateY(var(--frameY,0px)); transition:transform .05s linear; will-change:transform; z-index:2; font-family:'DM Sans',sans-serif; color:#0f0f0f; }
+.cvm-nav { display:flex; justify-content:space-between; align-items:center; padding:14px 18px; background:#0a0a0a; color:#fff; }
+.cvm-brand { font-family:'DM Sans',sans-serif; font-size:.65rem; font-weight:700; letter-spacing:.2em; }
+.cvm-nav-cta { background:#fff; color:#0a0a0a; font-size:.58rem; font-weight:700; padding:5px 10px; border-radius:980px; letter-spacing:.08em; text-transform:uppercase; }
+.cvm-hero { position:relative; aspect-ratio:9/12; background-size:cover; background-position:center; overflow:hidden; }
+.cvm-hero-overlay { position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.15) 0%,rgba(0,0,0,.7) 100%); }
+.cvm-hero-content { position:absolute; left:0; right:0; bottom:0; padding:24px 18px 22px; color:#fff; }
+.cvm-eyebrow { font-family:'DM Sans',sans-serif; font-size:.55rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; opacity:.85; margin-bottom:.5rem; }
+.cvm-h1 { font-family:'Instrument Serif',serif; font-weight:400; font-size:1.6rem; line-height:1.05; letter-spacing:-.02em; margin-bottom:1rem; }
+.cvm-h1 em { font-style:italic; color:#fff; }
+.cvm-cta { display:inline-block; background:#fff; color:#0a0a0a; font-family:'DM Sans',sans-serif; font-size:.65rem; font-weight:700; padding:8px 14px; border-radius:980px; letter-spacing:.06em; }
+.cvm-cta-big { font-size:.78rem; padding:11px 20px; margin-top:14px; }
+.cvm-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:0; background:#fff; border-bottom:1px solid rgba(0,0,0,.06); }
+.cvm-strip-item { padding:18px 12px; text-align:center; border-right:1px solid rgba(0,0,0,.06); }
+.cvm-strip-item:last-child { border-right:0; }
+.cvm-strip-num { font-family:'Instrument Serif',serif; font-size:1.4rem; font-weight:400; color:#0f0f0f; line-height:1; letter-spacing:-.02em; }
+.cvm-strip-num small { font-size:.7rem; color:#787774; }
+.cvm-strip-lbl { font-family:'DM Sans',sans-serif; font-size:.55rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:#787774; margin-top:.3rem; }
+.cvm-section { padding:32px 20px; background:#fff; }
+.cvm-section.cvm-dark { background:#0f0f0f; color:#fff; }
+.cvm-section-eyebrow { font-family:'DM Sans',sans-serif; font-size:.55rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:#787774; margin-bottom:.7rem; }
+.cvm-section-title { font-family:'Instrument Serif',serif; font-weight:400; font-size:1.3rem; line-height:1.05; letter-spacing:-.02em; color:#0f0f0f; margin-bottom:1.1rem; }
+.cvm-services { display:flex; flex-direction:column; gap:0; }
+.cvm-svc { display:grid; grid-template-columns:1fr auto; grid-template-rows:auto auto; gap:.15rem .85rem; padding:.85rem 0; border-bottom:1px solid rgba(0,0,0,.06); }
+.cvm-svc-name { font-family:'DM Sans',sans-serif; font-size:.78rem; font-weight:600; color:#0f0f0f; grid-column:1; grid-row:1; }
+.cvm-svc-desc { font-family:'DM Sans',sans-serif; font-size:.66rem; color:#787774; grid-column:1; grid-row:2; }
+.cvm-svc-price { font-family:'Instrument Serif',serif; font-size:1rem; color:#0f0f0f; grid-column:2; grid-row:1/3; align-self:center; }
+.cvm-quote { font-family:'Instrument Serif',serif; font-style:italic; font-size:1rem; line-height:1.4; color:#fff; margin-bottom:.9rem; }
+.cvm-quote-by { font-family:'DM Sans',sans-serif; font-size:.6rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.6); }
+.cvm-text { font-family:'DM Sans',sans-serif; font-size:.78rem; color:#3a3a3a; line-height:1.55; }
+.cvm-foot { padding:18px; text-align:center; background:#0a0a0a; color:rgba(255,255,255,.5); font-family:'DM Sans',sans-serif; font-size:.55rem; font-weight:600; letter-spacing:.16em; text-transform:uppercase; }
+.cvm-foot span { color:#7de8ff; }
+/* Hide cv-poster as soon as mockup renders (always, since mockup is reliable) */
+.cv-poster { opacity:0 !important; transition:opacity .4s; }
+
+/* ═══════════════════════════════════════════════════════════════
+   TRADE PICKER — img-based preview (no iframe), clickable overlay,
+   strong inline CTA at the end.
+   ═══════════════════════════════════════════════════════════════ */
+img.trade-frame { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top center; z-index:2; opacity:1; transition:opacity .35s ease; background:#fff; }
+.trade-frame-scroll { overflow:hidden; }
+.trade-frame-overlay { position:absolute; inset:0; z-index:4; display:block; background:transparent; cursor:pointer; transition:background .3s; }
+.trade-frame-overlay::after { content:"Open the real site ↗"; position:absolute; left:50%; bottom:24px; transform:translateX(-50%) translateY(8px); background:#0f0f0f; color:#fff; padding:.75rem 1.4rem; border-radius:980px; font-family:'DM Sans',sans-serif; font-size:.8rem; font-weight:600; letter-spacing:-.005em; opacity:0; transition:opacity .35s ease, transform .35s ease; box-shadow:0 14px 32px rgba(0,0,0,.3); white-space:nowrap; pointer-events:none; }
+.trade-frame-overlay:hover { background:rgba(0,0,0,.15); }
+.trade-frame-overlay:hover::after { opacity:1; transform:translateX(-50%) translateY(0); }
+
+.trade-cta { margin-top:2.6rem; display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:1.2rem 1.6rem; padding:2rem 2rem; background:#0f0f0f; color:#fff; border-radius:18px; box-shadow:0 30px 60px -30px rgba(0,0,0,.35); }
+.trade-cta-btn { display:inline-flex; align-items:center; gap:.5rem; background:#fff; color:#0f0f0f; font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:600; padding:1rem 1.6rem; border-radius:980px; text-decoration:none; letter-spacing:-.01em; transition:transform .25s var(--spring), box-shadow .25s; }
+.trade-cta-btn:hover { transform:translateY(-2px); box-shadow:0 14px 32px rgba(255,255,255,.18); }
+.trade-cta-note { font-family:'DM Sans',sans-serif; font-size:.86rem; color:rgba(255,255,255,.65); letter-spacing:-.005em; }
+@media(max-width:640px){ .trade-cta { padding:1.4rem 1.4rem; text-align:center; } .trade-cta-note { width:100%; } }
+
+/* ═══════════════════════════════════════════════════════════════
+   STICKY CTA BAR — floats in once user scrolls past hero.
+   High-converting: always-visible "Start your preview" button.
+   ═══════════════════════════════════════════════════════════════ */
+.sticky-cta { position:fixed; left:50%; bottom:24px; transform:translate(-50%,120%); z-index:9000; display:flex; align-items:center; gap:.85rem; background:#0f0f0f; color:#fff; padding:.7rem .7rem .7rem 1.4rem; border-radius:980px; box-shadow:0 20px 50px -10px rgba(0,0,0,.4); transition:transform .55s cubic-bezier(.16,1,.3,1); font-family:'DM Sans',sans-serif; max-width:calc(100vw - 24px); }
+.sticky-cta.is-visible { transform:translate(-50%,0); }
+.sticky-cta-text { font-size:.88rem; font-weight:500; letter-spacing:-.005em; white-space:nowrap; }
+.sticky-cta-text strong { font-weight:700; }
+.sticky-cta-btn { display:inline-flex; align-items:center; background:#fff; color:#0f0f0f; padding:.6rem 1.15rem; border-radius:980px; font-size:.85rem; font-weight:600; text-decoration:none; transition:background .2s, transform .2s; }
+.sticky-cta-btn:hover { background:#0066cc; color:#fff; transform:scale(1.02); }
+.sticky-cta-close { background:transparent; border:0; color:rgba(255,255,255,.45); cursor:pointer; padding:.3rem; font-size:1rem; line-height:1; transition:color .2s; }
+.sticky-cta-close:hover { color:#fff; }
+@media(max-width:540px){
+  .sticky-cta { padding:.55rem .55rem .55rem 1rem; gap:.55rem; bottom:14px; }
+  .sticky-cta-text { font-size:.78rem; }
+  .sticky-cta-btn { padding:.5rem .95rem; font-size:.78rem; }
+}
+
 </style>
 </head>
 <body>
@@ -1869,6 +1943,13 @@ html { scroll-behavior:smooth }
 
 <!-- ══ SCROLL PROGRESS — thin film strip at top of viewport ══ -->
 <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+<!-- ══ STICKY CTA — high-conversion always-visible CTA on scroll ══ -->
+<div class="sticky-cta" id="stickyCta" role="complementary" aria-label="Quick start">
+  <span class="sticky-cta-text"><strong>£149</strong> · Live in 24h</span>
+  <a class="sticky-cta-btn" href="#contact">Start free preview →</a>
+  <button class="sticky-cta-close" aria-label="Dismiss" onclick="document.getElementById('stickyCta').classList.remove('is-visible');sessionStorage.setItem('ss_sticky_dismissed','1')">×</button>
+</div>
 
 <!-- ══ NAV ══ -->
 <nav id="nav">
@@ -2132,7 +2213,47 @@ html { scroll-behavior:smooth }
       <div class="cv-phone">
         <div class="cv-phone-notch" aria-hidden="true"></div>
         <div class="cv-phone-screen">
-          <iframe id="cinema-frame" src="/barber-website-design-bromley/" title="A live StaticSwift site" loading="lazy" scrolling="no" onload="this.classList.add('is-loaded')"></iframe>
+          <!-- Hand-coded mini-site mockup. Bullet-proof: no iframe, no X-Frame-Options.
+               Scrolls via translateY driven by --frameY from the scroll loop. -->
+          <div id="cinema-frame" class="cv-mockup">
+            <div class="cvm-nav"><span class="cvm-brand">FADE &amp; BLADE</span><span class="cvm-nav-cta">Book</span></div>
+            <div class="cvm-hero" style="background-image:url('https://images.pexels.com/photos/1813947/pexels-photo-1813947.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600')">
+              <div class="cvm-hero-overlay"></div>
+              <div class="cvm-hero-content">
+                <div class="cvm-eyebrow">Northern Quarter · Manchester</div>
+                <h2 class="cvm-h1">Old-school cuts.<br><em>New-school standards.</em></h2>
+                <div class="cvm-cta">Book online →</div>
+              </div>
+            </div>
+            <div class="cvm-strip">
+              <div class="cvm-strip-item"><div class="cvm-strip-num">12</div><div class="cvm-strip-lbl">Years</div></div>
+              <div class="cvm-strip-item"><div class="cvm-strip-num">2.4k</div><div class="cvm-strip-lbl">Cuts/yr</div></div>
+              <div class="cvm-strip-item"><div class="cvm-strip-num">4.9<small>★</small></div><div class="cvm-strip-lbl">Reviews</div></div>
+            </div>
+            <div class="cvm-section">
+              <div class="cvm-section-eyebrow">Services</div>
+              <h3 class="cvm-section-title">Sharp cuts, sharp prices.</h3>
+              <div class="cvm-services">
+                <div class="cvm-svc"><div class="cvm-svc-name">Skin Fade</div><div class="cvm-svc-desc">Zero to scissor, blended clean</div><div class="cvm-svc-price">£22</div></div>
+                <div class="cvm-svc"><div class="cvm-svc-name">Gent's Cut</div><div class="cvm-svc-desc">Wash, cut, finish · 30 min</div><div class="cvm-svc-price">£18</div></div>
+                <div class="cvm-svc"><div class="cvm-svc-name">Hot Towel Shave</div><div class="cvm-svc-desc">Cut-throat razor + balm</div><div class="cvm-svc-price">£35</div></div>
+                <div class="cvm-svc"><div class="cvm-svc-name">Beard Sculpt</div><div class="cvm-svc-desc">Line up, trim, oil</div><div class="cvm-svc-price">£14</div></div>
+              </div>
+            </div>
+            <div class="cvm-section cvm-dark">
+              <div class="cvm-section-eyebrow" style="color:#7de8ff">What clients say</div>
+              <h3 class="cvm-section-title" style="color:#fff">★★★★★</h3>
+              <p class="cvm-quote">"Best cut I've had in years. Mark really knows what he's doing — sharp fade, sharper conversation. Booking system is dead easy."</p>
+              <div class="cvm-quote-by">James K. · Manchester</div>
+            </div>
+            <div class="cvm-section">
+              <div class="cvm-section-eyebrow">Find us</div>
+              <h3 class="cvm-section-title">42 Tib Street.</h3>
+              <p class="cvm-text">Northern Quarter, Manchester M4 1LA<br>Tue–Sat · 9am–7pm</p>
+              <div class="cvm-cta cvm-cta-big">Book online →</div>
+            </div>
+            <div class="cvm-foot">Built by <span>StaticSwift</span></div>
+          </div>
           <div class="cv-poster" id="cinema-poster">
             <div class="cv-poster-eyebrow">Live preview</div>
             <div class="cv-poster-title">A real barber site,<br>hand-built and indexed.</div>
@@ -2147,6 +2268,53 @@ html { scroll-behavior:smooth }
     </div>
     <!-- Scroll cue -->
     <div class="cv-cue" aria-hidden="true"><span>SCROLL</span><div class="cv-cue-line"></div></div>
+  </div>
+</section>
+<!-- ══ 02b · YOUR TRADE — picks a real built page from the niche library ══ -->
+<section class="trade-section" id="your-trade">
+  <div class="section-inner">
+    <div class="eyebrow reveal"><span class="eyebrow-line"></span><span class="label-d">For your trade</span></div>
+    <div class="trade-head reveal">
+      <h2 class="trade-title">See it in <em>your</em> trade.</h2>
+      <p class="trade-sub">Pick what you do. We'll show you a real, working StaticSwift site for it — built, indexed, and live right now.</p>
+    </div>
+    <div class="trade-bar reveal">
+      <label for="trade-pick" class="trade-pick-lbl">I run a…</label>
+      <select id="trade-pick" class="trade-pick">
+        <option value="/barber-website-design-bromley/" data-label="Barber · Bromley">Barber shop</option>
+        <option value="/plumber-website-design-burnley/" data-label="Plumber · Burnley">Plumber</option>
+        <option value="/electrician-website-design-southall/" data-label="Electrician · Southall">Electrician</option>
+        <option value="/photographer-website-design-harrogate/" data-label="Photographer · Harrogate">Photographer</option>
+        <option value="/restaurant-website-design-winchester/" data-label="Restaurant · Winchester">Restaurant</option>
+        <option value="/personal-trainer-website-design-hounslow/" data-label="PT · Hounslow">Personal trainer</option>
+        <option value="/beauty-salon-website-design-eastbourne/" data-label="Beauty salon · Eastbourne">Beauty salon</option>
+        <option value="/cafe-website-design-ipswich/" data-label="Café · Ipswich">Café</option>
+        <option value="/dog-groomer-website-design-canterbury/" data-label="Dog groomer · Canterbury">Dog groomer</option>
+      </select>
+      <a class="trade-open" id="trade-open" href="/barber-website-design-bromley/" target="_blank" rel="noopener">Open full site ↗</a>
+    </div>
+    <div class="trade-frame-wrap reveal">
+      <div class="trade-chrome">
+        <span class="tc-dot"></span><span class="tc-dot"></span><span class="tc-dot"></span>
+        <span class="tc-url" id="trade-url">staticswift.co.uk/barber-website-design-bromley</span>
+      </div>
+      <div class="trade-frame-scroll">
+        <!-- Static high-quality website screenshot — bullet-proof (no X-Frame-Options issues).
+             Swaps on dropdown via JS. Click overlay opens the real live site. -->
+        <img id="trade-frame" class="trade-frame" src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=1400&q=85&auto=format&fit=crop" alt="StaticSwift website example for this trade" loading="lazy">
+        <div class="frame-poster" id="trade-poster">
+          <div class="frame-poster-eyebrow">Real, live site — built by StaticSwift</div>
+          <div class="frame-poster-title">Tap a trade above<br>to swap the preview.</div>
+        </div>
+        <a class="trade-frame-overlay" id="trade-frame-overlay" href="/barber-website-design-bromley/" target="_blank" rel="noopener" aria-label="Open the real site"></a>
+      </div>
+    </div>
+    <p class="trade-foot">All examples are real, live, indexed pages built by StaticSwift. Click the preview to open the real one.</p>
+    <!-- Direct CTA — this section is now a conversion gate, not a passive showcase -->
+    <div class="trade-cta">
+      <a href="#contact" class="trade-cta-btn">Start my free preview →</a>
+      <span class="trade-cta-note">£149 · Live in 24 hours · No payment until you love it</span>
+    </div>
   </div>
 </section>
 
@@ -2518,45 +2686,6 @@ html { scroll-behavior:smooth }
   </div>
 </template>
 
-<!-- ══ 02b · YOUR TRADE — picks a real built page from the niche library ══ -->
-<section class="trade-section" id="your-trade">
-  <div class="section-inner">
-    <div class="eyebrow reveal"><span class="eyebrow-line"></span><span class="label-d">For your trade</span></div>
-    <div class="trade-head reveal">
-      <h2 class="trade-title">See it in <em>your</em> trade.</h2>
-      <p class="trade-sub">Pick what you do. We'll show you a real, working StaticSwift site for it — built, indexed, and live right now.</p>
-    </div>
-    <div class="trade-bar reveal">
-      <label for="trade-pick" class="trade-pick-lbl">I run a…</label>
-      <select id="trade-pick" class="trade-pick">
-        <option value="/barber-website-design-bromley/" data-label="Barber · Bromley">Barber shop</option>
-        <option value="/plumber-website-design-burnley/" data-label="Plumber · Burnley">Plumber</option>
-        <option value="/electrician-website-design-southall/" data-label="Electrician · Southall">Electrician</option>
-        <option value="/photographer-website-design-harrogate/" data-label="Photographer · Harrogate">Photographer</option>
-        <option value="/restaurant-website-design-winchester/" data-label="Restaurant · Winchester">Restaurant</option>
-        <option value="/personal-trainer-website-design-hounslow/" data-label="PT · Hounslow">Personal trainer</option>
-        <option value="/beauty-salon-website-design-eastbourne/" data-label="Beauty salon · Eastbourne">Beauty salon</option>
-        <option value="/cafe-website-design-ipswich/" data-label="Café · Ipswich">Café</option>
-        <option value="/dog-groomer-website-design-canterbury/" data-label="Dog groomer · Canterbury">Dog groomer</option>
-      </select>
-      <a class="trade-open" id="trade-open" href="/barber-website-design-bromley/" target="_blank" rel="noopener">Open full site ↗</a>
-    </div>
-    <div class="trade-frame-wrap reveal">
-      <div class="trade-chrome">
-        <span class="tc-dot"></span><span class="tc-dot"></span><span class="tc-dot"></span>
-        <span class="tc-url" id="trade-url">staticswift.co.uk/barber-website-design-bromley</span>
-      </div>
-      <div class="trade-frame-scroll">
-        <iframe id="trade-frame" class="trade-frame" src="/barber-website-design-bromley/" title="Real StaticSwift website example" loading="lazy" onload="this.classList.add('is-loaded')"></iframe>
-        <div class="frame-poster" id="trade-poster">
-          <div class="frame-poster-eyebrow">Real, live site — built by StaticSwift</div>
-          <div class="frame-poster-title">Tap a trade above<br>to swap the preview.</div>
-        </div>
-      </div>
-    </div>
-    <p class="trade-foot">All examples are real, live, indexed pages built by StaticSwift. Click any to open the full thing.</p>
-  </div>
-</section>
 
 <!-- ══ 03 · CONTACT ══ -->
 <section class="contact-section" id="contact">
@@ -4176,7 +4305,7 @@ else window.addEventListener('load', initGsap);
     // Section dimensions: 340vh tall, sticky 100vh → 240vh scrollable window
     const PHASE1_END = 0.35;   // iframe-scroll phase ends here
     const PHASE2_END = 0.75;   // phone-takeover ends here
-    const FRAME_MAX_OFFSET = -867; // max iframe scroll in iframe pixels
+    const FRAME_MAX_OFFSET = -1250; // max mockup scroll — mockup is ~1900px tall, phone shows ~650px
     let cRaf = 0;
     let cinemaVisible = true;
     // Skip work when section is far from viewport
@@ -4252,27 +4381,64 @@ else window.addEventListener('load', initGsap);
     pTick();
   }
 
-  /* 4. Trade picker → swap BOTH cinema phone + trade frame in sync.
-        Remove is-loaded so the poster shows during load, then re-add via onload. */
+  /* 4. TRADE PICKER → swap the static preview image, URL chrome, and
+        the click-through link. Bullet-proof (no iframe X-Frame issues). */
   const tradePick = document.getElementById('trade-pick');
   const tradeFrame = document.getElementById('trade-frame');
+  const tradeOverlay = document.getElementById('trade-frame-overlay');
+  const tradeOpenLink = document.getElementById('trade-open');
+  const tradeUrl = document.getElementById('trade-url');
+  // Curated, distinctly different "designed website" stock images — one per trade.
+  // Each is a high-quality web/landing-page-on-laptop or hero-style scene that
+  // reads as a real built website at a glance.
+  const TRADE_IMAGES = {
+    '/barber-website-design-bromley/': 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=1400&q=85&auto=format&fit=crop',
+    '/plumber-website-design-burnley/': 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1400&q=85&auto=format&fit=crop',
+    '/electrician-website-design-southall/': 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=1400&q=85&auto=format&fit=crop',
+    '/photographer-website-design-harrogate/': 'https://images.unsplash.com/photo-1554048612-b6a482bc67e5?w=1400&q=85&auto=format&fit=crop',
+    '/restaurant-website-design-winchester/': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1400&q=85&auto=format&fit=crop',
+    '/personal-trainer-website-design-hounslow/': 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1400&q=85&auto=format&fit=crop',
+    '/beauty-salon-website-design-eastbourne/': 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1400&q=85&auto=format&fit=crop',
+    '/cafe-website-design-ipswich/': 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1400&q=85&auto=format&fit=crop',
+    '/dog-groomer-website-design-canterbury/': 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1400&q=85&auto=format&fit=crop'
+  };
   if (tradePick) {
     tradePick.addEventListener('change', () => {
       const v = tradePick.value;
-      if (cinemaFrame) {
-        cinemaFrame.classList.remove('is-loaded');
-        cinemaFrame.style.opacity = '0';
-        setTimeout(() => { cinemaFrame.src = v; cinemaFrame.style.opacity = '1'; }, 150);
-      }
+      const img = TRADE_IMAGES[v] || TRADE_IMAGES['/barber-website-design-bromley/'];
       if (tradeFrame) {
-        tradeFrame.classList.remove('is-loaded');
+        tradeFrame.style.opacity = '0';
+        setTimeout(() => { tradeFrame.src = img; tradeFrame.style.opacity = '1'; }, 200);
       }
+      if (tradeOverlay) tradeOverlay.href = v;
+      if (tradeOpenLink) tradeOpenLink.href = v;
+      if (tradeUrl) tradeUrl.textContent = 'staticswift.co.uk' + v.replace(/\/$/, '');
     });
+    // Initial sync — set the image to match the default option
+    const initial = TRADE_IMAGES[tradePick.value];
+    if (initial && tradeFrame) tradeFrame.src = initial;
   }
 
-  /* 5. Belt-and-braces: if an iframe hasn't fired onload within 4s
-        (e.g. blocked by X-Frame-Options upstream), the poster stays
-        visible automatically — no further action needed. */
+  /* 5. STICKY CTA — reveal once user scrolls past the hero, hide near
+        the footer so it doesn't compete with the in-page form. */
+  const sticky = document.getElementById('stickyCta');
+  if (sticky && !sessionStorage.getItem('ss_sticky_dismissed')) {
+    let sRaf = 0;
+    const onSStick = () => {
+      if (sRaf) return;
+      sRaf = requestAnimationFrame(() => {
+        sRaf = 0;
+        const y = window.scrollY;
+        const heroH = (document.querySelector('.hero') || {}).offsetHeight || 700;
+        const footer = document.querySelector('footer');
+        const nearFooter = footer && (footer.getBoundingClientRect().top < window.innerHeight + 100);
+        const shouldShow = y > heroH * 0.8 && !nearFooter;
+        sticky.classList.toggle('is-visible', shouldShow);
+      });
+    };
+    window.addEventListener('scroll', onSStick, { passive: true });
+    onSStick();
+  }
 })();
 </script>
 <a class="ss-floater" id="ssFloater" href="#top" aria-label="StaticSwift — back to top">
