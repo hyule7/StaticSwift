@@ -1962,10 +1962,39 @@ img.trade-frame { position:absolute; inset:0; width:100%; height:100%; object-fi
 .hero-bg-video { display:none !important; background:transparent !important; }
 .hero::before, .hero::after { display:none !important; content:none !important; background:none !important; }
 
-/* PHONE MOCKUP — force visible no matter what */
+/* ─── CINEMA v2 — clean white, phone front-and-centre, bulletproof ─── */
+.cinema-v2 { background:#ffffff !important; opacity:1 !important; transform:none !important; visibility:visible !important; }
+.cv-sticky { display:flex !important; align-items:center !important; justify-content:center !important; }
+.cv-phone-wrap { display:block !important; visibility:visible !important; opacity:1 !important; }
+.cv-phone { display:block !important; visibility:visible !important; opacity:1 !important; }
+.cv-phone-screen { display:block !important; visibility:visible !important; overflow:hidden !important; }
+.cv-sticky { background:#ffffff !important; }
+/* Kill the hand backdrop — too dependent on external image + hides phone */
+.cv-hand { display:none !important; }
+/* Kill the dimming overlay — was for the dark-backdrop transition */
+.cv-dim { display:none !important; }
+/* Editorial copy on white instead of dark */
+.cv-copy { color:#0f0f0f !important; }
+.cv-copy .cv-title { color:#0f0f0f !important; }
+.cv-copy .cv-title em { color:#0f0f0f !important; }
+.cv-copy .cv-title-cue { color:#787774 !important; }
+.cv-copy .cv-eyebrow { color:#0066cc !important; }
+/* Phone — make it unmistakably visible against white */
+.cv-phone { background:#0a0a0a !important; box-shadow:0 50px 100px -20px rgba(0,0,0,.25), 0 0 0 1px rgba(0,0,0,.06), inset 0 0 0 1px rgba(255,255,255,.04) !important; border-radius:42px !important; }
+.cv-phone-notch { background:#0a0a0a !important; }
+/* Mockup screen inside phone — force visible */
 .cv-mockup#cinema-frame { display:block !important; visibility:visible !important; opacity:1 !important; position:absolute !important; top:0 !important; left:0 !important; width:100% !important; min-height:1900px !important; background:#ffffff !important; z-index:5 !important; }
-.cv-phone-screen .cv-poster { display:none !important; } /* mockup is reliable, no fallback poster needed */
-.cv-phone-screen iframe { display:none !important; } /* if any iframe somehow remains, hide it */
+.cv-phone-screen { background:#ffffff !important; border-radius:32px !important; }
+.cv-phone-screen .cv-poster { display:none !important; }
+.cv-phone-screen iframe { display:none !important; }
+/* Scroll cue text on white */
+.cv-cue { color:#787774 !important; }
+.cv-cue-line { background:linear-gradient(180deg,rgba(0,0,0,.4),transparent) !important; }
+/* Finale text on white — only appears when phone has filled viewport */
+.cv-finale { color:#0f0f0f !important; }
+.cv-finale .cv-finale-eyebrow { color:#787774 !important; }
+.cv-finale .cv-finale-title { color:#0f0f0f !important; }
+.cv-finale .cv-finale-title em { color:#0f0f0f !important; }
 
 /* TRADE PREVIEW — img always visible, fills container, no leftover overlays */
 img#trade-frame.trade-frame,
