@@ -56,3 +56,7 @@
   from = "/admin"
   to = "/admin/index.html"
   status = 200
+
+# Scheduled function — runs cron-scan every 15 min server-side
+[functions."cron-scan"]
+  schedule = "*/15 * * * *"

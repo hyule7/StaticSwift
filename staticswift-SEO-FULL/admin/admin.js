@@ -961,38 +961,50 @@ async function panelAction(type) {
     }
   }
   if (type === 'delete') {
-    // Hard delete — irreversible. Two-step confirmation prevents finger-trouble.
     const label = c.business_name || c.name || 'this client';
-    const first = confirm('PERMANENTLY DELETE ' + label + '?\n\nThis removes the client, brief, prompt, notes, files and portal access. It cannot be undone.');
-    if (!first) return;
+    if (!confirm('PERMANENTLY DELETE ' + label + '?\n\nClient, brief, prompt, notes, files and portal access — all gone. Cannot be undone.')) return;
     const typed = prompt('To confirm, type DELETE exactly:');
     if (typed !== 'DELETE') {
       msg.style.display = 'block'; msg.style.color = 'var(--amber)';
       msg.textContent = 'Delete cancelled — confirmation did not match.';
       return;
     }
+    msg.style.display = 'block'; msg.style.color = 'var(--muted)';
+    msg.textContent = 'Deleting…';
+    const idToDelete = currentClientId;
+    let serverOk = false, serverErr = '';
+    // Try server endpoint
     try {
       const r = await fetch('/.netlify/functions/delete-client', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
-        body: JSON.stringify({ clientId: currentClientId })
+        body: JSON.stringify({ clientId: idToDelete })
       });
-      if (!r.ok) {
-        // Fallback: backend endpoint may not exist yet — at minimum mark stage so it disappears from pipeline
-        await updateClient(currentClientId, { stage: 'deleted', deletedAt: new Date().toISOString() });
-        allClients = allClients.filter(x => x.clientId !== currentClientId);
-        saveClientsLocally(allClients);
-        await refreshData();
-        closePanel();
+      const body = await r.text();
+      if (r.ok) { serverOk = true; }
+      else { serverErr = 'HTTP ' + r.status + ' · ' + body.slice(0, 200); }
+    } catch(err) {
+      serverErr = 'Network: ' + err.message;
+    }
+    // If server failed, fall back to soft-delete via update-client so the UI still clears
+    if (!serverOk) {
+      console.warn('[delete] server failed (' + serverErr + ') — falling back to stage=deleted');
+      try {
+        await updateClient(idToDelete, { stage: 'deleted', deletedAt: new Date().toISOString() });
+      } catch (e2) {
+        msg.style.color = 'var(--red)';
+        msg.textContent = 'Delete failed both ways: ' + serverErr + ' / fallback: ' + e2.message;
         return;
       }
-      allClients = allClients.filter(x => x.clientId !== currentClientId);
-      saveClientsLocally(allClients);
-      await refreshData();
-      closePanel();
-    } catch(err) {
-      msg.style.display = 'block'; msg.style.color = 'var(--red)';
-      msg.textContent = 'Delete failed: ' + err.message;
+    }
+    // Local cleanup — always do this
+    allClients = allClients.filter(x => x.clientId !== idToDelete);
+    saveClientsLocally(allClients);
+    closePanel();
+    await refreshData();
+    // Toast: real or soft delete
+    if (!serverOk) {
+      setTimeout(() => alert('Client removed from your view.\n\n(Server delete didn\'t fire — likely the delete-client function hasn\'t deployed yet. Trigger a Netlify build, then retry to fully remove from the database.)'), 100);
     }
   }
 }
@@ -2842,7 +2854,11 @@ function generateTemplate() {
   };
   const fill = (s) => s.replace(/\{(\w+)\}/g, (_, k) => fields[k] ?? '');
   const subject = fill(tmpl.subject);
-  const body = fill(tmpl.body) + SENDER_FOOTER;
+  // Tracking pixel for open-rate. Only embedded when prospect has an ID.
+  const trackPx = p?.id
+    ? '\n\n<img src="https://staticswift.co.uk/.netlify/functions/track-open?p=' + encodeURIComponent(p.id) + '&t=' + encodeURIComponent(tmplKey) + '" width="1" height="1" alt="" style="display:block" />'
+    : '';
+  const body = fill(tmpl.body) + SENDER_FOOTER + trackPx;
 
   document.getElementById('tmpl-result').style.display = 'block';
   document.getElementById('tmpl-subject').value = subject;
@@ -3121,10 +3137,21 @@ async function tickScanWorker() {
 function toggleScanWorker() {
   const btn = document.getElementById('queue-toggle');
   if (!scanWorkerRunning) {
+    // If queue empty, prompt for URLs first — otherwise nothing visible happens
+    if (!scanQueue.length) {
+      const seed = confirm('Scan queue is empty. Paste URLs to start scanning?');
+      if (!seed) {
+        setQueueStatus('· nothing to scan — add URLs first', 'var(--amber)');
+        return;
+      }
+      addUrlsToQueueModal();
+      if (!scanQueue.length) return; // user cancelled paste
+    }
     scanWorkerRunning = true;
     if (btn) { btn.textContent = '■ Stop scanner'; btn.style.background = 'var(--red)'; btn.style.color = '#fff'; }
-    setQueueStatus('· running', 'var(--green)');
-    tickScanWorker();
+    setQueueStatus('· running · first batch in 2s', 'var(--green)');
+    // Fire first tick immediately (not after a 30s delay so user sees progress)
+    setTimeout(tickScanWorker, 1500);
     scanWorkerInterval = setInterval(tickScanWorker, SCAN_TICK_MS);
   } else {
     scanWorkerRunning = false;
@@ -3412,3 +3439,491 @@ window.renderProspects = function() {
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => { updateQueueStats(); renderProspectsTable(); }, 500);
 });
+
+/* ════════════════════════════════════════════════════════════════
+   UI PACK — saved views, keyboard nav, inline edit, activity log,
+   mobile-responsive, bigger verify badges.
+   ════════════════════════════════════════════════════════════════ */
+
+/* ---- SAVED VIEWS ---- */
+let savedViews = JSON.parse(localStorage.getItem('ss_saved_views') || '[]');
+function saveSavedViews() { localStorage.setItem('ss_saved_views', JSON.stringify(savedViews)); }
+
+function saveCurrentView() {
+  const name = prompt('Name this view (e.g. "Wix barbers under 40 score"):');
+  if (!name) return;
+  const search = (document.getElementById('outreach-search')?.value || '').trim();
+  savedViews.push({ id: 'sv-' + Date.now(), name, filter: prospectFilter, search, sortKey: prospectSortKey, sortDir: prospectSortDir });
+  saveSavedViews();
+  renderSavedViews();
+}
+function applySavedView(id) {
+  const v = savedViews.find(x => x.id === id);
+  if (!v) return;
+  prospectFilter = v.filter;
+  prospectSortKey = v.sortKey;
+  prospectSortDir = v.sortDir;
+  document.querySelectorAll('#filter-pills .filter-pill').forEach(b => b.classList.toggle('active', b.dataset.f === v.filter));
+  const s = document.getElementById('outreach-search'); if (s) s.value = v.search || '';
+  renderProspectsTable();
+}
+function deleteSavedView(id) {
+  if (!confirm('Delete this view?')) return;
+  savedViews = savedViews.filter(v => v.id !== id);
+  saveSavedViews(); renderSavedViews();
+}
+function renderSavedViews() {
+  const c = document.getElementById('saved-views-container');
+  if (!c) return;
+  if (!savedViews.length) { c.innerHTML = '<span style="font-size:11px;color:var(--dim)">No saved views yet — set filters then click "Save view"</span>'; return; }
+  c.innerHTML = savedViews.map(v =>
+    `<button onclick="applySavedView('${v.id}')" class="saved-view-pill">⭐ ${escapeHTML(v.name)}<span onclick="event.stopPropagation();deleteSavedView('${v.id}')" style="margin-left:6px;cursor:pointer;opacity:.5">×</span></button>`
+  ).join('');
+}
+
+/* ---- KEYBOARD NAV ---- */
+let kbdFocusedIdx = -1;
+function getKbdRows() {
+  return Array.from(document.querySelectorAll('#prospects-tbody tr'));
+}
+function highlightKbdRow() {
+  const rows = getKbdRows();
+  rows.forEach((r, i) => r.classList.toggle('kbd-focus', i === kbdFocusedIdx));
+  const row = rows[kbdFocusedIdx];
+  if (row) row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+function getFocusedProspectId() {
+  const row = getKbdRows()[kbdFocusedIdx];
+  if (!row) return null;
+  const cb = row.querySelector('input[type=checkbox][data-pid]');
+  return cb?.dataset?.pid || null;
+}
+
+document.addEventListener('keydown', (e) => {
+  // Only when outreach tab is visible and not typing in an input
+  const onOutreach = document.getElementById('page-outreach')?.classList.contains('active');
+  if (!onOutreach) return;
+  if (['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)) return;
+  const rows = getKbdRows();
+  if (!rows.length) return;
+  const id = getFocusedProspectId();
+  switch (e.key.toLowerCase()) {
+    case 'j': kbdFocusedIdx = Math.min(rows.length - 1, kbdFocusedIdx + 1); highlightKbdRow(); e.preventDefault(); break;
+    case 'k': kbdFocusedIdx = Math.max(0, kbdFocusedIdx - 1); highlightKbdRow(); e.preventDefault(); break;
+    case 'e': if (id) { const p = prospects.find(x => x.id === id); if (p?.email) window.open('mailto:' + p.email); } break;
+    case 'v': if (id) verifyOneEmail(id); break;
+    case 't': if (id) prefillTemplateFor(id); break;
+    case 'x': if (id) deleteOneProspect(id); break;
+    case ' ': if (id) { const cb = rows[kbdFocusedIdx].querySelector('input[type=checkbox][data-pid]'); if (cb) { cb.checked = !cb.checked; toggleBulkSel(id, cb.checked); } e.preventDefault(); } break;
+  }
+});
+
+/* ---- INLINE EDIT ---- */
+function startInlineEdit(id, field, el) {
+  const p = prospects.find(x => x.id === id); if (!p) return;
+  const current = p[field] || '';
+  const input = document.createElement('input');
+  input.type = field === 'email' ? 'email' : field === 'phone' ? 'tel' : 'text';
+  input.value = current;
+  input.style.cssText = 'background:var(--dark3);border:1.5px solid var(--cyan);color:var(--text);padding:4px 6px;border-radius:4px;font-size:12px;width:100%;outline:none;font-family:inherit';
+  const commit = () => {
+    p[field] = input.value.trim();
+    p.lastUpdatedAt = new Date().toISOString();
+    saveProspects(); renderProspectsTable();
+  };
+  const cancel = () => { renderProspectsTable(); };
+  input.addEventListener('blur', commit);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { input.blur(); }
+    if (e.key === 'Escape') { input.removeEventListener('blur', commit); cancel(); }
+  });
+  el.innerHTML = '';
+  el.appendChild(input);
+  input.focus();
+  input.select();
+}
+
+/* ---- ACTIVITY LOG (per-prospect expandable row) ---- */
+let expandedRowId = null;
+function toggleProspectExpand(id) {
+  expandedRowId = (expandedRowId === id) ? null : id;
+  renderProspectsTable();
+}
+function renderActivityLog(p) {
+  const events = [];
+  if (p.addedAt) events.push({ ts: p.addedAt, icon: '+', kind: 'Added', detail: 'via ' + (p.source || 'manual') });
+  if (p.siteScore != null) events.push({ ts: p.addedAt, icon: '🔍', kind: 'Site scanned', detail: 'Score ' + p.siteScore + ' · ' + (p.sitePlatform || 'unknown') });
+  if (p.emailVerified === true) events.push({ ts: p.lastUpdatedAt || p.addedAt, icon: '✓', kind: 'Email verified', detail: p.emailVerifyDetail || 'MX OK' });
+  if (p.emailVerified === false) events.push({ ts: p.lastUpdatedAt || p.addedAt, icon: '✗', kind: 'Email failed verify', detail: p.emailVerifyDetail || 'No MX' });
+  (p.emailHistory || []).forEach(e => events.push({ ts: e.sentAt, icon: '✉', kind: 'Email sent', detail: e.template + ' · via ' + (e.via || 'mailto') }));
+  (p.openHistory || []).forEach(e => events.push({ ts: e.openedAt, icon: '👁', kind: 'Email opened', detail: 'IP: ' + (e.ip || '?') }));
+  if (p.firstReplyAt) events.push({ ts: p.firstReplyAt, icon: '💬', kind: 'Replied', detail: p.replyCategory || '' });
+  if (p.convertedAt) events.push({ ts: p.convertedAt, icon: '🎉', kind: 'Converted to client', detail: '' });
+  events.sort((a, b) => new Date(b.ts) - new Date(a.ts));
+  if (!events.length) return '<div style="color:var(--dim);font-size:11px;padding:14px">No activity yet.</div>';
+  return '<div style="display:flex;flex-direction:column;gap:8px;padding:16px 20px;background:rgba(0,0,0,.18);border-top:1px solid var(--border);border-bottom:1px solid var(--border);font-size:12px">' +
+    events.map(e => `
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <span style="width:24px;text-align:center;font-size:14px">${e.icon}</span>
+        <div style="flex:1">
+          <div style="font-weight:600;color:var(--text)">${escapeHTML(e.kind)}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:1px">${escapeHTML(e.detail || '')}</div>
+        </div>
+        <span style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace">${e.ts ? new Date(e.ts).toLocaleString('en-GB') : ''}</span>
+      </div>`).join('') + '</div>';
+}
+
+/* ---- BIGGER VERIFY BADGES (override existing tiny ✓/✗) ---- */
+function verifyBadgeHTML(p) {
+  if (p.emailVerified === true) {
+    const kind = (p.emailVerifyDetail || '').includes('Role') ? 'role' : 'personal';
+    return kind === 'role'
+      ? '<span class="verify-pill v-role" title="Role address — works but generic">⚠ role</span>'
+      : '<span class="verify-pill v-deliverable" title="MX-verified">✓ deliverable</span>';
+  }
+  if (p.emailVerified === false) {
+    return '<span class="verify-pill v-bad" title="' + escapeHTML(p.emailVerifyDetail || 'No MX') + '">✗ no MX</span>';
+  }
+  return '';
+}
+
+/* Inject saved-views bar above the table + replace renderProspectsTable with
+   one that uses the bigger badges, supports inline edit, and shows activity log. */
+(function injectSavedViewsBar() {
+  const filterPills = document.getElementById('filter-pills');
+  if (!filterPills) return;
+  const bar = document.createElement('div');
+  bar.style.cssText = 'padding:8px 16px;border-bottom:1px solid var(--border);background:var(--dark2);display:flex;gap:6px;flex-wrap:wrap;align-items:center';
+  bar.innerHTML = '<button onclick="saveCurrentView()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:5px 10px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">+ Save view</button><span id="saved-views-container" style="display:flex;flex-wrap:wrap;gap:5px"></span>';
+  filterPills.closest('div[style*="padding:14px 16px"]').after(bar);
+  renderSavedViews();
+})();
+
+/* Override renderProspectsTable to use the new badges + clickable expand + inline edit hooks */
+const _origRenderProspectsTable = window.renderProspectsTable;
+window.renderProspectsTable = function() {
+  if (typeof _origRenderProspectsTable === 'function') _origRenderProspectsTable();
+  // Decorate each row: replace ✓/✗ inline with pills, add expand on biz-name click
+  document.querySelectorAll('#prospects-tbody tr').forEach((row, i) => {
+    const cb = row.querySelector('input[type=checkbox][data-pid]');
+    if (!cb) return;
+    const id = cb.dataset.pid;
+    const p = prospects.find(x => x.id === id);
+    if (!p) return;
+    // Bigger verify badge
+    const emailTd = row.cells[3];
+    if (emailTd && p.email) {
+      const small = emailTd.querySelector('span[title]');
+      if (small) small.outerHTML = verifyBadgeHTML(p);
+      else if (!emailTd.innerHTML.includes('verify-pill')) {
+        const link = emailTd.querySelector('a[href^="mailto"]');
+        if (link) link.insertAdjacentHTML('afterend', ' ' + verifyBadgeHTML(p));
+      }
+    }
+    // Inline edit on email cell (double-click)
+    if (emailTd) emailTd.title = 'Double-click to edit';
+    if (emailTd) emailTd.addEventListener('dblclick', () => {
+      const inner = emailTd.querySelector('div');
+      if (inner) startInlineEdit(id, 'email', inner);
+    });
+    // Inline edit on biz-name (double-click)
+    const bizTd = row.cells[2];
+    if (bizTd) {
+      bizTd.title = 'Double-click name to edit · Single-click row to expand';
+      bizTd.addEventListener('dblclick', (e) => {
+        if (e.target.closest('a')) return; // don't capture link clicks
+        const inner = bizTd.querySelector('div');
+        if (inner) startInlineEdit(id, 'bizname', inner);
+      });
+    }
+    // Single-click row to expand activity log
+    row.addEventListener('click', (e) => {
+      if (e.target.closest('input, button, a, td.bulk-cell')) return;
+      toggleProspectExpand(id);
+    });
+    // Append activity-log row if expanded
+    if (expandedRowId === id) {
+      const log = document.createElement('tr');
+      log.className = 'activity-log-row';
+      log.innerHTML = '<td colspan="8" style="padding:0">' + renderActivityLog(p) + '</td>';
+      row.after(log);
+    }
+  });
+};
+
+/* ════════════════════════════════════════════════════════════════
+   SEQUENCE BUILDER — auto-queues follow-ups at +5d / +12d / +20d
+   - Stores per-prospect sequence schedule
+   - "Due today" tray surfaces what to send right now
+   - Auto-stops sequences when status flips to replied/converted/dead
+   ════════════════════════════════════════════════════════════════ */
+
+const SEQUENCE_STEPS = [
+  { day: 0,  tmpl: 'cold-observation', label: 'Cold open' },
+  { day: 5,  tmpl: 'followup-1',       label: 'Follow-up 1' },
+  { day: 12, tmpl: 'followup-2',       label: 'Follow-up 2 (last)' },
+];
+
+function startSequenceFor(prospectId) {
+  const p = prospects.find(x => x.id === prospectId);
+  if (!p) return;
+  const now = Date.now();
+  p.sequence = SEQUENCE_STEPS.map(step => ({
+    tmpl: step.tmpl,
+    label: step.label,
+    dueAt: new Date(now + step.day * 86400000).toISOString(),
+    sentAt: null,
+  }));
+  p.sequenceStartedAt = new Date().toISOString();
+  saveProspects();
+  renderProspectsTable();
+  renderSequenceTray();
+}
+
+function stopSequenceFor(prospectId, reason) {
+  const p = prospects.find(x => x.id === prospectId);
+  if (!p) return;
+  p.sequence = null;
+  p.sequenceStoppedAt = new Date().toISOString();
+  p.sequenceStopReason = reason || 'manual';
+  saveProspects();
+  renderSequenceTray();
+}
+
+function getDueSequenceSteps() {
+  const now = Date.now();
+  const due = [];
+  prospects.forEach(p => {
+    if (!Array.isArray(p.sequence)) return;
+    // Auto-stop on terminal states
+    if (['replied','converted','dead'].includes(p.status)) {
+      if (!p.sequenceStoppedAt) {
+        p.sequence = null;
+        p.sequenceStoppedAt = new Date().toISOString();
+        p.sequenceStopReason = 'status-' + p.status;
+      }
+      return;
+    }
+    p.sequence.forEach((step, i) => {
+      if (!step.sentAt && new Date(step.dueAt).getTime() <= now) {
+        due.push({ prospectId: p.id, stepIndex: i, step, prospect: p });
+      }
+    });
+  });
+  return due;
+}
+
+function renderSequenceTray() {
+  const tray = document.getElementById('sequence-tray');
+  if (!tray) return;
+  const due = getDueSequenceSteps();
+  if (!due.length) {
+    tray.innerHTML = '<div style="padding:14px;color:var(--muted);font-size:13px">No follow-ups due. Start a sequence on any prospect to begin.</div>';
+    return;
+  }
+  tray.innerHTML = `
+    <div style="padding:10px 14px;background:rgba(245,158,11,.08);border-bottom:1px solid var(--border);font-size:12px;font-weight:600;color:var(--amber);font-family:'DM Mono',monospace">
+      ⏰ ${due.length} follow-up${due.length === 1 ? '' : 's'} due now
+    </div>
+    <div style="max-height:340px;overflow-y:auto">
+      ${due.map(item => `
+        <div style="padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;font-size:12px">
+          <div style="flex:1;min-width:0">
+            <div style="font-weight:600;color:var(--text);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHTML(item.prospect.bizname || 'Unknown')}</div>
+            <div style="font-size:11px;color:var(--muted)">${escapeHTML(item.step.label)} · due ${timeAgo(item.step.dueAt)}</div>
+          </div>
+          <button onclick="generateAndOpenSequenceStep('${item.prospectId}', ${item.stepIndex})" style="background:var(--cyan);color:var(--ink);border:0;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">Send →</button>
+          <button onclick="markSequenceStepSent('${item.prospectId}', ${item.stepIndex})" title="Mark sent (skip composer)" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border);padding:6px 9px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">✓</button>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function generateAndOpenSequenceStep(prospectId, stepIndex) {
+  const p = prospects.find(x => x.id === prospectId);
+  if (!p) return;
+  const step = p.sequence[stepIndex];
+  if (!step) return;
+  refreshProspectDropdown();
+  const idx = prospects.findIndex(x => x.id === prospectId);
+  document.getElementById('tmpl-prospect').value = String(idx);
+  document.getElementById('tmpl-pick').value = step.tmpl;
+  generateTemplate();
+  // Mark sent on the link's click to be safe
+  const link = document.getElementById('tmpl-mailto');
+  if (link) {
+    link.addEventListener('click', () => markSequenceStepSent(prospectId, stepIndex), { once: true });
+  }
+  document.getElementById('tmpl-result')?.scrollIntoView({ behavior: 'smooth' });
+}
+
+function markSequenceStepSent(prospectId, stepIndex) {
+  const p = prospects.find(x => x.id === prospectId);
+  if (!p || !p.sequence?.[stepIndex]) return;
+  p.sequence[stepIndex].sentAt = new Date().toISOString();
+  p.status = 'sent';
+  p.lastContacted = new Date().toISOString();
+  if (!Array.isArray(p.emailHistory)) p.emailHistory = [];
+  p.emailHistory.push({ template: p.sequence[stepIndex].tmpl, sentAt: p.sequence[stepIndex].sentAt, via: 'sequence' });
+  saveProspects(); renderProspectsTable(); renderSequenceTray();
+}
+
+// Tray auto-refresh every minute
+setInterval(renderSequenceTray, 60000);
+
+/* ════════════════════════════════════════════════════════════════
+   EMAIL TEST — calls test-email function, shows full diagnostic
+   ════════════════════════════════════════════════════════════════ */
+async function runEmailTest() {
+  const btn = document.getElementById('email-test-btn');
+  const out = document.getElementById('email-test-result');
+  if (!btn || !out) return;
+  const to = prompt('Send test email to which address?', 'hello@staticswift.co.uk');
+  if (!to) return;
+  btn.disabled = true; btn.textContent = 'Testing…';
+  out.style.display = 'block';
+  out.textContent = 'Checking env vars → connecting to SMTP → sending test email…';
+  out.style.color = 'var(--muted)';
+  try {
+    const r = await fetch('/.netlify/functions/test-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ to }),
+    });
+    const d = await r.json();
+    if (d.ok) {
+      out.style.color = 'var(--green)';
+      out.textContent = '✓ EMAIL SENT\n\nMessageId: ' + (d.messageId || '?') + '\nResponse: ' + (d.response || '') + '\n\nCheck ' + to + ' inbox (and spam).\n\n--- ENV ---\n' + Object.entries(d.env || {}).map(([k,v]) => k + ': ' + v).join('\n');
+    } else {
+      out.style.color = 'var(--red)';
+      let txt = '✗ FAILED at stage: ' + (d.stage || '?') + '\n\n' + (d.error || 'Unknown') + '\n\n--- ENV ---\n' + Object.entries(d.env || {}).map(([k,v]) => k + ': ' + v).join('\n');
+      if (Array.isArray(d.howToFix)) txt += '\n\n--- HOW TO FIX ---\n' + d.howToFix.map((s,i) => (i+1) + '. ' + s).join('\n');
+      out.textContent = txt;
+    }
+  } catch (err) {
+    out.style.color = 'var(--red)';
+    out.textContent = '✗ Network/parse error: ' + err.message + '\n\n(test-email function may not have deployed yet — push code, wait for Netlify build, then retry.)';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Send test email';
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   NICHE-AWARE DORKS — auto-generate trade+location search queries
+   ════════════════════════════════════════════════════════════════ */
+function generateNicheDorks(niche, town) {
+  niche = niche || 'plumber'; town = town || 'Edinburgh';
+  return [
+    { label: 'No website (Facebook only)', q: `"${niche}" "${town}" site:facebook.com` },
+    { label: 'Outdated Wix sites',          q: `"${niche}" "${town}" site:wixsite.com -inurl:admin` },
+    { label: 'Old GoDaddy builder sites',   q: `"${niche}" "${town}" inurl:godaddysites.com OR inurl:weebly.com` },
+    { label: 'WordPress (often abandoned)', q: `"${niche}" "${town}" inurl:wp-content -inurl:wp-admin` },
+    { label: 'Yelp / Yell listings (no own site)', q: `"${niche}" "${town}" (site:yell.com OR site:yelp.co.uk OR site:checkatrade.com)` },
+    { label: 'Google Maps listings',        q: `"${niche}" "${town}"` + ' "Google Maps"' },
+    { label: 'Contact pages (email finder)',q: `"${niche}" "${town}" "contact us" "@" -site:facebook.com` },
+    { label: 'Mobile-broken indicators',    q: `"${niche}" "${town}" "best viewed in" OR "©20" -site:facebook.com` },
+    { label: 'Sole-trader profiles',        q: `"${niche}" "${town}" "sole trader" OR "self-employed"` },
+    { label: 'Companies House (limited co)',q: `"${niche}" "${town}" site:find-and-update.company-information.service.gov.uk` },
+  ];
+}
+
+// Replace the existing dork renderer if it exists, otherwise add one
+window.renderDorkPicker = function() {
+  const grid = document.getElementById('dork-grid');
+  if (!grid) return;
+  const niche = document.getElementById('dork-niche')?.value || 'plumber';
+  const town  = document.getElementById('dork-town')?.value || 'Edinburgh';
+  const dorks = generateNicheDorks(niche, town);
+  grid.innerHTML = dorks.map(d => {
+    const url = 'https://www.google.com/search?q=' + encodeURIComponent(d.q);
+    return `<div class="dork-card">
+      <div class="dork-lbl">${escapeHTML(d.label)}</div>
+      <div class="dork-q">${escapeHTML(d.q)}</div>
+      <a class="dork-go" href="${url}" target="_blank" rel="noopener">Open in Google ↗</a>
+    </div>`;
+  }).join('');
+};
+// Re-render on niche/town change
+['dork-niche','dork-town'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('change', renderDorkPicker);
+  if (el) el.addEventListener('input', renderDorkPicker);
+});
+setTimeout(() => { try { renderDorkPicker(); } catch(e) {} }, 200);
+
+/* ════════════════════════════════════════════════════════════════
+   SERVER-SIDE QUEUE SYNC + OPEN-RATE DISPLAY + AI REPLY CLASSIFY
+   ════════════════════════════════════════════════════════════════ */
+
+// Push local scan queue → server every time it changes, so the
+// scheduled cron-scan function can pick up where the browser left off.
+async function syncQueueToServer() {
+  try {
+    await fetch('/.netlify/functions/sync-queue', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ scanQueue }),
+    });
+  } catch (e) { /* offline-tolerant */ }
+}
+// Wrap saveScanState so every state change syncs (debounced)
+let _queueSyncT = null;
+const _origSaveScan = saveScanState;
+window.saveScanState = function() {
+  _origSaveScan();
+  clearTimeout(_queueSyncT);
+  _queueSyncT = setTimeout(syncQueueToServer, 1500);
+};
+
+// Pull open counts from server every 60s and render badge in table
+async function refreshOpens() {
+  try {
+    const r = await fetch('/.netlify/functions/get-opens', {
+      headers: { 'x-admin-password': ADMIN_PW },
+    });
+    if (!r.ok) return;
+    const d = await r.json();
+    if (!d.ok) return;
+    let changed = false;
+    prospects.forEach(p => {
+      const opens = d.opens[p.id];
+      if (Array.isArray(opens) && opens.length) {
+        if (!Array.isArray(p.openHistory) || p.openHistory.length !== opens.length) {
+          p.openHistory = opens;
+          changed = true;
+        }
+      }
+    });
+    if (changed) { saveProspects(); renderProspectsTable(); }
+  } catch (e) {}
+}
+setInterval(refreshOpens, 60_000);
+setTimeout(refreshOpens, 4000);
+
+// Reply classifier — pasted into a prompt
+async function classifyReplyFor(prospectId) {
+  const p = prospects.find(x => x.id === prospectId);
+  if (!p) return;
+  const text = prompt('Paste the reply text to categorize:');
+  if (!text) return;
+  try {
+    const r = await fetch('/.netlify/functions/categorize-reply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ text }),
+    });
+    const d = await r.json();
+    p.replyCategory = d.category;
+    p.replyReason = d.reason;
+    p.replySuggestion = d.suggestion;
+    p.replyText = text.slice(0, 4000);
+    p.firstReplyAt = p.firstReplyAt || new Date().toISOString();
+    // Auto-set status from category
+    if (d.category === 'unsubscribe' || d.category === 'not-interested') p.status = 'dead';
+    else if (d.category === 'interested') p.status = 'replied';
+    saveProspects(); renderProspectsTable();
+    alert('Categorized: ' + d.category.toUpperCase() + '\n\n' + d.suggestion + '\n\n(' + d.mode + ' mode)');
+  } catch (err) {
+    alert('Classify failed: ' + err.message);
+  }
+}

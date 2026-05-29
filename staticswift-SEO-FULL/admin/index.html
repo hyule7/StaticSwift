@@ -520,6 +520,27 @@
         </p>
       </div>
 
+      <!-- ════ EMAIL CONFIG TEST — diagnose SMTP in one click ════ -->
+      <div class="outreach-tools" style="border:1px solid rgba(245,158,11,.3);background:linear-gradient(160deg,rgba(245,158,11,.06),rgba(0,0,0,0));margin-bottom:18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:10px">
+          <h3 style="color:var(--amber);margin:0">📨 Email config — verify SMTP works</h3>
+          <button onclick="runEmailTest()" id="email-test-btn" class="btn-primary" style="background:var(--amber);color:#000">Send test email</button>
+        </div>
+        <div id="email-test-result" style="display:none;padding:14px;background:var(--dark3);border:1px solid var(--border);border-radius:8px;margin-top:8px;font-family:'DM Mono',monospace;font-size:12px;line-height:1.6;white-space:pre-wrap;overflow:auto;max-height:340px"></div>
+        <p style="margin:8px 0 0;font-size:11px;color:var(--dim);line-height:1.55">
+          Diagnoses env vars (SMTP_USER, SMTP_PASS, ADMIN_PASSWORD), verifies SMTP connect, then sends one real test email so you can confirm delivery. Sends to your SMTP_USER inbox by default.
+        </p>
+      </div>
+
+      <!-- ════ SEQUENCE TRAY — follow-ups due now ════ -->
+      <div class="outreach-tools" style="padding:0;border:1px solid rgba(167,139,250,.22);overflow:hidden;margin-bottom:18px">
+        <div style="padding:14px 16px;background:linear-gradient(160deg,rgba(167,139,250,.06),rgba(0,0,0,0));border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+          <h3 style="color:var(--purple);margin:0">🔁 Sequence tray — follow-ups due today</h3>
+          <span style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace">Day 0 → +5d → +12d</span>
+        </div>
+        <div id="sequence-tray"></div>
+      </div>
+
       <!-- ════ ALWAYS-ON SCANNING AGENT — queue + auto-worker ════ -->
       <div class="outreach-tools" style="border:1px solid rgba(34,197,94,.3);background:linear-gradient(160deg,rgba(34,197,94,.05),rgba(0,0,0,0));margin-bottom:18px">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:10px">
