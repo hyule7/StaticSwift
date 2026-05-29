@@ -3979,6 +3979,7 @@ window.sq = async (e) => {
     if (r.ok) {
       if (typeof gtag === 'function') {
         gtag('event', 'form_submit', {form_location: 'contact', business_type: data.business_type || '', package: data.package || ''});
+        if (typeof ssTrack === 'function') ssTrack('conversion:contact-form', { biz: data.business_name, pkg: data.package });
         gtag('event', 'generate_lead', {currency:'GBP', value: data.package==='advanced'?299:149, form_location:'contact'});
       }
       document.getElementById('qf').style.display='none';
@@ -4015,6 +4016,8 @@ window.sqHero = async (e) => {
   // Analytics — fire on intent, not on server success (server may not even be reachable in dev)
   if (typeof gtag === 'function') {
     gtag('event', 'form_submit', {form_location: 'hero'});
+  }
+  if (typeof ssTrack === 'function') ssTrack('conversion:hero-form', { biz: data.business_name });
     gtag('event', 'generate_lead', {currency:'GBP', value:149, form_location:'hero'});
   }
   // Best-effort POST the lead — UX never blocks on the network
@@ -4717,6 +4720,7 @@ window.runPublicAudit = async function(ev) {
     const d = await r.json();
     if (!r.ok || !d) throw new Error(d?.error || 'Audit failed');
     if (typeof gtag === 'function') gtag('event', 'site_audit_completed', { score: d.score, host: d.host });
+    if (typeof ssTrack === 'function') ssTrack('conversion:audit-completed', { score: d.score, host: d.host });
     renderPublicAudit(d);
   } catch(err) {
     resEl.innerHTML = '<div class="audit-error">Couldn\'t reach that site — double-check the URL and try again. (' + (err.message || 'unknown') + ')</div>';
@@ -5162,5 +5166,156 @@ function escapeForAudit(s) {
   check();
 })();
 </script>
+
+<!-- ════════════════════════════════════════════════════════════════
+     SELF-HOSTED ANALYTICS TRACKER
+     Pings /.netlify/functions/track-event on:
+       - Initial page view + UTM/referrer
+       - Section enter (each major section becomes a "step")
+       - CTA clicks (any element with [data-track] or class "btn" / nav-cta / hl-submit)
+       - Form interactions (focus + submit per field)
+       - Scroll depth (25 / 50 / 75 / 100%)
+       - Time on page (final beacon on unload)
+     Session id persisted in localStorage so we can rejoin the same visitor.
+     ════════════════════════════════════════════════════════════════ -->
+<script>
+(function ssAnalytics(){
+  if (location.hostname === 'localhost' || location.hostname.startsWith('127.')) return;
+  var ENDPOINT = '/.netlify/functions/track-event';
+  var SID_KEY = 'ss_sid';
+  var STEPS_KEY = 'ss_steps';
+
+  function uid(){ try { return crypto.randomUUID().slice(0,18); } catch(e) { return Math.random().toString(36).slice(2,14)+Date.now().toString(36); } }
+  function sid(){ var v = localStorage.getItem(SID_KEY); if (!v) { v = uid(); try { localStorage.setItem(SID_KEY, v); } catch(e){} } return v; }
+
+  var SID = sid();
+  var startMs = Date.now();
+  var lastDepth = 0;
+  var sentDepth = {};
+  var sessionSteps = [];
+
+  function send(payload){
+    try {
+      payload.sid = SID;
+      payload.path = location.pathname + location.search;
+      payload.ref = document.referrer || '';
+      payload.t = Date.now();
+      var body = JSON.stringify(payload);
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon(ENDPOINT, new Blob([body], { type: 'application/json' }));
+      } else {
+        fetch(ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json'}, body: body, keepalive: true }).catch(function(){});
+      }
+    } catch(e){}
+  }
+
+  function recordStep(label, meta){
+    sessionSteps.push({ at: Date.now(), label: label, meta: meta || {} });
+    try { localStorage.setItem(STEPS_KEY, JSON.stringify(sessionSteps.slice(-50))); } catch(e){}
+    send({ type:'step', evt: label, meta: meta || {} });
+  }
+
+  // 1. PAGE VIEW
+  var params = new URLSearchParams(location.search);
+  send({
+    type: 'pageview',
+    vp: window.innerWidth + 'x' + window.innerHeight,
+    lang: navigator.language,
+    ua: navigator.userAgent.slice(0, 200),
+    utm: {
+      source:   params.get('utm_source')   || '',
+      medium:   params.get('utm_medium')   || '',
+      campaign: params.get('utm_campaign') || '',
+      term:     params.get('utm_term')     || '',
+      content:  params.get('utm_content')  || '',
+    },
+  });
+
+  // 2. SECTION-ENTER (each major <section> becomes a step)
+  if ('IntersectionObserver' in window) {
+    var seenSections = {};
+    var sectionIO = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if (!e.isIntersecting) return;
+        var id = e.target.id || e.target.dataset.section || e.target.className.split(' ')[0];
+        if (!id || seenSections[id]) return;
+        seenSections[id] = true;
+        recordStep('view:' + id);
+      });
+    }, { threshold: 0.4 });
+    document.querySelectorAll('section[id], section[data-section]').forEach(function(s){
+      sectionIO.observe(s);
+    });
+  }
+
+  // 3. CTA CLICKS
+  document.addEventListener('click', function(e){
+    var el = e.target.closest('a, button, [data-track]');
+    if (!el) return;
+    var label = el.dataset.track || el.textContent.trim().slice(0, 60) || el.getAttribute('aria-label') || el.tagName;
+    var href = el.getAttribute('href') || null;
+    var classes = (el.className || '').toString().slice(0, 80);
+    // Only log meaningful CTAs
+    if (el.tagName === 'BUTTON' || /btn|cta|nav-cta|hl-submit|hero-alt|trade-cta|ps-cta|audit-cta|book-cta|compare-cta|rc-cta/.test(classes) || href === '#contact' || href === '#audit' || href === '#pricing' || el.dataset.track) {
+      recordStep('click:' + label.replace(/\s+/g,' '), { href: href, cls: classes.split(' ')[0] });
+    }
+  }, { capture: true, passive: true });
+
+  // 4. FORM INTERACTIONS
+  document.querySelectorAll('form').forEach(function(form){
+    var fid = form.id || form.getAttribute('aria-label') || 'form';
+    form.addEventListener('focusin', function(e){
+      if (!e.target.matches('input, select, textarea')) return;
+      var field = e.target.name || e.target.id || e.target.placeholder || 'unknown';
+      if (!form._fieldsSeen) form._fieldsSeen = {};
+      if (form._fieldsSeen[field]) return;
+      form._fieldsSeen[field] = true;
+      recordStep('field:' + fid + '/' + field);
+    }, true);
+    form.addEventListener('submit', function(){
+      recordStep('submit:' + fid);
+    });
+  });
+
+  // 5. SCROLL DEPTH (25/50/75/100)
+  var scrollT = 0;
+  window.addEventListener('scroll', function(){
+    if (scrollT) return;
+    scrollT = setTimeout(function(){
+      scrollT = 0;
+      var doc = document.documentElement;
+      var h = (doc.scrollHeight - doc.clientHeight) || 1;
+      var pct = Math.min(100, Math.round((window.scrollY / h) * 100));
+      lastDepth = Math.max(lastDepth, pct);
+      [25, 50, 75, 100].forEach(function(t){
+        if (pct >= t && !sentDepth[t]) {
+          sentDepth[t] = true;
+          recordStep('scroll:' + t);
+        }
+      });
+    }, 250);
+  }, { passive: true });
+
+  // 6. UNLOAD BEACON — final duration + journey summary
+  function flush(){
+    send({
+      type: 'unload',
+      dur: Math.round((Date.now() - startMs) / 1000),
+      depth: lastDepth,
+      steps: sessionSteps.slice(-30).map(function(s){ return s.label; }),
+    });
+  }
+  window.addEventListener('pagehide', flush);
+  window.addEventListener('beforeunload', flush);
+  // Visibility-change covers iOS Safari which often skips pagehide
+  document.addEventListener('visibilitychange', function(){
+    if (document.visibilityState === 'hidden') flush();
+  });
+
+  // Expose for hero form / audit form to log conversions
+  window.ssTrack = recordStep;
+})();
+</script>
+
 </body>
 </html>

@@ -2501,6 +2501,69 @@ async function loadSelfAnalytics() {
         : '<div class="empty">No data yet</div>';
     }
 
+    // Top sections (NEW)
+    const secEl = document.getElementById('sa-sections');
+    if (secEl && d.topSections) {
+      secEl.innerHTML = d.topSections.length
+        ? d.topSections.map(s => `<div class="sa-row"><span class="sa-row-l">${escapeHTML(s.name)}</span><span class="sa-row-r">${s.count.toLocaleString()}</span></div>`).join('')
+        : '<div class="empty">No section data yet — tracker only logs new visits</div>';
+    }
+    // Top CTAs (NEW)
+    const ctaEl = document.getElementById('sa-ctas-list');
+    if (ctaEl && d.topCtas) {
+      ctaEl.innerHTML = d.topCtas.length
+        ? d.topCtas.map(c => `<div class="sa-row"><span class="sa-row-l">${escapeHTML(c.label)}</span><span class="sa-row-r">${c.count.toLocaleString()}</span></div>`).join('')
+        : '<div class="empty">No CTA clicks yet</div>';
+    }
+    // Conversion funnel (NEW)
+    const funnelEl = document.getElementById('sa-funnel');
+    if (funnelEl && d.funnel) {
+      const top = d.funnel[0]?.count || 1;
+      funnelEl.innerHTML = d.funnel.map((f, i) => {
+        const pct = top > 0 ? Math.round((f.count / top) * 100) : 0;
+        const prevCount = i > 0 ? d.funnel[i - 1].count : null;
+        const stepPct = prevCount && prevCount > 0 ? Math.round((f.count / prevCount) * 100) + '%' : '';
+        return `
+          <div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px;font-size:12px">
+              <span style="color:var(--text);font-weight:600">${escapeHTML(f.label)}</span>
+              <span style="color:var(--cyan);font-family:'DM Mono',monospace">${f.count} ${stepPct ? '· ' + stepPct : ''}</span>
+            </div>
+            <div style="height:8px;background:var(--dark3);border-radius:4px;overflow:hidden">
+              <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--cyan),#00a8c0);transition:width .5s"></div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+    // Recent visitor journeys (NEW)
+    const jEl = document.getElementById('sa-journeys');
+    if (jEl && d.recentJourneys) {
+      jEl.innerHTML = d.recentJourneys.length
+        ? d.recentJourneys.map(j => {
+          const time = new Date(j.lastSeen).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+          const steps = (j.steps || []).map(s => {
+            const label = (s.evt || '').replace(/^view:|^click:|^conversion:|^field:|^scroll:|^submit:/, '');
+            const icon = (s.evt || '').startsWith('view:') ? '👁'
+              : (s.evt || '').startsWith('click:') ? '🖱'
+              : (s.evt || '').startsWith('conversion:') ? '🎯'
+              : (s.evt || '').startsWith('field:') ? '✎'
+              : (s.evt || '').startsWith('scroll:') ? '⇣'
+              : (s.evt || '').startsWith('submit:') ? '✓'
+              : '·';
+            return `<span style="display:inline-flex;align-items:center;gap:3px;padding:2px 6px;background:var(--surface2);border-radius:5px;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">${icon} ${escapeHTML(label.slice(0, 20))}</span>`;
+          }).join(' ');
+          return `
+            <div style="padding:11px 14px;border-bottom:1px solid var(--border);font-size:11px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <span style="font-family:'DM Mono',monospace;color:${j.converted ? 'var(--green)' : 'var(--text)'};font-weight:700">${j.converted ? '🎯 ' : ''}${escapeHTML(j.sid)}</span>
+                <span style="color:var(--dim);font-family:'DM Mono',monospace">${escapeHTML(j.country)} · ${escapeHTML(j.ref)} · ${time}</span>
+              </div>
+              <div style="display:flex;flex-wrap:wrap;gap:4px">${steps || '<span style="color:var(--dim)">no steps</span>'}</div>
+            </div>`;
+        }).join('')
+        : '<div class="empty">No visitor journeys yet — deploy the tracker + wait for traffic</div>';
+    }
+
     if (status) status.textContent = 'Updated ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) + ' · ' + d.rangeDays + 'd';
   } catch (err) {
     if (status) status.textContent = 'Error: ' + err.message;
@@ -2754,8 +2817,50 @@ function addProspectFromAnalysis() {
 
 const SENDER_FOOTER = '\n\n—\nHarry · StaticSwift\nManchester, UK\n07502 731 799 · hello@staticswift.co.uk\n\nThis is a one-time business introduction. If you\'d rather I never contact you again, reply STOP and I\'ll remove you immediately. Sent under PECR Reg. 22(2)–(3) on a B2B basis.';
 
+/*  TEMPLATE LIBRARY v2 — short, specific, mobile-first.
+    Research-backed patterns:
+      - Subject < 50 chars, lowercase first word
+      - Body < 100 words preferred
+      - First sentence references a real signal (not generic praise)
+      - One specific CTA at the end
+      - P.S. line (highest read element on cold email)
+    Each template has a stable id used by analytics to track A/B reply rates.
+*/
 const TEMPLATES = {
+  'short-curiosity': {
+    label: 'Short curiosity (shortest)',
+    subject: '{biz}',
+    body: `Hi {nameOrThere},
+
+Saw your site. One thing jumped out at me — {observation}.
+
+I build fast hand-coded sites for UK trades (£149 flat, live in 24h, no payment until you love it). Happy to mock up a free preview if you're curious — no email needed, just reply "yes" and your address.
+
+Either way, hope business is busy.
+
+Harry
+
+P.S. If never contacting me again sounds better, just reply STOP.`,
+  },
+  'specific-signal': {
+    label: 'Specific signal (use site-analyzer issue)',
+    subject: 'two things about {biz}',
+    body: `Hi {nameOrThere},
+
+Quick honest one — opened {website} on my phone yesterday. Two things you'd probably want to know:
+
+{issuesBullets}
+
+I rebuild sites like yours from scratch in 24 hours, £149 flat, no payment until you approve the preview. If you'd rather see what I make than read about it: staticswift.co.uk
+
+If now's not the time, no worries — just reply STOP and I'll go quiet.
+
+Harry · Manchester
+
+P.S. Average reply time from me is under an hour during the week.`,
+  },
   'cold-observation': {
+    label: 'Cold — specific observation',
     subject: 'Quick thought on {biz}\'s site',
     body: `Hi {nameOrThere},
 

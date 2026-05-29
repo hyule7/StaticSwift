@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/admin/admin.css?v=6">
+<link rel="stylesheet" href="/admin/admin.css?v=7">
 </head>
 <body>
 
@@ -345,6 +345,29 @@
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
           <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace">Browsers</div>
           <div id="sa-browsers" class="sa-list"><div class="loading">Loading</div></div>
+        </div>
+      </div>
+
+      <!-- CONVERSION FUNNEL + JOURNEYS — self-hosted -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px">
+          <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace;margin-bottom:14px">🎯 Conversion funnel</div>
+          <div id="sa-funnel"><div class="loading">Loading</div></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace">📊 Sections viewed most</div>
+          <div id="sa-sections" class="sa-list"><div class="loading">Loading</div></div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace">🖱 Top CTA clicks</div>
+          <div id="sa-ctas-list" class="sa-list"><div class="loading">Loading</div></div>
+        </div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+          <div style="padding:14px 16px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:'DM Mono',monospace">👣 Recent visitor journeys (last 25)</div>
+          <div id="sa-journeys" style="max-height:520px;overflow-y:auto"><div class="loading">Loading</div></div>
         </div>
       </div>
 
@@ -945,6 +968,6 @@
   </div>
 </div>
 
-<script src="/admin/admin.js?v=6" defer></script>
+<script src="/admin/admin.js?v=7" defer></script>
 </body>
 </html>

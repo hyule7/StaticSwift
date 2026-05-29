@@ -48,23 +48,56 @@ const COUNTRY_CODES = {
   NZ: 'New Zealand', IE: 'Ireland', ZA: 'South Africa',
 };
 
+// Multiple Overpass mirrors — failover on 406/429/500
+const OVERPASS_MIRRORS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+  'https://overpass.openstreetmap.ru/api/interpreter',
+];
+
 async function overpassFetch(query) {
-  // Public Overpass endpoint — generous free tier
-  const res = await fetch('https://overpass-api.de/api/interpreter', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: 'data=' + encodeURIComponent(query),
-  });
-  if (!res.ok) throw new Error('Overpass ' + res.status);
-  return await res.json();
+  let lastErr;
+  for (const url of OVERPASS_MIRRORS) {
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/json',
+          'User-Agent': 'StaticSwift Prospect Discovery (+https://staticswift.co.uk)',
+        },
+        body: 'data=' + encodeURIComponent(query),
+      });
+      if (res.status === 406 || res.status === 429 || res.status >= 500) {
+        lastErr = new Error('Overpass ' + res.status + ' at ' + url);
+        continue;
+      }
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error('Overpass ' + res.status + ': ' + text.slice(0, 200));
+      }
+      return await res.json();
+    } catch (err) {
+      lastErr = err;
+      continue;
+    }
+  }
+  throw lastErr || new Error('All Overpass mirrors failed');
 }
 
-function buildOverpassQuery(tags, areaName) {
-  // Build a union of all tag combinations within the area, requiring website tag
+function buildOverpassQuery(tags, areaName, country) {
+  // Strategy: use a bounding-box-by-area lookup that's tolerant of name variants.
+  // OSM stores area names under different keys for cities vs regions; we try a
+  // broader filter that accepts city/town/admin_level matches.
   const filters = tags.map(([k, v]) => `nwr["${k}"="${v}"]["website"](area.search);`).join('\n  ');
+  const safeName = areaName.replace(/["\\]/g, '');
   return `
 [out:json][timeout:25];
-area[name="${areaName.replace(/"/g, '\\"')}"]->.search;
+(
+  area["name"="${safeName}"]["boundary"="administrative"];
+  area["name"="${safeName}"]["place"~"city|town|village|suburb"];
+  area["name:en"="${safeName}"]["boundary"="administrative"];
+)->.search;
 (
   ${filters}
 );

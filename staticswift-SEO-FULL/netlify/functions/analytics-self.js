@@ -147,6 +147,73 @@ exports.handler = async (event) => {
     const formSubmits = events.filter(e => e.type === 'event' && e.evt === 'form_submit').length;
     const ctaClicks = events.filter(e => e.type === 'event' && e.evt === 'cta_click').length;
 
+    // ── Journey + step aggregations ──────────────────────────────────
+    // Top sections viewed
+    const sectionMap = {};
+    events.filter(e => e.type === 'step' && (e.evt || '').startsWith('view:')).forEach(e => {
+      const sec = e.evt.slice(5);
+      sectionMap[sec] = (sectionMap[sec] || 0) + 1;
+    });
+    const topSections = Object.entries(sectionMap).map(([name, count]) => ({ name, count })).sort((a,b) => b.count - a.count).slice(0, 12);
+
+    // Top CTA clicks
+    const ctaMap = {};
+    events.filter(e => e.type === 'step' && (e.evt || '').startsWith('click:')).forEach(e => {
+      const lbl = e.evt.slice(6).slice(0, 60);
+      ctaMap[lbl] = (ctaMap[lbl] || 0) + 1;
+    });
+    const topCtas = Object.entries(ctaMap).map(([label, count]) => ({ label, count })).sort((a,b) => b.count - a.count).slice(0, 12);
+
+    // Conversion funnel: count of unique sessions that hit each major step
+    const sessionSteps = {};
+    events.filter(e => e.type === 'step' || e.type === 'pageview' || (e.type === 'step' && (e.evt || '').startsWith('conversion:'))).forEach(e => {
+      if (!sessionSteps[e.sid]) sessionSteps[e.sid] = new Set();
+      if (e.type === 'pageview') sessionSteps[e.sid].add('Visited');
+      else if (e.evt) sessionSteps[e.sid].add(e.evt);
+    });
+    const funnelStages = [
+      { key: 'Visited',                 label: 'Visited site' },
+      { key: 'view:hero',               label: 'Saw hero' },
+      { key: 'view:audit',              label: 'Saw audit tool' },
+      { key: 'view:pricing',            label: 'Saw pricing' },
+      { key: 'conversion:audit-completed', label: 'Ran free audit' },
+      { key: 'click:Start free preview', label: 'Clicked CTA' },
+      { key: 'conversion:hero-form',    label: 'Submitted hero form' },
+      { key: 'conversion:contact-form', label: 'Submitted full brief' },
+    ];
+    const funnel = funnelStages.map(stage => ({
+      label: stage.label,
+      key: stage.key,
+      count: Object.values(sessionSteps).filter(set => Array.from(set).some(s => s === stage.key || s.startsWith(stage.key))).length,
+    }));
+
+    // Recent visitor journeys (last 25 unique sessions with their step sequence)
+    const sessionEvents = {};
+    events.forEach(e => {
+      if (!e.sid) return;
+      if (!sessionEvents[e.sid]) sessionEvents[e.sid] = [];
+      sessionEvents[e.sid].push(e);
+    });
+    const recentJourneys = Object.entries(sessionEvents)
+      .map(([sid, evts]) => {
+        evts.sort((a, b) => a.t - b.t);
+        return {
+          sid: sid.slice(0, 10),
+          firstSeen: evts[0]?.t,
+          lastSeen: evts[evts.length - 1]?.t,
+          country: evts[0]?.country || 'Unknown',
+          path: evts[0]?.path || '/',
+          ref: (() => { try { return evts[0]?.ref ? new URL(evts[0].ref).hostname.replace(/^www\./,'') : 'direct'; } catch { return 'direct'; } })(),
+          steps: evts
+            .filter(e => e.type === 'step' || e.type === 'pageview' || e.type === 'unload')
+            .slice(0, 30)
+            .map(e => ({ at: e.t, evt: e.evt || e.type, type: e.type })),
+          converted: evts.some(e => (e.evt || '').startsWith('conversion:')),
+        };
+      })
+      .sort((a, b) => b.lastSeen - a.lastSeen)
+      .slice(0, 25);
+
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
@@ -171,6 +238,10 @@ exports.handler = async (event) => {
         devices: Object.entries(deviceMap).map(([name, count]) => ({ name, count })),
         browsers,
         series,
+        topSections,
+        topCtas,
+        funnel,
+        recentJourneys,
       }),
     };
   } catch (err) {
