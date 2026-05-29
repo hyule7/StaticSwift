@@ -1996,6 +1996,46 @@ img.trade-frame { position:absolute; inset:0; width:100%; height:100%; object-fi
 .cv-finale .cv-finale-title { color:#0f0f0f !important; }
 .cv-finale .cv-finale-title em { color:#0f0f0f !important; }
 
+/* ═══════════════════════════════════════════════════════════════
+   RISK-REVERSAL CINEMA — 3-phase pinned conversion moment.
+   --r1 / --r2 / --r3 drive cross-fade between phases.
+   Phase 1: fear question. Phase 2: massive answer. Phase 3: proof + CTA.
+   ═══════════════════════════════════════════════════════════════ */
+.risk-cinema { position:relative; height:280vh; background:#ffffff; --r1:1; --r2:0; --r3:0; }
+.rc-sticky { position:sticky; top:0; height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 1.5rem; overflow:hidden; background:#ffffff; }
+.rc-eyebrow { font-family:'DM Sans',sans-serif; font-size:.78rem; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:#0066cc; margin-bottom:3rem; display:flex; align-items:center; gap:.6rem; }
+.rc-eyebrow::before { content:""; display:inline-block; width:6px; height:6px; border-radius:50%; background:#0066cc; }
+/* Phases share the same centred position; opacity-only cross-fade */
+.rc-line { position:absolute; left:0; right:0; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2rem; padding:0 1.5rem; will-change:opacity,transform; pointer-events:none; }
+.rc-line-1 { opacity:var(--r1); transform:translateY(calc(-50% + (1 - var(--r1)) * -20px)); }
+.rc-line-2 { opacity:var(--r2); transform:translateY(calc(-50% + (1 - var(--r2)) * 20px)); }
+.rc-line-3 { opacity:var(--r3); transform:translateY(calc(-50% + (1 - var(--r3)) * 20px)); pointer-events:auto; }
+/* Phase 1 — the buyer's fear (italic, muted) */
+.rc-question { font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; font-size:clamp(2.4rem,5vw,4.8rem); line-height:1.05; letter-spacing:-.025em; color:#787774; text-align:center; max-width:1000px; }
+/* Phase 2 — the answer (massive, black) */
+.rc-answer { font-family:'Instrument Serif',serif; font-weight:400; font-size:clamp(4.4rem,10vw,11rem); line-height:.95; letter-spacing:-.04em; color:#0f0f0f; text-align:center; max-width:1200px; }
+.rc-answer em { font-style:italic; color:#0066cc; }
+/* Phase 3 — the proof + CTA */
+.rc-pills { display:flex; flex-direction:column; align-items:center; gap:1.1rem; margin-bottom:.5rem; }
+.rc-pill { display:flex; align-items:center; gap:1.2rem; padding:.85rem 1.6rem; background:#ffffff; border:1px solid rgba(0,0,0,.08); border-radius:980px; font-family:'DM Sans',sans-serif; font-size:1.05rem; color:#0f0f0f; font-weight:500; letter-spacing:-.005em; box-shadow:0 1px 2px rgba(0,0,0,.02); }
+.rc-pill-num { font-family:'Instrument Serif',serif; font-style:italic; font-size:1.05rem; color:#0066cc; }
+.rc-pill-txt { color:#0f0f0f; }
+.rc-cta { display:inline-flex; align-items:center; gap:.5rem; background:#0f0f0f; color:#ffffff; font-family:'DM Sans',sans-serif; font-size:1.05rem; font-weight:600; padding:1.1rem 1.8rem; border-radius:980px; text-decoration:none; letter-spacing:-.01em; margin-top:1.2rem; transition:transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s; }
+.rc-cta:hover { transform:translateY(-2px); background:#000; box-shadow:0 14px 32px rgba(0,0,0,.18); }
+.rc-fine { font-family:'DM Sans',sans-serif; font-size:.86rem; color:#787774; letter-spacing:-.005em; margin-top:.8rem; }
+@media(max-width:760px){
+  .rc-question { font-size:clamp(1.8rem,6vw,3rem); }
+  .rc-answer { font-size:clamp(3rem,12vw,5.5rem); }
+  .rc-pill { font-size:.92rem; padding:.7rem 1.2rem; gap:.9rem; }
+  .rc-cta { font-size:.95rem; padding:1rem 1.6rem; }
+}
+@media(prefers-reduced-motion:reduce){
+  .risk-cinema { height:auto; }
+  .rc-sticky { position:relative; height:auto; padding:6rem 1.5rem; gap:3rem; }
+  .rc-line { position:relative; opacity:1 !important; transform:none !important; top:auto; }
+  .rc-line-1 { display:none; } /* skip the fear question — go straight to answer */
+}
+
 /* TRADE PREVIEW — img always visible, fills container, no leftover overlays */
 img#trade-frame.trade-frame,
 img#trade-frame.trade-frame.trade-frame {
@@ -2791,6 +2831,32 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
   </div>
 </template>
 
+
+<!-- ══ RISK-REVERSAL CINEMA — pinned 3-phase pin right before the contact form ══ -->
+<!-- Conversion job: kill the "what if it's bad" objection at peak buying intent. -->
+<section class="risk-cinema" id="risk-cinema" aria-label="The promise">
+  <div class="rc-sticky">
+    <div class="rc-eyebrow">The promise</div>
+    <!-- Phase 1: the buyer's fear -->
+    <div class="rc-line rc-line-1">
+      <span class="rc-question">"What if I don't love it?"</span>
+    </div>
+    <!-- Phase 2: the answer -->
+    <div class="rc-line rc-line-2">
+      <span class="rc-answer">You <em>don't</em> pay.</span>
+    </div>
+    <!-- Phase 3: the proof + CTA -->
+    <div class="rc-line rc-line-3">
+      <div class="rc-pills">
+        <span class="rc-pill"><span class="rc-pill-num">01</span><span class="rc-pill-txt">We design first.</span></span>
+        <span class="rc-pill"><span class="rc-pill-num">02</span><span class="rc-pill-txt">You approve. Or you don't.</span></span>
+        <span class="rc-pill"><span class="rc-pill-num">03</span><span class="rc-pill-txt">Then — and only then — you pay.</span></span>
+      </div>
+      <a href="#contact" class="rc-cta">Start my free preview →</a>
+      <div class="rc-fine">£149 · Live in 24 hours · No card required</div>
+    </div>
+  </div>
+</section>
 
 <!-- ══ 03 · CONTACT ══ -->
 <section class="contact-section" id="contact">
@@ -4484,6 +4550,48 @@ else window.addEventListener('load', initGsap);
     window.addEventListener('scroll', pOnScroll, { passive: true });
     window.addEventListener('resize', pOnScroll, { passive: true });
     pTick();
+  }
+
+  /* 3c. RISK-REVERSAL CINEMA — 3-phase pin right before contact.
+        Phase 1: fear question. Phase 2: massive answer. Phase 3: proof + CTA.
+        Cross-fades via --r1/--r2/--r3 driven by smoothstep-weighted phase progress. */
+  const riskCinema = document.getElementById('risk-cinema');
+  if (riskCinema) {
+    let rRaf = 0;
+    let riskVisible = false;
+    const rIO = new IntersectionObserver((entries) => {
+      riskVisible = entries[0].isIntersecting;
+    }, { rootMargin: '50% 0px 50% 0px' });
+    rIO.observe(riskCinema);
+
+    const phaseWeight = (p, center, width) => {
+      const d = Math.abs(p - center) / width;
+      if (d >= 1) return 0;
+      const x = 1 - d;
+      return x * x * (3 - 2 * x);
+    };
+
+    const rTick = () => {
+      rRaf = 0;
+      if (!riskVisible) return;
+      const rect = riskCinema.getBoundingClientRect();
+      const total = rect.height - window.innerHeight;
+      const scrolled = Math.max(0, -rect.top);
+      const p = total > 0 ? Math.max(0, Math.min(1, scrolled / total)) : 0;
+      // Phase peaks at 0.16, 0.5, 0.84 with overlapping bands.
+      // Phase 3 lingers longer at the end so visitor can read the CTA + click.
+      const r1 = phaseWeight(p, 0.16, 0.34);
+      const r2 = phaseWeight(p, 0.5,  0.34);
+      const r3 = p > 0.7 ? 1 : phaseWeight(p, 0.84, 0.34);
+      const sum = r1 + r2 + r3 || 1;
+      riskCinema.style.setProperty('--r1', (r1 / sum).toFixed(4));
+      riskCinema.style.setProperty('--r2', (r2 / sum).toFixed(4));
+      riskCinema.style.setProperty('--r3', (r3 / sum).toFixed(4));
+    };
+    const rOnScroll = () => { if (rRaf) return; rRaf = requestAnimationFrame(rTick); };
+    window.addEventListener('scroll', rOnScroll, { passive: true });
+    window.addEventListener('resize', rOnScroll, { passive: true });
+    rTick();
   }
 
   /* 4. TRADE PICKER → swap the static preview image, URL chrome, and
