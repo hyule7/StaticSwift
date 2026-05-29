@@ -47,7 +47,7 @@
 {"@context":"https://schema.org","@type":"WebSite","@id":"https://staticswift.co.uk/#site","url":"https://staticswift.co.uk/","name":"StaticSwift","publisher":{"@id":"https://staticswift.co.uk/#org"},"inLanguage":"en-GB","potentialAction":{"@type":"SearchAction","target":"https://staticswift.co.uk/?q={search_term_string}","query-input":"required name=search_term_string"}}
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"ProfessionalService","@id":"https://staticswift.co.uk/#business","name":"StaticSwift","image":"https://staticswift.co.uk/og-image.jpg","url":"https://staticswift.co.uk/","telephone":"","email":"hello@staticswift.co.uk","priceRange":"£149-£299","description":"Premium handcrafted static websites for UK small businesses. 24-hour delivery, no monthly fees.","address":{"@type":"PostalAddress","addressCountry":"GB","addressRegion":"Scotland"},"areaServed":[{"@type":"Country","name":"United Kingdom"},{"@type":"AdministrativeArea","name":"England"},{"@type":"AdministrativeArea","name":"Scotland"},{"@type":"AdministrativeArea","name":"Wales"},{"@type":"AdministrativeArea","name":"Northern Ireland"}],"hasOfferCatalog":{"@type":"OfferCatalog","name":"Website packages","itemListElement":[{"@type":"Offer","name":"Starter Website","description":"Clean single-page website. SEO-ready, mobile-first, 24-hour delivery.","price":"149","priceCurrency":"GBP","availability":"https://schema.org/InStock","url":"https://staticswift.co.uk/#pricing"},{"@type":"Offer","name":"Advanced Website","description":"Multi-section premium website with gallery, testimonials, advanced animations.","price":"299","priceCurrency":"GBP","availability":"https://schema.org/InStock","url":"https://staticswift.co.uk/#pricing"}]}}
+{"@context":"https://schema.org","@type":"ProfessionalService","@id":"https://staticswift.co.uk/#business","name":"StaticSwift","image":"https://staticswift.co.uk/og-image.jpg","url":"https://staticswift.co.uk/","telephone":"+447502731799","email":"hello@staticswift.co.uk","priceRange":"£149-£299","description":"Premium handcrafted static websites for UK small businesses. 24-hour delivery, no monthly fees.","address":{"@type":"PostalAddress","addressCountry":"GB","addressRegion":"Scotland"},"areaServed":[{"@type":"Country","name":"United Kingdom"},{"@type":"AdministrativeArea","name":"England"},{"@type":"AdministrativeArea","name":"Scotland"},{"@type":"AdministrativeArea","name":"Wales"},{"@type":"AdministrativeArea","name":"Northern Ireland"}],"hasOfferCatalog":{"@type":"OfferCatalog","name":"Website packages","itemListElement":[{"@type":"Offer","name":"Starter Website","description":"Clean single-page website. SEO-ready, mobile-first, 24-hour delivery.","price":"149","priceCurrency":"GBP","availability":"https://schema.org/InStock","url":"https://staticswift.co.uk/#pricing"},{"@type":"Offer","name":"Advanced Website","description":"Multi-section premium website with gallery, testimonials, advanced animations.","price":"299","priceCurrency":"GBP","availability":"https://schema.org/InStock","url":"https://staticswift.co.uk/#pricing"}]}}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much does a StaticSwift website cost?","acceptedAnswer":{"@type":"Answer","text":"Starter websites are £149 one-off. Advanced multi-section websites are £299. There are no monthly fees and you own the files outright."}},{"@type":"Question","name":"How fast is delivery?","acceptedAnswer":{"@type":"Answer","text":"Most websites are delivered within 24 hours of your brief being received. You'll see a free preview before paying anything."}},{"@type":"Question","name":"Do I have to pay upfront?","acceptedAnswer":{"@type":"Answer","text":"No. We build you a free preview first. You only pay once you've seen it and approved it."}},{"@type":"Question","name":"Will my website rank on Google?","acceptedAnswer":{"@type":"Answer","text":"Yes — every StaticSwift website is built with SEO best practices: semantic HTML, structured data, fast loading, mobile-first, and clean meta tags."}},{"@type":"Question","name":"Do you offer hosting?","acceptedAnswer":{"@type":"Answer","text":"Hosting is an optional add-on (£29). Without it, you receive the website files and can host them anywhere."}}]}
@@ -628,7 +628,9 @@ footer::before{content:'';position:absolute;top:0;left:50%;transform:translateX(
 .footer-top{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3.5rem}
 .footer-brand{display:flex;align-items:center;gap:.65rem;margin-bottom:1rem}
 .footer-brand-name{font-family:'Inter',sans-serif;font-size:1rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
-.footer-tagline{font-size:.86rem;color:rgba(255,255,255,.5);line-height:1.65;max-width:240px;margin-bottom:1.25rem}
+.footer-tagline{font-size:.86rem;color:rgba(255,255,255,.5);line-height:1.65;max-width:240px;margin-bottom:1rem}
+.footer-phone{display:inline-block;color:#fff;text-decoration:none;font-family:'DM Sans',sans-serif;font-size:.92rem;font-weight:500;margin-bottom:1rem;transition:color .2s}
+.footer-phone:hover{color:#22c55e}
 .footer-pill{display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:500;color:rgba(255,255,255,.7);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:100px;padding:.35rem .85rem;font-family:'Inter',sans-serif}
 .footer-pill .pulse{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:pulse 2s ease-in-out infinite}
 .footer-col h4{font-family:'Inter',sans-serif;font-size:.72rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:1.2rem}
@@ -1518,8 +1520,13 @@ nav#nav .nav-cta:hover { background:#000 }
 /* Finale overlay — fades in once phone fills viewport */
 .cv-finale { position:absolute; left:0; right:0; bottom:8vh; text-align:center; z-index:6; color:#fff; padding:0 1.5rem; opacity:calc(var(--p3) * 1); transform:translate3d(0,calc((1 - var(--p3)) * 30px),0); pointer-events:none; }
 .cv-finale-eyebrow { font-family:'DM Sans',sans-serif; font-size:.78rem; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:rgba(255,255,255,.7); margin-bottom:.75rem; }
-.cv-finale-title { font-family:'Instrument Serif',serif; font-weight:400; font-size:clamp(2.4rem,5vw,4.4rem); line-height:1; letter-spacing:-.03em; color:#fff; }
+.cv-finale-title { font-family:'Instrument Serif',serif; font-weight:400; font-size:clamp(2.4rem,5vw,4.4rem); line-height:1; letter-spacing:-.03em; color:#fff; margin-bottom:1.4rem; }
 .cv-finale-title em { font-style:italic; color:#fff; }
+.cv-finale-cta { display:inline-flex; align-items:center; gap:.55rem; padding:.95rem 1.6rem; background:#ffffff; color:#0f0f0f; border-radius:980px; font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:600; text-decoration:none; transition:transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s; pointer-events:auto; }
+.cv-finale-cta svg { width:18px; height:18px; }
+.cv-finale-cta:hover { transform:translateY(-2px); box-shadow:0 14px 32px rgba(0,0,0,.25); }
+.cv-finale-cta strong { font-weight:700; }
+.cv-finale { pointer-events:auto; }
 /* Scroll cue — small SCROLL indicator at bottom that fades out */
 .cv-cue { position:absolute; bottom:4vh; left:50%; transform:translateX(-50%); z-index:5; display:flex; flex-direction:column; align-items:center; gap:.6rem; color:rgba(255,255,255,.55); font-family:'DM Sans',sans-serif; font-size:.66rem; font-weight:600; letter-spacing:.32em; opacity:calc(1 - var(--p) * 1.6); pointer-events:none; }
 .cv-cue-line { width:1px; height:40px; background:linear-gradient(180deg,rgba(255,255,255,.5),transparent); animation:cueDrop 2s ease-in-out infinite; transform-origin:top; }
@@ -2066,6 +2073,88 @@ img#trade-frame.trade-frame.trade-frame {
 
 /* Nav CTA — more prominent */
 nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padding:.65rem 1.3rem !important; font-size:.88rem !important; font-weight:600 !important; }
+/* Nav phone — trust anchor next to CTA */
+.nav-phone { display:inline-flex; align-items:center; gap:.5rem; padding:.55rem 1rem; border-radius:980px; background:transparent; border:1.5px solid rgba(0,0,0,.1); color:#0f0f0f; font-family:'DM Sans',sans-serif; font-size:.85rem; font-weight:600; letter-spacing:-.005em; text-decoration:none; transition:background .2s, border-color .2s, transform .2s; margin-right:.55rem; }
+.nav-phone svg { width:14px; height:14px; flex-shrink:0; }
+.nav-phone:hover { background:#0f0f0f; border-color:#0f0f0f; color:#ffffff; transform:translateY(-1px); }
+@media(max-width:920px){ .nav-phone span { display:none; } .nav-phone { padding:.5rem .65rem; } }
+@media(max-width:560px){ .nav-phone { display:none; } /* sticky CTA covers mobile call action */ }
+/* Sticky CTA phone button */
+.sticky-cta-phone { display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; background:#22c55e; color:#ffffff; border-radius:50%; text-decoration:none; transition:background .2s, transform .2s; }
+.sticky-cta-phone svg { width:16px; height:16px; }
+.sticky-cta-phone:hover { background:#16a34a; transform:scale(1.06); }
+
+/* ═══════════════════════════════════════════════════════════════
+   TRUST SECTION — About + Timeline + Post-launch.
+   Sits right before the contact form. Last trust unlock.
+   ═══════════════════════════════════════════════════════════════ */
+.trust-section { background:#ffffff; padding:8rem 1.5rem; border-top:1px solid rgba(0,0,0,.06); }
+.trust-inner { max-width:1240px; margin:0 auto; display:flex; flex-direction:column; gap:8rem; }
+.meet-eyebrow { display:flex; align-items:center; gap:.65rem; font-family:'DM Sans',sans-serif; font-size:.78rem; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:#0066cc; margin-bottom:1.2rem; }
+.meet-eyebrow::before { content:""; display:inline-block; width:6px; height:6px; border-radius:50%; background:#0066cc; }
+
+/* ── ABOUT HARRY ─────────────────────────────────────────────── */
+.trust-meet { display:grid; grid-template-columns:1fr 1.15fr; gap:5rem; align-items:center; }
+.meet-photo { aspect-ratio:4/5; border-radius:24px; overflow:hidden; box-shadow:0 40px 80px -30px rgba(0,0,0,.2); position:relative; }
+.meet-photo img { width:100%; height:100%; object-fit:cover; filter:saturate(1.02) brightness(.98); }
+.meet-title { font-family:'Instrument Serif',serif; font-weight:400; font-size:clamp(2.4rem,4.8vw,4.4rem); line-height:1.02; letter-spacing:-.03em; color:#0f0f0f; margin-bottom:1.6rem; max-width:680px; }
+.meet-title em { font-style:italic; color:#0f0f0f; }
+.meet-body { font-family:'DM Sans',sans-serif; font-size:1.1rem; line-height:1.65; color:#3a3a3a; max-width:560px; margin-bottom:2.2rem; }
+.meet-actions { display:flex; flex-wrap:wrap; gap:.8rem 1rem; align-items:center; }
+.meet-cta { display:inline-flex; align-items:center; gap:.6rem; padding:.85rem 1.3rem; border-radius:980px; font-family:'DM Sans',sans-serif; font-size:.95rem; font-weight:600; text-decoration:none; transition:transform .25s cubic-bezier(.16,1,.3,1), background .25s, box-shadow .25s; }
+.meet-cta svg { width:16px; height:16px; flex-shrink:0; }
+.meet-cta-primary { background:#0f0f0f; color:#ffffff; box-shadow:0 8px 24px rgba(0,0,0,.18); }
+.meet-cta-primary:hover { background:#000; transform:translateY(-2px); box-shadow:0 14px 32px rgba(0,0,0,.28); }
+.meet-cta:not(.meet-cta-primary) { background:#ffffff; color:#0f0f0f; border:1.5px solid rgba(0,0,0,.1); }
+.meet-cta:not(.meet-cta-primary):hover { background:#22c55e; border-color:#22c55e; color:#ffffff; transform:translateY(-2px); }
+.meet-hours { font-family:'DM Sans',sans-serif; font-size:.86rem; color:#787774; padding-left:.4rem; }
+@media(max-width:900px){ .trust-meet { grid-template-columns:1fr; gap:2.5rem; } .meet-photo { max-width:360px; aspect-ratio:1/1; margin:0 auto; } }
+
+/* ── TIMELINE — "from submit to live, concretely" ─────────────── */
+.trust-timeline { max-width:880px; }
+.timeline-head { margin-bottom:3rem; }
+.timeline-title { font-family:'Instrument Serif',serif; font-weight:400; font-size:clamp(2rem,4vw,3.4rem); line-height:1.05; letter-spacing:-.03em; color:#0f0f0f; max-width:680px; }
+.timeline-title em { font-style:italic; color:#0f0f0f; }
+.timeline { list-style:none; padding:0; margin:0; position:relative; }
+.timeline::before { content:""; position:absolute; left:78px; top:24px; bottom:24px; width:2px; background:linear-gradient(180deg,rgba(0,102,204,.5),rgba(0,0,0,.08)); border-radius:2px; }
+.timeline-step { display:grid; grid-template-columns:160px 1fr; gap:24px; padding:1.4rem 0; align-items:flex-start; position:relative; }
+.step-clock { font-family:'Instrument Serif',serif; font-style:italic; font-weight:400; font-size:clamp(2.4rem,4vw,3.6rem); line-height:1; color:#0066cc; padding-top:.4rem; display:flex; align-items:baseline; gap:2px; position:relative; }
+.step-clock::before { content:""; position:absolute; right:-8px; top:1.2rem; width:18px; height:18px; border-radius:50%; background:#ffffff; border:3px solid #0066cc; box-shadow:0 0 0 4px #ffffff; z-index:1; }
+.step-clock small { font-size:.42em; color:#787774; font-style:normal; font-family:'DM Sans',sans-serif; font-weight:600; }
+.step-body { padding-top:.5rem; padding-left:1.2rem; }
+.step-title { font-family:'Instrument Serif',serif; font-weight:400; font-size:1.6rem; line-height:1.1; letter-spacing:-.02em; color:#0f0f0f; margin-bottom:.5rem; }
+.step-text { font-family:'DM Sans',sans-serif; font-size:1rem; line-height:1.55; color:#3a3a3a; max-width:540px; }
+.step-text strong { color:#0f0f0f; font-weight:600; }
+.timeline-note { margin-top:2.4rem; font-family:'DM Sans',sans-serif; font-size:.9rem; line-height:1.6; color:#787774; padding:1.1rem 1.4rem; background:rgba(0,102,204,.04); border:1px solid rgba(0,102,204,.12); border-radius:12px; max-width:680px; }
+@media(max-width:680px){
+  .timeline::before { left:48px; }
+  .timeline-step { grid-template-columns:88px 1fr; gap:14px; }
+  .step-clock { font-size:1.8rem; }
+  .step-clock::before { right:-6px; width:14px; height:14px; }
+  .step-body { padding-left:.6rem; }
+  .step-title { font-size:1.2rem; }
+}
+
+/* ── POST-LAUNCH FAQ — "what happens after" ─────────────────── */
+.post-head { margin-bottom:3rem; }
+.post-title { font-family:'Instrument Serif',serif; font-weight:400; font-size:clamp(2rem,4vw,3.4rem); line-height:1.05; letter-spacing:-.03em; color:#0f0f0f; }
+.post-title em { font-style:italic; color:#0f0f0f; }
+.post-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.6rem; }
+.post-card { padding:2rem; background:#ffffff; border:1px solid rgba(0,0,0,.08); border-radius:18px; transition:border-color .3s, transform .3s cubic-bezier(.16,1,.3,1), box-shadow .3s; }
+.post-card:hover { border-color:rgba(0,0,0,.16); transform:translateY(-3px); box-shadow:0 14px 32px -16px rgba(0,0,0,.1); }
+.post-card-title { font-family:'Instrument Serif',serif; font-weight:400; font-size:1.5rem; line-height:1.1; letter-spacing:-.02em; color:#0f0f0f; margin-bottom:1rem; }
+.post-card-body { font-family:'DM Sans',sans-serif; font-size:.98rem; line-height:1.6; color:#3a3a3a; }
+@media(max-width:760px){ .post-grid { grid-template-columns:1fr; } .trust-section { padding:5rem 1.25rem; } .trust-inner { gap:5rem; } }
+
+/* Contact form — phone line directly under sub-text */
+.form-call-line { display:flex; align-items:center; flex-wrap:wrap; gap:.55rem 1rem; padding:1rem 1.25rem; background:rgba(0,102,204,.04); border:1px solid rgba(0,102,204,.12); border-radius:14px; margin:1.4rem 0 2rem; font-family:'DM Sans',sans-serif; font-size:.95rem; color:#3a3a3a; }
+.form-phone-link { display:inline-flex; align-items:center; gap:.45rem; color:#0f0f0f; text-decoration:none; font-weight:500; transition:color .2s; }
+.form-phone-link svg { width:14px; height:14px; }
+.form-phone-link:hover { color:#0066cc; }
+.form-phone-link strong { font-weight:700; font-family:'DM Sans',sans-serif; letter-spacing:-.005em; }
+.form-call-or { color:#787774; }
+.form-wa-link { color:#22c55e; font-weight:600; text-decoration:none; transition:color .2s; }
+.form-wa-link:hover { color:#16a34a; }
 
 </style>
 </head>
@@ -2092,6 +2181,9 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
 <!-- ══ STICKY CTA — high-conversion always-visible CTA on scroll ══ -->
 <div class="sticky-cta" id="stickyCta" role="complementary" aria-label="Quick start">
   <span class="sticky-cta-text"><strong>£149</strong> · Live in 24h</span>
+  <a class="sticky-cta-phone" href="tel:+447502731799" aria-label="Call Harry">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+  </a>
   <a class="sticky-cta-btn" href="#contact">Start free preview →</a>
   <button class="sticky-cta-close" aria-label="Dismiss" onclick="document.getElementById('stickyCta').classList.remove('is-visible');sessionStorage.setItem('ss_sticky_dismissed','1')">×</button>
 </div>
@@ -2120,6 +2212,10 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
     <a href="#reviews">Reviews</a>
     <a href="#faq">FAQ</a>
   </div>
+  <a href="tel:+447502731799" class="nav-phone" aria-label="Call Harry on 07502 731 799">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    <span>07502 731 799</span>
+  </a>
   <a href="#contact" class="nav-cta magnetic">Start free preview →</a>
   <button class="ham" id="ham-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mob-menu" onclick="toggleMenu()">
     <span class="ham-bar"></span><span class="ham-bar"></span>
@@ -2199,13 +2295,13 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
 
         <!-- Live-feeling social proof — conversion booster -->
         <div class="hero-trust" aria-label="Live trust signals">
-          <div class="ht-item"><span class="ht-num">147</span><span class="ht-lbl">sites built</span></div>
+          <div class="ht-item"><span class="ht-num">1</span><span class="ht-lbl">Designer, hands-on</span></div>
           <div class="ht-sep" aria-hidden="true"></div>
-          <div class="ht-item"><span class="ht-num ht-live"><span class="ht-pulse"></span>14<small>m</small></span><span class="ht-lbl">avg reply</span></div>
+          <div class="ht-item"><span class="ht-num ht-live"><span class="ht-pulse"></span>Same<small>day</small></span><span class="ht-lbl">reply, always</span></div>
           <div class="ht-sep" aria-hidden="true"></div>
-          <div class="ht-item"><span class="ht-num">4.9<small>★</small></span><span class="ht-lbl">on 89 reviews</span></div>
+          <div class="ht-item"><span class="ht-num">MCR</span><span class="ht-lbl">Manchester-built</span></div>
           <div class="ht-sep" aria-hidden="true"></div>
-          <div class="ht-item"><span class="ht-num">8<small>/mo</small></span><span class="ht-lbl">spots left</span></div>
+          <div class="ht-item"><span class="ht-num"><a href="tel:+447502731799" style="color:inherit;text-decoration:none">Call</a></span><span class="ht-lbl">07502 731 799</span></div>
         </div>
       </div>
 
@@ -2407,9 +2503,13 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
       </div>
     </div>
     <!-- Final overlay copy that fades in once phone fills viewport -->
-    <div class="cv-finale" aria-hidden="true">
-      <div class="cv-finale-eyebrow">Your site, in 24 hours</div>
-      <div class="cv-finale-title">This could be <em>you</em>.</div>
+    <div class="cv-finale">
+      <div class="cv-finale-eyebrow">Yours in 24 hours · Hand-built by Harry</div>
+      <div class="cv-finale-title">This could be <em>your business</em>.</div>
+      <a href="tel:+447502731799" class="cv-finale-cta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span>Call Harry · 07502 731 799</span>
+      </a>
     </div>
     <!-- Scroll cue -->
     <div class="cv-cue" aria-hidden="true"><span>SCROLL</span><div class="cv-cue-line"></div></div>
@@ -2858,6 +2958,108 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
   </div>
 </section>
 
+<!-- ══ ABOUT + TIMELINE + POST-LAUNCH — last trust block before contact ══ -->
+<section class="trust-section" id="about" aria-label="About StaticSwift, timeline, and what happens after launch">
+  <div class="trust-inner">
+
+    <!-- ABOUT HARRY -->
+    <div class="trust-meet">
+      <div class="meet-photo" aria-label="Harry, designer">
+        <img src="https://images.pexels.com/photos/5717479/pexels-photo-5717479.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=900" alt="Harry, designer at StaticSwift" loading="lazy" width="900" height="1125">
+      </div>
+      <div class="meet-text">
+        <div class="meet-eyebrow">Who you're hiring</div>
+        <h2 class="meet-title">I'm Harry. <em>I'll build it myself.</em></h2>
+        <p class="meet-body">StaticSwift is one designer working out of Manchester. Not an agency, not a network of freelancers, not AI churning template sites — me, at a desk, building your site by hand. I do every brief, every preview, every revision. You know exactly who you're talking to from the first message to the day your site goes live.</p>
+        <div class="meet-actions">
+          <a href="tel:+447502731799" class="meet-cta meet-cta-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span>Call me · <strong>07502 731 799</strong></span>
+          </a>
+          <a href="https://wa.me/447502731799" class="meet-cta" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4l-2.6-1.3c-.2-.1-.5-.1-.7.1l-1.1 1.1c-.2.2-.5.2-.7.1-1.6-.8-2.9-2.1-3.7-3.7-.1-.2 0-.5.1-.7l1.1-1.1c.2-.2.2-.5.1-.7L8.7 5.6c-.1-.3-.4-.5-.7-.5H6.5c-.6 0-1 .5-1 1 0 5.5 4.5 10 10 10 .6 0 1-.4 1-1v-1.5c0-.3-.2-.6-.5-.7z"/></svg>
+            <span>WhatsApp</span>
+          </a>
+          <span class="meet-hours">Reply same day · Mon–Sun · 8am–8pm</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TIMELINE — "When does 24h actually start?" -->
+    <div class="trust-timeline">
+      <div class="timeline-head">
+        <div class="meet-eyebrow">Your 24 hours, by the hour</div>
+        <h2 class="timeline-title">From submit to live, <em>concretely</em>.</h2>
+      </div>
+      <ol class="timeline">
+        <li class="timeline-step">
+          <span class="step-clock">0<small>h</small></span>
+          <div class="step-body">
+            <h3 class="step-title">You submit the form</h3>
+            <p class="step-text">Business name, current site (if any), email and phone. Four fields. Takes a minute.</p>
+          </div>
+        </li>
+        <li class="timeline-step">
+          <span class="step-clock">~1<small>h</small></span>
+          <div class="step-body">
+            <h3 class="step-title">I reply personally</h3>
+            <p class="step-text">Quick email or WhatsApp with any clarifying questions — colours, must-have sections, examples you like. No bots, no auto-responders.</p>
+          </div>
+        </li>
+        <li class="timeline-step">
+          <span class="step-clock">24<small>h</small></span>
+          <div class="step-body">
+            <h3 class="step-title">Your preview lands</h3>
+            <p class="step-text">A real, live URL you can open on your phone, share with mates, hold up in front of customers. <strong>You haven't paid a penny yet.</strong></p>
+          </div>
+        </li>
+        <li class="timeline-step">
+          <span class="step-clock">48<small>h</small></span>
+          <div class="step-body">
+            <h3 class="step-title">Feedback + revisions</h3>
+            <p class="step-text">Two rounds of free changes. Big or small. Reply with notes, screenshots, voice notes — whatever's easiest.</p>
+          </div>
+        </li>
+        <li class="timeline-step">
+          <span class="step-clock">72<small>h</small></span>
+          <div class="step-body">
+            <h3 class="step-title">You go live</h3>
+            <p class="step-text">Approve. Pay. Site goes live on your domain — or staticswift-yourbusiness.co.uk if you don't have one yet. Done.</p>
+          </div>
+        </li>
+      </ol>
+      <p class="timeline-note">The 24-hour clock starts the moment I receive your brief (after step 2). Most clients are live within 3 working days end-to-end.</p>
+    </div>
+
+    <!-- POST-LAUNCH FAQ — what happens after -->
+    <div class="trust-post">
+      <div class="post-head">
+        <div class="meet-eyebrow">What happens after launch</div>
+        <h2 class="post-title">No surprise bills. <em>Ever.</em></h2>
+      </div>
+      <div class="post-grid">
+        <div class="post-card">
+          <h3 class="post-card-title">You own everything.</h3>
+          <p class="post-card-body">The code, the design, the domain. I email you a zip of the site on launch day. You can move it to any host, edit it yourself, or hire someone else to maintain it. No lock-in.</p>
+        </div>
+        <div class="post-card">
+          <h3 class="post-card-title">Hosting is optional.</h3>
+          <p class="post-card-body">£29/month if you want me to host it on a fast UK CDN with SSL and backups. Otherwise host it yourself on Netlify free, GitHub Pages, or anywhere — the files are yours.</p>
+        </div>
+        <div class="post-card">
+          <h3 class="post-card-title">Edits are easy.</h3>
+          <p class="post-card-body">Small text changes (prices, hours, services): I do them for free in the first 30 days. After that £30 for a batch, or learn it yourself — the code is hand-written, not a framework, so anyone can edit it.</p>
+        </div>
+        <div class="post-card">
+          <h3 class="post-card-title">Bigger updates later?</h3>
+          <p class="post-card-body">Add a booking system, gallery, blog, online store — same flat-fee pricing as a new site. No retainer, no monthly creep. Pay only when you need something built.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- ══ 03 · CONTACT ══ -->
 <section class="contact-section" id="contact">
   <div class="section-number-bg" aria-hidden="true">02</div>
@@ -2865,8 +3067,17 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
     <div class="contact-grid">
       <div class="form-wrap reveal">
         <div class="eyebrow"><span class="eyebrow-line"></span><span class="label">Start the brief</span></div>
-        <h2 class="form-headline">Tell us about <em>your business</em>.</h2>
-        <p class="form-sub">Fill this in and we'll send your <strong>free preview within 24 hours</strong>. No card, no commitment — just a real preview you can hold up to your friends and ask "should I get this built?".</p>
+        <h2 class="form-headline">Tell me about <em>your business</em>.</h2>
+        <p class="form-sub">Fill this in and I'll send your <strong>free preview within 24 hours</strong>. No card, no commitment — just a real preview you can hold up to your friends and ask "should I get this built?"</p>
+        <div class="form-call-line">
+          <span>Prefer to talk first?</span>
+          <a href="tel:+447502731799" class="form-phone-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <strong>07502 731 799</strong>
+          </a>
+          <span class="form-call-or">or</span>
+          <a href="https://wa.me/447502731799" class="form-wa-link" target="_blank" rel="noopener">WhatsApp →</a>
+        </div>
 
         <form id="qf" onsubmit="sq(event)" novalidate>
           <div class="field-row">
@@ -3409,6 +3620,7 @@ nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padd
           <span class="footer-brand-name">StaticSwift</span>
         </div>
         <p class="footer-tagline">Hand-built websites for UK small businesses. £149. Live in 24 hours.</p>
+        <a href="tel:+447502731799" class="footer-phone">📞 07502 731 799 — Harry, direct line</a>
         <span class="footer-pill"><span class="pulse"></span>Taking new clients</span>
       </div>
       <div class="footer-col"><h4>Services</h4><ul>
