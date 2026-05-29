@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Fade &amp; Blade — Master Barbers, Northern Quarter Manchester</title>
+<meta name="description" content="Old-school cuts, new-school standards. Skin fades, gent's cuts, hot towel shaves and beard sculpts in Manchester's Northern Quarter. Book online — open Tuesday to Saturday.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root { --ink:#0a0a0a; --bone:#f4f1ea; --paper:#fff; --gold:#b08a3e; --gold-soft:rgba(176,138,62,.18); --line:rgba(10,10,10,.08); --muted:#5a5a5a; --dim:#9a9a9a; }
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; -webkit-font-smoothing:antialiased; }
+body { background:var(--paper); color:var(--ink); font-family:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif; line-height:1.55; font-size:16px; }
+h1,h2,h3,h4 { font-family:'Instrument Serif',Georgia,serif; font-weight:400; line-height:1.02; letter-spacing:-.025em; }
+a { color:inherit; text-decoration:none; }
+::selection { background:var(--ink); color:#fff; }
+img { max-width:100%; display:block; }
+
+/* NAV */
+.nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:18px 32px; display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,.78); backdrop-filter:saturate(180%) blur(14px); -webkit-backdrop-filter:saturate(180%) blur(14px); border-bottom:1px solid transparent; transition:background .3s, border-color .3s, padding .3s; }
+.nav.scrolled { background:rgba(255,255,255,.92); border-bottom-color:var(--line); padding:14px 32px; }
+.nav-mark { font-family:'Instrument Serif',serif; font-size:18px; letter-spacing:-.01em; }
+.nav-mark em { font-style:italic; color:var(--gold); }
+.nav-links { display:flex; gap:32px; align-items:center; }
+.nav-links a { font-size:14px; font-weight:500; color:var(--ink); transition:color .2s; }
+.nav-links a:hover { color:var(--gold); }
+.nav-cta { background:var(--ink); color:#fff; padding:.55rem 1.2rem; border-radius:980px; font-size:13px; font-weight:600; transition:background .25s, transform .25s; }
+.nav-cta:hover { background:#000; transform:translateY(-1px); }
+@media(max-width:760px){ .nav-links { display:none; } .nav { padding:14px 18px; } .nav.scrolled { padding:12px 18px; } }
+
+/* HERO */
+.hero { position:relative; min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:140px 32px 80px; overflow:hidden; }
+.hero-bg { position:absolute; inset:0; z-index:0; background-image:url('https://images.pexels.com/photos/1813947/pexels-photo-1813947.jpeg?auto=compress&cs=tinysrgb&w=1800'); background-size:cover; background-position:center; filter:saturate(.92) brightness(.55); }
+.hero-bg::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.2) 0%,rgba(0,0,0,.55) 100%); }
+.hero-inner { position:relative; z-index:1; max-width:1200px; margin:0 auto; width:100%; color:#fff; }
+.hero-eyebrow { display:inline-flex; align-items:center; gap:10px; font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:#fff; margin-bottom:28px; padding:8px 16px; background:rgba(255,255,255,.1); backdrop-filter:blur(8px); border:1px solid rgba(255,255,255,.15); border-radius:980px; }
+.hero-eyebrow .pulse { width:8px; height:8px; border-radius:50%; background:#22c55e; box-shadow:0 0 12px rgba(34,197,94,.7); animation:pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.6; transform:scale(1.2); } }
+.hero-h1 { font-size:clamp(48px,8vw,128px); margin-bottom:32px; max-width:920px; }
+.hero-h1 em { color:var(--gold); font-style:italic; }
+.hero-sub { font-family:'DM Sans',sans-serif; font-size:clamp(16px,1.4vw,20px); color:rgba(255,255,255,.85); max-width:520px; margin-bottom:40px; line-height:1.5; font-weight:400; }
+.hero-ctas { display:flex; flex-wrap:wrap; gap:14px; }
+.btn { display:inline-flex; align-items:center; gap:8px; padding:18px 32px; border-radius:980px; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; transition:transform .25s, box-shadow .25s, background .25s; cursor:pointer; border:0; }
+.btn-light { background:#fff; color:var(--ink); }
+.btn-light:hover { transform:translateY(-2px); box-shadow:0 14px 32px rgba(255,255,255,.18); }
+.btn-ghost { background:transparent; color:#fff; border:1.5px solid rgba(255,255,255,.4); }
+.btn-ghost:hover { background:rgba(255,255,255,.08); border-color:#fff; }
+.hero-meta { position:absolute; bottom:32px; left:32px; right:32px; z-index:1; display:flex; justify-content:space-between; align-items:flex-end; gap:24px; color:#fff; }
+.hero-meta-l { display:flex; flex-direction:column; gap:4px; font-family:'DM Sans',sans-serif; font-size:13px; color:rgba(255,255,255,.7); }
+.hero-meta-l strong { color:#fff; font-weight:600; }
+.hero-meta-r { display:flex; align-items:center; gap:18px; font-family:'DM Sans',sans-serif; font-size:13px; color:rgba(255,255,255,.7); }
+.hero-meta-r .stars { color:#fcd34d; letter-spacing:.05em; }
+@media(max-width:760px){ .hero { padding:120px 18px 100px; } .hero-meta { left:18px; right:18px; flex-direction:column; align-items:flex-start; } }
+
+/* STATS STRIP */
+.stats { padding:80px 32px; background:var(--bone); border-bottom:1px solid var(--line); }
+.stats-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:48px; }
+.stat-item { display:flex; flex-direction:column; gap:8px; }
+.stat-num { font-family:'Instrument Serif',serif; font-size:clamp(48px,5vw,72px); line-height:1; color:var(--ink); letter-spacing:-.03em; }
+.stat-num small { font-size:.5em; color:var(--muted); margin-left:4px; }
+.stat-lbl { font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; color:var(--muted); letter-spacing:.01em; }
+@media(max-width:760px){ .stats-inner { grid-template-columns:repeat(2,1fr); gap:32px; } .stats { padding:48px 18px; } }
+
+/* SECTION SHELL */
+.section { padding:120px 32px; }
+.section.dark { background:var(--ink); color:#fff; }
+.section-inner { max-width:1200px; margin:0 auto; }
+.eyebrow { font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--gold); margin-bottom:24px; }
+.section.dark .eyebrow { color:var(--gold); }
+.section-h2 { font-size:clamp(36px,5vw,68px); margin-bottom:24px; max-width:820px; }
+.section-h2 em { font-style:italic; color:var(--gold); }
+.section.dark .section-h2 { color:#fff; }
+.section.dark .section-h2 em { color:var(--gold); }
+.section-lead { font-family:'DM Sans',sans-serif; font-size:18px; line-height:1.55; color:var(--muted); max-width:580px; margin-bottom:64px; }
+.section.dark .section-lead { color:rgba(255,255,255,.7); }
+@media(max-width:760px){ .section { padding:72px 18px; } .section-lead { margin-bottom:40px; font-size:16px; } }
+
+/* SERVICES */
+.services-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:0; border-top:1px solid var(--line); }
+.svc { display:grid; grid-template-columns:1fr auto; align-items:start; gap:32px; padding:36px 0; border-bottom:1px solid var(--line); }
+.svc:nth-child(odd) { border-right:1px solid var(--line); padding-right:48px; }
+.svc:nth-child(even) { padding-left:48px; }
+.svc-name { font-family:'Instrument Serif',serif; font-size:32px; line-height:1.05; margin-bottom:8px; }
+.svc-desc { font-family:'DM Sans',sans-serif; font-size:15px; color:var(--muted); line-height:1.5; max-width:380px; }
+.svc-price { font-family:'Instrument Serif',serif; font-size:36px; color:var(--gold); white-space:nowrap; }
+@media(max-width:760px){ .services-grid { grid-template-columns:1fr; } .svc:nth-child(odd), .svc:nth-child(even) { padding:24px 0; border-right:0; } .svc-name { font-size:24px; } .svc-price { font-size:28px; } }
+
+/* ABOUT */
+.about-grid { display:grid; grid-template-columns:1.1fr 1fr; gap:80px; align-items:center; }
+.about-img { aspect-ratio:4/5; border-radius:20px; overflow:hidden; background-image:url('https://images.pexels.com/photos/1319460/pexels-photo-1319460.jpeg?auto=compress&cs=tinysrgb&w=1000'); background-size:cover; background-position:center; box-shadow:0 40px 80px -30px rgba(0,0,0,.25); }
+.about-body p { font-family:'DM Sans',sans-serif; font-size:17px; line-height:1.65; color:var(--muted); margin-bottom:20px; }
+.about-body p:last-child { margin-bottom:0; }
+.about-body p strong { color:var(--ink); font-weight:600; }
+@media(max-width:900px){ .about-grid { grid-template-columns:1fr; gap:40px; } }
+
+/* GALLERY */
+.gallery { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+.gallery-cell { aspect-ratio:1/1; border-radius:14px; overflow:hidden; position:relative; cursor:pointer; transition:transform .5s cubic-bezier(.16,1,.3,1); }
+.gallery-cell:hover { transform:translateY(-4px); }
+.gallery-cell img { width:100%; height:100%; object-fit:cover; transition:transform 1s cubic-bezier(.16,1,.3,1); }
+.gallery-cell:hover img { transform:scale(1.06); }
+.gallery-cell.tall { aspect-ratio:1/1.4; grid-row:span 2; }
+@media(max-width:760px){ .gallery { grid-template-columns:repeat(2,1fr); } .gallery-cell.tall { grid-row:auto; aspect-ratio:1/1; } }
+
+/* REVIEWS */
+.reviews-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+.review { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); border-radius:18px; padding:32px; display:flex; flex-direction:column; gap:18px; }
+.review-stars { color:#fcd34d; font-size:14px; letter-spacing:.1em; }
+.review-text { font-family:'Instrument Serif',serif; font-style:italic; font-size:20px; line-height:1.35; color:#fff; flex:1; }
+.review-by { display:flex; align-items:center; gap:14px; padding-top:18px; border-top:1px solid rgba(255,255,255,.1); }
+.review-avatar { width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,var(--gold),#8a6a2a); display:flex; align-items:center; justify-content:center; font-family:'Instrument Serif',serif; font-size:20px; color:#fff; font-style:italic; }
+.review-meta { display:flex; flex-direction:column; gap:2px; }
+.review-name { font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; color:#fff; }
+.review-loc { font-family:'DM Sans',sans-serif; font-size:13px; color:rgba(255,255,255,.5); }
+@media(max-width:760px){ .reviews-grid { grid-template-columns:1fr; } }
+
+/* BOOK CTA */
+.book-cta { padding:140px 32px; background:var(--bone); text-align:center; border-top:1px solid var(--line); }
+.book-cta h2 { font-size:clamp(48px,7vw,96px); margin-bottom:20px; max-width:880px; margin-left:auto; margin-right:auto; }
+.book-cta h2 em { font-style:italic; color:var(--gold); }
+.book-cta p { font-family:'DM Sans',sans-serif; font-size:18px; color:var(--muted); max-width:520px; margin:0 auto 40px; line-height:1.55; }
+.book-cta .btn { padding:20px 44px; font-size:16px; }
+@media(max-width:760px){ .book-cta { padding:80px 18px; } }
+
+/* CONTACT */
+.contact { padding:120px 32px; background:#fff; }
+.contact-grid { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; }
+.contact-info { display:flex; flex-direction:column; gap:32px; }
+.contact-block h4 { font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+.contact-block p, .contact-block a { font-family:'Instrument Serif',serif; font-size:24px; line-height:1.3; color:var(--ink); }
+.contact-block a:hover { color:var(--gold); }
+.contact-map { aspect-ratio:1/1; border-radius:18px; overflow:hidden; background-image:url('https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=900'); background-size:cover; background-position:center; box-shadow:0 30px 60px -30px rgba(0,0,0,.18); }
+@media(max-width:760px){ .contact-grid { grid-template-columns:1fr; gap:40px; } .contact { padding:72px 18px; } }
+
+/* FOOTER */
+footer { padding:48px 32px 32px; background:var(--ink); color:#fff; }
+.footer-inner { max-width:1200px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap; }
+.footer-mark { font-family:'Instrument Serif',serif; font-size:18px; }
+.footer-mark em { font-style:italic; color:var(--gold); }
+.footer-credit { font-family:'DM Sans',sans-serif; font-size:13px; color:rgba(255,255,255,.5); }
+.footer-credit a { color:var(--gold); }
+.footer-credit a:hover { color:#fff; }
+
+/* Scroll-reveal primitives */
+.reveal { opacity:0; transform:translate3d(0,24px,0); transition:opacity .9s cubic-bezier(.16,1,.3,1), transform .9s cubic-bezier(.16,1,.3,1); }
+.reveal.in { opacity:1; transform:translate3d(0,0,0); }
+@media(prefers-reduced-motion:reduce){ .reveal { opacity:1; transform:none; } }
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <a class="nav-mark" href="#top">Fade <em>&amp;</em> Blade</a>
+  <div class="nav-links">
+    <a href="#services">Services</a>
+    <a href="#about">About</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <a href="#book" class="nav-cta">Book a chair</a>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow"><span class="pulse" aria-hidden="true"></span>Open today · 9am–7pm</div>
+    <h1 class="hero-h1">Old-school cuts.<br><em>New-school</em> standards.</h1>
+    <p class="hero-sub">A master-barber shop in Manchester's Northern Quarter. Walk in sharp, leave sharper. Tuesday to Saturday, by appointment or by chance.</p>
+    <div class="hero-ctas">
+      <a href="#book" class="btn btn-light">Book a chair →</a>
+      <a href="tel:01612000000" class="btn btn-ghost">0161 200 0000</a>
+    </div>
+  </div>
+  <div class="hero-meta">
+    <div class="hero-meta-l">
+      <strong>42 Tib Street, Manchester M4 1LA</strong>
+      <span>Tue–Sat · 9am–7pm</span>
+    </div>
+    <div class="hero-meta-r">
+      <span class="stars">★★★★★</span>
+      <span>4.9 — 187 Google reviews</span>
+    </div>
+  </div>
+</header>
+
+<section class="stats">
+  <div class="stats-inner">
+    <div class="stat-item reveal"><div class="stat-num">12<small>yrs</small></div><div class="stat-lbl">Cutting hair</div></div>
+    <div class="stat-item reveal"><div class="stat-num">2.4<small>k</small></div><div class="stat-lbl">Cuts a year</div></div>
+    <div class="stat-item reveal"><div class="stat-num">4.9<small>★</small></div><div class="stat-lbl">187 Google reviews</div></div>
+    <div class="stat-item reveal"><div class="stat-num">3<small>m</small></div><div class="stat-lbl">From Piccadilly</div></div>
+  </div>
+</section>
+
+<section class="section" id="services">
+  <div class="section-inner">
+    <div class="eyebrow reveal">Services &amp; pricing</div>
+    <h2 class="section-h2 reveal">Sharp cuts. <em>Sharp prices.</em><br>No-fuss menu.</h2>
+    <p class="section-lead reveal">Same prices Tuesday to Saturday. No card-only nonsense — cash, Apple Pay or contactless. Walk-ins after 11am if a chair's free.</p>
+    <div class="services-grid">
+      <div class="svc reveal">
+        <div><div class="svc-name">Skin Fade</div><div class="svc-desc">Zero to scissor, blended clean. 30–40 min, hot towel finish.</div></div>
+        <div class="svc-price">£22</div>
+      </div>
+      <div class="svc reveal">
+        <div><div class="svc-name">Gent's Cut</div><div class="svc-desc">Wash, cut, finish. Classic shape kept sharp. 30 minutes.</div></div>
+        <div class="svc-price">£18</div>
+      </div>
+      <div class="svc reveal">
+        <div><div class="svc-name">Hot Towel Shave</div><div class="svc-desc">Cut-throat razor, hot towels, post-shave balm. 45 minutes.</div></div>
+        <div class="svc-price">£35</div>
+      </div>
+      <div class="svc reveal">
+        <div><div class="svc-name">Beard Sculpt</div><div class="svc-desc">Line-up, trim, beard oil finish. Shape to face, not a stencil.</div></div>
+        <div class="svc-price">£14</div>
+      </div>
+      <div class="svc reveal">
+        <div><div class="svc-name">The Full Service</div><div class="svc-desc">Skin fade, hot towel shave or beard, head massage. Hour of peace.</div></div>
+        <div class="svc-price">£48</div>
+      </div>
+      <div class="svc reveal">
+        <div><div class="svc-name">Father &amp; Son</div><div class="svc-desc">Two chairs side by side. Same cut, two generations. Saturdays only.</div></div>
+        <div class="svc-price">£32</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about" style="background:var(--bone);">
+  <div class="section-inner">
+    <div class="about-grid">
+      <div class="about-img reveal" aria-label="Mark, master barber"></div>
+      <div class="about-body">
+        <div class="eyebrow reveal">About</div>
+        <h2 class="section-h2 reveal">Twelve years.<br>One chair.<br><em>One craft.</em></h2>
+        <p class="reveal">Mark Hennessy opened Fade &amp; Blade in 2013 after eight years cutting at a Soho institution. <strong>The brief was simple:</strong> a proper barbershop. Sharp cuts, honest prices, time for a proper chat. No "experience packages." No upsells. Just a chair, a mirror, and someone who knows what they're doing.</p>
+        <p class="reveal">Today there are two chairs, two master barbers, and a small waiting bench. We cut around 2,400 heads a year. We don't take walk-ins after 5pm — but we'll always make time for someone who's run out of options before a wedding.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="gallery">
+  <div class="section-inner">
+    <div class="eyebrow reveal">Recent work</div>
+    <h2 class="section-h2 reveal">A few from the <em>chair</em>.</h2>
+    <p class="section-lead reveal">Real cuts. Real beards. Real Manchester light. Tagged @fadeandblade on Instagram if you're after more.</p>
+    <div class="gallery">
+      <div class="gallery-cell tall reveal"><img src="https://images.pexels.com/photos/1300354/pexels-photo-1300354.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Sharp skin fade in progress" loading="lazy"></div>
+      <div class="gallery-cell reveal"><img src="https://images.pexels.com/photos/1319461/pexels-photo-1319461.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Classic gentleman's cut" loading="lazy"></div>
+      <div class="gallery-cell reveal"><img src="https://images.pexels.com/photos/2076932/pexels-photo-2076932.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Beard sculpt close-up" loading="lazy"></div>
+      <div class="gallery-cell reveal"><img src="https://images.pexels.com/photos/3992870/pexels-photo-3992870.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Hot towel shave" loading="lazy"></div>
+      <div class="gallery-cell reveal"><img src="https://images.pexels.com/photos/1453005/pexels-photo-1453005.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Northern Quarter shopfront" loading="lazy"></div>
+      <div class="gallery-cell tall reveal"><img src="https://images.pexels.com/photos/2076930/pexels-photo-2076930.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Vintage barber chair detail" loading="lazy"></div>
+      <div class="gallery-cell reveal"><img src="https://images.pexels.com/photos/3998424/pexels-photo-3998424.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Finishing scissor work" loading="lazy"></div>
+      <div class="gallery-cell reveal"><img src="https://images.pexels.com/photos/3992872/pexels-photo-3992872.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Beard oil application" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+<section class="section dark" id="reviews">
+  <div class="section-inner">
+    <div class="eyebrow reveal">What our clients say</div>
+    <h2 class="section-h2 reveal">187 reviews.<br>One <em>quiet rating</em>.</h2>
+    <p class="section-lead reveal">We don't ask for reviews. They turn up anyway. Here's three from this month.</p>
+    <div class="reviews-grid">
+      <div class="review reveal">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Best cut I've had in years. Mark really knows what he's doing — sharp fade, sharper conversation. Booking system is dead easy too."</p>
+        <div class="review-by">
+          <div class="review-avatar">J</div>
+          <div class="review-meta"><div class="review-name">James K.</div><div class="review-loc">Manchester · last week</div></div>
+        </div>
+      </div>
+      <div class="review reveal">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Booked the Full Service before a wedding. Hot towel, head massage, the lot. Came out feeling like a different man. £48 well spent."</p>
+        <div class="review-by">
+          <div class="review-avatar">D</div>
+          <div class="review-meta"><div class="review-name">David R.</div><div class="review-loc">Salford · 2 weeks ago</div></div>
+        </div>
+      </div>
+      <div class="review reveal">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"Brought my dad in for the Father &amp; Son. Two chairs side by side, proper banter, mint cuts. We'll be back every month."</p>
+        <div class="review-by">
+          <div class="review-avatar">T</div>
+          <div class="review-meta"><div class="review-name">Tom B.</div><div class="review-loc">Didsbury · 3 weeks ago</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="book-cta" id="book">
+  <h2>Sharp by appointment.<br><em>Walk in any time after 11.</em></h2>
+  <p>Book online and we'll send a reminder the night before. Or just turn up — we'll always squeeze you in if there's a chair.</p>
+  <a href="tel:01612000000" class="btn btn-light">Book a chair · 0161 200 0000</a>
+</section>
+
+<section class="contact" id="contact">
+  <div class="contact-grid">
+    <div class="contact-info">
+      <div class="contact-block">
+        <h4>Address</h4>
+        <p>42 Tib Street<br>Northern Quarter<br>Manchester M4 1LA</p>
+      </div>
+      <div class="contact-block">
+        <h4>Hours</h4>
+        <p>Tue–Fri · 9am–7pm<br>Sat · 9am–6pm<br>Sun–Mon · Closed</p>
+      </div>
+      <div class="contact-block">
+        <h4>Phone</h4>
+        <p><a href="tel:01612000000">0161 200 0000</a></p>
+      </div>
+      <div class="contact-block">
+        <h4>Email</h4>
+        <p><a href="mailto:book@fadeandblade.co.uk">book@fadeandblade.co.uk</a></p>
+      </div>
+    </div>
+    <div class="contact-map" aria-label="Map of Northern Quarter, Manchester"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-mark">Fade <em>&amp;</em> Blade</div>
+    <div class="footer-credit">A StaticSwift example site. <a href="/" target="_top">Get yours →</a></div>
+  </div>
+</footer>
+
+<script>
+// Nav scroll state
+const nav = document.getElementById('nav');
+const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 20);
+window.addEventListener('scroll', onScroll, { passive:true });
+onScroll();
+
+// Reveal-on-scroll
+if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold:0.12, rootMargin:'0px 0px -8% 0px' });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+} else {
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+}
+</script>
+
+</body>
+</html>

@@ -1300,7 +1300,8 @@ nav#nav .nav-cta:hover { background:#000 }
 
 /* ── HERO — light, generous, single CTA focus ─────────────────── */
 .hero { background:#ffffff !important; min-height:auto; padding:8rem 1.5rem 5rem }
-.hero-bg-video { display:none !important }
+.hero-bg-video { background:transparent !important; }
+.hero-bg-video img,.hero-bg-video video { display:none !important }
 .hero-inner { grid-template-columns:1fr !important; max-width:1080px; gap:0 !important }
 .hero-side { display:none !important }
 .hero-text { text-align:left; max-width:880px }
@@ -1422,7 +1423,7 @@ nav#nav .nav-cta:hover { background:#000 }
 .hero-inner { grid-template-columns:1.15fr .85fr !important; gap:4rem !important; align-items:center }
 .hero-side { display:block !important; height:auto !important; max-width:520px; opacity:0; transform:translateY(20px); animation:heroVisualIn 1.1s cubic-bezier(.16,1,.3,1) .35s forwards }
 .hero-side > * { display:none !important } /* hide the original 3 fake mockup cards */
-.hero-side::before { content:""; display:block; aspect-ratio:4/5; background-image:url("https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg?auto=compress&cs=tinysrgb&w=900"); background-size:cover; background-position:center; border-radius:18px; box-shadow:0 30px 60px -20px rgba(0,0,0,.15),0 0 0 1px rgba(0,0,0,.05); filter:saturate(.78) contrast(.96) brightness(1.02); will-change:transform; transition:transform .15s linear }
+.hero-side::before { content:""; display:block; aspect-ratio:4/5; background-image:url("https://images.pexels.com/photos/7172830/pexels-photo-7172830.jpeg?auto=compress&cs=tinysrgb&w=1200"); background-size:cover; background-position:center; border-radius:18px; box-shadow:0 30px 60px -20px rgba(0,0,0,.15),0 0 0 1px rgba(0,0,0,.05); filter:saturate(.78) contrast(.96) brightness(1.02); will-change:transform; transition:transform .15s linear }
 @keyframes heroVisualIn { to { opacity:1; transform:translateY(0) } }
 @media(max-width:900px){ .hero-inner { grid-template-columns:1fr !important; gap:2.5rem !important } .hero-side { max-width:none; margin-top:1rem } .hero-side::before { aspect-ratio:5/3 } }
 
@@ -1490,7 +1491,7 @@ nav#nav .nav-cta:hover { background:#000 }
 .cinema-v2 { position:relative; height:340vh; background:#0a0a0a; --p:0; --p1:0; --p2:0; --p3:0; --frameY:0px; }
 .cv-sticky { position:sticky; top:0; height:100vh; overflow:hidden; background:#0a0a0a; }
 /* Hand-with-phone backdrop — warm Pexels lifestyle image */
-.cv-hand { position:absolute; inset:0; background-image:url("https://images.pexels.com/photos/1851415/pexels-photo-1851415.jpeg?auto=compress&cs=tinysrgb&w=1600"); background-size:cover; background-position:center; filter:saturate(1.05) brightness(.85) contrast(1.04); transform:scale(calc(1 + var(--p2) * 0.18)); transition:transform .05s linear; will-change:transform; }
+.cv-hand { position:absolute; inset:0; background-image:url("https://images.pexels.com/photos/6044254/pexels-photo-6044254.jpeg?auto=compress&cs=tinysrgb&w=1600"); background-size:cover; background-position:center; filter:saturate(1.05) brightness(.85) contrast(1.04); transform:scale(calc(1 + var(--p2) * 0.18)); transition:transform .05s linear; will-change:transform; }
 .cv-hand::after { content:""; position:absolute; inset:0; background:radial-gradient(ellipse 60% 55% at 50% 55%,transparent 30%,rgba(10,10,10,.55) 100%); pointer-events:none; }
 /* Dim that fades in as phone takes over */
 .cv-dim { position:absolute; inset:0; background:#0a0a0a; opacity:var(--p2); pointer-events:none; z-index:2; }
@@ -1922,6 +1923,81 @@ img.trade-frame { position:absolute; inset:0; width:100%; height:100%; object-fi
   .sticky-cta-btn { padding:.5rem .95rem; font-size:.78rem; }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   FINAL FIXES — hero text on white, mockup forced visible,
+   reliable trade images, stronger CTAs.
+   These rules are at the END so they win the cascade.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* HERO — pure white, dark text, everything readable */
+.hero { background:#ffffff !important; color:#0f0f0f !important; }
+.hero, .hero * { color:inherit; }
+.hero .hero-headline { color:#0f0f0f !important; }
+.hero .hero-headline em { color:#0f0f0f !important; }
+.hero .hero-sub { color:#3a3a3a !important; }
+.hero .hero-sub strong { color:#0f0f0f !important; }
+.hero .hero-proof-quote { color:#0f0f0f !important; }
+.hero .hero-proof-by { color:#787774 !important; }
+.hero .hero-lead-label { color:#3a3a3a !important; }
+.hero .hero-lead-form input { color:#0f0f0f !important; background:#ffffff !important; border:1px solid rgba(0,0,0,.08) !important; }
+.hero .hero-lead-form input::placeholder { color:#999 !important; }
+.hero .hero-lead-form .hl-submit { background:#0f0f0f !important; color:#ffffff !important; }
+.hero .hero-lead-fine { color:#787774 !important; }
+.hero .hero-lead-fine span { color:#787774 !important; }
+.hero .hero-lead-fine span::before { background:#0066cc !important; }
+.hero .ss-hero-eyebrow { color:#3a3a3a !important; background:#ffffff !important; border:1px solid rgba(0,0,0,.08) !important; }
+.hero .ss-hero-eyebrow b { color:#0f0f0f !important; }
+.hero .ss-hero-eyebrow .ss-dot { background:rgba(0,0,0,.25) !important; }
+.hero .ha-old { color:#9a9a9a !important; }
+.hero .ha-new { color:#0f0f0f !important; }
+.hero .ha-note { color:#787774 !important; }
+.hero .ht-num { color:#0f0f0f !important; }
+.hero .ht-num.ht-live { color:#16a34a !important; }
+.hero .ht-num small { color:#787774 !important; }
+.hero .ht-lbl { color:#787774 !important; }
+.hero .ht-sep { background:rgba(0,0,0,.08) !important; }
+.hero .hero-trust { background:#ffffff !important; border:1px solid rgba(0,0,0,.08) !important; }
+.hero .hero-proof { background:#ffffff !important; border:1px solid rgba(0,0,0,.08) !important; }
+.hero .hero-anchor { background:#ffffff !important; border:1px solid rgba(0,0,0,.08) !important; }
+.hero-bg-video { display:none !important; background:transparent !important; }
+.hero::before, .hero::after { display:none !important; content:none !important; background:none !important; }
+
+/* PHONE MOCKUP — force visible no matter what */
+.cv-mockup#cinema-frame { display:block !important; visibility:visible !important; opacity:1 !important; position:absolute !important; top:0 !important; left:0 !important; width:100% !important; min-height:1900px !important; background:#ffffff !important; z-index:5 !important; }
+.cv-phone-screen .cv-poster { display:none !important; } /* mockup is reliable, no fallback poster needed */
+.cv-phone-screen iframe { display:none !important; } /* if any iframe somehow remains, hide it */
+
+/* TRADE PREVIEW — img always visible, fills container, no leftover overlays */
+img#trade-frame.trade-frame,
+img#trade-frame.trade-frame.trade-frame {
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  position:absolute !important;
+  top:0 !important; left:0 !important; right:0 !important; bottom:0 !important;
+  width:100% !important; height:100% !important;
+  max-width:none !important; max-height:none !important;
+  object-fit:cover !important;
+  object-position:center center !important;
+  transform:none !important;
+  z-index:3 !important;
+  background:#ffffff !important;
+  transition:opacity .35s ease !important;
+}
+.trade-frame-scroll { height:600px !important; }
+@media(max-width:1180px){ .trade-frame-scroll { height:520px !important; } img#trade-frame.trade-frame { transform:none !important; } }
+@media(max-width:760px){ .trade-frame-scroll { height:420px !important; } img#trade-frame.trade-frame { transform:none !important; } }
+.trade-frame-scroll iframe { display:none !important; }
+.trade-frame-scroll .frame-poster { display:none !important; }
+.trade-frame-scroll::before, .trade-frame-scroll::after { display:none !important; content:none !important; background:none !important; }
+.cv-phone-screen::before, .cv-phone-screen::after { display:none !important; content:none !important; background:none !important; }
+
+/* Bigger, more obvious hero CTA */
+.hero .hero-lead-form .hl-submit { font-size:1rem !important; padding:1.1rem 1.8rem !important; font-weight:600 !important; }
+
+/* Nav CTA — more prominent */
+nav#nav .nav-cta { background:#0f0f0f !important; color:#ffffff !important; padding:.65rem 1.3rem !important; font-size:.88rem !important; font-weight:600 !important; }
+
 </style>
 </head>
 <body>
@@ -2281,17 +2357,17 @@ img.trade-frame { position:absolute; inset:0; width:100%; height:100%; object-fi
     <div class="trade-bar reveal">
       <label for="trade-pick" class="trade-pick-lbl">I run a…</label>
       <select id="trade-pick" class="trade-pick">
-        <option value="/barber-website-design-bromley/" data-label="Barber · Bromley">Barber shop</option>
-        <option value="/plumber-website-design-burnley/" data-label="Plumber · Burnley">Plumber</option>
-        <option value="/electrician-website-design-southall/" data-label="Electrician · Southall">Electrician</option>
-        <option value="/photographer-website-design-harrogate/" data-label="Photographer · Harrogate">Photographer</option>
-        <option value="/restaurant-website-design-winchester/" data-label="Restaurant · Winchester">Restaurant</option>
-        <option value="/personal-trainer-website-design-hounslow/" data-label="PT · Hounslow">Personal trainer</option>
-        <option value="/beauty-salon-website-design-eastbourne/" data-label="Beauty salon · Eastbourne">Beauty salon</option>
-        <option value="/cafe-website-design-ipswich/" data-label="Café · Ipswich">Café</option>
-        <option value="/dog-groomer-website-design-canterbury/" data-label="Dog groomer · Canterbury">Dog groomer</option>
+        <option value="/example-fade-and-blade/" data-label="Barber example">Barber shop</option>
+        <option value="/example-fade-and-blade/" data-label="Plumber example">Plumber</option>
+        <option value="/example-fade-and-blade/" data-label="Electrician example">Electrician</option>
+        <option value="/example-fade-and-blade/" data-label="Photographer example">Photographer</option>
+        <option value="/example-fade-and-blade/" data-label="Restaurant example">Restaurant</option>
+        <option value="/example-fade-and-blade/" data-label="PT example">Personal trainer</option>
+        <option value="/example-fade-and-blade/" data-label="Beauty salon example">Beauty salon</option>
+        <option value="/example-fade-and-blade/" data-label="Café example">Café</option>
+        <option value="/example-fade-and-blade/" data-label="Dog groomer example">Dog groomer</option>
       </select>
-      <a class="trade-open" id="trade-open" href="/barber-website-design-bromley/" target="_blank" rel="noopener">Open full site ↗</a>
+      <a class="trade-open" id="trade-open" href="/example-fade-and-blade/" target="_blank" rel="noopener">Open full example ↗</a>
     </div>
     <div class="trade-frame-wrap reveal">
       <div class="trade-chrome">
@@ -2301,7 +2377,7 @@ img.trade-frame { position:absolute; inset:0; width:100%; height:100%; object-fi
       <div class="trade-frame-scroll">
         <!-- Static high-quality website screenshot — bullet-proof (no X-Frame-Options issues).
              Swaps on dropdown via JS. Click overlay opens the real live site. -->
-        <img id="trade-frame" class="trade-frame" src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=1400&q=85&auto=format&fit=crop" alt="StaticSwift website example for this trade" loading="lazy">
+        <img id="trade-frame" class="trade-frame" src="https://images.pexels.com/photos/265087/pexels-photo-265087.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1600" alt="StaticSwift website example on a MacBook" loading="lazy">
         <div class="frame-poster" id="trade-poster">
           <div class="frame-poster-eyebrow">Real, live site — built by StaticSwift</div>
           <div class="frame-poster-title">Tap a trade above<br>to swap the preview.</div>
@@ -2749,7 +2825,7 @@ img.trade-frame { position:absolute; inset:0; width:100%; height:100%; object-fi
 
       <div class="contact-aside reveal" style="transition-delay:.15s">
         <div class="contact-photo">
-          <img src="https://images.pexels.com/photos/3182812/pexels-photo-3182812.jpeg?auto=compress&cs=tinysrgb&w=900" alt="A small business owner working with a laptop" width="900" height="1125" loading="lazy">
+          <img src="https://images.pexels.com/photos/7172830/pexels-photo-7172830.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="A small business owner working with a laptop" width="900" height="1125" loading="lazy">
           <div class="contact-photo-meta">
             <div class="cpm-avatar">H</div>
             <div class="cpm-text"><strong>Harry, your designer</strong><span>Replies within an hour</span></div>
@@ -4391,32 +4467,47 @@ else window.addEventListener('load', initGsap);
   // Curated, distinctly different "designed website" stock images — one per trade.
   // Each is a high-quality web/landing-page-on-laptop or hero-style scene that
   // reads as a real built website at a glance.
+  // Each trade gets its own MacBook/website-on-screen Pexels photo so the
+  // preview feels like swapping between different industry sites.
+  // (All clicks open the same /example-fade-and-blade/ for now until real
+  //  client examples are shipped per trade.)
   const TRADE_IMAGES = {
-    '/barber-website-design-bromley/': 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=1400&q=85&auto=format&fit=crop',
-    '/plumber-website-design-burnley/': 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=1400&q=85&auto=format&fit=crop',
-    '/electrician-website-design-southall/': 'https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=1400&q=85&auto=format&fit=crop',
-    '/photographer-website-design-harrogate/': 'https://images.unsplash.com/photo-1554048612-b6a482bc67e5?w=1400&q=85&auto=format&fit=crop',
-    '/restaurant-website-design-winchester/': 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1400&q=85&auto=format&fit=crop',
-    '/personal-trainer-website-design-hounslow/': 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=1400&q=85&auto=format&fit=crop',
-    '/beauty-salon-website-design-eastbourne/': 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=1400&q=85&auto=format&fit=crop',
-    '/cafe-website-design-ipswich/': 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1400&q=85&auto=format&fit=crop',
-    '/dog-groomer-website-design-canterbury/': 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1400&q=85&auto=format&fit=crop'
+    'Barber shop':       'https://images.pexels.com/photos/265087/pexels-photo-265087.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    'Plumber':           'https://images.pexels.com/photos/1714208/pexels-photo-1714208.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    'Electrician':       'https://images.pexels.com/photos/270557/pexels-photo-270557.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    'Photographer':      'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    'Restaurant':        'https://images.pexels.com/photos/1181244/pexels-photo-1181244.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    'Personal trainer':  'https://images.pexels.com/photos/4974915/pexels-photo-4974915.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    'Beauty salon':      'https://images.pexels.com/photos/3787235/pexels-photo-3787235.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    'Café':              'https://images.pexels.com/photos/313690/pexels-photo-313690.jpeg?auto=compress&cs=tinysrgb&w=1600',
+    'Dog groomer':       'https://images.pexels.com/photos/5077063/pexels-photo-5077063.jpeg?auto=compress&cs=tinysrgb&w=1600'
   };
   if (tradePick) {
+    // Industry-specific URL chrome labels — same example destination
+    const URL_LABELS = {
+      'Barber shop': 'fadeandblade.co.uk',
+      'Plumber': 'riversideplumbing.co.uk',
+      'Electrician': 'voltage-electrical.co.uk',
+      'Photographer': 'sarahmitchell.photography',
+      'Restaurant': 'giuseppes.co.uk',
+      'Personal trainer': 'peakfitness.uk',
+      'Beauty salon': 'theglasssalon.co.uk',
+      'Café': 'larderandspoon.co.uk',
+      'Dog groomer': 'paws-and-co.co.uk'
+    };
     tradePick.addEventListener('change', () => {
       const v = tradePick.value;
-      const img = TRADE_IMAGES[v] || TRADE_IMAGES['/barber-website-design-bromley/'];
-      if (tradeFrame) {
-        tradeFrame.style.opacity = '0';
-        setTimeout(() => { tradeFrame.src = img; tradeFrame.style.opacity = '1'; }, 200);
-      }
+      const label = tradePick.options[tradePick.selectedIndex].text;
+      const img = TRADE_IMAGES[label] || TRADE_IMAGES['Barber shop'];
+      if (tradeFrame) { tradeFrame.style.opacity = '0'; setTimeout(() => { tradeFrame.src = img; tradeFrame.style.opacity = '1'; }, 200); }
       if (tradeOverlay) tradeOverlay.href = v;
       if (tradeOpenLink) tradeOpenLink.href = v;
-      if (tradeUrl) tradeUrl.textContent = 'staticswift.co.uk' + v.replace(/\/$/, '');
+      if (tradeUrl) tradeUrl.textContent = URL_LABELS[label] || 'staticswift.co.uk/example';
     });
-    // Initial sync — set the image to match the default option
-    const initial = TRADE_IMAGES[tradePick.value];
-    if (initial && tradeFrame) tradeFrame.src = initial;
+    // Initial sync to current selected option
+    const initialLabel = tradePick.options[tradePick.selectedIndex].text;
+    const initialImg = TRADE_IMAGES[initialLabel] || TRADE_IMAGES['Barber shop'];
+    if (tradeFrame) tradeFrame.src = initialImg;
   }
 
   /* 5. STICKY CTA — reveal once user scrolls past the hero, hide near
