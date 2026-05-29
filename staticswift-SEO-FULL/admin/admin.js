@@ -3927,3 +3927,445 @@ async function classifyReplyFor(prospectId) {
     alert('Classify failed: ' + err.message);
   }
 }
+
+/* ════════════════════════════════════════════════════════════════
+   AUTO-DISCOVER AGENT — OpenStreetMap Overpass API
+   ════════════════════════════════════════════════════════════════ */
+async function runDiscover() {
+  const btn = document.getElementById('disc-btn');
+  const out = document.getElementById('disc-result');
+  if (!btn || !out) return;
+  const niche = document.getElementById('disc-niche').value;
+  const area = document.getElementById('disc-area').value.trim();
+  const country = document.getElementById('disc-country').value;
+  if (!area) { alert('Enter an area first.'); return; }
+  btn.disabled = true; btn.textContent = 'Pulling…';
+  out.style.display = 'block';
+  out.style.color = 'var(--muted)';
+  out.innerHTML = 'Querying OpenStreetMap for ' + niche + ' businesses in ' + area + '…';
+  try {
+    const r = await fetch('/.netlify/functions/discover-prospects', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ niche, area, country }),
+    });
+    const d = await r.json();
+    if (!r.ok || !d.ok) throw new Error(d.error || 'Failed');
+    // Refresh the local queue from the server (since the function updated db.scanQueue)
+    try {
+      const qr = await fetch('/.netlify/functions/get-queue', { headers: { 'x-admin-password': ADMIN_PW } });
+      if (qr.ok) {
+        const qd = await qr.json();
+        if (qd.ok && Array.isArray(qd.scanQueue)) {
+          scanQueue = qd.scanQueue;
+          saveScanState();
+          updateQueueStats();
+        }
+      }
+    } catch {}
+    out.style.color = 'var(--green)';
+    out.innerHTML = `
+      <div style="font-weight:700;color:var(--green);margin-bottom:8px">✓ Found ${d.found} businesses · Added ${d.addedToQueue} to scan queue</div>
+      <div style="color:var(--muted);margin-bottom:10px">Queue size: ${d.queueSize}. Cron-scan picks these up every 15 min, or hit Start scanner above for immediate processing.</div>
+      <div style="font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px">Sample</div>
+      <div style="display:grid;gap:4px;font-size:11px">${(d.sample || []).map(b =>
+        '<div style="padding:6px 10px;background:var(--dark);border:1px solid var(--border);border-radius:5px">' +
+        '<span style="color:var(--text);font-weight:600">' + escapeHTML(b.name || b.host) + '</span> · ' +
+        '<a href="' + encodeURI(b.website) + '" target="_blank" rel="noopener" style="color:var(--cyan)">' + escapeHTML(b.host) + ' ↗</a>' +
+        (b.phone ? ' · <span style="color:var(--muted)">' + escapeHTML(b.phone) + '</span>' : '') +
+        '</div>').join('')}</div>`;
+  } catch (err) {
+    out.style.color = 'var(--red)';
+    out.textContent = '✗ ' + err.message + '\n\n(OSM Overpass occasionally times out under load — retry in 30s, or try a smaller area.)';
+  } finally {
+    btn.disabled = false; btn.textContent = '🔎 Pull from OSM →';
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   CLICKABILITY GUARDS — every new function gets explicit window
+   binding so onclick=" " always resolves, regardless of script
+   loader behaviour or any future bundling.
+   ════════════════════════════════════════════════════════════════ */
+[
+  // Auto-discover
+  'runDiscover',
+  // Email tester
+  'runEmailTest',
+  // Sequence builder
+  'startSequenceFor','stopSequenceFor','generateAndOpenSequenceStep','markSequenceStepSent','renderSequenceTray',
+  // Scanner / queue
+  'toggleScanWorker','seedQueueFromGoogle','addUrlsToQueueModal','clearScanQueue','runBatchScan','stopBatchScan','tickScanWorker',
+  // Site analyzer
+  'runAnalyze','addProspectFromAnalysis',
+  // Templates
+  'generateTemplate','copyTmpl','markProspectSent','refreshProspectDropdown','prefillTemplateFor',
+  // Prospects command center
+  'setProspectFilter','sortProspects','toggleBulkSel','toggleAllBulk','renderProspectsTable',
+  'bulkSetStatus','bulkMarkSent','bulkDelete','bulkExportCSV','bulkGenerateTemplate','bulkVerifyEmails',
+  'verifyOneEmail','deleteOneProspect',
+  // UI pack
+  'saveCurrentView','applySavedView','deleteSavedView','renderSavedViews','startInlineEdit','toggleProspectExpand',
+  // Reply categorizer
+  'classifyReplyFor',
+  // Dorks
+  'renderDorkPicker',
+].forEach(fn => {
+  if (typeof window !== 'undefined' && typeof eval(fn) === 'function') {
+    window[fn] = eval(fn);
+  }
+});
+
+// Initial render passes — covers cold load when admin hasn't opened outreach yet
+setTimeout(() => {
+  try { updateQueueStats(); } catch(e) {}
+  try { renderProspectsTable(); } catch(e) {}
+  try { renderSequenceTray(); } catch(e) {}
+  try { refreshProspectDropdown(); } catch(e) {}
+  try { renderDorkPicker(); } catch(e) {}
+}, 600);
+
+/* ════════════════════════════════════════════════════════════════
+   AUTOPILOT — runs everything automatically while admin tab open.
+   Workers:
+     - Discover: rotates niche/area targets, calls OSM, fills queue
+     - Scan: drains queue continuously
+     - Verify: MX-checks any prospect emails not yet verified
+     - Sequence: queues drafts when sequence steps come due
+     - Auto-send: optionally sends drafts via SMTP (B2B opt-in)
+   Activity stream + browser notifications + persistent stats.
+   ════════════════════════════════════════════════════════════════ */
+
+let autopilotOn = false;
+let autopilotTimers = {};
+let autopilotTargets = JSON.parse(localStorage.getItem('ss_ap_targets') || '[]');
+let autopilotRotation = JSON.parse(localStorage.getItem('ss_ap_rotation') || '{"idx":0}');
+let autopilotStats = JSON.parse(localStorage.getItem('ss_ap_stats') || '{"discovered":0,"scanned":0,"prospects":0,"verified":0,"drafts":0,"sent":0,"sessionStart":null,"lastTick":null}');
+let autopilotDrafts = JSON.parse(localStorage.getItem('ss_ap_drafts') || '[]');
+
+function saveAutopilotState() {
+  localStorage.setItem('ss_ap_targets', JSON.stringify(autopilotTargets));
+  localStorage.setItem('ss_ap_rotation', JSON.stringify(autopilotRotation));
+  localStorage.setItem('ss_ap_stats', JSON.stringify(autopilotStats));
+  localStorage.setItem('ss_ap_drafts', JSON.stringify(autopilotDrafts));
+}
+
+function apLog(msg, kind) {
+  const stream = document.getElementById('ap-activity');
+  if (!stream) return;
+  const ts = new Date().toTimeString().slice(0, 8);
+  const color = kind === 'ok' ? 'var(--green)' : kind === 'warn' ? 'var(--amber)' : kind === 'err' ? 'var(--red)' : 'var(--muted)';
+  const line = document.createElement('div');
+  line.innerHTML = '<span style="color:var(--dim)">[' + ts + ']</span> <span style="color:' + color + '">' + escapeHTML(msg) + '</span>';
+  // Clear placeholder
+  if (stream.firstChild && stream.firstChild.textContent?.includes('Autopilot off')) stream.innerHTML = '';
+  stream.appendChild(line);
+  // Keep last 200 lines
+  while (stream.children.length > 200) stream.removeChild(stream.firstChild);
+  stream.scrollTop = stream.scrollHeight;
+}
+
+function apUpdateStats() {
+  ['discovered','scanned','prospects','verified','drafts','sent'].forEach(k => {
+    const el = document.getElementById('ap-stat-' + k);
+    if (el) el.textContent = autopilotStats[k];
+  });
+  const cnt = document.getElementById('ap-targets-count');
+  if (cnt) cnt.textContent = autopilotTargets.length;
+}
+
+function apNotify(title, body) {
+  if (!document.getElementById('ap-switch-notify')?.checked) return;
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'granted') {
+    new Notification(title, { body, icon: '/favicon.ico', tag: 'ss-autopilot', renotify: true });
+  } else if (Notification.permission !== 'denied') {
+    Notification.requestPermission();
+  }
+}
+
+function renderAutopilotTargets() {
+  const list = document.getElementById('ap-targets-list');
+  if (!list) return;
+  if (!autopilotTargets.length) {
+    list.innerHTML = '<span style="font-size:11px;color:var(--dim)">No targets — click "Seed 20 UK trades" or add manually</span>';
+    return;
+  }
+  list.innerHTML = autopilotTargets.map((t, i) => `
+    <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:100px;font-size:11px;font-family:'DM Mono',monospace${i === autopilotRotation.idx ? ';border-color:var(--cyan);background:rgba(0,200,224,.08)' : ''}">
+      ${i === autopilotRotation.idx ? '<span style="color:var(--cyan)">▶</span>' : ''}
+      ${escapeHTML(t.niche)} · ${escapeHTML(t.area)} · ${escapeHTML(t.country)}
+      <span onclick="removeAutopilotTarget(${i})" style="cursor:pointer;color:var(--dim);font-weight:700">×</span>
+    </span>`).join('');
+  apUpdateStats();
+}
+
+function addAutopilotTarget() {
+  const n = document.getElementById('ap-add-niche').value.trim().toLowerCase();
+  const a = document.getElementById('ap-add-area').value.trim();
+  const c = document.getElementById('ap-add-country').value;
+  if (!n || !a) { alert('Niche and area required.'); return; }
+  autopilotTargets.push({ niche: n, area: a, country: c });
+  saveAutopilotState();
+  renderAutopilotTargets();
+  document.getElementById('ap-add-area').value = '';
+}
+
+function removeAutopilotTarget(i) {
+  autopilotTargets.splice(i, 1);
+  if (autopilotRotation.idx >= autopilotTargets.length) autopilotRotation.idx = 0;
+  saveAutopilotState();
+  renderAutopilotTargets();
+}
+
+function seedDefaultTargets() {
+  const niches = ['barber','plumber','electrician','photographer','restaurant','cafe','personal-trainer','beauty-salon','dog-groomer','florist','mechanic','optician','dentist','solicitor','accountant','gardener','locksmith','builder','cleaner','vet'];
+  const cities = ['Manchester','Birmingham','Leeds','Glasgow','Edinburgh','Liverpool','Bristol','Sheffield','Newcastle','Nottingham'];
+  // 20 niche+city combos by rotating through cities
+  niches.slice(0, 20).forEach((n, i) => {
+    autopilotTargets.push({ niche: n, area: cities[i % cities.length], country: 'UK' });
+  });
+  saveAutopilotState();
+  renderAutopilotTargets();
+  apLog('Seeded ' + niches.length + ' UK trade+city targets', 'ok');
+}
+
+/* ──── Worker: Discover ──── */
+async function apWorkerDiscover() {
+  if (!autopilotOn || !document.getElementById('ap-switch-discover')?.checked) return;
+  if (!autopilotTargets.length) { apLog('Discover: no targets configured', 'warn'); return; }
+  const t = autopilotTargets[autopilotRotation.idx % autopilotTargets.length];
+  apLog('🌐 Discover → ' + t.niche + ' / ' + t.area + ' / ' + t.country, 'info');
+  try {
+    const r = await fetch('/.netlify/functions/discover-prospects', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ niche: t.niche, area: t.area, country: t.country }),
+    });
+    const d = await r.json();
+    if (d.ok) {
+      autopilotStats.discovered += d.addedToQueue || 0;
+      apLog('  ↳ found ' + d.found + ', added ' + d.addedToQueue + ' to queue', 'ok');
+      // Pull updated server queue into local
+      try {
+        const qr = await fetch('/.netlify/functions/get-queue', { headers: { 'x-admin-password': ADMIN_PW } });
+        if (qr.ok) {
+          const qd = await qr.json();
+          if (qd.ok && Array.isArray(qd.scanQueue)) {
+            scanQueue = qd.scanQueue;
+            saveScanState(); updateQueueStats();
+          }
+        }
+      } catch {}
+      if (d.addedToQueue > 0) apNotify('🌐 Autopilot discovered ' + d.addedToQueue + ' businesses', t.niche + ' · ' + t.area);
+    } else {
+      apLog('  ↳ failed: ' + (d.error || 'unknown'), 'err');
+    }
+  } catch (e) { apLog('  ↳ network: ' + e.message, 'err'); }
+  autopilotRotation.idx = (autopilotRotation.idx + 1) % autopilotTargets.length;
+  saveAutopilotState();
+  renderAutopilotTargets();
+  apUpdateStats();
+}
+
+/* ──── Worker: Scan ──── */
+async function apWorkerScan() {
+  if (!autopilotOn || !document.getElementById('ap-switch-scan')?.checked) return;
+  if (!scanQueue.length) return;
+  const before = autopilotStats.scanned;
+  const beforeP = prospects.length;
+  await tickScanWorker();
+  const scannedDelta = SCAN_CONCURRENCY; // tickScanWorker drains SCAN_CONCURRENCY
+  autopilotStats.scanned += scannedDelta;
+  const newPros = prospects.length - beforeP;
+  if (newPros > 0) {
+    autopilotStats.prospects += newPros;
+    apLog('🔍 Scanned ' + scannedDelta + ' · +' + newPros + ' new prospect' + (newPros === 1 ? '' : 's'), 'ok');
+  } else {
+    apLog('🔍 Scanned ' + scannedDelta + ' · 0 new (queue: ' + scanQueue.length + ')', 'info');
+  }
+  apUpdateStats();
+  saveAutopilotState();
+}
+
+/* ──── Worker: Verify ──── */
+async function apWorkerVerify() {
+  if (!autopilotOn || !document.getElementById('ap-switch-verify')?.checked) return;
+  const toVerify = prospects.filter(p => p.email && p.emailVerified === undefined).slice(0, 5);
+  if (!toVerify.length) return;
+  apLog('✓ Verifying ' + toVerify.length + ' emails…', 'info');
+  for (const p of toVerify) {
+    try {
+      const r = await fetch('/.netlify/functions/verify-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+        body: JSON.stringify({ email: p.email }),
+      });
+      const d = await r.json();
+      p.emailVerified = !!d.ok;
+      p.emailVerifyDetail = d.detail || '';
+      autopilotStats.verified++;
+    } catch (e) { p.emailVerified = false; p.emailVerifyDetail = e.message; }
+  }
+  saveProspects(); renderProspectsTable(); apUpdateStats(); saveAutopilotState();
+}
+
+/* ──── Worker: Sequence (queue drafts) ──── */
+async function apWorkerSequence() {
+  if (!autopilotOn || !document.getElementById('ap-switch-sequence')?.checked) return;
+  // Start sequences for any new prospects with verified personal emails
+  let started = 0;
+  prospects.forEach(p => {
+    if (p.email && p.emailVerified === true && p.status === 'new' && !p.sequence) {
+      const isRole = (p.emailVerifyDetail || '').toLowerCase().includes('role');
+      // Skip role emails (info@/sales@) — lower converting + grey-area legality for some jurisdictions
+      if (isRole) return;
+      startSequenceFor(p.id);
+      started++;
+    }
+  });
+  if (started) apLog('🔁 Started ' + started + ' new sequence' + (started === 1 ? '' : 's'), 'ok');
+  // Process due steps — generate drafts (don't send unless autosend is on)
+  const due = getDueSequenceSteps();
+  if (!due.length) return;
+  const autosend = document.getElementById('ap-switch-autosend')?.checked;
+  for (const item of due) {
+    const tmpl = TEMPLATES[item.step.tmpl];
+    if (!tmpl || !item.prospect.email) continue;
+    const draft = buildDraftFromTemplate(item.prospect, item.step.tmpl);
+    autopilotDrafts.push({ ...draft, prospectId: item.prospectId, stepIndex: item.stepIndex, queuedAt: new Date().toISOString() });
+    autopilotStats.drafts++;
+    item.step.draftedAt = new Date().toISOString();
+    apLog('📝 Draft queued: ' + (item.prospect.bizname || item.prospect.email) + ' · ' + item.step.label, 'info');
+    if (autosend) {
+      try {
+        const sent = await apSendDraft(draft);
+        if (sent) {
+          markSequenceStepSent(item.prospectId, item.stepIndex);
+          autopilotStats.sent++;
+          apLog('  ↳ ✅ sent to ' + draft.to, 'ok');
+        } else {
+          apLog('  ↳ ❌ send failed', 'err');
+        }
+      } catch (e) { apLog('  ↳ ❌ ' + e.message, 'err'); }
+    }
+  }
+  if (autopilotStats.drafts > 0 && document.getElementById('ap-switch-notify')?.checked) {
+    apNotify('📝 ' + autopilotStats.drafts + ' drafts ready', autosend ? 'auto-sent' : 'review + send in admin');
+  }
+  saveAutopilotState(); saveProspects(); renderProspectsTable(); renderSequenceTray(); apUpdateStats();
+}
+
+function buildDraftFromTemplate(p, tmplKey) {
+  const tmpl = TEMPLATES[tmplKey];
+  const fields = {
+    biz: p.bizname || p.name || '[business]',
+    nameOrThere: p.name?.split(' ')[0] || 'there',
+    type: p.type || 'business',
+    location: p.location || 'your area',
+    website: p.website || '[their site URL]',
+    observation: (p.siteIssues && p.siteIssues[0]) || 'it could be sharper and load faster',
+    issuesBullets: (p.siteIssues && p.siteIssues.length) ? p.siteIssues.slice(0,3).map(i => '  • ' + i).join('\n') : '  • Slow · dated · not ranking',
+  };
+  const fill = (s) => s.replace(/\{(\w+)\}/g, (_, k) => fields[k] ?? '');
+  const trackPx = '\n\n<img src="https://staticswift.co.uk/.netlify/functions/track-open?p=' + encodeURIComponent(p.id) + '&t=' + encodeURIComponent(tmplKey) + '" width="1" height="1" alt="" style="display:block" />';
+  return {
+    to: p.email,
+    subject: fill(tmpl.subject),
+    body: fill(tmpl.body) + SENDER_FOOTER + trackPx,
+    template: tmplKey,
+  };
+}
+
+async function apSendDraft(draft) {
+  try {
+    const r = await fetch('/.netlify/functions/send-reply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ to: draft.to, subject: draft.subject, body: draft.body, fromMailbox: 'hello' }),
+    });
+    const d = await r.json();
+    return !!d.ok;
+  } catch (e) { return false; }
+}
+
+/* ──── Main toggle ──── */
+function toggleAutopilot() {
+  const cb = document.getElementById('autopilot-toggle');
+  autopilotOn = !!cb?.checked;
+  const orb = document.getElementById('autopilot-orb');
+  const status = document.getElementById('autopilot-status');
+  const shimmer = document.getElementById('autopilot-shimmer');
+  if (autopilotOn) {
+    if (!autopilotTargets.length) {
+      apLog('⚠ Add targets first or click "Seed 20 UK trades"', 'warn');
+      if (cb) cb.checked = false;
+      autopilotOn = false;
+      return;
+    }
+    if ('Notification' in window && Notification.permission === 'default') Notification.requestPermission();
+    autopilotStats.sessionStart = new Date().toISOString();
+    if (status) { status.textContent = '● Running · workers active · ' + autopilotTargets.length + ' targets in rotation'; status.style.color = 'var(--green)'; }
+    if (orb) { orb.style.animation = 'autopilotPulse 1.8s ease-in-out infinite'; }
+    if (shimmer) shimmer.style.display = 'block';
+    if (cb) cb.style.background = 'var(--green)';
+    apLog('🚀 Autopilot ON · session started', 'ok');
+    // Kick all workers immediately + schedule
+    apWorkerDiscover();
+    autopilotTimers.discover = setInterval(apWorkerDiscover, 5 * 60_000);
+    autopilotTimers.scan = setInterval(apWorkerScan, 30_000);
+    autopilotTimers.verify = setInterval(apWorkerVerify, 2 * 60_000);
+    autopilotTimers.sequence = setInterval(apWorkerSequence, 5 * 60_000);
+    setTimeout(apWorkerScan, 2000);
+    setTimeout(apWorkerVerify, 6000);
+    setTimeout(apWorkerSequence, 10000);
+  } else {
+    Object.values(autopilotTimers).forEach(t => clearInterval(t));
+    autopilotTimers = {};
+    if (status) { status.textContent = 'Off · stopped'; status.style.color = 'var(--muted)'; }
+    if (orb) { orb.style.animation = ''; }
+    if (shimmer) shimmer.style.display = 'none';
+    if (cb) cb.style.background = 'var(--surface2)';
+    apLog('🛑 Autopilot OFF', 'warn');
+  }
+}
+
+/* ──── Overnight summary banner ──── */
+function showOvernightSummary() {
+  if (!autopilotStats.sessionStart) return;
+  const start = new Date(autopilotStats.sessionStart);
+  const hoursAgo = (Date.now() - start.getTime()) / 3600000;
+  if (hoursAgo < 1) return; // only show if >1h has passed
+  const totals = autopilotStats;
+  if (totals.discovered + totals.prospects + totals.drafts === 0) return;
+  const banner = document.createElement('div');
+  banner.style.cssText = 'position:fixed;top:20px;right:20px;width:340px;z-index:9999;background:linear-gradient(160deg,#0a0c14,#161a26);border:2px solid var(--cyan);border-radius:14px;padding:20px;box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 60px rgba(0,200,224,.18);animation:slideInRight .6s cubic-bezier(.16,1,.3,1)';
+  banner.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+      <h3 style="margin:0;color:var(--cyan);font-size:18px">☀ Good morning</h3>
+      <button onclick="this.parentElement.parentElement.remove()" style="background:none;border:0;color:var(--muted);font-size:18px;cursor:pointer">×</button>
+    </div>
+    <p style="margin:0 0 14px;font-size:13px;color:var(--text);line-height:1.5">While you were away (${hoursAgo.toFixed(1)}h), autopilot ran:</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+      <div style="padding:9px 11px;background:rgba(0,200,224,.08);border:1px solid rgba(0,200,224,.2);border-radius:8px"><div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--cyan)">${totals.discovered}</div><div style="color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em">businesses found</div></div>
+      <div style="padding:9px 11px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:8px"><div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--green)">${totals.prospects}</div><div style="color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em">prospects added</div></div>
+      <div style="padding:9px 11px;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2);border-radius:8px"><div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--purple)">${totals.verified}</div><div style="color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em">emails verified</div></div>
+      <div style="padding:9px 11px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:8px"><div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--amber)">${totals.drafts}</div><div style="color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.06em">drafts queued</div></div>
+    </div>
+    ${totals.sent ? `<div style="margin-top:10px;padding:9px 11px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3);border-radius:8px;text-align:center"><strong style="color:var(--green)">${totals.sent} emails sent automatically</strong></div>` : ''}
+    <button onclick="document.querySelector('[data-page=outreach]').click();this.parentElement.remove()" style="margin-top:14px;width:100%;background:var(--cyan);color:var(--ink);border:0;padding:11px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Review prospects →</button>`;
+  document.body.appendChild(banner);
+}
+
+// On page load, check for overnight session
+setTimeout(() => {
+  renderAutopilotTargets();
+  apUpdateStats();
+  showOvernightSummary();
+}, 1500);
+
+// Window-bind autopilot callables so onclick works
+['toggleAutopilot','addAutopilotTarget','removeAutopilotTarget','seedDefaultTargets'].forEach(fn => {
+  if (typeof eval(fn) === 'function') window[fn] = eval(fn);
+});
+

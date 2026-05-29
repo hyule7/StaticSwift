@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/admin/admin.css?v=4">
+<link rel="stylesheet" href="/admin/admin.css?v=6">
 </head>
 <body>
 
@@ -520,6 +520,109 @@
         </p>
       </div>
 
+      <!-- ════ AUTOPILOT — fully automated discovery + scan + outreach ════ -->
+      <div class="autopilot-card" style="border:2px solid var(--cyan);background:linear-gradient(160deg,rgba(0,200,224,.12),rgba(0,200,224,.02));border-radius:14px;padding:20px;margin-bottom:18px;position:relative;overflow:hidden">
+        <div class="autopilot-shimmer" id="autopilot-shimmer" style="position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(0,200,224,.06) 50%,transparent 70%);pointer-events:none;display:none;animation:autopilotShimmer 3s linear infinite"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px;position:relative">
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <div style="width:46px;height:46px;border-radius:50%;background:var(--cyan);color:var(--ink);display:flex;align-items:center;justify-content:center;font-size:24px;box-shadow:0 0 24px var(--cyan-glow)" id="autopilot-orb">🤖</div>
+            <div>
+              <h3 style="color:var(--cyan);margin:0;font-size:18px">Autopilot — fully automated outreach</h3>
+              <div id="autopilot-status" style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px">Off · click to begin overnight runs</div>
+            </div>
+          </div>
+          <label style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none">
+            <span style="font-size:13px;font-weight:600;color:var(--text)">Enable</span>
+            <input type="checkbox" id="autopilot-toggle" onchange="toggleAutopilot()" style="appearance:none;width:48px;height:26px;background:var(--surface2);border:1px solid var(--border);border-radius:100px;position:relative;cursor:pointer;transition:all .25s">
+          </label>
+        </div>
+        <div style="margin-bottom:12px">
+          <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;font-family:'DM Mono',monospace">Rotation targets · <span id="ap-targets-count">0</span> queued</div>
+          <div id="ap-targets-list" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;min-height:30px"></div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <input type="text" id="ap-add-niche" placeholder="niche (e.g. plumber)" list="ap-niches" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:6px;font-size:12px;width:160px">
+            <input type="text" id="ap-add-area" placeholder="city / town" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:6px;font-size:12px;width:160px">
+            <select id="ap-add-country" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:7px 10px;border-radius:6px;font-size:12px">
+              <option>UK</option><option>US</option><option>CA</option><option>AU</option><option>NZ</option><option>IE</option><option>ZA</option>
+            </select>
+            <button onclick="addAutopilotTarget()" style="background:var(--cyan);color:var(--ink);border:0;padding:7px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">+ Add target</button>
+            <button onclick="seedDefaultTargets()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:7px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Seed 20 UK trades</button>
+          </div>
+          <datalist id="ap-niches">
+            <option value="barber"><option value="plumber"><option value="electrician"><option value="photographer"><option value="restaurant"><option value="cafe"><option value="personal-trainer"><option value="beauty-salon"><option value="dog-groomer"><option value="florist"><option value="mechanic"><option value="optician"><option value="vet"><option value="dentist"><option value="solicitor"><option value="accountant"><option value="gardener"><option value="locksmith"><option value="builder"><option value="cleaner">
+          </datalist>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:14px 24px;padding:12px 14px;background:rgba(0,0,0,.18);border-radius:8px;margin-bottom:14px">
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="ap-switch-discover" checked> <span>🌐 Discover (every 5 min)</span></label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="ap-switch-scan" checked> <span>🔍 Scan (every 30 s)</span></label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="ap-switch-verify" checked> <span>✓ Verify emails (every 2 min)</span></label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="ap-switch-sequence" checked> <span>🔁 Queue follow-ups (every 5 min)</span></label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="ap-switch-autosend"> <span style="color:var(--amber)">📨 Auto-send drafts (B2B opt-in)</span></label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer"><input type="checkbox" id="ap-switch-notify" checked> <span>🔔 Browser notifications</span></label>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:14px">
+          <div class="stat-card" style="padding:12px 14px;text-align:center"><div class="label" style="margin-bottom:4px">Discovered</div><div class="value" id="ap-stat-discovered" style="font-size:22px;color:var(--cyan)">0</div></div>
+          <div class="stat-card" style="padding:12px 14px;text-align:center"><div class="label" style="margin-bottom:4px">Scanned</div><div class="value" id="ap-stat-scanned" style="font-size:22px;color:var(--purple)">0</div></div>
+          <div class="stat-card" style="padding:12px 14px;text-align:center"><div class="label" style="margin-bottom:4px">Prospects added</div><div class="value" id="ap-stat-prospects" style="font-size:22px;color:var(--green)">0</div></div>
+          <div class="stat-card" style="padding:12px 14px;text-align:center"><div class="label" style="margin-bottom:4px">Emails verified</div><div class="value" id="ap-stat-verified" style="font-size:22px;color:var(--cyan)">0</div></div>
+          <div class="stat-card" style="padding:12px 14px;text-align:center"><div class="label" style="margin-bottom:4px">Drafts queued</div><div class="value" id="ap-stat-drafts" style="font-size:22px;color:var(--amber)">0</div></div>
+          <div class="stat-card" style="padding:12px 14px;text-align:center"><div class="label" style="margin-bottom:4px">Emails sent</div><div class="value" id="ap-stat-sent" style="font-size:22px;color:var(--green)">0</div></div>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;font-family:'DM Mono',monospace">Activity stream</div>
+          <div id="ap-activity" style="max-height:180px;overflow-y:auto;background:#000;border:1px solid var(--border);border-radius:6px;padding:10px 12px;font-family:'DM Mono',monospace;font-size:11px;line-height:1.6;color:var(--muted)">
+            <div style="color:var(--dim)">Autopilot off. Add targets above, then flip the switch.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════ AUTO-DISCOVER AGENT — pulls businesses from OpenStreetMap ════ -->
+      <div class="outreach-tools" style="border:1px solid rgba(125,232,255,.3);background:linear-gradient(160deg,rgba(125,232,255,.06),rgba(0,0,0,0));margin-bottom:18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:10px">
+          <h3 style="color:#7de8ff;margin:0">🌐 Auto-discover agent — pulls real businesses from OpenStreetMap</h3>
+          <span style="font-size:11px;color:var(--muted);font-family:'DM Mono',monospace">Free · No API key · Legal</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center">
+          <select id="disc-niche" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:7px;font-size:13px;min-width:160px">
+            <option value="barber">Barber</option>
+            <option value="plumber">Plumber</option>
+            <option value="electrician">Electrician</option>
+            <option value="photographer">Photographer</option>
+            <option value="restaurant">Restaurant</option>
+            <option value="cafe">Café</option>
+            <option value="personal-trainer">Personal trainer</option>
+            <option value="beauty-salon">Beauty salon</option>
+            <option value="dog-groomer">Dog groomer</option>
+            <option value="florist">Florist</option>
+            <option value="mechanic">Mechanic</option>
+            <option value="optician">Optician</option>
+            <option value="vet">Vet</option>
+            <option value="dentist">Dentist</option>
+            <option value="solicitor">Solicitor</option>
+            <option value="accountant">Accountant</option>
+            <option value="gardener">Gardener</option>
+            <option value="locksmith">Locksmith</option>
+            <option value="builder">Builder</option>
+            <option value="cleaner">Cleaner</option>
+          </select>
+          <input type="text" id="disc-area" value="Manchester" placeholder="City / town / region" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:7px;font-size:13px;flex:1;min-width:200px">
+          <select id="disc-country" style="background:var(--dark3);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:7px;font-size:13px">
+            <option value="UK">UK</option>
+            <option value="US">US</option>
+            <option value="CA">Canada</option>
+            <option value="AU">Australia</option>
+            <option value="NZ">New Zealand</option>
+            <option value="IE">Ireland</option>
+            <option value="ZA">South Africa</option>
+          </select>
+          <button class="btn-primary" onclick="runDiscover()" id="disc-btn" style="background:#7de8ff;color:#000;white-space:nowrap">🔎 Pull from OSM →</button>
+        </div>
+        <div id="disc-result" style="display:none;padding:12px 14px;background:var(--dark3);border:1px solid var(--border);border-radius:8px;margin-top:10px;font-size:12px;line-height:1.55"></div>
+        <p style="margin:10px 0 0;font-size:11px;color:var(--dim);line-height:1.55">
+          Pulls real businesses (with websites) from OpenStreetMap's community-mapped database. Free, no API key, no Google ToS issue. URLs feed into the scan queue → cron-scan auto-scores them → poor sites become prospects.
+        </p>
+      </div>
+
       <!-- ════ EMAIL CONFIG TEST — diagnose SMTP in one click ════ -->
       <div class="outreach-tools" style="border:1px solid rgba(245,158,11,.3);background:linear-gradient(160deg,rgba(245,158,11,.06),rgba(0,0,0,0));margin-bottom:18px">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:10px">
@@ -842,6 +945,6 @@
   </div>
 </div>
 
-<script src="/admin/admin.js?v=4" defer></script>
+<script src="/admin/admin.js?v=6" defer></script>
 </body>
 </html>
