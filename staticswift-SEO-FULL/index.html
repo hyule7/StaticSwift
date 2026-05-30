@@ -4195,6 +4195,110 @@ body.scrolled-past-hero .hero::after { transform: scaleY(0); transition: transfo
 /* Sonar pulses removed per user request */
 .hero .hero-rotator::before, .hero .hero-rotator::after { display: none !important; }
 
+/* Locked rotator state — stop the flip animation */
+.hero-rotator-word.locked { animation: none !important; transform: none !important; }
+
+/* GUARANTEE HEADLINE READABILITY — strong text shadow + dark scrim behind */
+.hero .hero-headline {
+  position: relative;
+  text-shadow:
+    0 2px 30px rgba(0,0,0,.8),
+    0 1px 3px rgba(0,0,0,.7),
+    0 0 12px rgba(0,0,0,.45) !important;
+  color: #faf7f1 !important;
+}
+/* Strong gradient scrim BEHIND the headline so it always pops */
+.hero-text {
+  position: relative !important;
+}
+.hero-text::before {
+  content: "";
+  position: absolute;
+  left: -2rem; right: -2rem; top: -1rem; bottom: -1rem;
+  background: radial-gradient(
+    ellipse 80% 75% at 30% 50%,
+    rgba(0,0,0,.65) 0%,
+    rgba(0,0,0,.42) 45%,
+    rgba(0,0,0,.15) 75%,
+    transparent 100%
+  );
+  z-index: -1; pointer-events: none;
+  border-radius: 6px;
+  filter: blur(8px);
+}
+.hero .hero-headline em {
+  color: var(--terr-pale, #d9a071) !important;
+  text-shadow:
+    0 2px 30px rgba(0,0,0,.85),
+    0 1px 3px rgba(0,0,0,.8) !important;
+}
+.hero .hero-headline .word-anim {
+  /* Override the gradient text-fill that was making bottom invisible */
+  -webkit-text-fill-color: currentColor !important;
+  background: none !important;
+}
+
+/* SINGLE PRIMARY CTA — kill the noise, one button shouts */
+.hero .hero-anchor,
+.hero .hero-proof,
+.hero .hero-trust,
+.hero .hero-ctas,
+.hero .hero-alt-actions { display: none !important; }
+.hero .hero-lead-fine { display: none !important; }
+.hero .hero-lead-label { opacity: 1 !important; margin-bottom: 1rem !important; }
+
+/* Form simplified — primary CTA only, secondary alt actions removed */
+.hero .hero-lead-form {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: .6rem !important;
+  max-width: 460px;
+}
+.hero #hf-biz, .hero #hf-site, .hero #hf-email, .hero #hf-wa {
+  background: rgba(14,12,10,.65) !important;
+  border: 1.5px solid rgba(217,160,113,.4) !important;
+  color: #faf7f1 !important;
+  padding: .95rem 1.1rem !important;
+  font-family: 'Switzer', sans-serif !important;
+  font-size: 1rem !important;
+  border-radius: 1px 3px 2px 4px !important;
+  backdrop-filter: blur(8px);
+}
+.hero #hf-biz::placeholder, .hero #hf-site::placeholder, .hero #hf-email::placeholder, .hero #hf-wa::placeholder { color: rgba(250,247,241,.55); }
+.hero #hf-biz:focus, .hero #hf-site:focus, .hero #hf-email:focus, .hero #hf-wa:focus {
+  outline: 0;
+  border-color: var(--terr-pale, #d9a071) !important;
+  background: rgba(14,12,10,.85) !important;
+}
+/* Single-field form — only email visible initially */
+.hero #hf-biz, .hero #hf-site, .hero #hf-wa { display: none !important; }
+.hero #hf-email { font-size: 1.05rem !important; padding: 1.1rem 1.2rem !important; }
+
+/* The ONE button — terracotta stamped CTA */
+.hero .hl-submit {
+  background: linear-gradient(180deg, #d9a071, #a86c4d) !important;
+  color: #0e0c0a !important;
+  border: 0 !important;
+  padding: 1.15rem 1.3rem !important;
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  font-size: .82rem !important; font-weight: 700 !important;
+  letter-spacing: .18em !important; text-transform: uppercase !important;
+  border-radius: 2px 4px 2px 4px !important;
+  box-shadow:
+    0 6px 0 #5e3a26,
+    0 12px 26px rgba(168,108,77,.5),
+    inset 0 1px 0 rgba(255,255,255,.3) !important;
+  cursor: pointer; transition: transform .25s, box-shadow .25s !important;
+  margin-top: .4rem;
+}
+.hero .hl-submit:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 9px 0 #5e3a26,
+    0 16px 34px rgba(168,108,77,.65),
+    inset 0 1px 0 rgba(255,255,255,.4) !important;
+}
+
 /* Nav logo stack — "by Harry · Manchester" sub-label under brand */
 .nav-logo-stack { display: inline-flex; flex-direction: column; line-height: 1; }
 .nav-logo-name { font-size: 1rem; font-weight: 700; letter-spacing: .04em; }
@@ -5737,13 +5841,16 @@ p, li, dd, .lh-fine, .receipt-lede, .sm-deck, .letterhead-sub, .scorecard-footno
 
 <!-- ══ 01 · HERO — CINEMATIC ══ -->
 <section class="hero" aria-label="Hero" id="hero">
-  <!-- CINEMATIC VIDEO BACKGROUND — golden-hour coding scene, real motion -->
+  <!-- CINEMATIC VIDEO BACKGROUND — coding being typed, multiple sources for reliability -->
   <div class="hero-bg-video" aria-hidden="true">
-    <video autoplay muted loop playsinline preload="auto" poster="https://images.pexels.com/photos/1571939/pexels-photo-1571939.jpeg?auto=compress&cs=tinysrgb&w=1600">
+    <video autoplay muted loop playsinline preload="auto" id="heroVideo"
+           poster="https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=1600">
+      <source src="https://videos.pexels.com/video-files/855564/855564-hd_1920_1080_25fps.mp4" type="video/mp4">
       <source src="https://videos.pexels.com/video-files/3209663/3209663-hd_1920_1080_25fps.mp4" type="video/mp4">
-      <!-- Fallback poster shows if video fails -->
+      <source src="https://videos.pexels.com/video-files/4974013/4974013-hd_1920_1080_25fps.mp4" type="video/mp4">
     </video>
-    <img src="https://images.pexels.com/photos/1571939/pexels-photo-1571939.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="" width="1600" height="1067" fetchpriority="high" class="hero-bg-fallback">
+    <!-- Fallback image — code on screen aesthetic -->
+    <img src="https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="" width="1600" height="1067" fetchpriority="high" class="hero-bg-fallback">
   </div>
 
   <!-- AUTONOMOUS PHONE — a real built site scrolling itself in the corner -->
@@ -9928,6 +10035,22 @@ if (/\/(thanks|sent|confirmed)/i.test(location.pathname)) {
   const hero = document.querySelector('.hero');
   if (!hero) return;
 
+  // 0 · Video reliability — if it fails to load, hide it and rely on the poster image
+  const video = document.getElementById('heroVideo');
+  if (video) {
+    let loaded = false;
+    video.addEventListener('loadeddata', () => { loaded = true; video.play().catch(() => {}); });
+    video.addEventListener('error', () => { video.style.display = 'none'; });
+    // Force a play attempt after a beat in case autoplay was blocked
+    setTimeout(() => {
+      if (!loaded) { video.play().catch(() => { video.style.display = 'none'; }); }
+      // If after 4s still not playing, fall back to the poster image
+      setTimeout(() => {
+        if (video.readyState < 2) video.style.display = 'none';
+      }, 4000);
+    }, 1200);
+  }
+
   // 1 · Cursor spotlight — soft golden light follows mouse (desktop)
   const spot = document.getElementById('heroSpotlight');
   if (spot && window.matchMedia('(pointer: fine)').matches) {
@@ -10017,23 +10140,26 @@ if (/\/(thanks|sent|confirmed)/i.test(location.pathname)) {
   }
 })();
 
-/* HERO niche-word rotator — cycles every 2.8s through real trade niches.
-   Coordinates with the CSS @keyframes hero-rotator-flip animation. */
+/* HERO niche-word rotator — cycles 4 times then LOCKS on "tradesmen.".
+   Stopping the loop prevents the "fluff motion" feeling. */
 (function heroNicheRotator(){
   const el = document.getElementById('hero-rotator-word');
   if (!el) return;
   const niches = [
     'barbers.', 'plumbers.', 'florists.', 'dentists.',
-    'cafés.', 'electricians.', 'tattooists.', 'PTs.',
-    'photographers.', 'mechanics.', 'cleaners.', 'beauticians.',
-    'tilers.', 'butchers.', 'opticians.', 'dog groomers.',
+    'cafés.', 'electricians.', 'tattooists.', 'tradesmen.',
   ];
   let i = 0;
-  // Time the swap to land in the "invisible" frame of the flip animation
-  // CSS animation runs 2.8s, flips at ~22% (which is .616s).
-  // We swap at 21.5% so swap happens mid-flip when word is offscreen.
-  setInterval(() => {
-    i = (i + 1) % niches.length;
+  const interval = setInterval(() => {
+    i++;
+    if (i >= niches.length) {
+      // Final stop on the inclusive word — settles the page
+      el.textContent = niches[niches.length - 1];
+      clearInterval(interval);
+      // Add a class so CSS can stop the flip animation
+      el.classList.add('locked');
+      return;
+    }
     el.textContent = niches[i];
   }, 2800);
 })();
