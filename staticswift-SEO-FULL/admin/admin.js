@@ -5279,21 +5279,46 @@ async function diagnoseAnalytics() {
    AUTOPILOT v2 · region rotation + exclude rules
    ═══════════════════════════════════════════════════════════════ */
 const UK_REGIONS = {
-  'north-west':   ['Manchester','Liverpool','Preston','Blackpool','Bolton','Warrington','Stockport','Oldham','Salford','Lancaster','Wigan','Chester'],
-  'north-east':   ['Newcastle','Sunderland','Middlesbrough','Durham','Gateshead','Stockton','Darlington','Hartlepool','South Shields'],
-  'yorkshire':    ['Leeds','Sheffield','Bradford','Hull','York','Doncaster','Rotherham','Huddersfield','Wakefield','Harrogate'],
-  'midlands-w':   ['Birmingham','Wolverhampton','Coventry','Stoke-on-Trent','Walsall','Dudley','Solihull','Telford','Worcester','Hereford'],
-  'midlands-e':   ['Nottingham','Leicester','Derby','Northampton','Lincoln','Peterborough','Mansfield','Loughborough','Chesterfield'],
-  'east-anglia':  ['Norwich','Cambridge','Ipswich','Colchester','Chelmsford','Southend-on-Sea','King\'s Lynn','Bury St Edmunds'],
-  'london':       ['Croydon','Romford','Bromley','Sutton','Ealing','Hackney','Camden','Greenwich','Lewisham','Wandsworth','Barnet','Brent','Newham','Tower Hamlets'],
-  'south-east':   ['Brighton','Reading','Southampton','Portsmouth','Oxford','Milton Keynes','Slough','Guildford','Maidstone','Tunbridge Wells','Canterbury','Eastbourne','Hastings'],
-  'south-west':   ['Bristol','Plymouth','Exeter','Bath','Bournemouth','Poole','Cheltenham','Gloucester','Swindon','Salisbury','Truro','Taunton','Torquay'],
-  'wales':        ['Cardiff','Swansea','Newport','Wrexham','Bangor','Aberystwyth','Carmarthen','Llandudno','Bridgend','Caerphilly'],
-  'scotland':     ['Glasgow','Edinburgh','Aberdeen','Dundee','Inverness','Perth','Stirling','Paisley','Falkirk','Ayr'],
-  'n-ireland':    ['Belfast','Derry','Lisburn','Bangor','Newtownabbey','Craigavon'],
+  'north-west':   ['Manchester','Liverpool','Preston','Blackpool','Bolton','Warrington','Stockport','Oldham','Salford','Lancaster','Wigan','Chester','Burnley','Blackburn','Macclesfield','Crewe','Carlisle','Kendal','Southport','St Helens'],
+  'north-east':   ['Newcastle','Sunderland','Middlesbrough','Durham','Gateshead','Stockton','Darlington','Hartlepool','South Shields','Whitley Bay','Tynemouth','North Shields'],
+  'yorkshire':    ['Leeds','Sheffield','Bradford','Hull','York','Doncaster','Rotherham','Huddersfield','Wakefield','Harrogate','Halifax','Barnsley','Scarborough','Pontefract','Skipton','Whitby','Otley','Ilkley'],
+  'midlands-w':   ['Birmingham','Wolverhampton','Coventry','Stoke-on-Trent','Walsall','Dudley','Solihull','Telford','Worcester','Hereford','Stratford-upon-Avon','Leamington Spa','Warwick','Kidderminster','Stourbridge','Sutton Coldfield','Tamworth'],
+  'midlands-e':   ['Nottingham','Leicester','Derby','Northampton','Lincoln','Peterborough','Mansfield','Loughborough','Chesterfield','Newark','Grantham','Stamford','Boston','Skegness','Kettering','Wellingborough','Corby','Long Eaton'],
+  'east-anglia':  ['Norwich','Cambridge','Ipswich','Colchester','Chelmsford','Southend-on-Sea',"King's Lynn",'Bury St Edmunds','Great Yarmouth','Lowestoft','Felixstowe','Sudbury','Newmarket','Ely','Wisbech','Saffron Walden'],
+  'london-n':     ['Camden','Hackney','Islington','Haringey','Enfield','Barnet','Tottenham','Finchley','Wood Green','Holloway','Stoke Newington','Crouch End','Highgate','Muswell Hill','Edmonton'],
+  'london-s':     ['Croydon','Bromley','Sutton','Lewisham','Greenwich','Wandsworth','Streatham','Brixton','Clapham','Balham','Tooting','Wimbledon','Putney','Battersea','Catford','Forest Hill','Peckham'],
+  'london-e':     ['Romford','Newham','Tower Hamlets','Stratford','Walthamstow','Leyton','Plaistow','Bow','Bethnal Green','Whitechapel','Dagenham','Ilford','Barking','Upton Park'],
+  'london-w':     ['Ealing','Brent','Hammersmith','Fulham','Chiswick','Acton','Hounslow','Richmond','Twickenham','Kingston upon Thames','Wembley','Harrow','Uxbridge'],
+  'south-east':   ['Brighton','Reading','Southampton','Portsmouth','Oxford','Milton Keynes','Slough','Guildford','Maidstone','Tunbridge Wells','Canterbury','Eastbourne','Hastings','Hove','Worthing','Crawley','Horsham','Chichester','Bognor Regis','Dover','Ashford','Sevenoaks'],
+  'south-west':   ['Bristol','Plymouth','Exeter','Bath','Bournemouth','Poole','Cheltenham','Gloucester','Swindon','Salisbury','Truro','Taunton','Torquay','Weston-super-Mare','Yeovil','Weymouth','Newquay','Bideford','Bridgwater','Paignton','Falmouth','St Ives'],
+  'wales':        ['Cardiff','Swansea','Newport','Wrexham','Bangor','Aberystwyth','Carmarthen','Llandudno','Bridgend','Caerphilly','Pontypridd','Merthyr Tydfil','Rhyl','Colwyn Bay','Conwy','Holyhead','Llanelli','Neath','Port Talbot','Barry','Cwmbran'],
+  'scotland-c':   ['Glasgow','Edinburgh','Stirling','Falkirk','Paisley','Motherwell','Hamilton','Coatbridge','East Kilbride','Greenock','Dunfermline','Kirkcaldy','Livingston','Cumbernauld'],
+  'scotland-n':   ['Aberdeen','Dundee','Inverness','Perth','Elgin','Fort William','Oban','Fraserburgh','Peterhead','Stornoway','Thurso','Wick'],
+  'scotland-s':   ['Ayr','Dumfries','Galashiels','Hawick','Stranraer','Kilmarnock','Irvine','Troon','Prestwick'],
+  'n-ireland':    ['Belfast','Derry','Lisburn','Bangor (NI)','Newtownabbey','Craigavon','Antrim','Ballymena','Armagh','Coleraine','Newry','Omagh','Enniskillen','Carrickfergus'],
+  'cornwall':     ['Truro','Newquay','Penzance','St Ives','Falmouth','Bodmin','St Austell','Camborne','Redruth','Bude','Padstow','Looe','Liskeard'],
+  'lake-district':['Kendal','Penrith','Keswick','Windermere','Ambleside','Cockermouth','Workington','Whitehaven','Carlisle','Barrow-in-Furness'],
+  'jersey-iom':   ['St Helier','St Peter Port','Douglas','Castletown','Ramsey','Peel'],
 };
 const HOT_NICHES = [
-  'barber','plumber','electrician','mechanic','dog-groomer','beauty-salon','florist','locksmith','gardener','cleaner','tiler','painter-decorator','window-cleaner','pet-groomer','tattoo-studio','nail-salon','massage-therapist','personal-trainer','dance-school','driving-instructor','photographer-wedding','photographer-newborn','solicitor-family','solicitor-conveyancing','accountant-small-business','bookkeeper','wedding-planner','removal-company','handyman','tree-surgeon','roofer','carpenter','butcher','baker','farm-shop','independent-cafe','independent-restaurant','chiropractor','osteopath','podiatrist','dentist-private','optician-independent','vet-small','kids-party-entertainer','tutor','music-teacher'
+  // Trades
+  'barber','plumber','electrician','mechanic','tiler','painter-decorator','window-cleaner','gardener','cleaner','handyman','tree-surgeon','roofer','carpenter','locksmith','glazier','plasterer','scaffolder','bricklayer','heating-engineer','gas-engineer','damp-proofing','driveway-paver','fencing-contractor',
+  // Beauty/health
+  'beauty-salon','nail-salon','tattoo-studio','massage-therapist','hairdresser','aesthetics-clinic','wellbeing-coach','sports-massage','chiropractor','osteopath','podiatrist','reflexologist','acupuncturist','holistic-therapist',
+  // Pet
+  'dog-groomer','pet-groomer','dog-walker','dog-trainer','vet-small','pet-photographer','dog-boarding',
+  // Pro services
+  'solicitor-family','solicitor-conveyancing','accountant-small-business','bookkeeper','mortgage-broker','financial-adviser','will-writer','notary',
+  // Creative
+  'photographer-wedding','photographer-newborn','photographer-family','photographer-commercial','videographer','illustrator-freelance','calligrapher','jeweller-bespoke',
+  // Hospitality / food
+  'independent-cafe','independent-restaurant','butcher','baker','farm-shop','greengrocer','deli','wine-shop','micro-brewery','coffee-roaster','pub-independent','food-truck',
+  // Health / kids
+  'dentist-private','optician-independent','sports-physio','sports-club','dance-school','music-teacher','kids-party-entertainer','soft-play','swim-instructor','martial-arts-club',
+  // Trades-adjacent
+  'florist','wedding-planner','event-planner','removal-company','man-and-van','courier-local','signwriter','car-detailer','car-valeting',
+  // Personal coaching / education
+  'personal-trainer','yoga-teacher','pilates-studio','language-tutor','tutor','driving-instructor','life-coach',
 ];
 const COLD_NICHES_BAN = [
   // Other web-people we never pitch to
@@ -5325,7 +5350,7 @@ function loadAutopilotConfig() {
 function defaultConfig() {
   return {
     activeRegions: ['north-west', 'yorkshire', 'midlands-w'],
-    activeNiches: HOT_NICHES.slice(0, 12),
+    activeNiches: HOT_NICHES.slice(0, 16),
     excludes: { ...DEFAULT_EXCLUDES },
     minDomainAgeYears: 2,
     maxDomainAgeYears: 40,
@@ -5334,6 +5359,14 @@ function defaultConfig() {
     maxScoreToContact: 65,
     skipIfHasNoMobile: false,
     rotateRegionsRandom: true,
+    // Outreach automation toggles
+    autoScan: true,
+    autoQueue: true,
+    autoSend: false,
+    autoFollowup: true,
+    autoArchive: true,
+    maxSendsPerDay: 15,
+    minGapMinutes: 8,
   };
 }
 function saveAutopilotConfig(cfg) {
@@ -5415,13 +5448,74 @@ function renderAutopilotConfigPanel() {
         <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer"><input type="checkbox" id="ap-skip-nomobile" ${cfg.skipIfHasNoMobile?'checked':''}> <span>Skip if site has no mobile menu</span></label>
       </section>
 
+      <section style="margin-bottom:2rem">
+        <h3 style="font-family:monospace;font-size:.76rem;letter-spacing:.18em;text-transform:uppercase;color:var(--terr-deep,#7e4f37);margin:0 0 .8rem;display:flex;justify-content:space-between;align-items:center">
+          <span>Active target combos <span style="background:#0e0c0a;color:#faf7f1;padding:.1rem .5rem;font-size:.7rem;letter-spacing:.1em;margin-left:.5rem">${(typeof autopilotTargets!=='undefined'?autopilotTargets.length:0)} configured</span></span>
+          <button onclick="clearAllApTargets()" style="background:#c44;color:white;border:0;border-radius:2px;padding:.35rem .75rem;cursor:pointer;font-family:monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase">Clear all targets</button>
+        </h3>
+        <div style="max-height:340px;overflow-y:auto;border:1px solid var(--border);border-radius:4px;background:#faf7f1">
+          ${(typeof autopilotTargets!=='undefined' && autopilotTargets.length ? autopilotTargets.map((t,i)=>`
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:.55rem .85rem;border-bottom:1px solid rgba(0,0,0,.06);font-size:.84rem">
+              <div style="display:flex;gap:.8rem;align-items:center;min-width:0;flex:1">
+                <span style="font-family:monospace;color:var(--muted);font-size:.7rem;letter-spacing:.06em;flex:0 0 32px">#${(i+1).toString().padStart(3,'0')}</span>
+                <span style="font-weight:600;color:#0e0c0a;text-transform:capitalize">${escapeHTML(t.niche.replace(/-/g,' '))}</span>
+                <span style="color:#999">in</span>
+                <span style="color:#0e0c0a">${escapeHTML(t.area)}</span>
+                ${t.region?`<span style="background:rgba(126,79,55,.1);color:#7e4f37;padding:.12rem .45rem;border-radius:2px;font-family:monospace;font-size:.65rem;letter-spacing:.08em;text-transform:uppercase">${escapeHTML(t.region)}</span>`:''}
+              </div>
+              <button onclick="deleteApTarget(${i})" title="Delete this target" style="background:transparent;border:0;color:#c44;cursor:pointer;font-size:1.15rem;padding:.15rem .55rem;line-height:1">&times;</button>
+            </div>
+          `).join('') : '<div style="padding:2rem;text-align:center;color:var(--muted);font-style:italic">No target combos yet. Pick regions + niches above and hit <strong>Rebuild target rotation</strong>.</div>')}
+        </div>
+      </section>
+
+      <section style="margin-bottom:2rem;padding:1rem 1.2rem;background:rgba(126,79,55,.06);border-left:3px solid #7e4f37;border-radius:0 4px 4px 0">
+        <h3 style="font-family:monospace;font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:#7e4f37;margin:0 0 .55rem">Outreach automation</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem;font-size:.84rem">
+          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer"><input type="checkbox" id="ap-auto-scan" ${cfg.autoScan?'checked':''}> Auto-scan new prospects on add</label>
+          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer"><input type="checkbox" id="ap-auto-queue" ${cfg.autoQueue?'checked':''}> Auto-queue scored prospects (40-65) for sequence</label>
+          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer"><input type="checkbox" id="ap-auto-send" ${cfg.autoSend?'checked':''}> Auto-send drafts during business hours (Tue&ndash;Thu 9-12)</label>
+          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer"><input type="checkbox" id="ap-auto-followup" ${cfg.autoFollowup?'checked':''}> Auto-follow-up 4 days after no-reply</label>
+          <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer"><input type="checkbox" id="ap-auto-archive" ${cfg.autoArchive?'checked':''}> Auto-archive stale prospects (no reply, 21 days)</label>
+        </div>
+        <div style="display:flex;gap:.6rem;margin-top:.9rem;align-items:center;flex-wrap:wrap">
+          <label style="font-size:.78rem;color:var(--muted)">Max sends/day:</label>
+          <input type="number" id="ap-max-sends-day" min="1" max="100" value="${cfg.maxSendsPerDay||15}" style="width:70px;padding:.35rem;border:1px solid var(--border);border-radius:3px">
+          <label style="font-size:.78rem;color:var(--muted);margin-left:.8rem">Min gap (min):</label>
+          <input type="number" id="ap-min-gap" min="1" max="120" value="${cfg.minGapMinutes||8}" style="width:70px;padding:.35rem;border:1px solid var(--border);border-radius:3px">
+        </div>
+      </section>
+
       <div style="display:flex;gap:.6rem;flex-wrap:wrap;padding-top:1rem;border-top:1px solid var(--border)">
-        <button onclick="saveAutopilotConfigFromUi()" style="padding:.7rem 1.4rem;background:#0e0c0a;color:#faf7f1;border:0;border-radius:3px;cursor:pointer;font-family:monospace;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700">Save targeting</button>
-        <button onclick="rebuildApTargetsFromConfig()" style="padding:.7rem 1.4rem;background:#7e4f37;color:#faf7f1;border:0;border-radius:3px;cursor:pointer;font-family:monospace;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700">Rebuild target rotation</button>
-        <button onclick="resetAutopilotConfig()" style="padding:.7rem 1.4rem;background:transparent;border:1px solid #c44;color:#c44;border-radius:3px;cursor:pointer;font-family:monospace;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700">Reset to defaults</button>
+        <button onclick="saveAutopilotConfigFromUi()" style="padding:.75rem 1.5rem;background:#0e0c0a;color:#faf7f1;border:0;border-radius:3px;cursor:pointer;font-family:monospace;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700">Save targeting</button>
+        <button onclick="rebuildApTargetsFromConfig()" style="padding:.75rem 1.5rem;background:#7e4f37;color:#faf7f1;border:0;border-radius:3px;cursor:pointer;font-family:monospace;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700">Save + Rebuild rotation</button>
+        <button onclick="addManualApTarget()" style="padding:.75rem 1.2rem;background:transparent;border:1px solid #0e0c0a;color:#0e0c0a;border-radius:3px;cursor:pointer;font-family:monospace;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700">+ Add single target</button>
+        <button onclick="resetAutopilotConfig()" style="padding:.75rem 1.2rem;background:transparent;border:1px solid #c44;color:#c44;border-radius:3px;cursor:pointer;font-family:monospace;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700">Reset to defaults</button>
       </div>
     </div>`;
   return html;
+}
+function deleteApTarget(i) {
+  if (typeof autopilotTargets === 'undefined' || !autopilotTargets[i]) return;
+  autopilotTargets.splice(i, 1);
+  if (typeof saveAutopilotState === 'function') saveAutopilotState();
+  showAutopilotConfig();
+}
+function clearAllApTargets() {
+  if (!confirm('Clear ALL ' + (autopilotTargets?.length || 0) + ' target combos? Discover worker will idle until you rebuild.')) return;
+  if (typeof autopilotTargets !== 'undefined') autopilotTargets.length = 0;
+  if (typeof saveAutopilotState === 'function') saveAutopilotState();
+  showAutopilotConfig();
+}
+function addManualApTarget() {
+  const niche = prompt('Niche (e.g. "barber" or "pet-groomer"):');
+  if (!niche) return;
+  const area = prompt('Area / town (e.g. "Manchester" or "Bromley"):');
+  if (!area) return;
+  if (typeof autopilotTargets === 'undefined') return;
+  autopilotTargets.unshift({ niche: niche.trim().toLowerCase(), area: area.trim(), country: 'UK', region: 'manual' });
+  if (typeof saveAutopilotState === 'function') saveAutopilotState();
+  showAutopilotConfig();
 }
 function toggleApRegion(r) {
   const cfg = loadAutopilotConfig();
@@ -5449,8 +5543,22 @@ function saveAutopilotConfigFromUi() {
   cfg.onlyLtdCompanies    = document.getElementById('ap-only-ltd').checked;
   cfg.rotateRegionsRandom = document.getElementById('ap-rotate').checked;
   cfg.skipIfHasNoMobile   = document.getElementById('ap-skip-nomobile').checked;
+  // Automation toggles
+  const t = (id, key) => { const el = document.getElementById(id); if (el) cfg[key] = el.checked; };
+  t('ap-auto-scan', 'autoScan');
+  t('ap-auto-queue', 'autoQueue');
+  t('ap-auto-send', 'autoSend');
+  t('ap-auto-followup', 'autoFollowup');
+  t('ap-auto-archive', 'autoArchive');
+  const md = document.getElementById('ap-max-sends-day'); if (md) cfg.maxSendsPerDay = +md.value || 15;
+  const mg = document.getElementById('ap-min-gap'); if (mg) cfg.minGapMinutes = +mg.value || 8;
   saveAutopilotConfig(cfg);
-  alert('Targeting saved. Click "Rebuild target rotation" to populate the autopilot worker.');
+  // Visual confirmation in-modal instead of alert
+  const note = document.createElement('div');
+  note.style.cssText = 'position:fixed;top:1rem;left:50%;transform:translateX(-50%);background:#0e0c0a;color:#faf7f1;padding:.6rem 1.4rem;border-radius:3px;font-family:monospace;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;z-index:99999;box-shadow:0 8px 24px rgba(0,0,0,.3)';
+  note.textContent = '✓ Targeting saved';
+  document.body.appendChild(note);
+  setTimeout(() => note.remove(), 1800);
 }
 function rebuildApTargetsFromConfig() {
   const cfg = loadAutopilotConfig();
@@ -5517,5 +5625,5 @@ window.ssShouldExcludeProspect = function(p) {
   return false;
 };
 
-['showAutopilotConfig','toggleApRegion','toggleApNiche','saveAutopilotConfigFromUi','rebuildApTargetsFromConfig','resetAutopilotConfig']
+['showAutopilotConfig','toggleApRegion','toggleApNiche','saveAutopilotConfigFromUi','rebuildApTargetsFromConfig','resetAutopilotConfig','deleteApTarget','clearAllApTargets','addManualApTarget']
   .forEach(fn => { try { if (typeof eval(fn) === 'function') window[fn] = eval(fn); } catch(e){} });

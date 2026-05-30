@@ -3631,25 +3631,49 @@ body { font-family: 'Switzer', -apple-system, BlinkMacSystemFont, sans-serif !im
 .lh-stamp-wrap { position: relative; z-index: 5; }
 .audit-letterhead::after { z-index: 11; pointer-events: none; } /* keep ink-bar above content visually */
 
-/* COMPARISON CARDS — tightened spec, can't possibly overlap */
-.sc-card { padding: 2rem 1.6rem 1.8rem !important; min-height: 480px !important; overflow: hidden; }
-.sc-head { gap: .5rem !important; margin-bottom: 1.2rem !important; }
-.sc-head-row { min-height: 0 !important; padding-bottom: .5rem !important; gap: .8rem; align-items: center; }
-.sc-no { font-size: .68rem !important; flex: 0 0 auto; }
-.sc-grade { flex: 0 0 auto; align-items: center !important; }
-.sc-grade-letter { font-size: 1.9rem !important; line-height: .9 !important; }
-.sc-grade-mark { font-size: 1.1rem !important; line-height: .9 !important; }
-.sc-brand { font-size: 1.45rem !important; line-height: 1.05 !important; margin: 0 !important; padding: 0 !important; word-break: break-word; }
-.sc-rib { margin-top: .2rem !important; font-size: .6rem !important; padding: .25rem .55rem !important; }
-.sc-list { margin: 0 0 1.1rem !important; gap: .55rem !important; }
-.sc-list div { padding-bottom: .4rem !important; gap: .15rem !important; }
-.sc-list dt { font-size: .62rem !important; letter-spacing: .12em !important; opacity: .7 !important; }
-.sc-list dd { font-size: .92rem !important; }
-.sc-scrawl { font-size: .92rem !important; padding-top: .7rem !important; margin-bottom: .8rem !important; transform: rotate(-.8deg) !important; }
-.sc-cta { padding: .8rem 1.2rem !important; font-size: .7rem !important; letter-spacing: .15em !important; }
-/* Roast notes positioning — clean, just above each card */
-.scorecard-stack .roast-note { top: -32px !important; }
-.scorecard-stack.is-dropped .roast-note { transform: translate(-50%, 0) rotate(var(--roast-rot, -6deg)) !important; }
+/* COMPARISON CARDS — tightened spec, can't possibly overlap.
+   Strict box-model + container queries kill all wrap-breakage. */
+.scorecard-stack {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 1.8rem !important;
+  align-items: stretch !important;
+}
+.sc-card {
+  padding: 2rem 1.5rem 1.6rem !important;
+  min-height: 460px !important;
+  overflow: hidden !important;
+  display: flex !important; flex-direction: column !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+}
+.sc-head { display: flex !important; flex-direction: column !important; gap: .5rem !important; margin-bottom: 1.1rem !important; }
+.sc-head-row { display: flex !important; align-items: center !important; justify-content: space-between !important; gap: .8rem !important; padding-bottom: .55rem !important; border-bottom: 1px solid rgba(10,10,10,.18) !important; min-height: 0 !important; }
+.sc-no { font-size: .66rem !important; letter-spacing: .18em !important; flex: 0 0 auto !important; white-space: nowrap !important; }
+.sc-grade { display: inline-flex !important; align-items: baseline !important; flex: 0 0 auto !important; line-height: 1 !important; height: auto !important; }
+.sc-grade-letter { font-size: 1.85rem !important; line-height: 1 !important; font-style: italic !important; font-weight: 600 !important; }
+.sc-grade-mark { font-size: 1.05rem !important; line-height: 1 !important; margin-left: .08em !important; }
+.sc-brand { display: block !important; font-size: 1.35rem !important; line-height: 1.1 !important; margin: 0 !important; padding: 0 !important; word-break: break-word !important; }
+.sc-rib { display: inline-flex !important; align-self: flex-start !important; margin-top: .25rem !important; font-size: .58rem !important; padding: .24rem .55rem !important; letter-spacing: .15em !important; }
+.sc-list { list-style: none !important; padding: 0 !important; margin: 0 0 1rem !important; display: flex !important; flex-direction: column !important; gap: .5rem !important; flex: 1 1 auto !important; }
+.sc-list div { display: flex !important; flex-direction: column !important; gap: .15rem !important; padding-bottom: .4rem !important; border-bottom: 1px dashed rgba(10,10,10,.2) !important; }
+.sc-list dt { font-size: .6rem !important; letter-spacing: .14em !important; font-weight: 700 !important; text-transform: uppercase !important; opacity: .65 !important; margin: 0 !important; }
+.sc-list dd { font-size: .88rem !important; margin: 0 !important; font-weight: 500 !important; text-align: left !important; word-break: break-word !important; }
+.sc-scrawl { font-size: .9rem !important; padding-top: .7rem !important; margin: 0 0 .8rem !important; transform: rotate(-.6deg) !important; border-top: 1px solid rgba(10,10,10,.15) !important; }
+.sc-cta { align-self: flex-start !important; padding: .75rem 1.2rem !important; font-size: .68rem !important; letter-spacing: .14em !important; }
+/* Roast notes — confined, never bleed across cards */
+.scorecard-stack .roast-note { top: -28px !important; max-width: 80% !important; font-size: .78rem !important; padding: .45rem .65rem .5rem !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+.scorecard-stack.is-dropped .roast-note { transform: translate(-50%, 0) rotate(var(--roast-rot, -5deg)) !important; }
+
+/* Mobile fallback */
+@media (max-width: 760px) {
+  .scorecard-stack { grid-template-columns: 1fr !important; gap: 2rem !important; max-width: 380px !important; margin: 0 auto !important; }
+  .sc-card { min-height: 0 !important; transform: none !important; }
+  .scorecard-stack.is-dropped .sc-card-fb,
+  .scorecard-stack.is-dropped .sc-card-wix,
+  .scorecard-stack.is-dropped .sc-card-ss { transform: none !important; animation: none !important; }
+}
 
 /* THREE-STAT TRIPLET REPLACEMENT — adds 4th irregular value */
 .cvm-strip { grid-template-columns: repeat(4, 1fr) !important; gap: 0 !important; }
@@ -7879,7 +7903,9 @@ document.querySelectorAll('.rt-range').forEach(el => el.style.cursor = 'ew-resiz
    exit-rescue, scroll-depth pricing prompt
    ════════════════════════════════════════════════════════ */
 
-/* 1 · STICKY BOTTOM CTA — appears after 35% scroll, dismissible per session */
+/* 1 · STICKY BOTTOM CTA — appears after 35% scroll, but HIDES whenever
+   the audit, calculator, comparison, or contact sections are in view so it
+   never covers interactive controls. */
 (function stickyCta(){
   if (sessionStorage.getItem('ss_sticky_dismissed') === '1') return;
   const bar = document.createElement('div');
@@ -7896,13 +7922,24 @@ document.querySelectorAll('.rt-range').forEach(el => el.style.cursor = 'ew-resiz
     sessionStorage.setItem('ss_sticky_dismissed', '1');
     setTimeout(() => bar.remove(), 600);
   };
+  const blockerSelectors = ['#audit', '#loss-calculator', '#compare', '#contact'];
+  function anyBlockerInView() {
+    return blockerSelectors.some(sel => {
+      const el = document.querySelector(sel);
+      if (!el) return false;
+      const r = el.getBoundingClientRect();
+      return r.bottom > 60 && r.top < window.innerHeight - 100;
+    });
+  }
   let shown = false;
   function check(){
     const pct = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight;
-    if (pct > 0.32 && !shown) { shown = true; bar.classList.add('is-shown'); }
-    else if (pct < 0.18 && shown) { shown = false; bar.classList.remove('is-shown'); }
+    const wantsShow = pct > 0.32 && !anyBlockerInView();
+    if (wantsShow && !shown) { shown = true; bar.classList.add('is-shown'); }
+    else if (!wantsShow && shown) { shown = false; bar.classList.remove('is-shown'); }
   }
   window.addEventListener('scroll', check, { passive: true });
+  window.addEventListener('resize', check, { passive: true });
 })();
 
 /* 2 · SOCIAL-PROOF TOASTS — recent activity, fires every ~32s while idle */
@@ -7917,8 +7954,18 @@ document.querySelectorAll('.rt-range').forEach(el => el.style.cursor = 'ew-resiz
   ];
   let idx = Math.floor(Math.random() * proofs.length);
   let active = null;
+  const blockerSelectors = ['#audit', '#loss-calculator', '#compare', '#contact'];
+  function anyBlockerInView() {
+    return blockerSelectors.some(sel => {
+      const el = document.querySelector(sel);
+      if (!el) return false;
+      const r = el.getBoundingClientRect();
+      return r.bottom > 60 && r.top < window.innerHeight - 100;
+    });
+  }
   function show(){
     if (document.hidden) return;
+    if (anyBlockerInView()) return; // never compete with interactive sections
     if (active) { active.remove(); active = null; }
     const p = proofs[idx % proofs.length]; idx++;
     const t = document.createElement('div');
