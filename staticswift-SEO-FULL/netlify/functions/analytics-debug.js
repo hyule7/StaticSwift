@@ -9,18 +9,21 @@
  * Returns a verbose human-readable report so the admin can see what's
  * wrong without trial-and-error.
  */
-const { getStore } = require('@netlify/blobs');
+const { getNamedStore, blobsDiagnosis } = require('./_blobs');
 
 exports.handler = async (event) => {
   const auth = event.headers['x-admin-password'];
   const validPw = process.env.ADMIN_PASSWORD || 'Harry2001!';
   if (auth !== validPw) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
 
+  const diag = blobsDiagnosis();
   const report = {
     timestamp: new Date().toISOString(),
     blobsAvailable: false,
-    siteIDPresent: !!process.env.NETLIFY_SITE_ID,
-    blobsTokenPresent: !!process.env.NETLIFY_BLOBS_TOKEN,
+    blobsContextPresent: diag.blobsContextPresent,
+    siteIDPresent: diag.siteIdPresent,
+    blobsTokenPresent: diag.blobsTokenPresent,
+    credsResolved: diag.credsResolved,
     canWrite: false,
     canRead: false,
     eventCounts: {},
@@ -29,7 +32,8 @@ exports.handler = async (event) => {
   };
 
   try {
-    const store = getStore({ name: 'analytics' });
+    const store = getNamedStore('analytics');
+    if (!store) throw new Error('Netlify Blobs credentials not available — set NETLIFY_SITE_ID and NETLIFY_BLOBS_TOKEN env vars in your Netlify site settings.');
     report.blobsAvailable = true;
 
     // Test write

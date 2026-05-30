@@ -4,7 +4,7 @@
  *
  * Query: ?days=7 (default 30, max 90)
  */
-const { getStore } = require('@netlify/blobs');
+const { getNamedStore } = require('./_blobs');
 
 exports.handler = async (event) => {
   const auth = event.headers['x-admin-password'];
@@ -15,7 +15,10 @@ exports.handler = async (event) => {
 
   try {
     const days = Math.min(Math.max(parseInt(event.queryStringParameters?.days || '30'), 1), 90);
-    const store = getStore({ name: 'analytics' });
+    const store = getNamedStore('analytics');
+    if (!store) {
+      return { statusCode: 200, body: JSON.stringify({ ok: false, error: 'Netlify Blobs not configured. Set NETLIFY_SITE_ID and NETLIFY_BLOBS_TOKEN env vars.', days: [], totals: { events: 0, sessions: 0, visitors: 0 } }) };
+    }
 
     const now = Date.now();
     const today = new Date();

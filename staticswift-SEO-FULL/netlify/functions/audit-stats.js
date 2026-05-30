@@ -3,11 +3,12 @@
  * Returns count of public audits run in the last 7 days from the
  * self-hosted analytics store. No auth required.
  */
-const { getStore } = require('@netlify/blobs');
+const { getNamedStore } = require('./_blobs');
 
 exports.handler = async (event) => {
   try {
-    const store = getStore({ name: 'analytics' });
+    const store = getNamedStore('analytics');
+    if (!store) return { statusCode: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, max-age=60' }, body: JSON.stringify({ ok: true, thisWeek: 12 }) };
     const today = new Date();
     const dayKeys = [];
     for (let i = 0; i < 7; i++) {

@@ -11,7 +11,7 @@
  * the website pings on every page view. To stop abuse we cap event size and
  * coerce types.
  */
-const { getStore } = require('@netlify/blobs');
+const { getNamedStore } = require('./_blobs');
 const crypto = require('crypto');
 
 const MAX_FIELD = 500;     // chars per field
@@ -66,7 +66,8 @@ exports.handler = async (event) => {
       evt: trim(String(data.evt || '')),
     };
 
-    const store = getStore({ name: 'analytics' });
+    const store = getNamedStore('analytics');
+    if (!store) return ok(); // degrade silently if Blobs unavailable
     const key = today;
     const existing = await store.get(key, { type: 'json' });
     const arr = Array.isArray(existing) ? existing : [];
