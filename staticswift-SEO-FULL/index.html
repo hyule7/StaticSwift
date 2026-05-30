@@ -4315,6 +4315,189 @@ body.scrolled-past-hero .hero::after { transform: scaleY(0); transition: transfo
   .nav-logo-by { display: none; }
 }
 
+/* HERO BACKGROUND — solid ink with subtle terracotta grid (no video) */
+.hero { background: #0a0907 !important; }
+.hero-bg-grid {
+  position: absolute; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 20% 30%, rgba(168,108,77,.16), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(168,108,77,.10), transparent 60%),
+    linear-gradient(rgba(217,160,113,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(217,160,113,.04) 1px, transparent 1px),
+    #0e0c0a;
+  background-size: auto, auto, 80px 80px, 80px 80px, auto;
+}
+
+/* ════════════════════════════════════════════════════
+   HERO TERMINAL — Harry types real code, site builds itself
+   ════════════════════════════════════════════════════ */
+.hero-terminal {
+  position: fixed; inset: 0; z-index: 90;
+  background: rgba(10,9,7,.97);
+  backdrop-filter: blur(20px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 8vh 4vw 4vh;
+  opacity: 1; transition: opacity .65s cubic-bezier(.65,.05,.35,1), backdrop-filter .65s, transform .65s;
+  transform: scale(1);
+  pointer-events: auto;
+}
+.hero-terminal.is-fading { opacity: 0; pointer-events: none; backdrop-filter: blur(0); transform: scale(1.05); }
+.hero-terminal.is-done { display: none; }
+
+.ht-frame {
+  width: min(1180px, 94vw); height: min(640px, 78vh);
+  background: #14110d;
+  border-radius: 10px;
+  box-shadow:
+    0 60px 140px rgba(0,0,0,.7),
+    0 0 0 1px rgba(217,160,113,.18),
+    inset 0 1px 0 rgba(255,255,255,.04);
+  display: grid; grid-template-rows: 36px 1fr;
+  overflow: hidden;
+}
+
+/* window chrome */
+.ht-chrome {
+  display: flex; align-items: center; gap: .55rem;
+  padding: 0 1rem;
+  background: linear-gradient(180deg, #1c1812, #14110d);
+  border-bottom: 1px solid rgba(217,160,113,.12);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: .72rem; color: rgba(217,160,113,.65);
+}
+.ht-dot { width: 12px; height: 12px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,.3); }
+.ht-r { background: #ff5f57; }
+.ht-y { background: #febc2e; }
+.ht-g { background: #28c840; }
+.ht-path { margin-left: 1rem; opacity: .8; letter-spacing: .04em; }
+.ht-net { margin-left: auto; display: inline-flex; align-items: center; gap: .35rem;
+  font-size: .68rem; color: #4ea36e; letter-spacing: .15em; text-transform: uppercase; }
+.ht-net-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ea36e;
+  box-shadow: 0 0 0 0 rgba(78,163,110,.55); animation: opens-pulse 1.6s cubic-bezier(.4,0,.6,1) infinite; }
+
+/* Editor + preview split */
+.ht-frame {
+  grid-template-columns: 1.05fr 1fr;
+  grid-template-rows: 36px 1fr;
+}
+.ht-chrome { grid-column: 1 / -1; }
+.ht-editor {
+  position: relative;
+  background: #0e0c0a;
+  border-right: 1px solid rgba(217,160,113,.1);
+  padding: 1.4rem 1.2rem;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: clamp(.72rem, .98vw, .92rem);
+  line-height: 1.6;
+  color: #d9a071;
+  overflow: hidden;
+  white-space: pre-wrap;
+}
+.ht-code { margin: 0; padding: 0; color: inherit; }
+.ht-code .kw { color: #d9a071; }                  /* keywords */
+.ht-code .tag { color: #f4a93c; }                 /* HTML tags */
+.ht-code .attr { color: #fce5b6; }                /* attributes */
+.ht-code .str { color: #b6e3a8; }                 /* strings */
+.ht-code .com { color: #6b6155; font-style: italic; } /* comments */
+.ht-code .pun { color: rgba(217,160,113,.55); }   /* punctuation */
+.ht-code .ok  { color: #4ea36e; }                 /* success */
+.ht-code .prompt { color: #f4a93c; }              /* $ prompt */
+.ht-caret {
+  display: inline-block; background: transparent;
+  color: #d9a071; font-family: inherit;
+  animation: ht-blink 1s steps(2) infinite;
+}
+@keyframes ht-blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+
+/* Live preview panel */
+.ht-preview {
+  background: #fdfbf5;
+  display: grid; grid-template-rows: 28px 1fr;
+  overflow: hidden;
+}
+.ht-preview-chrome {
+  display: flex; align-items: center; gap: .35rem;
+  padding: 0 .8rem;
+  background: #f1ebdd; border-bottom: 1px solid rgba(10,10,10,.08);
+  font-family: 'JetBrains Mono', monospace; font-size: .62rem;
+  color: rgba(10,10,10,.5);
+}
+.ht-pdot { width: 7px; height: 7px; border-radius: 50%; background: rgba(10,10,10,.18); }
+.ht-purl { margin-left: .8rem; letter-spacing: .04em; }
+.ht-preview-body {
+  padding: 1.2rem 1.1rem;
+  font-family: 'Switzer', sans-serif;
+  color: #0e0c0a; overflow: auto;
+}
+.ht-preview-body .pv-nav {
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid rgba(10,10,10,.08); padding-bottom: .6rem; margin-bottom: 1rem;
+}
+.ht-preview-body .pv-brand { font-family: 'Boska', serif; font-style: italic; font-weight: 500; font-size: .9rem; }
+.ht-preview-body .pv-cta { font-size: .62rem; background: #0e0c0a; color: #faf7f1; padding: .25rem .55rem; border-radius: 999px; font-family: 'JetBrains Mono', monospace; letter-spacing: .1em; text-transform: uppercase; }
+.ht-preview-body .pv-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: .55rem; letter-spacing: .14em; text-transform: uppercase; color: #7e4f37; margin-bottom: .35rem; }
+.ht-preview-body .pv-h1 {
+  font-family: 'Boska', serif; font-weight: 400;
+  font-size: 1.6rem; line-height: 1.05; letter-spacing: -.025em;
+  margin: 0 0 .9rem; color: #0e0c0a;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.ht-preview-body .pv-h1.in { opacity: 1; transform: none; }
+.ht-preview-body .pv-h1 em { font-style: italic; color: #7e4f37; }
+.ht-preview-body .pv-h1-cta {
+  display: inline-block; padding: .5rem .9rem;
+  background: #7e4f37; color: #faf7f1;
+  font-family: 'JetBrains Mono', monospace; font-size: .6rem;
+  letter-spacing: .15em; text-transform: uppercase; font-weight: 700;
+  border-radius: 2px 4px 2px 4px;
+  opacity: 0; transform: translateY(6px);
+  transition: opacity .5s ease .2s, transform .5s ease .2s;
+}
+.ht-preview-body .pv-h1-cta.in { opacity: 1; transform: none; }
+.ht-preview-body .pv-strip {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(10,10,10,.08);
+  opacity: 0; transform: translateY(8px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.ht-preview-body .pv-strip.in { opacity: 1; transform: none; }
+.ht-preview-body .pv-strip div { text-align: center; }
+.ht-preview-body .pv-strip b { font-family: 'Boska', serif; font-style: italic; display: block; font-size: .85rem; }
+.ht-preview-body .pv-strip span { font-family: 'JetBrains Mono', monospace; font-size: .52rem; letter-spacing: .1em; text-transform: uppercase; color: rgba(0,0,0,.55); }
+
+.ht-status {
+  position: absolute; bottom: 2vh; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: .8rem;
+  font-family: 'JetBrains Mono', monospace; font-size: .72rem;
+  letter-spacing: .18em; text-transform: uppercase;
+  color: rgba(217,160,113,.7);
+}
+.ht-status-line { width: 30px; height: 1px; background: rgba(217,160,113,.4); }
+
+/* Skip button — small, in corner */
+.ht-skip {
+  position: absolute; top: 2vh; right: 2vw;
+  background: transparent; border: 1px solid rgba(217,160,113,.3);
+  color: rgba(217,160,113,.7);
+  padding: .45rem .8rem; border-radius: 2px;
+  font-family: 'JetBrains Mono', monospace; font-size: .68rem;
+  letter-spacing: .15em; text-transform: uppercase; cursor: pointer;
+  transition: background .25s, border-color .25s;
+}
+.ht-skip:hover { background: rgba(217,160,113,.12); border-color: rgba(217,160,113,.55); }
+
+/* Mobile — stack editor and preview */
+@media (max-width: 760px) {
+  .hero-terminal { padding: 7vh 1rem 4vh; }
+  .ht-frame { grid-template-columns: 1fr; height: min(580px, 80vh); }
+  .ht-editor { border-right: 0; border-bottom: 1px solid rgba(217,160,113,.1); font-size: .7rem; padding: 1rem .9rem; max-height: 50%; }
+  .ht-preview-body { padding: .9rem; font-size: .82rem; }
+  .ht-preview-body .pv-h1 { font-size: 1.3rem; }
+  .ht-chrome .ht-path { display: none; }
+  .ht-status { font-size: .62rem; bottom: 1vh; }
+}
+
 /* VIDEO BACKGROUND — full-bleed cinematic loop */
 .hero .hero-bg-video video {
   position: absolute; inset: 0;
@@ -5841,16 +6024,47 @@ p, li, dd, .lh-fine, .receipt-lede, .sm-deck, .letterhead-sub, .scorecard-footno
 
 <!-- ══ 01 · HERO — CINEMATIC ══ -->
 <section class="hero" aria-label="Hero" id="hero">
-  <!-- CINEMATIC VIDEO BACKGROUND — coding being typed, multiple sources for reliability -->
+  <!-- HERO BACKGROUND — cinematic gradient + grid (no video dependency) -->
   <div class="hero-bg-video" aria-hidden="true">
-    <video autoplay muted loop playsinline preload="auto" id="heroVideo"
-           poster="https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=1600">
-      <source src="https://videos.pexels.com/video-files/855564/855564-hd_1920_1080_25fps.mp4" type="video/mp4">
-      <source src="https://videos.pexels.com/video-files/3209663/3209663-hd_1920_1080_25fps.mp4" type="video/mp4">
-      <source src="https://videos.pexels.com/video-files/4974013/4974013-hd_1920_1080_25fps.mp4" type="video/mp4">
-    </video>
-    <!-- Fallback image — code on screen aesthetic -->
-    <img src="https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="" width="1600" height="1067" fetchpriority="high" class="hero-bg-fallback">
+    <div class="hero-bg-grid"></div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       TERMINAL OPENING — Harry types real code that builds
+       the site in front of you. Plays once on page load.
+       ════════════════════════════════════════════════════ -->
+  <div class="hero-terminal" id="heroTerminal" aria-hidden="true">
+    <div class="ht-frame">
+      <!-- macOS-style window chrome -->
+      <div class="ht-chrome">
+        <span class="ht-dot ht-r"></span>
+        <span class="ht-dot ht-y"></span>
+        <span class="ht-dot ht-g"></span>
+        <span class="ht-path">~/harry/staticswift &mdash; building&hellip;</span>
+        <span class="ht-net"><span class="ht-net-dot"></span>live</span>
+      </div>
+
+      <!-- The editor body where Harry types -->
+      <div class="ht-editor" id="ht-editor">
+        <pre class="ht-code" id="ht-code"></pre>
+        <span class="ht-caret" id="ht-caret">&#9608;</span>
+      </div>
+
+      <!-- A live preview panel that builds as the code is typed -->
+      <div class="ht-preview" id="ht-preview">
+        <div class="ht-preview-chrome">
+          <span class="ht-pdot"></span><span class="ht-pdot"></span><span class="ht-pdot"></span>
+          <span class="ht-purl">fadeandblade.co.uk</span>
+        </div>
+        <div class="ht-preview-body" id="ht-preview-body">
+          <!-- Filled in as code is typed -->
+        </div>
+      </div>
+    </div>
+    <div class="ht-status">
+      <span class="ht-status-line"></span>
+      <span class="ht-status-text" id="ht-status-text">Harry is typing&hellip;</span>
+    </div>
   </div>
 
   <!-- AUTONOMOUS PHONE — a real built site scrolling itself in the corner -->
@@ -10028,6 +10242,146 @@ if (/\/(thanks|sent|confirmed)/i.test(location.pathname)) {
     });
     headline.dataset.wordwrapped = '1';
   }
+})();
+
+/* HERO TERMINAL OPENING — Harry types code, the site builds itself,
+   then the terminal fades to reveal the real hero behind it. */
+(function heroTerminal(){
+  const term = document.getElementById('heroTerminal');
+  const codeEl = document.getElementById('ht-code');
+  const previewBody = document.getElementById('ht-preview-body');
+  const statusText = document.getElementById('ht-status-text');
+  if (!term || !codeEl || !previewBody) return;
+
+  // Add skip button
+  const skip = document.createElement('button');
+  skip.className = 'ht-skip';
+  skip.textContent = 'Skip intro &rarr;'.replace('&rarr;', '→');
+  skip.onclick = () => finish(true);
+  term.appendChild(skip);
+
+  // The script — Harry types fast. Whole sequence under 4 seconds.
+  const lines = [
+    { t: '<span class="prompt">$</span> harry --new\n', delay: 0, speed: 8 },
+    { t: '<span class="com">// fadeandblade.co.uk · Manchester</span>\n', delay: 60, speed: 5 },
+    { t: '<span class="tag">&lt;h1&gt;</span>Old&#8209;school cuts.<span class="tag">&lt;/h1&gt;</span>\n', delay: 80, speed: 6, preview: 'h1' },
+    { t: '<span class="tag">&lt;a</span> <span class="attr">class</span>=<span class="str">"cta"</span><span class="tag">&gt;</span>Book online<span class="tag">&lt;/a&gt;</span>\n', delay: 50, speed: 5, preview: 'cta' },
+    { t: '<span class="kw">stats</span> <span class="pun">[</span><span class="str">"12y"</span><span class="pun">,</span> <span class="str">"2.4k"</span><span class="pun">,</span> <span class="str">"4.9★"</span><span class="pun">]</span>\n', delay: 60, speed: 5, preview: 'strip' },
+    { t: '<span class="ok">✓ live in 0.4s</span>\n', delay: 80, speed: 5 },
+    { t: '<span class="ok">✓ indexed by google</span>\n', delay: 50, speed: 5 },
+    { t: '<span class="ok">✓ shipped to client</span>\n', delay: 50, speed: 5 },
+    { t: '<span class="prompt">$</span> <span class="kw">next</span> &rarr;', delay: 80, speed: 8 },
+  ];
+
+  // Preview-fill helper
+  function fillPreview(stage) {
+    if (stage === 'h1') {
+      previewBody.innerHTML = `
+        <div class="pv-nav"><span class="pv-brand">FADE &amp; BLADE</span><span class="pv-cta">Book</span></div>
+        <div class="pv-eyebrow">Northern Quarter · Manchester</div>
+        <h2 class="pv-h1">Old&#8209;school cuts.<br><em>New&#8209;school</em> standards.</h2>`;
+      setTimeout(() => previewBody.querySelector('.pv-h1')?.classList.add('in'), 30);
+    } else if (stage === 'cta') {
+      const h1 = previewBody.querySelector('.pv-h1');
+      if (h1 && !previewBody.querySelector('.pv-h1-cta')) {
+        const btn = document.createElement('div');
+        btn.className = 'pv-h1-cta';
+        btn.textContent = 'Book online →';
+        h1.parentElement.appendChild(btn);
+        setTimeout(() => btn.classList.add('in'), 30);
+      }
+    } else if (stage === 'strip') {
+      if (!previewBody.querySelector('.pv-strip')) {
+        const strip = document.createElement('div');
+        strip.className = 'pv-strip';
+        strip.innerHTML = `
+          <div><b>12</b><span>years</span></div>
+          <div><b>2.4k</b><span>cuts/yr</span></div>
+          <div><b>4.9★</b><span>reviews</span></div>`;
+        previewBody.appendChild(strip);
+        setTimeout(() => strip.classList.add('in'), 30);
+      }
+    }
+  }
+
+  // Type a chunk of HTML into the code element character-by-character.
+  // The HTML contains styled <span> tags that we honour as atomic groups.
+  function typeChunk(html, speed, done) {
+    if (speed === 0) { codeEl.insertAdjacentHTML('beforeend', html); done(); return; }
+    // Parse into tokens: text chars OR full <span ...>text</span> blocks
+    const tmp = document.createElement('span');
+    tmp.innerHTML = html;
+    const tokens = [];
+    function walk(node) {
+      node.childNodes.forEach(child => {
+        if (child.nodeType === 3) {
+          // text — split per char
+          [...child.textContent].forEach(ch => tokens.push({ type: 'text', value: ch }));
+        } else if (child.nodeType === 1) {
+          tokens.push({ type: 'tag-open', value: child.cloneNode(false).outerHTML.replace(/<\/[^>]+>$/, '') });
+          walk(child);
+          tokens.push({ type: 'tag-close', value: '</' + child.tagName.toLowerCase() + '>' });
+        }
+      });
+    }
+    walk(tmp);
+
+    let idx = 0;
+    let openTags = [];
+    function step() {
+      if (idx >= tokens.length) { done(); return; }
+      const tk = tokens[idx++];
+      if (tk.type === 'tag-open') {
+        codeEl.insertAdjacentHTML('beforeend', tk.value);
+        openTags.push(tk.value);
+        step();
+      } else if (tk.type === 'tag-close') {
+        codeEl.insertAdjacentHTML('beforeend', tk.value);
+        step();
+      } else {
+        codeEl.insertAdjacentHTML('beforeend', tk.value === ' ' ? ' ' : escapeHtml(tk.value));
+        scrollToBottom();
+        setTimeout(step, speed + Math.random() * 4);
+      }
+    }
+    step();
+  }
+  function escapeHtml(c) {
+    if (c === '<') return '&lt;';
+    if (c === '>') return '&gt;';
+    if (c === '&') return '&amp;';
+    return c;
+  }
+  function scrollToBottom() {
+    const ed = document.getElementById('ht-editor');
+    if (ed) ed.scrollTop = ed.scrollHeight;
+  }
+
+  // Play the script
+  let lineIdx = 0;
+  function playNext() {
+    if (lineIdx >= lines.length) { finishTyping(); return; }
+    const line = lines[lineIdx++];
+    setTimeout(() => {
+      typeChunk(line.t, line.speed, () => {
+        if (line.preview) fillPreview(line.preview);
+        playNext();
+      });
+    }, line.delay);
+  }
+
+  function finishTyping() {
+    if (statusText) statusText.textContent = 'Done.';
+    setTimeout(() => finish(false), 350);
+  }
+  function finish(skipped) {
+    term.classList.add('is-fading');
+    setTimeout(() => term.classList.add('is-done'), 700);
+    document.body.classList.add('terminal-finished');
+  }
+
+  // Start immediately
+  setTimeout(playNext, 200);
 })();
 
 /* HERO v5 — ink particles, cursor parallax, magnetic CTA, no-fade form */
