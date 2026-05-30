@@ -1503,15 +1503,29 @@ nav#nav .nav-cta:hover { background:#000 }
 /* Dim that fades in as phone takes over */
 .cv-dim { position:absolute; inset:0; background:#0a0a0a; opacity:var(--p2); pointer-events:none; z-index:2; }
 /* Editorial copy — fades out during phase 2 */
-.cv-copy { position:absolute; left:0; right:0; top:4vh; text-align:center; z-index:7; color:#fff; opacity:calc(1 - var(--p1) * 2.2); transform:translate3d(0,calc(var(--p1) * -40px),0); padding:0 1.5rem; pointer-events:none; text-shadow: 0 4px 28px rgba(0,0,0,.55), 0 1px 2px rgba(0,0,0,.5); max-width:620px; margin:0 auto; transition: opacity .12s linear; }
-.cv-title { font-size: clamp(1.5rem,3.2vw,2.6rem) !important; }
-.cv-eyebrow { font-size: .7rem !important; }
+.cv-copy {
+  position:absolute; left:0; right:0; top:2.5vh; text-align:center; z-index:9;
+  color:#fff;
+  opacity:calc(1 - var(--p1) * 2.8);
+  transform:translate3d(0,calc(var(--p1) * -50px),0);
+  padding:0 1.5rem; pointer-events:none;
+  text-shadow: 0 4px 28px rgba(0,0,0,.55), 0 1px 2px rgba(0,0,0,.5);
+  max-width:560px; margin:0 auto;
+  transition: opacity .12s linear;
+  max-height: 18vh; overflow: visible;
+}
+.cv-title { font-size: clamp(1.3rem, 2.4vw, 2rem) !important; line-height: 1.15 !important; }
+.cv-title-cue { font-size: .85em !important; }
+.cv-eyebrow { font-size: .68rem !important; margin-bottom: .55rem !important; }
 /* Push the phone DOWN so headline always reads above it */
-.cv-phone-wrap { top: 58% !important; }
+.cv-phone-wrap { top: 62% !important; }
+.cv-phone { width: 280px !important; }
 @media (max-width: 900px) {
-  .cv-copy { top: 3vh; max-width: 90%; }
-  .cv-title { font-size: clamp(1.3rem, 5.5vw, 1.9rem) !important; }
-  .cv-phone-wrap { top: 62% !important; }
+  .cv-copy { top: 2vh !important; max-width: 92%; }
+  .cv-title { font-size: clamp(1.1rem, 4.5vw, 1.5rem) !important; }
+  .cv-eyebrow { font-size: .6rem !important; }
+  .cv-phone-wrap { top: 66% !important; }
+  .cv-phone { width: 240px !important; }
 }
 .cv-eyebrow { font-family:'Switzer','Inter Tight',sans-serif; font-size:.85rem; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:#a86c4d; margin-bottom:1rem; opacity:.9; }
 .cv-title { font-family:'Boska',serif; font-weight:400; font-size:clamp(2.2rem,4vw,3.6rem); line-height:1.1; letter-spacing:-.025em; color:#fff; }
@@ -3705,19 +3719,39 @@ body { font-family: 'Switzer', -apple-system, BlinkMacSystemFont, sans-serif !im
     radial-gradient(ellipse 50% 30% at 10% 0%, rgba(168,108,77,.07), transparent 55%),
     radial-gradient(ellipse 60% 40% at 100% 100%, rgba(168,108,77,.05), transparent 60%);
   color: var(--ink, #0e0c0a);
-  padding: 7.4rem 1.8rem 8.3rem;
+  padding: 6rem 1.8rem 7.4rem;
   position: relative; overflow: hidden;
   border-top: 1px solid rgba(10,10,10,.08);
   border-bottom: 1px solid rgba(10,10,10,.08);
+  isolation: isolate;
 }
-.tc-inner { max-width: 1240px; margin: 0 auto; position: relative; z-index: 1; }
-.tc-head { max-width: 740px; margin: 0 0 4.5rem; text-align: left; padding-left: 0; }
-.tc-eyebrow { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .76rem; letter-spacing: .22em; text-transform: uppercase; color: var(--terr-deep, #7e4f37); font-weight: 700; display: inline-block; margin-bottom: 1.2rem; }
-.tc-h1 { font-family: 'Boska', Georgia, serif; font-weight: 400; font-size: clamp(3rem, 7vw, 5.8rem); line-height: .94; letter-spacing: -.035em; margin: 0 0 1.6rem; color: var(--ink, #0e0c0a); text-wrap: balance; }
+.truecost * { box-sizing: border-box; }
+.tc-inner {
+  max-width: 1240px; margin: 0 auto; position: relative; z-index: 1;
+  display: flex !important; flex-direction: column !important; gap: 3.4rem !important;
+}
+.tc-head {
+  display: block !important; position: relative !important;
+  max-width: 740px; margin: 0; text-align: left; padding: 0;
+  width: 100%;
+}
+.tc-eyebrow { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .76rem; letter-spacing: .22em; text-transform: uppercase; color: var(--terr-deep, #7e4f37); font-weight: 700; display: inline-block; margin-bottom: 1.1rem; }
+.tc-h1 {
+  font-family: 'Boska', Georgia, serif; font-weight: 400;
+  font-size: clamp(2.4rem, 4.6vw, 4rem); /* smaller, controlled */
+  line-height: 1.02; letter-spacing: -.03em;
+  margin: 0 0 1.3rem; color: var(--ink, #0e0c0a);
+  text-wrap: balance;
+}
 .tc-h1 em { font-style: italic; color: var(--terr-deep, #7e4f37); }
-.tc-lede { font-family: 'Switzer', sans-serif; font-size: 1.06rem; line-height: 1.62; max-width: 56ch; margin: 0; opacity: .85; color: var(--ink, #0e0c0a); }
+.tc-lede { font-family: 'Switzer', sans-serif; font-size: 1.02rem; line-height: 1.6; max-width: 56ch; margin: 0; opacity: .85; color: var(--ink, #0e0c0a); }
 
-.tc-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 3.4rem; align-items: start; }
+.tc-grid {
+  display: grid !important; position: relative !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 3rem !important; align-items: start !important;
+  width: 100%; clear: both; margin: 0 !important;
+}
 
 /* LEFT — worksheet form, numbered like editorial */
 .tc-form { display: flex; flex-direction: column; gap: 2.3rem; }
@@ -3893,15 +3927,17 @@ body { font-family: 'Switzer', -apple-system, BlinkMacSystemFont, sans-serif !im
 
 /* Mobile */
 @media (max-width: 900px) {
-  .truecost { padding: 4.6rem 1.1rem 5.2rem; }
-  .tc-head { margin-bottom: 3rem; }
-  .tc-grid { grid-template-columns: 1fr; gap: 2.6rem; }
+  .truecost { padding: 4.2rem 1rem 5rem; }
+  .tc-inner { gap: 2.4rem !important; }
+  .tc-grid { grid-template-columns: 1fr !important; gap: 2.4rem !important; }
   .tc-screen { position: static; }
-  .tc-chips span { font-size: .76rem; padding: .5rem .8rem; }
-  .tc-q { padding-left: 1.4rem; }
-  .tc-q legend { font-size: 1rem; line-height: 1.4; }
-  .tc-readout-big { font-size: 3rem; }
-  .tc-screen-inner { padding: 1.5rem 1.6rem 1.8rem; }
+  .tc-h1 { font-size: clamp(2rem, 8vw, 2.8rem) !important; }
+  .tc-lede { font-size: .96rem; }
+  .tc-chips span { font-size: .74rem; padding: .48rem .75rem; }
+  .tc-q { padding-left: 1.2rem; }
+  .tc-q legend { font-size: .98rem; line-height: 1.4; }
+  .tc-readout-big { font-size: 2.6rem !important; }
+  .tc-screen-inner { padding: 1.4rem 1.5rem 1.7rem; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -8343,6 +8379,9 @@ document.querySelectorAll('.rt-range').forEach(el => el.style.cursor = 'ew-resiz
   }
   window.addEventListener('scroll', check, { passive: true });
   window.addEventListener('resize', check, { passive: true });
+  // Initial check + repeat on first frame to catch direct anchor entries
+  setTimeout(check, 200);
+  setTimeout(check, 1200);
 })();
 
 /* 2 · SOCIAL-PROOF TOASTS — recent activity, fires every ~32s while idle */
