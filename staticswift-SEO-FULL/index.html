@@ -4274,6 +4274,83 @@ body.scrolled-past-hero .hero::after { transform: scaleY(0); transition: transfo
 .hero #hf-biz, .hero #hf-site, .hero #hf-wa { display: none !important; }
 .hero #hf-email { font-size: 1.05rem !important; padding: 1.1rem 1.2rem !important; }
 
+/* ════════════════════════════════════════════════════
+   COMPACT HERO · post-terminal · "what I do · who for · form"
+   The terminal already did the wow. Hero is now a clean
+   editorial slice so visitors get to the meat fast.
+   ════════════════════════════════════════════════════ */
+.hero {
+  min-height: 78vh !important;
+  height: auto !important;
+  padding-top: 11vh !important;
+  padding-bottom: 4vh !important;
+}
+.hero .hero-headline {
+  font-size: clamp(2.2rem, 5.4vw, 4.4rem) !important;
+  line-height: 1.02 !important;
+  margin-bottom: 1.2rem !important;
+  max-width: 720px !important;
+}
+.hero .hero-sub { font-size: .98rem !important; line-height: 1.55 !important; margin-bottom: 1.3rem !important; max-width: 540px !important; }
+.hero .hero-lead { margin-top: .8rem !important; max-width: 520px !important; }
+.hero .hero-lead-label { font-size: .72rem !important; margin-bottom: .65rem !important; }
+
+/* Form goes inline — email + button side by side on desktop */
+.hero .hero-lead-form {
+  flex-direction: row !important;
+  gap: .5rem !important;
+  align-items: stretch !important;
+  max-width: 520px !important;
+}
+.hero #hf-email {
+  flex: 1 1 auto !important;
+  font-size: 1rem !important;
+  padding: .95rem 1.1rem !important;
+}
+.hero .hl-submit {
+  flex: 0 0 auto !important;
+  padding: 0 1.3rem !important;
+  font-size: .72rem !important;
+  min-height: 52px;
+  margin-top: 0 !important;
+  white-space: nowrap;
+}
+
+/* Kill the giant background marquee — too loud now */
+.hero-marquee { display: none !important; }
+
+/* Phone shrinks + tucks tighter in corner */
+.hero-phone-float {
+  right: 3% !important;
+  bottom: 6vh !important;
+}
+.hpf-frame { width: 180px !important; height: 380px !important; border-radius: 28px !important; padding: 8px !important; }
+.hpf-notch { width: 60px !important; height: 18px !important; top: 8px !important; }
+
+/* Slate + timestamp shrink */
+.hero-slate { top: 13vh !important; font-size: .62rem !important; letter-spacing: .18em !important; }
+.hero-timestamp { top: 13vh !important; font-size: .62rem !important; }
+.hero-timestamp-big { font-size: 1rem !important; }
+
+/* Scroll lure repositioned to sit nicely below content */
+.hero-scroll-lure { bottom: 3vh !important; }
+
+/* Light leaks more subtle */
+.hero-leak-1, .hero-leak-2 { opacity: .55 !important; }
+
+/* Cinema bars shrink so they don't dominate the smaller hero */
+.hero::before, .hero::after { height: 3.5vh !important; }
+.hero::before { top: 56px !important; }
+
+@media (max-width: 760px) {
+  .hero { min-height: auto !important; padding-top: 9vh !important; padding-bottom: 3vh !important; }
+  .hero .hero-headline { font-size: clamp(1.8rem, 7.5vw, 2.6rem) !important; }
+  .hero .hero-lead-form { flex-direction: column !important; }
+  .hero .hl-submit { width: 100% !important; padding: 1rem !important; }
+  .hero-slate, .hero-timestamp { top: 9vh !important; }
+  .hero::before { top: 48px !important; }
+}
+
 /* The ONE button — terracotta stamped CTA */
 .hero .hl-submit {
   background: linear-gradient(180deg, #d9a071, #a86c4d) !important;
