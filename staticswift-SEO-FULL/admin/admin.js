@@ -4921,3 +4921,601 @@ async function checkDeliverability() {
 
 ['lookupCompaniesHouse','lookupDomainAge','checkDeliverability']
   .forEach(fn => { try { if (typeof eval(fn) === 'function') window[fn] = eval(fn); } catch(e){} });
+
+/* ═══════════════════════════════════════════════════════════════
+   EMAIL DRAFTS EDITOR · view + edit + save outreach templates
+   localStorage overrides → TEMPLATES on load so edits persist
+   ═══════════════════════════════════════════════════════════════ */
+const TEMPLATE_OVERRIDES_KEY = 'ss_template_overrides_v1';
+
+function loadTemplateOverrides() {
+  try {
+    const raw = localStorage.getItem(TEMPLATE_OVERRIDES_KEY);
+    if (!raw) return {};
+    return JSON.parse(raw);
+  } catch (e) { return {}; }
+}
+function saveTemplateOverrides(overrides) {
+  try {
+    localStorage.setItem(TEMPLATE_OVERRIDES_KEY, JSON.stringify(overrides));
+    return true;
+  } catch (e) { console.error('save fail', e); return false; }
+}
+/* Apply any saved overrides to in-memory TEMPLATES on load */
+(function applyTemplateOverridesOnLoad(){
+  const overs = loadTemplateOverrides();
+  Object.keys(overs).forEach(key => {
+    if (typeof TEMPLATES !== 'undefined' && TEMPLATES[key]) {
+      Object.assign(TEMPLATES[key], overs[key]);
+    }
+  });
+})();
+
+function renderEmailDraftsEditor() {
+  if (typeof TEMPLATES === 'undefined') {
+    return '<div style="padding:2rem;color:#888">TEMPLATES not loaded.</div>';
+  }
+  const overs = loadTemplateOverrides();
+  const keys = Object.keys(TEMPLATES);
+  let html = `
+    <div class="drafts-editor" style="max-width:900px;margin:0 auto;padding:2rem 1rem">
+      <div style="margin-bottom:1.6rem;padding-bottom:1rem;border-bottom:1px solid var(--border)">
+        <h2 style="font-family:'Boska',Georgia,serif;font-style:italic;font-size:2rem;margin:0 0 .4rem">Email drafts</h2>
+        <p style="color:var(--muted);font-size:.92rem;margin:0">${keys.length} templates &middot; ${Object.keys(overs).length} edited. Edits save to your browser instantly. Use merge fields like <code style="background:rgba(0,0,0,.04);padding:1px 6px;border-radius:3px">{biz}</code>, <code style="background:rgba(0,0,0,.04);padding:1px 6px;border-radius:3px">{nameOrThere}</code>, <code style="background:rgba(0,0,0,.04);padding:1px 6px;border-radius:3px">{observation}</code>, <code style="background:rgba(0,0,0,.04);padding:1px 6px;border-radius:3px">{website}</code>.</p>
+      </div>`;
+  keys.forEach(key => {
+    const t = TEMPLATES[key];
+    const isEdited = !!overs[key];
+    html += `
+      <details class="draft-card" ${isEdited ? 'open' : ''} data-tplkey="${key}" style="margin-bottom:1.2rem;background:var(--card);border:1px solid var(--border);border-radius:6px;overflow:hidden">
+        <summary style="cursor:pointer;padding:1rem 1.2rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;list-style:none">
+          <div style="display:flex;align-items:center;gap:.6rem">
+            <strong style="font-family:'JetBrains Mono',monospace;font-size:.78rem;letter-spacing:.1em;color:var(--terr-deep,#7e4f37)">${escapeHTML(key)}</strong>
+            <span style="color:var(--muted);font-size:.86rem">${escapeHTML(t.label || '')}</span>
+          </div>
+          <div style="display:flex;gap:.4rem;align-items:center">
+            ${isEdited ? '<span style="background:#7e4f37;color:white;font-size:.66rem;letter-spacing:.1em;padding:.2rem .5rem;border-radius:2px;text-transform:uppercase">edited</span>' : ''}
+            <span style="color:var(--muted);font-size:.8rem">▾</span>
+          </div>
+        </summary>
+        <div style="padding:1.1rem 1.2rem 1.4rem;border-top:1px solid var(--border)">
+          <label style="display:block;margin-bottom:.9rem">
+            <span style="display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem;font-weight:600">Subject line</span>
+            <input type="text" class="draft-subject" value="${escapeHTML(t.subject || '')}" style="width:100%;padding:.6rem .75rem;border:1px solid var(--border);border-radius:4px;background:white;font-family:inherit;font-size:.92rem">
+          </label>
+          <label style="display:block;margin-bottom:1rem">
+            <span style="display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:.35rem;font-weight:600">Body</span>
+            <textarea class="draft-body" rows="12" style="width:100%;padding:.75rem;border:1px solid var(--border);border-radius:4px;background:white;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.82rem;line-height:1.5;resize:vertical">${escapeHTML(t.body || '')}</textarea>
+          </label>
+          <div style="display:flex;gap:.55rem;flex-wrap:wrap">
+            <button type="button" class="ss-btn-primary" onclick="saveDraft('${key}')" style="padding:.55rem 1rem;background:#0e0c0a;color:#faf7f1;border:0;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;font-weight:600">Save edits</button>
+            <button type="button" onclick="previewDraft('${key}')" style="padding:.55rem 1rem;background:transparent;border:1px solid var(--border);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer">Preview merged</button>
+            ${isEdited ? `<button type="button" onclick="revertDraft('${key}')" style="padding:.55rem 1rem;background:transparent;border:1px solid #c44;color:#c44;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;margin-left:auto">Revert to original</button>` : ''}
+          </div>
+          <div class="draft-preview" id="draft-preview-${key}" style="display:none;margin-top:1rem;padding:1rem;background:#faf7f1;border-left:3px solid var(--terr-deep,#7e4f37);font-family:Georgia,serif;font-size:.92rem;white-space:pre-wrap;line-height:1.55"></div>
+        </div>
+      </details>`;
+  });
+  html += `
+      <div style="margin-top:2rem;padding-top:1.2rem;border-top:1px solid var(--border);font-size:.78rem;color:var(--muted)">
+        <strong>Tip:</strong> Edits save to your browser only. To sync to other devices, export the JSON below.
+        <div style="margin-top:.6rem;display:flex;gap:.5rem">
+          <button onclick="exportTemplateEdits()" style="padding:.4rem .8rem;background:transparent;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:.72rem">Export edits (JSON)</button>
+          <button onclick="importTemplateEdits()" style="padding:.4rem .8rem;background:transparent;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:.72rem">Import edits (JSON)</button>
+          <button onclick="clearAllTemplateEdits()" style="padding:.4rem .8rem;background:transparent;border:1px solid #c44;color:#c44;border-radius:4px;cursor:pointer;font-size:.72rem">Clear all edits</button>
+        </div>
+      </div>
+    </div>`;
+  return html;
+}
+
+function saveDraft(key) {
+  const card = document.querySelector('details.draft-card[data-tplkey="' + key + '"]');
+  if (!card) return;
+  const subject = card.querySelector('.draft-subject').value;
+  const body = card.querySelector('.draft-body').value;
+  const overs = loadTemplateOverrides();
+  overs[key] = { subject, body };
+  if (saveTemplateOverrides(overs)) {
+    // apply to live TEMPLATES
+    if (typeof TEMPLATES !== 'undefined' && TEMPLATES[key]) {
+      TEMPLATES[key].subject = subject;
+      TEMPLATES[key].body = body;
+    }
+    const btn = card.querySelector('.ss-btn-primary');
+    if (btn) { const orig = btn.textContent; btn.textContent = '✓ Saved'; setTimeout(() => btn.textContent = orig, 1600); }
+  } else {
+    alert('Could not save. localStorage may be full or disabled.');
+  }
+}
+function previewDraft(key) {
+  const card = document.querySelector('details.draft-card[data-tplkey="' + key + '"]');
+  if (!card) return;
+  const subject = card.querySelector('.draft-subject').value;
+  const body = card.querySelector('.draft-body').value;
+  const merged = (subject + '\n\n' + body)
+    .replace(/\{biz\}/g, 'Manchester Plumbing Co.')
+    .replace(/\{nameOrThere\}/g, 'James')
+    .replace(/\{name\}/g, 'James')
+    .replace(/\{website\}/g, 'manchesterplumbing.co.uk')
+    .replace(/\{observation\}/g, 'your homepage takes 4.2 seconds to load on mobile')
+    .replace(/\{issuesBullets\}/g, '• No mobile menu — the nav is unusable on phones\n• Missing meta description — Google is guessing what your business does')
+    .replace(/\{type\}/g, 'plumbing')
+    .replace(/\{location\}/g, 'Manchester');
+  const pre = card.querySelector('#draft-preview-' + key);
+  if (pre) {
+    pre.textContent = merged + (typeof SENDER_FOOTER !== 'undefined' ? SENDER_FOOTER : '');
+    pre.style.display = 'block';
+  }
+}
+function revertDraft(key) {
+  if (!confirm('Revert "' + key + '" to original copy? Your edits will be lost.')) return;
+  const overs = loadTemplateOverrides();
+  delete overs[key];
+  saveTemplateOverrides(overs);
+  // restore from default — we kept the originals in a side table
+  if (typeof TEMPLATE_DEFAULTS !== 'undefined' && TEMPLATE_DEFAULTS[key]) {
+    TEMPLATES[key].subject = TEMPLATE_DEFAULTS[key].subject;
+    TEMPLATES[key].body = TEMPLATE_DEFAULTS[key].body;
+  }
+  showEmailDrafts(); // re-render
+}
+function exportTemplateEdits() {
+  const overs = loadTemplateOverrides();
+  const blob = new Blob([JSON.stringify(overs, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'staticswift-template-edits-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click(); URL.revokeObjectURL(url);
+}
+function importTemplateEdits() {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = '.json';
+  input.onchange = (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result);
+        if (saveTemplateOverrides(parsed)) {
+          alert('Imported ' + Object.keys(parsed).length + ' edits. Refresh to see them.');
+          location.reload();
+        }
+      } catch (e) { alert('Bad JSON: ' + e.message); }
+    };
+    reader.readAsText(f);
+  };
+  input.click();
+}
+function clearAllTemplateEdits() {
+  if (!confirm('Clear ALL template edits? You will lose every customisation. (You can re-import from a backup.)')) return;
+  localStorage.removeItem(TEMPLATE_OVERRIDES_KEY);
+  location.reload();
+}
+function showEmailDrafts() {
+  const host = document.getElementById('outreach-templates-content') || document.getElementById('outreach-templates') || document.getElementById('outreach-content');
+  if (!host) {
+    const fallback = document.createElement('div');
+    fallback.id = 'drafts-modal';
+    fallback.style.cssText = 'position:fixed;inset:0;background:rgba(250,247,241,.98);z-index:99999;overflow:auto;padding:2rem';
+    fallback.innerHTML = '<div style="max-width:920px;margin:0 auto"><button onclick="document.getElementById(\'drafts-modal\').remove()" style="float:right;padding:.4rem .8rem;border:0;background:#0e0c0a;color:#faf7f1;cursor:pointer;font-family:monospace">CLOSE ✕</button>' + renderEmailDraftsEditor() + '</div>';
+    document.body.appendChild(fallback);
+    return;
+  }
+  host.innerHTML = renderEmailDraftsEditor();
+}
+
+/* Capture original templates so revert works */
+let TEMPLATE_DEFAULTS = {};
+(function captureTemplateDefaults(){
+  if (typeof TEMPLATES === 'undefined') return;
+  Object.keys(TEMPLATES).forEach(k => {
+    const overs = loadTemplateOverrides();
+    if (!overs[k]) {
+      TEMPLATE_DEFAULTS[k] = { subject: TEMPLATES[k].subject, body: TEMPLATES[k].body };
+    }
+  });
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   MY PROSPECTS · table view of everything in the queue
+   ═══════════════════════════════════════════════════════════════ */
+function renderMyProspects() {
+  let prospects = [];
+  try {
+    const raw = localStorage.getItem('ss_clients_v3') || localStorage.getItem('ss_clients') || '[]';
+    prospects = JSON.parse(raw);
+  } catch (e) {}
+  if (!Array.isArray(prospects)) prospects = [];
+
+  const total = prospects.length;
+  const withSite = prospects.filter(p => p.website || p.url).length;
+  const scanned = prospects.filter(p => p.score != null || p.scanScore != null).length;
+  const sent = prospects.filter(p => p.lastSent || p.sentAt || (p.sequence && p.sequence.length)).length;
+  const replied = prospects.filter(p => p.reply || p.replyAt || p.replied).length;
+
+  let html = `
+    <div class="my-prospects-view" style="max-width:1300px;margin:0 auto;padding:1.5rem 1rem">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.4rem;gap:1rem;flex-wrap:wrap">
+        <div>
+          <h2 style="font-family:'Boska',Georgia,serif;font-style:italic;font-size:2rem;margin:0 0 .3rem">My prospects</h2>
+          <p style="color:var(--muted);font-size:.88rem;margin:0">${total} total &middot; ${withSite} with websites &middot; ${scanned} scanned &middot; ${sent} contacted &middot; ${replied} replied</p>
+        </div>
+        <div style="display:flex;gap:.5rem">
+          <input id="prospect-filter" placeholder="Filter by name, town, niche..." oninput="filterMyProspects()" style="padding:.5rem .75rem;border:1px solid var(--border);border-radius:4px;font-size:.88rem;width:220px">
+          <button onclick="exportMyProspects()" style="padding:.5rem .9rem;background:transparent;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-family:monospace;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase">Export CSV</button>
+        </div>
+      </div>`;
+
+  if (total === 0) {
+    html += `<div style="text-align:center;padding:4rem 1rem;border:1.5px dashed var(--border);border-radius:6px;color:var(--muted)">
+      <p style="font-family:'Boska',serif;font-style:italic;font-size:1.4rem;margin:0 0 .5rem;color:#7e4f37">No prospects yet.</p>
+      <p style="font-size:.88rem;margin:0">Use <strong>Discover</strong> or <strong>Autopilot</strong> to add some, then come back here.</p>
+    </div></div>`;
+    return html;
+  }
+
+  html += `
+    <div style="overflow-x:auto;border:1px solid var(--border);border-radius:6px;background:white">
+      <table id="my-prospects-table" style="width:100%;border-collapse:collapse;font-size:.86rem">
+        <thead style="background:#faf7f1;border-bottom:1.5px solid var(--border)">
+          <tr style="text-align:left">
+            <th style="padding:.7rem .8rem;font-family:monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600">Business</th>
+            <th style="padding:.7rem .8rem;font-family:monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600">Town</th>
+            <th style="padding:.7rem .8rem;font-family:monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600">Niche</th>
+            <th style="padding:.7rem .8rem;font-family:monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600">Score</th>
+            <th style="padding:.7rem .8rem;font-family:monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600">Email</th>
+            <th style="padding:.7rem .8rem;font-family:monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600">Status</th>
+            <th style="padding:.7rem .8rem;font-family:monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600">Last touch</th>
+            <th style="padding:.7rem .8rem;font-family:monospace;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;width:80px">Actions</th>
+          </tr>
+        </thead>
+        <tbody>`;
+  prospects.slice(0, 200).forEach((p, i) => {
+    const score = p.score ?? p.scanScore ?? null;
+    const scoreColor = score == null ? '#888' : score < 40 ? '#c44' : score < 70 ? '#a86c4d' : '#4ea36e';
+    const lastTouch = p.lastSent || p.sentAt || p.scannedAt || p.addedAt || '';
+    const status = p.replied ? 'replied' : p.lastSent || p.sentAt ? 'contacted' : score != null ? 'scanned' : 'new';
+    const statusColor = { replied:'#4ea36e', contacted:'#a86c4d', scanned:'#888', new:'#7e4f37' }[status];
+    html += `
+      <tr class="prospect-row" data-search="${escapeHTML((p.bizname||'') + ' ' + (p.location||'') + ' ' + (p.niche||'')).toLowerCase()}" style="border-bottom:1px solid var(--border)">
+        <td style="padding:.65rem .8rem;font-weight:600">${escapeHTML(p.bizname || p.name || '—')}<br><a href="${escapeHTML(p.website || p.url || '#')}" target="_blank" style="font-weight:400;color:var(--muted);font-size:.78rem;text-decoration:none">${escapeHTML((p.website||p.url||'').replace(/^https?:\/\//,'').replace(/\/$/,''))}</a></td>
+        <td style="padding:.65rem .8rem;color:var(--muted)">${escapeHTML(p.location || p.town || '—')}</td>
+        <td style="padding:.65rem .8rem;color:var(--muted)">${escapeHTML(p.niche || p.type || '—')}</td>
+        <td style="padding:.65rem .8rem;color:${scoreColor};font-weight:700;font-family:monospace">${score == null ? '—' : score + '/100'}</td>
+        <td style="padding:.65rem .8rem;font-family:monospace;font-size:.78rem">${escapeHTML(p.email || '—')}</td>
+        <td style="padding:.65rem .8rem"><span style="background:${statusColor}15;color:${statusColor};padding:.2rem .55rem;border-radius:2px;font-family:monospace;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700">${status}</span></td>
+        <td style="padding:.65rem .8rem;color:var(--muted);font-size:.78rem">${lastTouch ? new Date(lastTouch).toLocaleDateString('en-GB') : '—'}</td>
+        <td style="padding:.65rem .8rem">
+          <button onclick="viewProspectDetails(${i})" style="background:transparent;border:1px solid var(--border);border-radius:3px;padding:.25rem .5rem;font-size:.72rem;cursor:pointer;font-family:monospace">VIEW</button>
+        </td>
+      </tr>`;
+  });
+  html += '</tbody></table></div>';
+  if (prospects.length > 200) html += `<p style="color:var(--muted);font-size:.78rem;margin-top:.8rem">Showing 200 of ${prospects.length}. Use filter to narrow.</p>`;
+  html += '</div>';
+  return html;
+}
+function showMyProspects() {
+  let host = document.getElementById('outreach-prospects-content') || document.getElementById('prospects-panel');
+  if (!host) {
+    const modal = document.createElement('div');
+    modal.id = 'prospects-modal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(250,247,241,.98);z-index:99999;overflow:auto;padding:1.5rem';
+    modal.innerHTML = '<div style="max-width:1300px;margin:0 auto"><button onclick="document.getElementById(\'prospects-modal\').remove()" style="float:right;padding:.4rem .8rem;border:0;background:#0e0c0a;color:#faf7f1;cursor:pointer;font-family:monospace">CLOSE ✕</button>' + renderMyProspects() + '</div>';
+    document.body.appendChild(modal);
+    return;
+  }
+  host.innerHTML = renderMyProspects();
+}
+function filterMyProspects() {
+  const q = (document.getElementById('prospect-filter')?.value || '').toLowerCase();
+  document.querySelectorAll('.prospect-row').forEach(row => {
+    row.style.display = row.dataset.search.includes(q) ? '' : 'none';
+  });
+}
+function exportMyProspects() {
+  let prospects = [];
+  try { prospects = JSON.parse(localStorage.getItem('ss_clients_v3') || '[]'); } catch(e) {}
+  const headers = ['bizname', 'website', 'email', 'location', 'niche', 'score', 'status', 'addedAt', 'lastSent', 'replied'];
+  const rows = prospects.map(p => headers.map(h => {
+    const v = p[h] ?? p[h.toLowerCase()] ?? '';
+    return '"' + String(v).replace(/"/g, '""') + '"';
+  }).join(','));
+  const csv = headers.join(',') + '\n' + rows.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'staticswift-prospects-' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+function viewProspectDetails(idx) {
+  let prospects = [];
+  try { prospects = JSON.parse(localStorage.getItem('ss_clients_v3') || '[]'); } catch(e) {}
+  const p = prospects[idx]; if (!p) return;
+  alert(JSON.stringify(p, null, 2));
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ANALYTICS DIAGNOSE · runs the debug endpoint + shows result
+   ═══════════════════════════════════════════════════════════════ */
+async function diagnoseAnalytics() {
+  const out = document.getElementById('analytics-diagnose-result') || (() => {
+    const d = document.createElement('div');
+    d.id = 'analytics-diagnose-result';
+    d.style.cssText = 'position:fixed;inset:5% 5%;background:white;border:2px solid #0e0c0a;border-radius:6px;padding:1.5rem;overflow:auto;z-index:99999;font-family:monospace;font-size:.82rem;white-space:pre-wrap;line-height:1.55';
+    document.body.appendChild(d);
+    return d;
+  })();
+  out.innerHTML = '<button onclick="document.getElementById(\'analytics-diagnose-result\').remove()" style="float:right;padding:.3rem .7rem;background:#0e0c0a;color:#faf7f1;border:0;cursor:pointer;font-family:monospace">CLOSE ✕</button><h3 style="margin:0 0 1rem;font-family:Boska,serif;font-style:italic">Diagnosing analytics…</h3>';
+  try {
+    const r = await fetch('/.netlify/functions/analytics-debug', {
+      method: 'POST',
+      headers: { 'x-admin-password': ADMIN_PW || sessionStorage.getItem('ss_admin_pw') || '' }
+    });
+    const txt = await r.text();
+    let parsed;
+    try { parsed = JSON.parse(txt); } catch(e) { parsed = { raw: txt }; }
+    let verdict = parsed.verdict || 'No verdict';
+    let detail = '';
+    if (parsed.verdict?.startsWith('✓')) detail = '<p style="color:#4ea36e;font-weight:700">' + verdict + '</p>';
+    else if (parsed.verdict?.startsWith('⚠')) detail = '<p style="color:#c8a64a;font-weight:700">' + verdict + '</p>';
+    else detail = '<p style="color:#c44;font-weight:700">' + verdict + '</p>';
+    if (parsed.totalEventsLast7Days != null) detail += '<p>Events in last 7 days: <strong>' + parsed.totalEventsLast7Days + '</strong></p>';
+    if (parsed.errors?.length) detail += '<p style="color:#c44">Errors:</p><pre>' + JSON.stringify(parsed.errors, null, 2) + '</pre>';
+    out.innerHTML = '<button onclick="document.getElementById(\'analytics-diagnose-result\').remove()" style="float:right;padding:.3rem .7rem;background:#0e0c0a;color:#faf7f1;border:0;cursor:pointer;font-family:monospace">CLOSE ✕</button>' +
+      '<h3 style="margin:0 0 1rem;font-family:Boska,serif;font-style:italic">Analytics diagnosis</h3>' +
+      detail + '<details style="margin-top:1rem"><summary style="cursor:pointer;color:#666">Raw response</summary><pre style="background:#faf7f1;padding:1rem;border-radius:4px;overflow:auto;font-size:.74rem">' + escapeHTML(JSON.stringify(parsed, null, 2)) + '</pre></details>';
+  } catch (err) {
+    out.innerHTML += '<p style="color:#c44">FAILED: ' + err.message + '</p>';
+  }
+}
+
+/* Expose new functions globally so onclicks resolve */
+['renderEmailDraftsEditor','saveDraft','previewDraft','revertDraft','exportTemplateEdits','importTemplateEdits','clearAllTemplateEdits','showEmailDrafts','renderMyProspects','showMyProspects','filterMyProspects','exportMyProspects','viewProspectDetails','diagnoseAnalytics']
+  .forEach(fn => { try { if (typeof eval(fn) === 'function') window[fn] = eval(fn); } catch(e){} });
+
+/* ═══════════════════════════════════════════════════════════════
+   AUTOPILOT v2 · region rotation + exclude rules
+   ═══════════════════════════════════════════════════════════════ */
+const UK_REGIONS = {
+  'north-west':   ['Manchester','Liverpool','Preston','Blackpool','Bolton','Warrington','Stockport','Oldham','Salford','Lancaster','Wigan','Chester'],
+  'north-east':   ['Newcastle','Sunderland','Middlesbrough','Durham','Gateshead','Stockton','Darlington','Hartlepool','South Shields'],
+  'yorkshire':    ['Leeds','Sheffield','Bradford','Hull','York','Doncaster','Rotherham','Huddersfield','Wakefield','Harrogate'],
+  'midlands-w':   ['Birmingham','Wolverhampton','Coventry','Stoke-on-Trent','Walsall','Dudley','Solihull','Telford','Worcester','Hereford'],
+  'midlands-e':   ['Nottingham','Leicester','Derby','Northampton','Lincoln','Peterborough','Mansfield','Loughborough','Chesterfield'],
+  'east-anglia':  ['Norwich','Cambridge','Ipswich','Colchester','Chelmsford','Southend-on-Sea','King\'s Lynn','Bury St Edmunds'],
+  'london':       ['Croydon','Romford','Bromley','Sutton','Ealing','Hackney','Camden','Greenwich','Lewisham','Wandsworth','Barnet','Brent','Newham','Tower Hamlets'],
+  'south-east':   ['Brighton','Reading','Southampton','Portsmouth','Oxford','Milton Keynes','Slough','Guildford','Maidstone','Tunbridge Wells','Canterbury','Eastbourne','Hastings'],
+  'south-west':   ['Bristol','Plymouth','Exeter','Bath','Bournemouth','Poole','Cheltenham','Gloucester','Swindon','Salisbury','Truro','Taunton','Torquay'],
+  'wales':        ['Cardiff','Swansea','Newport','Wrexham','Bangor','Aberystwyth','Carmarthen','Llandudno','Bridgend','Caerphilly'],
+  'scotland':     ['Glasgow','Edinburgh','Aberdeen','Dundee','Inverness','Perth','Stirling','Paisley','Falkirk','Ayr'],
+  'n-ireland':    ['Belfast','Derry','Lisburn','Bangor','Newtownabbey','Craigavon'],
+};
+const HOT_NICHES = [
+  'barber','plumber','electrician','mechanic','dog-groomer','beauty-salon','florist','locksmith','gardener','cleaner','tiler','painter-decorator','window-cleaner','pet-groomer','tattoo-studio','nail-salon','massage-therapist','personal-trainer','dance-school','driving-instructor','photographer-wedding','photographer-newborn','solicitor-family','solicitor-conveyancing','accountant-small-business','bookkeeper','wedding-planner','removal-company','handyman','tree-surgeon','roofer','carpenter','butcher','baker','farm-shop','independent-cafe','independent-restaurant','chiropractor','osteopath','podiatrist','dentist-private','optician-independent','vet-small','kids-party-entertainer','tutor','music-teacher'
+];
+const COLD_NICHES_BAN = [
+  // Other web-people we never pitch to
+  'web-design','web-designer','web-development','digital-agency','marketing-agency','seo-agency','branding-agency',
+  // Mega/franchise that won't reply
+  'tesco','asda','sainsburys','mcdonalds','starbucks','costa','nandos','greggs','boots','wh-smith','poundland','wilko','primark','iceland-store',
+  // Outsized businesses with in-house teams
+  'plc','holdings','group-ltd','international','enterprise-uk',
+];
+/* Excludes — applied post-discovery to drop "wrong-fit" prospects.
+   Stored under ss_ap_excludes so user edits persist. */
+const DEFAULT_EXCLUDES = {
+  bizNameContains: ['ltd group','plc','holdings','franchise','international','llc inc','enterprise'],
+  webDesignerKeywords: ['web design','web designer','digital agency','web studio','seo agency','marketing agency','branding studio','growth agency','wordpress agency'],
+  bigBusinessSignals: ['national','nationwide','est. 19','>50 locations','headquartered','subsidiary of','part of the','group of companies'],
+  excludeIfStaffOver: 25,
+  excludeIfRevenueOver: 2000000,
+  excludeIfFoundedBefore: 1960,
+  excludeIfHasAppStoreLink: true,
+};
+
+function loadAutopilotConfig() {
+  try {
+    const raw = localStorage.getItem('ss_ap_config_v2');
+    if (raw) return Object.assign({}, defaultConfig(), JSON.parse(raw));
+  } catch (e) {}
+  return defaultConfig();
+}
+function defaultConfig() {
+  return {
+    activeRegions: ['north-west', 'yorkshire', 'midlands-w'],
+    activeNiches: HOT_NICHES.slice(0, 12),
+    excludes: { ...DEFAULT_EXCLUDES },
+    minDomainAgeYears: 2,
+    maxDomainAgeYears: 40,
+    onlyLtdCompanies: true,
+    minScoreToContact: 0,
+    maxScoreToContact: 65,
+    skipIfHasNoMobile: false,
+    rotateRegionsRandom: true,
+  };
+}
+function saveAutopilotConfig(cfg) {
+  localStorage.setItem('ss_ap_config_v2', JSON.stringify(cfg));
+}
+
+function renderAutopilotConfigPanel() {
+  const cfg = loadAutopilotConfig();
+  const regionKeys = Object.keys(UK_REGIONS);
+  let html = `
+    <div class="ap-cfg" style="max-width:1100px;margin:0 auto;padding:1.5rem 1rem">
+      <div style="margin-bottom:1.6rem;padding-bottom:1rem;border-bottom:1px solid var(--border)">
+        <h2 style="font-family:'Boska',Georgia,serif;font-style:italic;font-size:2rem;margin:0 0 .4rem">Autopilot targeting</h2>
+        <p style="color:var(--muted);font-size:.92rem;margin:0">Pick UK regions, niches to chase, and what to exclude. Saves to your browser. Active config gets used every cron tick.</p>
+      </div>
+
+      <section style="margin-bottom:2rem">
+        <h3 style="font-family:monospace;font-size:.76rem;letter-spacing:.18em;text-transform:uppercase;color:var(--terr-deep,#7e4f37);margin:0 0 .8rem">UK regions to target</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:.4rem">
+          ${regionKeys.map(r => {
+            const active = cfg.activeRegions.includes(r);
+            const cities = UK_REGIONS[r].slice(0,3).join(', ');
+            return `<button onclick="toggleApRegion('${r}')" style="padding:.5rem .85rem;border-radius:3px;border:1.5px solid ${active?'#0e0c0a':'var(--border)'};background:${active?'#0e0c0a':'transparent'};color:${active?'#faf7f1':'#0e0c0a'};cursor:pointer;font-family:monospace;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600" title="${cities}…">${r}</button>`;
+          }).join('')}
+        </div>
+        <p style="margin:.6rem 0 0;color:var(--muted);font-size:.78rem">Pick at least 1. Each tick rotates through one region/niche pair. Currently rotating ${cfg.activeRegions.length} regions × ${cfg.activeNiches.length} niches = ${cfg.activeRegions.length * cfg.activeNiches.length} target combos.</p>
+      </section>
+
+      <section style="margin-bottom:2rem">
+        <h3 style="font-family:monospace;font-size:.76rem;letter-spacing:.18em;text-transform:uppercase;color:var(--terr-deep,#7e4f37);margin:0 0 .8rem">Niches to chase</h3>
+        <div style="display:flex;flex-wrap:wrap;gap:.35rem;max-height:170px;overflow-y:auto;padding:.6rem;border:1px solid var(--border);border-radius:4px">
+          ${HOT_NICHES.map(n => {
+            const active = cfg.activeNiches.includes(n);
+            return `<button onclick="toggleApNiche('${n}')" style="padding:.35rem .7rem;border-radius:3px;border:1px solid ${active?'#7e4f37':'var(--border)'};background:${active?'rgba(126,79,55,.12)':'white'};color:#0e0c0a;cursor:pointer;font-family:inherit;font-size:.78rem">${n.replace(/-/g,' ')}</button>`;
+          }).join('')}
+        </div>
+      </section>
+
+      <section style="margin-bottom:2rem">
+        <h3 style="font-family:monospace;font-size:.76rem;letter-spacing:.18em;text-transform:uppercase;color:#c44;margin:0 0 .8rem">Excludes &mdash; never pitch these</h3>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem">
+          <label style="display:block">
+            <span style="font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Biz name contains (one per line)</span>
+            <textarea id="ap-exc-biz" rows="4" style="width:100%;margin-top:.3rem;padding:.5rem;border:1px solid var(--border);border-radius:3px;font-family:monospace;font-size:.78rem">${cfg.excludes.bizNameContains.join('\n')}</textarea>
+          </label>
+          <label style="display:block">
+            <span style="font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Web-designer signal words</span>
+            <textarea id="ap-exc-webd" rows="4" style="width:100%;margin-top:.3rem;padding:.5rem;border:1px solid var(--border);border-radius:3px;font-family:monospace;font-size:.78rem">${cfg.excludes.webDesignerKeywords.join('\n')}</textarea>
+          </label>
+          <label style="display:block">
+            <span style="font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Big-business signal phrases</span>
+            <textarea id="ap-exc-big" rows="4" style="width:100%;margin-top:.3rem;padding:.5rem;border:1px solid var(--border);border-radius:3px;font-family:monospace;font-size:.78rem">${cfg.excludes.bigBusinessSignals.join('\n')}</textarea>
+          </label>
+        </div>
+      </section>
+
+      <section style="margin-bottom:2rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem">
+        <label style="display:flex;flex-direction:column;gap:.3rem">
+          <span style="font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Min domain age (years)</span>
+          <input type="number" id="ap-min-age" value="${cfg.minDomainAgeYears}" min="0" max="40" style="padding:.5rem;border:1px solid var(--border);border-radius:3px">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:.3rem">
+          <span style="font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Max domain age (years)</span>
+          <input type="number" id="ap-max-age" value="${cfg.maxDomainAgeYears}" min="0" max="60" style="padding:.5rem;border:1px solid var(--border);border-radius:3px">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:.3rem">
+          <span style="font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Audit score min</span>
+          <input type="number" id="ap-min-score" value="${cfg.minScoreToContact}" min="0" max="100" style="padding:.5rem;border:1px solid var(--border);border-radius:3px">
+        </label>
+        <label style="display:flex;flex-direction:column;gap:.3rem">
+          <span style="font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)">Audit score max (skip if too good)</span>
+          <input type="number" id="ap-max-score" value="${cfg.maxScoreToContact}" min="0" max="100" style="padding:.5rem;border:1px solid var(--border);border-radius:3px">
+        </label>
+      </section>
+
+      <section style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin-bottom:2rem">
+        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer"><input type="checkbox" id="ap-only-ltd" ${cfg.onlyLtdCompanies?'checked':''}> <span>PECR-safe only (Ltd companies)</span></label>
+        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer"><input type="checkbox" id="ap-rotate" ${cfg.rotateRegionsRandom?'checked':''}> <span>Randomise region order</span></label>
+        <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer"><input type="checkbox" id="ap-skip-nomobile" ${cfg.skipIfHasNoMobile?'checked':''}> <span>Skip if site has no mobile menu</span></label>
+      </section>
+
+      <div style="display:flex;gap:.6rem;flex-wrap:wrap;padding-top:1rem;border-top:1px solid var(--border)">
+        <button onclick="saveAutopilotConfigFromUi()" style="padding:.7rem 1.4rem;background:#0e0c0a;color:#faf7f1;border:0;border-radius:3px;cursor:pointer;font-family:monospace;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700">Save targeting</button>
+        <button onclick="rebuildApTargetsFromConfig()" style="padding:.7rem 1.4rem;background:#7e4f37;color:#faf7f1;border:0;border-radius:3px;cursor:pointer;font-family:monospace;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700">Rebuild target rotation</button>
+        <button onclick="resetAutopilotConfig()" style="padding:.7rem 1.4rem;background:transparent;border:1px solid #c44;color:#c44;border-radius:3px;cursor:pointer;font-family:monospace;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700">Reset to defaults</button>
+      </div>
+    </div>`;
+  return html;
+}
+function toggleApRegion(r) {
+  const cfg = loadAutopilotConfig();
+  const i = cfg.activeRegions.indexOf(r);
+  if (i >= 0) cfg.activeRegions.splice(i, 1); else cfg.activeRegions.push(r);
+  saveAutopilotConfig(cfg);
+  showAutopilotConfig();
+}
+function toggleApNiche(n) {
+  const cfg = loadAutopilotConfig();
+  const i = cfg.activeNiches.indexOf(n);
+  if (i >= 0) cfg.activeNiches.splice(i, 1); else cfg.activeNiches.push(n);
+  saveAutopilotConfig(cfg);
+  showAutopilotConfig();
+}
+function saveAutopilotConfigFromUi() {
+  const cfg = loadAutopilotConfig();
+  cfg.excludes.bizNameContains      = document.getElementById('ap-exc-biz').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  cfg.excludes.webDesignerKeywords  = document.getElementById('ap-exc-webd').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  cfg.excludes.bigBusinessSignals   = document.getElementById('ap-exc-big').value.split('\n').map(s=>s.trim()).filter(Boolean);
+  cfg.minDomainAgeYears   = +document.getElementById('ap-min-age').value || 0;
+  cfg.maxDomainAgeYears   = +document.getElementById('ap-max-age').value || 40;
+  cfg.minScoreToContact   = +document.getElementById('ap-min-score').value || 0;
+  cfg.maxScoreToContact   = +document.getElementById('ap-max-score').value || 100;
+  cfg.onlyLtdCompanies    = document.getElementById('ap-only-ltd').checked;
+  cfg.rotateRegionsRandom = document.getElementById('ap-rotate').checked;
+  cfg.skipIfHasNoMobile   = document.getElementById('ap-skip-nomobile').checked;
+  saveAutopilotConfig(cfg);
+  alert('Targeting saved. Click "Rebuild target rotation" to populate the autopilot worker.');
+}
+function rebuildApTargetsFromConfig() {
+  const cfg = loadAutopilotConfig();
+  if (!cfg.activeRegions.length || !cfg.activeNiches.length) {
+    alert('Pick at least 1 region and 1 niche.');
+    return;
+  }
+  if (typeof autopilotTargets === 'undefined') {
+    alert('Autopilot module not initialised yet. Open the autopilot tab once, then try again.');
+    return;
+  }
+  autopilotTargets.length = 0; // clear in place
+  cfg.activeRegions.forEach(region => {
+    const cities = UK_REGIONS[region];
+    cfg.activeNiches.forEach((niche, idx) => {
+      const city = cities[idx % cities.length];
+      autopilotTargets.push({ niche, area: city, country: 'UK', region });
+    });
+  });
+  if (cfg.rotateRegionsRandom) {
+    for (let i = autopilotTargets.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [autopilotTargets[i], autopilotTargets[j]] = [autopilotTargets[j], autopilotTargets[i]];
+    }
+  }
+  if (typeof saveAutopilotState === 'function') saveAutopilotState();
+  if (typeof renderAutopilotTargets === 'function') renderAutopilotTargets();
+  alert('Rebuilt ' + autopilotTargets.length + ' target combinations (' + cfg.activeRegions.length + ' regions × ' + cfg.activeNiches.length + ' niches).');
+}
+function resetAutopilotConfig() {
+  if (!confirm('Reset all autopilot targeting + excludes to defaults?')) return;
+  localStorage.removeItem('ss_ap_config_v2');
+  showAutopilotConfig();
+}
+function showAutopilotConfig() {
+  let host = document.getElementById('ap-config-host');
+  if (!host) {
+    host = document.createElement('div');
+    host.id = 'ap-config-modal';
+    host.style.cssText = 'position:fixed;inset:1rem;background:#faf7f1;border:2px solid #0e0c0a;border-radius:6px;overflow:auto;z-index:99999';
+    host.innerHTML = '<button onclick="document.getElementById(\'ap-config-modal\').remove()" style="position:sticky;top:1rem;float:right;margin:1rem;padding:.4rem .8rem;background:#0e0c0a;color:#faf7f1;border:0;cursor:pointer;font-family:monospace;letter-spacing:.1em;text-transform:uppercase">CLOSE ✕</button>' + renderAutopilotConfigPanel();
+    document.body.appendChild(host);
+    return;
+  }
+  host.innerHTML = renderAutopilotConfigPanel();
+}
+
+/* Filter helper applied during prospect ingestion — pure exclude pass.
+   Returns true if prospect should be DROPPED. Wire into autopilot worker
+   if you want strict server-side filtering too. */
+window.ssShouldExcludeProspect = function(p) {
+  const cfg = loadAutopilotConfig();
+  const lower = (s) => (s || '').toString().toLowerCase();
+  const name = lower(p.bizname || p.name);
+  const site = lower(p.website || p.url);
+  const desc = lower(p.description || p.bio || '');
+  const hay  = name + ' | ' + site + ' | ' + desc;
+  if (cfg.excludes.bizNameContains.some(w => name.includes(lower(w)))) return 'name match';
+  if (cfg.excludes.webDesignerKeywords.some(w => hay.includes(lower(w)))) return 'web-designer';
+  if (cfg.excludes.bigBusinessSignals.some(w => hay.includes(lower(w)))) return 'big business';
+  if (p.staffCount && p.staffCount > cfg.excludes.excludeIfStaffOver) return 'too many staff';
+  if (p.annualRevenue && p.annualRevenue > cfg.excludes.excludeIfRevenueOver) return 'revenue too high';
+  if (p.founded && p.founded < cfg.excludes.excludeIfFoundedBefore) return 'founded too early';
+  return false;
+};
+
+['showAutopilotConfig','toggleApRegion','toggleApNiche','saveAutopilotConfigFromUi','rebuildApTargetsFromConfig','resetAutopilotConfig']
+  .forEach(fn => { try { if (typeof eval(fn) === 'function') window[fn] = eval(fn); } catch(e){} });
