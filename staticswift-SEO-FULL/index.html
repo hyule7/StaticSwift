@@ -3726,6 +3726,234 @@ body { font-family: 'Switzer', -apple-system, BlinkMacSystemFont, sans-serif !im
   isolation: isolate;
 }
 .truecost * { box-sizing: border-box; }
+
+/* AUDIT — same flex-column lock so headline can't bleed into the form */
+.audit-letterhead {
+  isolation: isolate;
+  padding: 6rem 2rem 6.5rem 6rem !important;
+}
+.audit-letterhead .letterhead-inner {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2.4rem !important;
+  position: relative !important;
+  z-index: 1 !important;
+  max-width: 1180px !important;
+  margin: 0 auto !important;
+  width: 100%;
+}
+.audit-letterhead .letterhead-inner > * {
+  width: 100%; box-sizing: border-box; position: relative; margin: 0 !important;
+}
+/* Headline size dropped — was clamp(4.5rem, 12vw, 10rem), overflowing */
+.audit-letterhead .letterhead-h1 {
+  font-size: clamp(3rem, 8vw, 5.6rem) !important;
+  line-height: .95 !important;
+  letter-spacing: -.035em !important;
+  margin: 0 !important;
+  text-wrap: balance;
+}
+.audit-letterhead .letterhead-headline { display: block !important; }
+.audit-letterhead .letterhead-rule { margin: 1.2rem 0 1rem !important; }
+.audit-letterhead .letterhead-sub {
+  font-size: 1.02rem !important; line-height: 1.6 !important;
+  max-width: 52ch !important; opacity: .85;
+}
+.audit-letterhead .letterhead-meta {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)) !important;
+  gap: 1.2rem !important;
+  margin: 0 !important;
+  padding-bottom: 1rem !important;
+  border-bottom: 1px solid rgba(10,10,10,.18);
+}
+.audit-letterhead .letterhead-form { display: flex !important; flex-direction: column; gap: 1rem; }
+.audit-letterhead .lh-line {
+  display: flex !important; flex-wrap: wrap !important; align-items: center !important;
+  gap: .8rem !important; padding-bottom: .5rem !important;
+  border-bottom: 1.5px solid var(--ink, #0e0c0a) !important;
+}
+.audit-letterhead .lh-line-input {
+  flex: 1 1 14rem !important; min-width: 200px !important;
+  font-size: clamp(1.15rem, 2vw, 1.8rem) !important;
+}
+@media (max-width: 760px) {
+  .audit-letterhead { padding: 4.2rem 1rem 5rem 3rem !important; }
+  .audit-letterhead .letterhead-inner { gap: 1.8rem !important; }
+  .audit-letterhead .letterhead-h1 { font-size: clamp(2.2rem, 10vw, 3.4rem) !important; }
+  .audit-letterhead .letterhead-meta { grid-template-columns: 1fr 1fr !important; font-size: .72rem; }
+}
+
+/* Kill bottom whitespace — make sure no empty space lingers */
+body { min-height: 0 !important; }
+.last-updated:empty { display: none !important; }
+.footer-tagline:empty { display: none !important; }
+/* Sticky CTA reserves no space when hidden */
+.ss-sticky-cta { contain: layout style; }
+.ss-sticky-cta:not(.is-shown) { pointer-events: none; }
+/* Body padding to ensure last section flush */
+body > section:last-of-type,
+body > footer:last-of-type { margin-bottom: 0 !important; padding-bottom: 0; }
+/* ═══════════════════════════════════════════════════════════════
+   HERO v3 — kinetic, attention-grabbing, scroll-magnet
+   No more "boring left-aligned text". Editorial billboard with
+   massive type, rotating niche word, top ticker, scroll lure.
+   ═══════════════════════════════════════════════════════════════ */
+.hero {
+  min-height: 100vh !important;
+  padding-top: 0 !important;
+  isolation: isolate;
+}
+
+/* TOP RUNNING TICKER — newspaper bar across the top */
+.hero-ticker {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 38px; z-index: 8; overflow: hidden;
+  background: rgba(14,12,10,.88); backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(217,160,113,.3);
+  display: flex; align-items: center;
+  pointer-events: none;
+}
+.hero-ticker-track {
+  display: flex; gap: 3rem; white-space: nowrap;
+  animation: hero-ticker-slide 38s linear infinite;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: .76rem; letter-spacing: .14em;
+  color: #d9a071; text-transform: uppercase;
+}
+.hero-ticker-track > span { display: inline-flex; align-items: center; gap: .5rem; }
+.hero-ticker-track .ht-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: #d9a071; opacity: .55;
+}
+.hero-ticker-track .ht-hot { color: #faf7f1; }
+.hero-ticker-track .ht-hot::before { content: "● "; color: #4ea36e; }
+@keyframes hero-ticker-slide {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* DRAMATIC HEADLINE — massive Boska italic with rotating niche */
+.hero .hero-headline {
+  font-family: 'Boska', Cormorant, Georgia, serif !important;
+  font-weight: 400 !important;
+  font-size: clamp(3rem, 7.2vw, 7.2rem) !important;
+  line-height: .98 !important;
+  letter-spacing: -.04em !important;
+  margin-bottom: 1.4rem !important;
+  max-width: 940px !important;
+  text-wrap: balance;
+}
+.hero .hero-headline em {
+  font-style: italic; color: var(--terr, #a86c4d);
+  position: relative; display: inline-block;
+}
+.hero .hero-headline em::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -.06em;
+  height: 3px; background: var(--terr, #a86c4d); opacity: .35;
+  transform-origin: left;
+  animation: hero-underline 1.5s cubic-bezier(.65,.05,.35,1) 1.4s both;
+}
+@keyframes hero-underline {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+/* THE ROTATING WORD — cycles through niches */
+.hero-rotator {
+  display: inline-flex; align-items: baseline;
+  vertical-align: baseline;
+  height: 1.05em; overflow: hidden;
+  position: relative;
+}
+.hero-rotator-word {
+  display: inline-block; padding: 0 .12em;
+  position: relative;
+  background: linear-gradient(180deg, transparent 60%, rgba(217,160,113,.4) 60%, rgba(217,160,113,.4) 95%, transparent 95%);
+  font-style: italic; color: var(--terr-deep, #7e4f37);
+  animation: hero-rotator-flip 2.8s cubic-bezier(.65,.05,.35,1) infinite;
+  transform-origin: 50% 50%;
+}
+@keyframes hero-rotator-flip {
+  0%, 18%   { transform: translateY(0); opacity: 1; }
+  22%       { transform: translateY(-100%); opacity: 0; }
+  23%       { transform: translateY(100%); opacity: 0; }
+  30%, 100% { transform: translateY(0); opacity: 1; }
+}
+
+/* SCROLL LURE — bottom centre indicator inviting scroll */
+.hero-scroll-lure {
+  position: absolute; left: 50%; bottom: 2vh; transform: translateX(-50%);
+  z-index: 8; display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: .68rem; letter-spacing: .26em; text-transform: uppercase;
+  color: rgba(250,247,241,.7); pointer-events: none;
+  animation: hero-lure-bob 2.2s ease-in-out infinite;
+}
+.hero-scroll-lure-line {
+  width: 1px; height: 36px;
+  background: linear-gradient(180deg, transparent, rgba(217,160,113,.85));
+  animation: hero-lure-line 2.2s ease-in-out infinite;
+}
+@keyframes hero-lure-bob {
+  0%, 100% { transform: translate(-50%, 0); }
+  50%      { transform: translate(-50%, -6px); }
+}
+@keyframes hero-lure-line {
+  0%, 100% { transform: scaleY(1); transform-origin: top; }
+  50%      { transform: scaleY(.6); transform-origin: top; }
+}
+
+/* ANCHOR PRICING — make it visually pop */
+.hero .hero-anchor {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: .9rem !important;
+  padding: .85rem 1.3rem !important;
+  background: rgba(14,12,10,.4) !important;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(217,160,113,.3);
+  border-radius: 2px 4px 2px 4px;
+  margin: 1.4rem 0 1.6rem !important;
+}
+.hero .ha-old { font-family: 'JetBrains Mono', monospace; font-size: .85rem; opacity: .65; }
+.hero .ha-arrow { color: var(--terr, #a86c4d); font-size: 1.2rem; }
+.hero .ha-new {
+  font-family: 'Boska', serif; font-style: italic; font-weight: 500;
+  font-size: 1.6rem; color: var(--terr-pale, #d9a071);
+  letter-spacing: -.02em;
+}
+.hero .ha-note { font-size: .8rem; opacity: .68; margin-left: .8rem; padding-left: .8rem; border-left: 1px solid rgba(255,255,255,.15); }
+
+/* DIM the background photo more so type pops */
+.hero .hero-bg-video::after {
+  content: ""; position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(14,12,10,.85) 0%, rgba(14,12,10,.5) 60%, transparent 100%),
+    linear-gradient(180deg, rgba(14,12,10,.55) 0%, rgba(14,12,10,.7) 100%);
+  z-index: 1;
+}
+
+/* Mobile — tighten everything */
+@media (max-width: 760px) {
+  .hero-ticker { height: 32px; }
+  .hero-ticker-track { font-size: .65rem; gap: 2rem; }
+  .hero .hero-headline { font-size: clamp(2.2rem, 10vw, 3.6rem) !important; }
+  .hero-rotator { height: 1.1em; }
+  .hero .hero-anchor { flex-wrap: wrap; gap: .5rem !important; padding: .7rem .9rem !important; }
+  .hero .ha-note { margin-left: 0; padding-left: 0; border-left: 0; width: 100%; }
+  .hero-scroll-lure { font-size: .6rem; bottom: 1vh; }
+  .hero-scroll-lure-line { height: 28px; }
+}
+
+/* Hide all unrendered HTML templates from layout flow */
+template, [hidden] { display: none !important; }
+/* Modals after the footer should never reserve layout space */
+.work-modal:not(.is-open),
+#ss-exit-popup:not(.is-shown),
+.sschat-panel:not(.open) { display: none !important; }
+/* Floating elements after footer become positioned only */
+body > div:has(> template),
+body > template { display: none !important; }
 .tc-inner {
   max-width: 1240px; margin: 0 auto; position: relative; z-index: 1;
   display: flex !important; flex-direction: column !important; gap: 3.4rem !important;
@@ -4494,6 +4722,41 @@ p, li, dd, .lh-fine, .receipt-lede, .sm-deck, .letterhead-sub, .scorecard-footno
     <img src="https://images.pexels.com/photos/1571939/pexels-photo-1571939.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="" width="1600" height="1067" fetchpriority="high">
   </div>
 
+  <!-- Top kinetic ticker — newspaper running bar -->
+  <div class="hero-ticker" aria-hidden="true">
+    <div class="hero-ticker-track">
+      <span class="ht-hot">Open for briefs &mdash; Tuesday morning, Manchester</span>
+      <span>&middot;</span>
+      <span>Last build: Bloomwell Flowers, Bristol &middot; 9:14 AM</span>
+      <span class="ht-dot"></span>
+      <span>&pound;149 starter</span>
+      <span class="ht-dot"></span>
+      <span>&pound;299 advanced</span>
+      <span class="ht-dot"></span>
+      <span>24h preview</span>
+      <span class="ht-dot"></span>
+      <span>Pay only if you love it</span>
+      <span class="ht-dot"></span>
+      <span class="ht-hot">3 openings this week</span>
+      <span class="ht-dot"></span>
+      <!-- Repeated for seamless marquee -->
+      <span class="ht-hot">Open for briefs &mdash; Tuesday morning, Manchester</span>
+      <span>&middot;</span>
+      <span>Last build: Bloomwell Flowers, Bristol &middot; 9:14 AM</span>
+      <span class="ht-dot"></span>
+      <span>&pound;149 starter</span>
+      <span class="ht-dot"></span>
+      <span>&pound;299 advanced</span>
+      <span class="ht-dot"></span>
+      <span>24h preview</span>
+      <span class="ht-dot"></span>
+      <span>Pay only if you love it</span>
+      <span class="ht-dot"></span>
+      <span class="ht-hot">3 openings this week</span>
+      <span class="ht-dot"></span>
+    </div>
+  </div>
+
   <div class="hero-inner">
     <div class="hero-text">
       <div class="ss-hero-eyebrow" role="text" aria-label="StaticSwift Studio, Manchester, taking new clients">
@@ -4506,8 +4769,10 @@ p, li, dd, .lh-fine, .receipt-lede, .sm-deck, .letterhead-sub, .scorecard-footno
       </div>
 
       <h1 class="hero-headline">
-        <span class="line"><span>Every day without a real website</span></span>
-        <span class="line"><span>is a customer choosing <em>your competitor</em>.</span></span>
+        <span class="line"><span>Websites for</span></span>
+        <span class="line"><span class="hero-rotator" aria-live="polite"><span class="hero-rotator-word" id="hero-rotator-word">barbers.</span></span></span>
+        <span class="line"><span>Hand-coded by <em>Harry</em>,</span></span>
+        <span class="line"><span>in Manchester.</span></span>
       </h1>
 
       <p class="hero-sub">I'm Harry. I code websites for UK tradesmen, one at a time, out of my flat in Manchester. <strong>£149 flat</strong>, brief by 3pm and you'll see it by tomorrow morning. You don't pay unless it's right.</p>
@@ -4703,6 +4968,12 @@ p, li, dd, .lh-fine, .receipt-lede, .sm-deck, .letterhead-sub, .scorecard-footno
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Scroll lure — pulls visitors deeper into the page -->
+  <div class="hero-scroll-lure" aria-hidden="true">
+    <span>Scroll for proof</span>
+    <span class="hero-scroll-lure-line"></span>
   </div>
 
 </section>
@@ -8464,6 +8735,27 @@ if (/\/(thanks|sent|confirmed)/i.test(location.pathname)) {
       b.setAttribute('data-specific', '1');
     }
   });
+})();
+
+/* HERO niche-word rotator — cycles every 2.8s through real trade niches.
+   Coordinates with the CSS @keyframes hero-rotator-flip animation. */
+(function heroNicheRotator(){
+  const el = document.getElementById('hero-rotator-word');
+  if (!el) return;
+  const niches = [
+    'barbers.', 'plumbers.', 'florists.', 'dentists.',
+    'cafés.', 'electricians.', 'tattooists.', 'PTs.',
+    'photographers.', 'mechanics.', 'cleaners.', 'beauticians.',
+    'tilers.', 'butchers.', 'opticians.', 'dog groomers.',
+  ];
+  let i = 0;
+  // Time the swap to land in the "invisible" frame of the flip animation
+  // CSS animation runs 2.8s, flips at ~22% (which is .616s).
+  // We swap at 21.5% so swap happens mid-flip when word is offscreen.
+  setInterval(() => {
+    i = (i + 1) % niches.length;
+    el.textContent = niches[i];
+  }, 2800);
 })();
 
 /* Audit form — belt-and-braces direct click handler as fallback
