@@ -4040,24 +4040,23 @@ body.scrolled-past-hero .hero::after { transform: scaleY(0); transition: transfo
   font-variant-numeric: tabular-nums;
 }
 
-/* PUSH-THROUGH — hero zooms INTO the next scene as you scroll out */
-.hero-inner {
-  position: relative; z-index: 4;
-  transform-origin: 50% 50%;
-  will-change: transform, opacity;
-  transition: transform .15s linear, opacity .15s linear;
-}
-/* Driven by --hero-progress (0-1) set by JS scroll handler */
+/* PUSH-THROUGH — only background zooms+blurs as you scroll. Content stays
+   fully interactive and visible. The cinematic effect lives in the bg. */
 .hero { --hero-progress: 0; }
 .hero-inner {
-  transform: scale(calc(1 + var(--hero-progress) * 0.35))
-             translateY(calc(var(--hero-progress) * -8vh));
-  opacity: calc(1 - var(--hero-progress) * 1.6);
+  position: relative; z-index: 4;
+  /* No transform on content — form must stay clickable & form must stay visible */
 }
 .hero .hero-bg-video {
   transform: scale(calc(1 + var(--hero-progress) * 0.18));
-  filter: blur(calc(var(--hero-progress) * 6px));
+  filter: blur(calc(var(--hero-progress) * 5px));
   transition: transform .15s linear, filter .15s linear;
+  will-change: transform, filter;
+}
+/* The vignette deepens as you scroll — adds "approaching the scene" feel */
+.hero .hero-bg-video::before {
+  opacity: calc(.7 + var(--hero-progress) * .3);
+  transition: opacity .15s linear;
 }
 
 /* WORD-BY-WORD reveal on hero headline */
@@ -4094,6 +4093,146 @@ body.scrolled-past-hero .hero::after { transform: scaleY(0); transition: transfo
   .hero-slate { left: 1rem; }
   .hero-timestamp { right: 1rem; }
   .hero-timestamp-big { font-size: 1rem; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HERO v5 — UNIQUE: liquid letters · cursor parallax · paper-tear
+   • Each headline line reveals with a DIFFERENT motion technique
+   • Background follows the cursor (mouse-look parallax)
+   • As you scroll out, the hero "tears" into the next scene
+   • Floating ink particles drift across the frame
+   ═══════════════════════════════════════════════════════════════ */
+
+/* MOUSE-LOOK PARALLAX — bg follows cursor for "you're inside the frame" feel */
+.hero { --mx: 0; --my: 0; }
+.hero .hero-bg-video img {
+  transform: scale(calc(1.12 + var(--hero-progress) * 0.18))
+             translate(calc(var(--mx) * -1.2%), calc(var(--my) * -1.2%));
+  transition: transform .4s cubic-bezier(.2,.8,.2,1);
+}
+
+/* INK PARTICLES — floating terracotta dots in 3D space */
+.ink-particles {
+  position: absolute; inset: 0; z-index: 5; pointer-events: none; overflow: hidden;
+}
+.ink-particle {
+  position: absolute; border-radius: 50%;
+  background: radial-gradient(circle, rgba(217,160,113,.9), rgba(168,108,77,.4) 50%, transparent);
+  filter: blur(.3px);
+  will-change: transform;
+  animation: ink-drift var(--dur, 14s) linear infinite;
+  animation-delay: var(--delay, 0s);
+}
+@keyframes ink-drift {
+  0%   { transform: translate3d(0, 100vh, 0) scale(.4); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translate3d(calc(var(--drift, 80px)), -20vh, 0) scale(1.3); opacity: 0; }
+}
+
+/* LIQUID LETTER REVEAL — each character emerges from below with ink bleed */
+.hero-headline .word-anim {
+  background-image: linear-gradient(180deg,
+    var(--terr-deep, #7e4f37) 0%,
+    var(--terr-deep, #7e4f37) 50%,
+    currentColor 50%,
+    currentColor 100%);
+  background-size: 100% 200%;
+  background-position: 0 100%;
+  background-clip: text; -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: word-liquid-rise 1.4s cubic-bezier(.16,1.04,.3,1) both !important;
+}
+@keyframes word-liquid-rise {
+  0%   { transform: translateY(105%) rotate(2deg); background-position: 0 100%; filter: blur(8px); }
+  60%  { filter: blur(0); }
+  100% { transform: translateY(0) rotate(0); background-position: 0 0; filter: blur(0); }
+}
+
+/* MAGNETIC CTA — wobbles toward the cursor on desktop */
+.hero .hl-submit, .hero .hero-alt-wa, .hero .hero-alt-call {
+  transition: transform .3s cubic-bezier(.34,1.5,.6,1) !important;
+  will-change: transform;
+}
+@media (pointer: fine) {
+  .hero .hl-submit:hover, .hero .hero-alt-wa:hover {
+    transform: scale(1.04) translate(var(--mag-x, 0), var(--mag-y, 0)) !important;
+  }
+}
+
+/* PAPER-TEAR — the hero "tears" away as you scroll past */
+.hero-tear {
+  position: absolute; left: 0; right: 0; bottom: -2px;
+  height: 60px; z-index: 12; pointer-events: none;
+  background: var(--paper, #faf7f1);
+  /* Jagged top edge — like ripped paper */
+  -webkit-mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='60' viewBox='0 0 100 60' preserveAspectRatio='none'><path d='M0,60 L0,42 L3,38 L7,44 L12,36 L17,43 L22,35 L27,42 L33,34 L38,41 L44,36 L50,42 L56,37 L62,43 L68,35 L74,41 L80,36 L86,43 L92,38 L97,42 L100,38 L100,60 Z' fill='black'/></svg>");
+  mask-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='60' viewBox='0 0 100 60' preserveAspectRatio='none'><path d='M0,60 L0,42 L3,38 L7,44 L12,36 L17,43 L22,35 L27,42 L33,34 L38,41 L44,36 L50,42 L56,37 L62,43 L68,35 L74,41 L80,36 L86,43 L92,38 L97,42 L100,38 L100,60 Z' fill='black'/></svg>");
+  -webkit-mask-size: 100px 60px; mask-size: 100px 60px;
+  -webkit-mask-repeat: repeat-x; mask-repeat: repeat-x;
+  transform: translateY(calc(var(--hero-progress) * 30px));
+  opacity: calc(.85 + var(--hero-progress) * .15);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FULL MOBILE PASS — every section locked & touch-friendly
+   ═══════════════════════════════════════════════════════════════ */
+@media (max-width: 760px) {
+  /* HERO mobile — clean cinematic, smaller scale */
+  .hero { min-height: 92vh !important; }
+  .hero .hero-headline { font-size: clamp(2rem, 8.4vw, 2.8rem) !important; line-height: 1.05 !important; }
+  .hero .hero-sub { font-size: .95rem !important; line-height: 1.55 !important; margin-bottom: 1.2rem !important; }
+  .hero .hero-anchor { flex-direction: column; align-items: flex-start; gap: .4rem !important; padding: .8rem 1rem !important; }
+  .hero .ha-new { font-size: 1.3rem !important; }
+  .hero .ha-note { font-size: .72rem !important; margin: 0 !important; padding: 0 !important; border: 0 !important; }
+  .hero .hero-proof { font-size: .85rem; flex-wrap: wrap; gap: .4rem; }
+  .hero-ticker { height: 28px !important; }
+  .hero-ticker-track { font-size: .6rem !important; gap: 1.4rem !important; }
+
+  /* INK PARTICLES — fewer on mobile to save battery */
+  .ink-particle:nth-child(n+4) { display: none !important; }
+
+  /* Form fields — bigger touch targets */
+  .hero-lead-form input,
+  .hero-lead-form button { font-size: 16px !important; min-height: 48px !important; padding: .85rem 1rem !important; }
+  .hero-lead-form { gap: .6rem !important; }
+
+  /* TRUECOST calculator mobile */
+  .tc-q legend { font-size: .92rem !important; }
+  .tc-chips span { font-size: .72rem !important; padding: .55rem .75rem !important; min-height: 44px !important; }
+
+  /* AUDIT input bigger */
+  .audit-letterhead .lh-line-input { font-size: 1.2rem !important; min-height: 44px !important; }
+  .audit-letterhead .lh-stamp { width: 100% !important; min-height: 48px !important; padding: 1rem !important; }
+  .lh-stamp-wrap { width: 100% !important; }
+
+  /* COMPARISON cards mobile */
+  .scorecard-stack .sc-cta { width: 100% !important; text-align: center !important; }
+
+  /* PRICING strip mobile */
+  .price-strip { padding: 3.4rem 1rem 4rem !important; }
+  .ps-cta { width: 100% !important; text-align: center !important; justify-content: center !important; }
+
+  /* CONTACT form mobile */
+  #qf input, #qf textarea, #qf button { font-size: 16px !important; min-height: 48px !important; }
+
+  /* Sticky CTA + toasts hidden on mobile if section blockers in view */
+  .ss-toast { font-size: .78rem !important; }
+  .ss-sticky-cta { padding: .55rem .6rem !important; font-size: .72rem !important; }
+
+  /* CINEMA phone wrap — smaller, lower */
+  .cv-phone { width: 220px !important; }
+  .cv-copy { font-size: 1rem !important; max-width: 92% !important; }
+
+  /* Footer + sections — proper bottom space */
+  body > footer:last-of-type { padding-bottom: 3rem !important; }
+}
+
+/* Tablets — between mobile and desktop */
+@media (min-width: 761px) and (max-width: 1080px) {
+  .hero .hero-headline { font-size: clamp(3rem, 6vw, 4.6rem) !important; }
+  .tc-grid { gap: 2rem !important; }
+  .scorecard-stack { gap: 1.4rem !important; }
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -4376,6 +4515,201 @@ body.scrolled-past-hero .hero::after { transform: scaleY(0); transition: transfo
   padding: 1.4rem 1.6rem; border-radius: 2px;
   font-family: 'Boska', serif; font-style: italic;
   font-size: 1.05rem; color: var(--ink, #0e0c0a);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PRICE STRIP v2 — editorial menu, no card-soup
+   Was: 3 rounded gradient boxes (AI default). Now: a clean magazine
+   pricing column with bold typography, terracotta numbers, dotted
+   leaders. Looks like a real published rate card.
+   ═══════════════════════════════════════════════════════════════ */
+.price-strip {
+  background: var(--paper, #faf7f1) !important;
+  color: var(--ink, #0e0c0a) !important;
+  padding: 6rem 1.8rem 6.4rem !important;
+  border-top: 1px solid rgba(10,10,10,.08) !important;
+  border-bottom: 1px solid rgba(10,10,10,.08) !important;
+  isolation: isolate;
+}
+.price-strip::before { display: none !important; }
+.price-strip-inner {
+  max-width: 1180px !important; margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1fr !important;
+  gap: 0 !important;
+  align-items: stretch !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+/* Vertical dividers between columns (editorial menu rule) */
+.price-strip-inner > * + * {
+  border-left: 1px solid rgba(10,10,10,.14) !important;
+}
+
+/* === CARD === */
+.ps-card {
+  background: transparent !important;
+  border: 0 !important; border-radius: 0 !important;
+  padding: 0 2.4rem !important;
+  display: flex !important; flex-direction: column !important;
+  position: relative !important;
+  transform: none !important;
+  transition: none !important;
+}
+.ps-card:hover { transform: none !important; border-color: transparent !important; }
+
+/* Badge — terracotta pinned at top of advanced column */
+.ps-badge {
+  position: absolute !important;
+  top: -1.4rem !important; left: 2.4rem !important;
+  background: var(--terr-deep, #7e4f37) !important;
+  color: var(--paper, #faf7f1) !important;
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  font-size: .64rem !important; font-weight: 700 !important;
+  letter-spacing: .2em !important; text-transform: uppercase !important;
+  padding: .35rem .7rem !important; border-radius: 1px 3px 1px 3px !important;
+  transform: rotate(-2deg);
+  box-shadow: 0 4px 8px rgba(10,10,10,.15);
+}
+
+/* Tier label */
+.ps-tier {
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  font-size: .72rem !important; font-weight: 700 !important;
+  letter-spacing: .22em !important; text-transform: uppercase !important;
+  color: var(--terr-deep, #7e4f37) !important;
+  margin-bottom: 1rem !important;
+}
+
+/* Price block — gigantic italic Boska */
+.ps-price {
+  display: flex !important; flex-direction: column !important;
+  align-items: flex-start !important; gap: .2rem !important;
+  margin-bottom: 1.8rem !important;
+}
+.ps-amt {
+  font-family: 'Boska', Georgia, serif !important;
+  font-style: italic !important; font-weight: 500 !important;
+  font-size: clamp(3.6rem, 6vw, 5.4rem) !important;
+  font-variant-numeric: tabular-nums !important;
+  letter-spacing: -.04em !important;
+  line-height: .9 !important;
+  color: var(--ink, #0e0c0a) !important;
+}
+.ps-once {
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  font-size: .72rem !important; letter-spacing: .14em !important;
+  text-transform: uppercase !important;
+  color: var(--terr-deep, #7e4f37) !important;
+  opacity: .82; margin-top: .35rem;
+}
+
+/* Feature list — magazine pricing "menu" style with dotted leaders */
+.ps-feat {
+  list-style: none !important;
+  padding: 0 !important; margin: 0 0 1.8rem !important;
+  display: flex !important; flex-direction: column !important;
+  gap: .65rem !important;
+  flex: 1;
+}
+.ps-feat li {
+  font-family: 'Switzer', sans-serif !important;
+  font-size: .96rem !important; line-height: 1.45 !important;
+  color: var(--ink, #0e0c0a) !important;
+  opacity: .88;
+  padding: 0 0 .55rem 1.4rem !important;
+  position: relative;
+  border-bottom: 1px dashed rgba(10,10,10,.2) !important;
+}
+.ps-feat li::before {
+  content: "→"; position: absolute; left: 0; top: 0;
+  font-family: 'JetBrains Mono', monospace; font-size: .9rem;
+  color: var(--terr-deep, #7e4f37);
+}
+.ps-feat li:last-child { border-bottom: 0 !important; }
+
+/* CTA — boxy stamped button */
+.ps-cta {
+  align-self: flex-start !important;
+  background: transparent !important;
+  border: 1.5px solid var(--ink, #0e0c0a) !important;
+  color: var(--ink, #0e0c0a) !important;
+  padding: .85rem 1.3rem !important;
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  font-size: .76rem !important; font-weight: 700 !important;
+  letter-spacing: .18em !important; text-transform: uppercase !important;
+  text-decoration: none !important;
+  border-radius: 1px 3px 2px 4px !important;
+  transition: background .25s, color .25s, transform .25s !important;
+}
+.ps-cta:hover {
+  background: var(--ink, #0e0c0a) !important;
+  color: var(--paper, #faf7f1) !important;
+  transform: translateY(-2px);
+}
+.ps-cta-primary {
+  background: var(--ink, #0e0c0a) !important;
+  color: var(--paper, #faf7f1) !important;
+  border-color: var(--ink, #0e0c0a) !important;
+}
+.ps-cta-primary:hover {
+  background: var(--terr-deep, #7e4f37) !important;
+  border-color: var(--terr-deep, #7e4f37) !important;
+  color: var(--paper, #faf7f1) !important;
+}
+
+/* === PROMISE column (the third) === */
+.ps-promise {
+  background: transparent !important;
+  border: 0 !important; border-left: 1px solid rgba(10,10,10,.14) !important;
+  border-radius: 0 !important;
+  padding: 0 2.4rem !important;
+  display: flex !important; flex-direction: column !important;
+  justify-content: center !important;
+  gap: 1.2rem !important;
+}
+.ps-promise-mark {
+  font-family: 'Boska', Georgia, serif !important;
+  font-style: italic !important; font-weight: 500 !important;
+  font-size: clamp(1.7rem, 2.6vw, 2.4rem) !important;
+  color: var(--ink, #0e0c0a) !important;
+  line-height: 1.05 !important; letter-spacing: -.02em !important;
+}
+.ps-promise-mark::before {
+  content: "“"; color: var(--terr-deep, #7e4f37);
+  font-size: 1.5em; line-height: .3;
+  vertical-align: -.18em; margin-right: .05em;
+  display: inline-block;
+}
+.ps-promise-text {
+  font-family: 'Switzer', sans-serif !important;
+  font-size: .95rem !important; line-height: 1.6 !important;
+  color: var(--ink, #0e0c0a) !important;
+  opacity: .85;
+}
+.ps-promise-link {
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  font-size: .74rem !important; font-weight: 700 !important;
+  letter-spacing: .16em !important; text-transform: uppercase !important;
+  color: var(--terr-deep, #7e4f37) !important;
+  text-decoration: none !important;
+  display: inline-block;
+  align-self: flex-start;
+  padding-bottom: .2rem;
+  border-bottom: 1.5px solid var(--terr-deep, #7e4f37);
+}
+.ps-promise-link:hover {
+  color: var(--ink, #0e0c0a) !important;
+  border-bottom-color: var(--ink, #0e0c0a) !important;
+}
+
+/* Mobile — stack columns, no dividers */
+@media (max-width: 860px) {
+  .price-strip { padding: 4rem 1.2rem 4.4rem !important; }
+  .price-strip-inner { grid-template-columns: 1fr !important; gap: 2.8rem !important; }
+  .price-strip-inner > * + * { border-left: 0 !important; border-top: 1px solid rgba(10,10,10,.14) !important; padding-top: 2.8rem !important; }
+  .ps-card, .ps-promise { padding: 0 !important; }
+  .ps-amt { font-size: 3.6rem !important; }
 }
 
 /* Mobile */
@@ -5174,6 +5508,12 @@ p, li, dd, .lh-fine, .receipt-lede, .sm-deck, .letterhead-sub, .scorecard-footno
 
   <!-- Cinematic film-grain overlay -->
   <div class="hero-grain" aria-hidden="true"></div>
+
+  <!-- Floating terracotta ink particles -->
+  <div class="ink-particles" id="inkParticles" aria-hidden="true"></div>
+
+  <!-- Paper-tear bottom edge — tears away as you scroll into the next scene -->
+  <div class="hero-tear" aria-hidden="true"></div>
 
   <!-- Director's slate top-left -->
   <div class="hero-slate" aria-hidden="true">
@@ -9269,6 +9609,93 @@ if (/\/(thanks|sent|confirmed)/i.test(location.pathname)) {
       line.innerHTML = out;
     });
     headline.dataset.wordwrapped = '1';
+  }
+})();
+
+/* HERO v5 — ink particles, cursor parallax, magnetic CTA, no-fade form */
+(function heroV5(){
+  const hero = document.querySelector('.hero');
+  if (!hero) return;
+
+  // 1 · Spawn ink particles
+  const stage = document.getElementById('inkParticles');
+  if (stage) {
+    const count = window.matchMedia('(max-width: 760px)').matches ? 3 : 9;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('span');
+      p.className = 'ink-particle';
+      const size = 3 + Math.random() * 8;
+      p.style.width = size + 'px';
+      p.style.height = size + 'px';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.setProperty('--dur', (10 + Math.random() * 10) + 's');
+      p.style.setProperty('--delay', (-Math.random() * 14) + 's');
+      p.style.setProperty('--drift', ((Math.random() - .5) * 200) + 'px');
+      stage.appendChild(p);
+    }
+  }
+
+  // 2 · Cursor-look parallax — only on devices with a real pointer
+  if (window.matchMedia('(pointer: fine)').matches) {
+    let mx = 0, my = 0, tx = 0, ty = 0, raf = 0;
+    function pump() {
+      tx += (mx - tx) * 0.08;
+      ty += (my - ty) * 0.08;
+      hero.style.setProperty('--mx', tx.toFixed(2));
+      hero.style.setProperty('--my', ty.toFixed(2));
+      if (Math.abs(mx - tx) > 0.01 || Math.abs(my - ty) > 0.01) {
+        raf = requestAnimationFrame(pump);
+      } else {
+        raf = 0;
+      }
+    }
+    window.addEventListener('mousemove', (e) => {
+      mx = (e.clientX / window.innerWidth - 0.5) * 2;  // -1 .. 1
+      my = (e.clientY / window.innerHeight - 0.5) * 2;
+      if (!raf) raf = requestAnimationFrame(pump);
+    }, { passive: true });
+  }
+
+  // 3 · Magnetic CTA — button shifts toward cursor when near
+  const magnets = hero.querySelectorAll('.hl-submit, .hero-alt-wa');
+  magnets.forEach(btn => {
+    btn.addEventListener('mousemove', (e) => {
+      const r = btn.getBoundingClientRect();
+      const x = e.clientX - r.left - r.width / 2;
+      const y = e.clientY - r.top - r.height / 2;
+      btn.style.setProperty('--mag-x', (x * 0.18) + 'px');
+      btn.style.setProperty('--mag-y', (y * 0.18) + 'px');
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.setProperty('--mag-x', '0px');
+      btn.style.setProperty('--mag-y', '0px');
+    });
+  });
+
+  // 4 · Device tilt parallax on mobile (replaces cursor parallax)
+  if (window.matchMedia('(pointer: coarse)').matches && 'DeviceOrientationEvent' in window) {
+    let didPermissionDance = false;
+    function handleTilt(e) {
+      if (e.beta == null || e.gamma == null) return;
+      const mx = Math.max(-1, Math.min(1, e.gamma / 30));
+      const my = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
+      hero.style.setProperty('--mx', mx.toFixed(2));
+      hero.style.setProperty('--my', my.toFixed(2));
+    }
+    // iOS 13+ requires permission
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      const askOnce = () => {
+        if (didPermissionDance) return;
+        didPermissionDance = true;
+        DeviceOrientationEvent.requestPermission().then(state => {
+          if (state === 'granted') window.addEventListener('deviceorientation', handleTilt, true);
+        }).catch(() => {});
+        document.removeEventListener('touchstart', askOnce);
+      };
+      document.addEventListener('touchstart', askOnce, { once: true });
+    } else {
+      window.addEventListener('deviceorientation', handleTilt, true);
+    }
   }
 })();
 
