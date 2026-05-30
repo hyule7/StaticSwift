@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>StaticSwift — One-off websites for UK trades, made in Manchester | £149</title>
-<meta name="description" content="Custom-built static websites for UK small businesses. Delivered in 24 hours, loads in under one second, fully owned by you. Starter from £149, Advanced £299. No monthly fees, no payment upfront — pay only when you love it.">
+<meta name="description" content="Harry codes one website at a time for UK small businesses, out of a flat in Manchester. £149 flat, by tomorrow morning. You don't pay unless it's right. No CMS, no subscription, no agency markup.">
 <meta name="keywords" content="website design UK, small business website, cheap website design, fast website, 24 hour website, static website UK, barber website, plumber website, local business website">
 <meta name="author" content="StaticSwift">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -17,7 +17,7 @@
 <meta property="og:site_name" content="StaticSwift">
 <meta property="og:locale" content="en_GB">
 <meta property="og:title" content="StaticSwift — One-off websites for UK trades, made in Manchester | £149">
-<meta property="og:description" content="Custom-built static websites for UK small businesses. Delivered in 24 hours, loads in under one second. From £149. No payment upfront.">
+<meta property="og:description" content="One Manchester developer writing one website at a time. £149 flat, brief by 3pm and preview by 9am. No CMS, no subscription, no agency.">
 <meta property="og:image" content="https://staticswift.co.uk/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -25,7 +25,7 @@
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="StaticSwift — Fast Websites for UK Small Businesses | From £149">
-<meta name="twitter:description" content="Custom-built static websites for UK small businesses. Delivered in 24 hours, loads in under one second. From £149.">
+<meta name="twitter:description" content="Harry, in Manchester. One website at a time. £149 flat, by tomorrow morning. Pay only if you love it.">
 <meta name="twitter:image" content="https://staticswift.co.uk/og-image.jpg">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1503,9 +1503,16 @@ nav#nav .nav-cta:hover { background:#000 }
 /* Dim that fades in as phone takes over */
 .cv-dim { position:absolute; inset:0; background:#0a0a0a; opacity:var(--p2); pointer-events:none; z-index:2; }
 /* Editorial copy — fades out during phase 2 */
-.cv-copy { position:absolute; left:0; right:0; top:3vh; text-align:center; z-index:7; color:#fff; opacity:calc(1 - var(--p1) * 1.6); transform:translate3d(0,calc(var(--p1) * -30px),0); padding:0 1.5rem; pointer-events:none; text-shadow: 0 4px 28px rgba(0,0,0,.55), 0 1px 2px rgba(0,0,0,.5); max-width:680px; margin:0 auto; }
-/* Hard-fade copy fast so it's gone before the phone gets close to it */
-.cv-copy { transition: opacity .15s linear; }
+.cv-copy { position:absolute; left:0; right:0; top:4vh; text-align:center; z-index:7; color:#fff; opacity:calc(1 - var(--p1) * 2.2); transform:translate3d(0,calc(var(--p1) * -40px),0); padding:0 1.5rem; pointer-events:none; text-shadow: 0 4px 28px rgba(0,0,0,.55), 0 1px 2px rgba(0,0,0,.5); max-width:620px; margin:0 auto; transition: opacity .12s linear; }
+.cv-title { font-size: clamp(1.5rem,3.2vw,2.6rem) !important; }
+.cv-eyebrow { font-size: .7rem !important; }
+/* Push the phone DOWN so headline always reads above it */
+.cv-phone-wrap { top: 58% !important; }
+@media (max-width: 900px) {
+  .cv-copy { top: 3vh; max-width: 90%; }
+  .cv-title { font-size: clamp(1.3rem, 5.5vw, 1.9rem) !important; }
+  .cv-phone-wrap { top: 62% !important; }
+}
 .cv-eyebrow { font-family:'Switzer','Inter Tight',sans-serif; font-size:.85rem; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:#a86c4d; margin-bottom:1rem; opacity:.9; }
 .cv-title { font-family:'Boska',serif; font-weight:400; font-size:clamp(2.2rem,4vw,3.6rem); line-height:1.1; letter-spacing:-.025em; color:#fff; }
 .cv-title em { font-style:italic; color:#fff; }
@@ -3675,6 +3682,325 @@ body { font-family: 'Switzer', -apple-system, BlinkMacSystemFont, sans-serif !im
   .scorecard-stack.is-dropped .sc-card-ss { transform: none !important; animation: none !important; }
 }
 
+/* Old receipt-section CSS still loaded above — neutralise its leftovers */
+#loss-calculator .receipt-wall, #loss-calculator .receipt-essay,
+#loss-calculator .receipt-tape, #loss-calculator .rt-strip,
+#loss-calculator .rt-perf, #loss-calculator .rt-header,
+#loss-calculator .rt-items, #loss-calculator .rt-row,
+#loss-calculator .rt-rule, #loss-calculator .rt-subtotal,
+#loss-calculator .rt-total, #loss-calculator .rt-footer,
+#loss-calculator .rt-barcode, #loss-calculator .receipt-pinboard,
+#loss-calculator .pin-note, #loss-calculator .coin-stage,
+#loss-calculator .receipt-inner, #loss-calculator .receipt-margin-note,
+#loss-calculator .receipt-h1, #loss-calculator .receipt-lede,
+#loss-calculator .receipt-eyebrow { display: none !important; }
+
+/* ═══════════════════════════════════════════════════════════════
+   TRUECOST CALCULATOR — cream paper, editorial layout, hand-built
+   No dark gradients, no neon. Warm worksheet aesthetic.
+   ═══════════════════════════════════════════════════════════════ */
+.truecost {
+  background: var(--paper, #faf7f1);
+  background-image:
+    radial-gradient(ellipse 50% 30% at 10% 0%, rgba(168,108,77,.07), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(168,108,77,.05), transparent 60%);
+  color: var(--ink, #0e0c0a);
+  padding: 7.4rem 1.8rem 8.3rem;
+  position: relative; overflow: hidden;
+  border-top: 1px solid rgba(10,10,10,.08);
+  border-bottom: 1px solid rgba(10,10,10,.08);
+}
+.tc-inner { max-width: 1240px; margin: 0 auto; position: relative; z-index: 1; }
+.tc-head { max-width: 740px; margin: 0 0 4.5rem; text-align: left; padding-left: 0; }
+.tc-eyebrow { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .76rem; letter-spacing: .22em; text-transform: uppercase; color: var(--terr-deep, #7e4f37); font-weight: 700; display: inline-block; margin-bottom: 1.2rem; }
+.tc-h1 { font-family: 'Boska', Georgia, serif; font-weight: 400; font-size: clamp(3rem, 7vw, 5.8rem); line-height: .94; letter-spacing: -.035em; margin: 0 0 1.6rem; color: var(--ink, #0e0c0a); text-wrap: balance; }
+.tc-h1 em { font-style: italic; color: var(--terr-deep, #7e4f37); }
+.tc-lede { font-family: 'Switzer', sans-serif; font-size: 1.06rem; line-height: 1.62; max-width: 56ch; margin: 0; opacity: .85; color: var(--ink, #0e0c0a); }
+
+.tc-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: 3.4rem; align-items: start; }
+
+/* LEFT — worksheet form, numbered like editorial */
+.tc-form { display: flex; flex-direction: column; gap: 2.3rem; }
+.tc-q { border: 0; padding: 0; margin: 0; position: relative; padding-left: 1.8rem; }
+.tc-q legend { display: block; font-family: 'Boska', Georgia, serif; font-style: italic; font-size: 1.15rem; font-weight: 500; line-height: 1.35; color: var(--ink, #0e0c0a); margin-bottom: 1rem; padding: 0; }
+.tc-q legend strong { font-family: 'Boska', serif; font-style: italic; font-weight: 600; color: var(--terr-deep, #7e4f37); padding: 0 .2em; }
+/* Question number floats in left margin like a magazine */
+.tc-q legend::first-letter { font-weight: 700; color: var(--terr-deep, #7e4f37); }
+.tc-q::before {
+  content: ""; position: absolute; left: 0; top: .4rem; bottom: .4rem;
+  width: 2px; background: var(--terr-deep, #7e4f37); opacity: .45;
+}
+.tc-chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+.tc-chips label { position: relative; cursor: pointer; }
+.tc-chips input { position: absolute; opacity: 0; pointer-events: none; }
+.tc-chips span {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: .58rem .95rem; border-radius: 2px 4px 2px 4px;
+  border: 1.5px solid rgba(10,10,10,.16);
+  background: var(--paper-cool, #fdfbf5);
+  color: var(--ink, #0e0c0a); font-family: 'Switzer', sans-serif;
+  font-size: .82rem; letter-spacing: .005em; font-weight: 500;
+  transition: all .25s ease;
+}
+.tc-chips input:checked + span {
+  background: var(--ink, #0e0c0a); border-color: var(--ink, #0e0c0a);
+  color: var(--paper, #faf7f1); font-weight: 700;
+  transform: translateY(-1px); box-shadow: 0 5px 14px rgba(10,10,10,.18);
+}
+.tc-chips label:hover span { border-color: var(--terr-deep, #7e4f37); background: var(--paper, #faf7f1); }
+.tc-chips input:focus-visible + span { outline: 2px solid var(--terr-deep, #7e4f37); outline-offset: 2px; }
+
+.tc-q-slider legend { margin-bottom: 1.3rem; }
+.tc-slider {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 28px; background: transparent;
+  outline: 0; cursor: ew-resize; touch-action: pan-x; user-select: none;
+  position: relative; z-index: 2;
+}
+.tc-slider::-webkit-slider-runnable-track {
+  height: 4px; background: linear-gradient(90deg, var(--terr-deep, #7e4f37) 0%, rgba(10,10,10,.12) 0%);
+  background-size: var(--p, 50%) 100%; background-repeat: no-repeat; border-radius: 2px;
+}
+.tc-slider::-moz-range-track {
+  height: 4px; background: linear-gradient(90deg, var(--terr-deep, #7e4f37) 0%, rgba(10,10,10,.12) 0%);
+  background-size: var(--p, 50%) 100%; background-repeat: no-repeat; border-radius: 2px;
+}
+.tc-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--terr-deep, #7e4f37);
+  border: 2px solid var(--ink, #0e0c0a);
+  margin-top: -10px; cursor: grab;
+  box-shadow: 0 3px 8px rgba(10,10,10,.3);
+  transition: transform .15s ease;
+}
+.tc-slider::-moz-range-thumb {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--terr-deep, #7e4f37); border: 2px solid var(--ink, #0e0c0a);
+  cursor: grab; box-shadow: 0 3px 8px rgba(10,10,10,.3);
+}
+.tc-slider:hover::-webkit-slider-thumb { transform: scale(1.12); }
+.tc-slider:active::-webkit-slider-thumb { cursor: grabbing; transform: scale(1.25); box-shadow: 0 5px 14px rgba(10,10,10,.4), 0 0 0 5px rgba(126,79,55,.18); }
+.tc-slider-ticks { display: flex; justify-content: space-between; margin-top: .6rem; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .68rem; color: rgba(10,10,10,.45); letter-spacing: .04em; }
+
+/* RIGHT — torn-page invoice on cream paper */
+.tc-screen { position: sticky; top: 5vh; }
+.tc-screen-frame {
+  position: relative; padding: 0; border-radius: 0;
+  background: var(--paper-cool, #fdfbf5);
+  box-shadow: 0 18px 36px rgba(10,10,10,.12), 0 4px 10px rgba(10,10,10,.06);
+  border: 1px solid rgba(10,10,10,.1);
+  /* torn-paper effect on top + bottom */
+  -webkit-mask-image:
+    radial-gradient(circle 5px at 7px 0, transparent 5px, #000 5.5px),
+    linear-gradient(#000, #000);
+  -webkit-mask-composite: source-over;
+}
+.tc-screen-bezel { display: none; }
+.tc-screen-inner {
+  background: transparent;
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 30px, rgba(10,10,10,.045) 30px 31px);
+  border-radius: 0;
+  padding: 2rem 2.2rem 2.2rem;
+  font-family: 'Switzer', sans-serif;
+  color: var(--ink, #0e0c0a);
+  position: relative; overflow: hidden;
+}
+.tc-screen-inner::before {
+  content: ""; position: absolute; left: 2.2rem; top: 0; bottom: 0;
+  width: 1px; background: var(--terr-deep, #7e4f37); opacity: .4;
+}
+.tc-screen-header { display: flex; align-items: center; gap: .55rem; margin-bottom: 1.4rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(10,10,10,.18); position: relative; z-index: 1; }
+.tc-screen-dot { display: none; }
+.tc-screen-label { margin-left: 0; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .7rem; letter-spacing: .2em; opacity: .6; text-transform: uppercase; color: var(--terr-deep, #7e4f37); font-weight: 700; }
+
+.tc-readout { position: relative; z-index: 1; margin-bottom: 1.6rem; padding-bottom: 1.4rem; border-bottom: 1.5px solid var(--ink, #0e0c0a); }
+.tc-readout-eyebrow {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: .7rem; letter-spacing: .26em;
+  color: var(--terr-deep, #7e4f37); margin-bottom: .65rem; font-weight: 700;
+}
+.tc-blink { display: inline-block; margin-left: .15em; animation: tc-caret 1s steps(2, end) infinite; }
+@keyframes tc-caret { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+.tc-readout-big {
+  font-family: 'Boska', Georgia, serif; font-style: italic; font-weight: 500;
+  font-size: clamp(3.2rem, 6.5vw, 5.4rem); line-height: 1;
+  color: var(--ink, #0e0c0a); letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums;
+}
+.tc-cur { color: var(--terr-deep, #7e4f37); font-style: normal; margin-right: .08em; }
+.tc-per {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: .9rem; font-style: normal;
+  color: rgba(10,10,10,.55); letter-spacing: .08em; margin-left: .3em;
+}
+.tc-readout-detail { font-family: 'Boska', serif; font-style: italic; font-size: .98rem; line-height: 1.5; color: var(--ink, #0e0c0a); opacity: .75; margin-top: .85rem; }
+
+.tc-breakdown { position: relative; z-index: 1; list-style: none; padding: 0; margin: 0 0 1.6rem; display: flex; flex-direction: column; gap: .65rem; }
+.tc-breakdown li {
+  display: grid; grid-template-columns: auto 1fr auto; gap: .65rem; align-items: baseline;
+  font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: .82rem;
+}
+.tc-bd-k { color: rgba(10,10,10,.7); letter-spacing: .02em; }
+.tc-bd-line { border-bottom: 1px dotted rgba(10,10,10,.35); margin-bottom: 4px; }
+.tc-bd-v {
+  color: var(--ink, #0e0c0a); font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-family: 'Boska', serif; font-style: italic; font-size: 1rem;
+}
+.tc-bd-v small { font-size: .65em; color: rgba(10,10,10,.5); font-weight: 400; margin-left: .15em; font-style: normal; font-family: 'JetBrains Mono', monospace; }
+
+.tc-payback {
+  position: relative; z-index: 1; padding: 1.1rem 1.3rem; margin-bottom: 1.5rem;
+  background: var(--paper-warm, #f1ebdd);
+  border-left: 4px solid var(--terr-deep, #7e4f37);
+}
+.tc-payback-k {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: .7rem; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--terr-deep, #7e4f37); opacity: .88; margin-bottom: .3rem; font-weight: 700;
+}
+.tc-payback-v {
+  font-family: 'Boska', Georgia, serif; font-style: italic; font-weight: 500;
+  font-size: 1.85rem; color: var(--ink, #0e0c0a); line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.tc-cta {
+  display: block; text-align: center; padding: 1rem 1.4rem;
+  background: var(--ink, #0e0c0a);
+  color: var(--paper, #faf7f1); text-decoration: none;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: .8rem; letter-spacing: .22em; text-transform: uppercase; font-weight: 700;
+  border-radius: 2px 4px 2px 4px; position: relative; z-index: 1;
+  box-shadow: 0 5px 0 var(--terr-deep, #7e4f37), 0 8px 18px rgba(10,10,10,.22);
+  transition: transform .25s, box-shadow .25s;
+}
+.tc-cta:hover {
+  transform: translateY(-2px);
+  background: var(--terr-deep, #7e4f37);
+  box-shadow: 0 7px 0 var(--ink, #0e0c0a), 0 12px 24px rgba(10,10,10,.3);
+}
+
+/* Pulse when value updates — subtle paper-shadow flash */
+.tc-screen-inner.is-updated { animation: tc-pulse-warm .55s ease-out; }
+@keyframes tc-pulse-warm {
+  0%   { box-shadow: inset 0 0 0 0 rgba(126,79,55,0); }
+  40%  { box-shadow: inset 0 0 60px 0 rgba(126,79,55,.1); }
+  100% { box-shadow: inset 0 0 0 0 rgba(126,79,55,0); }
+}
+
+/* Mobile */
+@media (max-width: 900px) {
+  .truecost { padding: 4.6rem 1.1rem 5.2rem; }
+  .tc-head { margin-bottom: 3rem; }
+  .tc-grid { grid-template-columns: 1fr; gap: 2.6rem; }
+  .tc-screen { position: static; }
+  .tc-chips span { font-size: .76rem; padding: .5rem .8rem; }
+  .tc-q { padding-left: 1.4rem; }
+  .tc-q legend { font-size: 1rem; line-height: 1.4; }
+  .tc-readout-big { font-size: 3rem; }
+  .tc-screen-inner { padding: 1.5rem 1.6rem 1.8rem; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   STRIP · kill every broken decoration. Clean simple layout below.
+   ═══════════════════════════════════════════════════════════════ */
+/* COMPARISON — remove all the over-the-top stuff */
+.fire-stage, .ss-lighter, .ss-lighter-body, .ss-lighter-head,
+.ss-lighter-spark, .ss-lighter-flame, .flame, .smoke-wisp,
+.sc-tape, .sc-tape-tl, .sc-tape-tr, .sc-tape-bl, .sc-tape-br { display: none !important; }
+.sc-card-fb.scorched { background: var(--paper-cool, #fdfbf5) !important; box-shadow: 0 8px 24px rgba(10,10,10,.12) !important; }
+.sc-card-fb.scorched::before { display: none !important; }
+.sc-card-fb { background: #f7f3e7 !important; }
+.sc-card-wix { background: #fbf7eb !important; }
+.sc-card-ss { background: #fffdf5 !important; border: 1.5px solid #0e0c0a !important; box-shadow: 0 14px 32px rgba(10,10,10,.16) !important; }
+/* Disable the dramatic 3D animation */
+.scorecard-stack { perspective: none !important; perspective-origin: unset !important; }
+.scorecard-stack::after { display: none !important; }
+.scorecard-stack.is-dropped .sc-card { animation: none !important; transform: none !important; opacity: 1 !important; filter: none !important; }
+.sc-card { transform: none !important; opacity: 1 !important; filter: none !important; transform-style: flat !important; }
+/* Roast notes — confined ABOVE the card, never overlap content */
+.roast-note { top: -22px !important; left: 50% !important; transform: translateX(-50%) rotate(-3deg) !important; max-width: 76% !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; padding: .4rem .7rem !important; font-size: .76rem !important; opacity: 1 !important; transition: none !important; box-shadow: 0 4px 10px rgba(0,0,0,.15) !important; }
+.roast-note::before { display: none !important; }
+.roast-note small { font-size: .62rem !important; opacity: .55 !important; margin-top: .1rem !important; }
+.scorecard-stack.is-dropped .roast-note { transform: translateX(-50%) rotate(-3deg) !important; transition: none !important; }
+.scorecard-stack .sc-card-wix .roast-note { transform: translateX(-50%) rotate(2deg) !important; }
+.scorecard-stack.is-dropped .sc-card-wix .roast-note { transform: translateX(-50%) rotate(2deg) !important; }
+
+/* Lock the head-row physically — grade CANNOT escape into list area */
+.sc-card .sc-head { position: relative !important; z-index: 2 !important; }
+.sc-card .sc-head-row {
+  display: grid !important;
+  grid-template-columns: auto auto !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100% !important;
+  position: relative !important;
+}
+.sc-card .sc-grade {
+  position: static !important;
+  display: inline-flex !important;
+  align-items: baseline !important;
+  height: auto !important;
+  max-height: 2.2rem !important;
+  line-height: 1 !important;
+  overflow: visible !important;
+}
+.sc-card .sc-grade-letter {
+  font-size: 1.7rem !important;
+  line-height: 1 !important;
+  font-style: italic !important;
+  font-weight: 600 !important;
+  color: var(--terr-deep, #7e4f37) !important;
+}
+.sc-card .sc-brand {
+  position: relative !important;
+  z-index: 1 !important;
+  display: block !important;
+  margin: .35rem 0 0 !important;
+  padding: 0 !important;
+  font-size: 1.3rem !important;
+  line-height: 1.15 !important;
+  font-style: italic !important;
+  word-break: normal !important;
+  overflow-wrap: break-word !important;
+}
+
+/* Footnote dark block fix — was black-on-black */
+.scorecard-footnote {
+  background: transparent !important;
+  color: var(--ink, #0e0c0a) !important;
+  border-top: 1.5px solid rgba(10,10,10,.18) !important;
+  padding: 2rem 0 0 !important;
+  margin-top: 4.5rem !important;
+  max-width: 720px !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  display: flex !important;
+  gap: 1.2rem !important;
+  align-items: flex-start !important;
+}
+.scorecard-footnote p { color: var(--ink, #0e0c0a) !important; opacity: .85 !important; background: transparent !important; }
+.sm-footnote-mark { color: var(--terr-deep, #7e4f37) !important; }
+
+/* Last-updated stamp — kill the dark block, simple text only */
+.last-updated {
+  display: block !important;
+  background: transparent !important;
+  color: rgba(10,10,10,.5) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  font-size: .68rem !important;
+  letter-spacing: .12em !important;
+  margin-top: 1.4rem !important;
+  text-transform: uppercase !important;
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+}
+.last-updated time { color: var(--terr-deep, #7e4f37) !important; font-weight: 600 !important; }
+
 /* THREE-STAT TRIPLET REPLACEMENT — adds 4th irregular value */
 .cvm-strip { grid-template-columns: repeat(4, 1fr) !important; gap: 0 !important; }
 .cvm-strip-item:nth-child(4) { display: flex !important; }
@@ -4947,76 +5273,113 @@ p, li, dd, .lh-fine, .receipt-lede, .sm-deck, .letterhead-sub, .scorecard-footno
 </section>
 
 <!-- ══ LOSS CALCULATOR — cinematic interactive widget ══ -->
-<section class="receipt-section" id="loss-calculator" aria-label="Calculate your loss">
-  <div class="receipt-wall" aria-hidden="true"></div>
-  <div class="receipt-inner">
-    <aside class="receipt-essay reveal-up">
-      <span class="receipt-eyebrow">Cost of standing still &mdash;</span>
-      <h2 class="receipt-h1">A tired<br>site bleeds<br><em>quietly</em>.</h2>
-      <p class="receipt-lede">Drag the three knobs on the receipt. Real maths: 2024 UK Google CTR data and an 8% site&ndash;to&ndash;customer rate for local trades. No funnel, no gated PDF. Just the number.</p>
-      <div class="receipt-margin-note"><span>Margin note &mdash;</span> the average local site I audit scores 38/100. That's roughly £14k/year leaking out the side of the building.</div>
-    </aside>
+<section class="truecost" id="loss-calculator" aria-label="True cost calculator">
+  <div class="tc-inner">
+    <header class="tc-head">
+      <span class="tc-eyebrow">A two-minute reality check</span>
+      <h2 class="tc-h1">What you're<br><em>actually</em> paying<br>your website.</h2>
+      <p class="tc-lede">Pick your real numbers below. The screen on the right adds them up &mdash; platform fees, lost rankings, missed enquiries &mdash; and tells you when £149 pays itself back.</p>
+    </header>
 
-    <div class="receipt-tape reveal-up" style="--d:120ms" role="group" aria-label="Loss calculator">
-      <div class="rt-perf rt-perf-top" aria-hidden="true"></div>
-      <div class="rt-strip">
-        <div class="rt-header">
-          <div class="rt-shop">STATICSWIFT &middot; MANCHESTER</div>
-          <div class="rt-no">REG&nbsp;#04 &nbsp; <span id="rt-date"></span></div>
-          <div class="rt-rule"></div>
-          <div class="rt-title">LOST REVENUE &mdash; ANNUAL</div>
-          <div class="rt-rule rt-rule-dotted"></div>
+    <div class="tc-grid">
+      <!-- LEFT · five real inputs -->
+      <form class="tc-form" autocomplete="off" onsubmit="event.preventDefault()">
+        <fieldset class="tc-q">
+          <legend>1 &middot; What do you pay monthly right now?</legend>
+          <div class="tc-chips" role="radiogroup" aria-label="Monthly fee">
+            <label><input type="radio" name="tc-fee" value="0" data-fee="0"><span>£0 &middot; nothing yet</span></label>
+            <label><input type="radio" name="tc-fee" value="14" data-fee="14" checked><span>£14 &middot; Wix</span></label>
+            <label><input type="radio" name="tc-fee" value="18" data-fee="18"><span>£18 &middot; Squarespace</span></label>
+            <label><input type="radio" name="tc-fee" value="29" data-fee="29"><span>£29 &middot; WordPress + host</span></label>
+            <label><input type="radio" name="tc-fee" value="49" data-fee="49"><span>£49 &middot; agency hosting</span></label>
+            <label><input type="radio" name="tc-fee" value="120" data-fee="120"><span>£100+ &middot; full agency</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="tc-q">
+          <legend>2 &middot; Where do you rank on Google for your main service + town?</legend>
+          <div class="tc-chips" role="radiogroup" aria-label="Google rank">
+            <label><input type="radio" name="tc-rank" value="2" data-rank="2"><span>#1&ndash;3</span></label>
+            <label><input type="radio" name="tc-rank" value="6" data-rank="6"><span>#4&ndash;10</span></label>
+            <label><input type="radio" name="tc-rank" value="14" data-rank="14" checked><span>#11&ndash;30</span></label>
+            <label><input type="radio" name="tc-rank" value="40" data-rank="40"><span>Page 2+</span></label>
+            <label><input type="radio" name="tc-rank" value="100" data-rank="100"><span>No idea</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="tc-q">
+          <legend>3 &middot; How many enquiries per month do you get from your site right now?</legend>
+          <div class="tc-chips" role="radiogroup" aria-label="Enquiries">
+            <label><input type="radio" name="tc-enq" value="0" data-enq="0"><span>None</span></label>
+            <label><input type="radio" name="tc-enq" value="1" data-enq="1" checked><span>1&ndash;2</span></label>
+            <label><input type="radio" name="tc-enq" value="6" data-enq="6"><span>3&ndash;10</span></label>
+            <label><input type="radio" name="tc-enq" value="20" data-enq="20"><span>10+</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="tc-q tc-q-slider">
+          <legend>4 &middot; Average customer value: <strong id="tc-value-out">£120</strong></legend>
+          <input type="range" id="tc-value" class="tc-slider" min="20" max="2000" step="10" value="120" aria-label="Average customer value">
+          <div class="tc-slider-ticks"><span>£20</span><span>£500</span><span>£1k</span><span>£1.5k</span><span>£2k</span></div>
+        </fieldset>
+
+        <fieldset class="tc-q tc-q-slider">
+          <legend>5 &middot; Years you've been on that platform: <strong id="tc-years-out">3</strong></legend>
+          <input type="range" id="tc-years" class="tc-slider" min="0" max="15" step="1" value="3" aria-label="Years on platform">
+          <div class="tc-slider-ticks"><span>0</span><span>5</span><span>10</span><span>15</span></div>
+        </fieldset>
+      </form>
+
+      <!-- RIGHT · cinematic output screen -->
+      <aside class="tc-screen" aria-live="polite">
+        <div class="tc-screen-frame">
+          <div class="tc-screen-bezel"></div>
+          <div class="tc-screen-inner">
+            <div class="tc-screen-header">
+              <span class="tc-screen-dot"></span><span class="tc-screen-dot"></span><span class="tc-screen-dot"></span>
+              <span class="tc-screen-label">truecost.exe &middot; running</span>
+            </div>
+
+            <div class="tc-readout">
+              <div class="tc-readout-eyebrow">YOUR&nbsp;TRUE&nbsp;COST<span class="tc-blink">_</span></div>
+              <div class="tc-readout-big">
+                <span class="tc-cur">£</span><span id="tc-total" data-value="0">0</span><span class="tc-per">/yr</span>
+              </div>
+              <div class="tc-readout-detail" id="tc-detail">Pick options on the left &mdash; the maths runs here.</div>
+            </div>
+
+            <ul class="tc-breakdown">
+              <li>
+                <span class="tc-bd-k">Platform fees</span>
+                <span class="tc-bd-line"></span>
+                <span class="tc-bd-v">&pound;<span id="tc-fees">168</span><small>/yr</small></span>
+              </li>
+              <li>
+                <span class="tc-bd-k">Lost search clicks</span>
+                <span class="tc-bd-line"></span>
+                <span class="tc-bd-v">&pound;<span id="tc-clicks">0</span><small>/yr</small></span>
+              </li>
+              <li>
+                <span class="tc-bd-k">Missed enquiries</span>
+                <span class="tc-bd-line"></span>
+                <span class="tc-bd-v">&pound;<span id="tc-missed">0</span><small>/yr</small></span>
+              </li>
+              <li>
+                <span class="tc-bd-k">Sunk fees so far</span>
+                <span class="tc-bd-line"></span>
+                <span class="tc-bd-v">&pound;<span id="tc-sunk">504</span></span>
+              </li>
+            </ul>
+
+            <div class="tc-payback">
+              <div class="tc-payback-k">£149 pays itself back in</div>
+              <div class="tc-payback-v"><span id="tc-payback-days">21</span> days</div>
+            </div>
+
+            <a href="#contact" class="tc-cta">Stop the leak &rarr;</a>
+          </div>
         </div>
-
-        <ul class="rt-items">
-          <li class="rt-row">
-            <label class="rt-row-k" for="lc-value">Avg&nbsp;customer&nbsp;value</label>
-            <span class="rt-row-v" id="lc-value-display">£80</span>
-            <input type="range" id="lc-value" min="20" max="500" step="5" value="80" class="rt-range" aria-label="Average customer value">
-          </li>
-          <li class="rt-row">
-            <label class="rt-row-k" for="lc-searches">Monthly&nbsp;searches</label>
-            <span class="rt-row-v" id="lc-searches-display">600</span>
-            <input type="range" id="lc-searches" min="50" max="3000" step="50" value="600" class="rt-range" aria-label="Monthly searches">
-          </li>
-          <li class="rt-row">
-            <label class="rt-row-k" for="lc-rank">Current&nbsp;Google&nbsp;rank</label>
-            <span class="rt-row-v" id="lc-rank-display">#8</span>
-            <input type="range" id="lc-rank" min="1" max="20" step="1" value="8" class="rt-range" aria-label="Current Google rank">
-          </li>
-        </ul>
-
-        <div class="rt-rule rt-rule-dotted"></div>
-        <div class="rt-subtotal">
-          <span>SUBTOTAL &middot; lost clicks</span>
-          <span id="lc-detail">to your competitors</span>
-        </div>
-        <div class="rt-rule"></div>
-
-        <div class="rt-total">
-          <span class="rt-total-k">TOTAL</span>
-          <span class="rt-total-v"><span class="rt-cur">£</span><span id="lc-amount" data-value="0">0</span><span class="rt-per">/yr</span></span>
-        </div>
-        <div class="rt-rule rt-rule-double"></div>
-
-        <div class="rt-footer">
-          <div class="rt-thanks">&mdash; THANK YOU FOR CALCULATING &mdash;</div>
-          <div class="rt-barcode" aria-hidden="true"></div>
-          <div class="rt-barcode-no">**** &nbsp; STOP&nbsp;THE&nbsp;LEAK &nbsp; ****</div>
-          <a href="#contact" class="rt-cta">Stop&nbsp;the&nbsp;bleeding &nbsp;&rarr;</a>
-        </div>
-      </div>
-      <div class="rt-perf rt-perf-bot" aria-hidden="true"></div>
-      <!-- coins physically fall out the bottom when you change the calc -->
-      <div class="coin-stage" id="coinStage" aria-hidden="true"></div>
-      <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><circle id="lc-ring" cx="0" cy="0" r="0"/></svg>
-    </div>
-
-    <div class="receipt-pinboard reveal-up" style="--d:240ms" aria-hidden="true">
-      <div class="pin-note pin-1"><span class="pin-tape"></span>Bristol plumber &middot; rank #9<br><b>&minus;&nbsp;£14,400</b></div>
-      <div class="pin-note pin-2"><span class="pin-tape"></span>Leeds barber &middot; rank #7<br><b>&minus;&nbsp;£8,200</b></div>
-      <div class="pin-note pin-3"><span class="pin-tape"></span>Manchester PT &middot; rank #12<br><b>&minus;&nbsp;£21,600</b></div>
-      <div class="pin-note pin-4"><span class="pin-tape"></span>Sheffield electrician &middot; rank #10<br><b>&minus;&nbsp;£18,200</b></div>
+      </aside>
     </div>
   </div>
 </section>
@@ -5039,9 +5402,9 @@ p, li, dd, .lh-fine, .receipt-lede, .sm-deck, .letterhead-sub, .scorecard-footno
 
     <div class="letterhead-headline reveal-up">
       <span class="letterhead-eyebrow">A free</span>
-      <h2 class="letterhead-h1"><span class="lh-type" data-target="audit." aria-label="audit."></span><span class="lh-caret" aria-hidden="true"></span></h2>
+      <h2 class="letterhead-h1"><em>audit</em>.</h2>
       <div class="letterhead-rule" aria-hidden="true"></div>
-      <p class="letterhead-sub">Type your URL on the dotted line below. The findings print underneath. No signup, no card, no follow-up sequence — unless you ask for one.</p>
+      <p class="letterhead-sub">Paste your URL. I'll score it 0&ndash;100 against what Google rewards and show you the three things that would move the needle most. No signup, no card, no follow-up &mdash; unless you ask.</p>
     </div>
 
     <form class="letterhead-form" id="auditForm" onsubmit="runPublicAudit(event)">
@@ -6438,7 +6801,7 @@ const MOCK_SITES = {
     url: 'peakfitness.uk',
     brand: 'PEAK FITNESS',
     nav: ['Classes','Coaches','Pricing','Join'],
-    cta: 'Start Trial',
+    cta: 'Book a session',
     heroImg: 'https://images.pexels.com/photos/703016/pexels-photo-703016.jpeg?auto=compress&cs=tinysrgb&w=1600',
     tag: 'Birmingham · 1-on-1 PT',
     h1: 'Train harder.<br>Live better.',
@@ -6449,8 +6812,8 @@ const MOCK_SITES = {
       { img:'https://images.pexels.com/photos/703016/pexels-photo-703016.jpeg?auto=compress&cs=tinysrgb&w=600', name:'1-on-1 PT', desc:'Tailored programming.', price:'£60/hr' }
     ],
     gallery: ['https://images.pexels.com/photos/1547248/pexels-photo-1547248.jpeg?auto=compress&cs=tinysrgb&w=400','https://images.pexels.com/photos/3253501/pexels-photo-3253501.jpeg?auto=compress&cs=tinysrgb&w=400','https://images.pexels.com/photos/3768916/pexels-photo-3768916.jpeg?auto=compress&cs=tinysrgb&w=400','https://images.pexels.com/photos/4720593/pexels-photo-4720593.jpeg?auto=compress&cs=tinysrgb&w=400'],
-    closer: 'Start your journey',
-    closerSub: 'First consultation is on us.',
+    closer: 'Book your first session',
+    closerSub: 'Free 30-min chat in the gym. Bring trainers.',
     foot: 'Unit 7, Birmingham · Open 5am–10pm'
   },
   florist: {
@@ -6516,13 +6879,13 @@ window.openWorkModal = (key) => {
           <p>${m.p}</p>
           <div class="mock-cta-row">
             <a class="btn btn-cyan" href="#">${m.cta} →</a>
-            <a class="btn btn-ghost-d" href="#">Learn more</a>
+            <a class="btn btn-ghost-d" href="#">See prices</a>
           </div>
         </div>
       </section>
       <section class="mock-section">
-        <h2>Our services</h2>
-        <p class="mock-lead">Honest pricing, expert craft. Every booking includes follow-up advice — we want you back, not just billed.</p>
+        <h2>What we do</h2>
+        <p class="mock-lead">Real prices, no hidden bookings. Every appointment includes follow-up &mdash; we'd rather see you again than just bill you once.</p>
         <div class="mock-services">
           ${m.services.map(s => `
             <div class="mock-svc">
@@ -7463,90 +7826,130 @@ window.sschatSend = function(ev){
    LOSS CALCULATOR v2 — cinematic. Counter eases up, ring fills,
    dial trails follow the thumb, dragging state pulses readout.
    ════════════════════════════════════════════════════════════════ */
-(function lossCalcV2(){
-  const v = document.getElementById('lc-value');
-  const s = document.getElementById('lc-searches');
-  const r = document.getElementById('lc-rank');
-  const amountEl = document.getElementById('lc-amount');
-  const detailEl = document.getElementById('lc-detail');
-  const ringEl = document.getElementById('lc-ring');
-  if (!v || !s || !r || !amountEl) return;
+(function trueCostCalc(){
+  const sec = document.getElementById('loss-calculator');
+  if (!sec) return;
+  const valueEl  = document.getElementById('tc-value');
+  const yearsEl  = document.getElementById('tc-years');
+  const totalEl  = document.getElementById('tc-total');
+  const detailEl = document.getElementById('tc-detail');
+  const feesEl   = document.getElementById('tc-fees');
+  const clicksEl = document.getElementById('tc-clicks');
+  const missedEl = document.getElementById('tc-missed');
+  const sunkEl   = document.getElementById('tc-sunk');
+  const paybackEl= document.getElementById('tc-payback-days');
+  const valueOut = document.getElementById('tc-value-out');
+  const yearsOut = document.getElementById('tc-years-out');
+  const screen   = sec.querySelector('.tc-screen-inner');
+  if (!valueEl || !totalEl) return;
 
-  // Real 2024 Google CTR-by-position data
-  const ctrByRank = [0, 0.275, 0.158, 0.107, 0.072, 0.051, 0.04, 0.032, 0.026, 0.022, 0.019, 0.015, 0.012, 0.01, 0.008, 0.007, 0.006, 0.005, 0.004, 0.003, 0.002];
+  // 2024 UK Google CTR-by-position (averaged, organic only)
+  const ctrByRank = [0, 0.275, 0.158, 0.107, 0.072, 0.051, 0.040, 0.032, 0.026, 0.022, 0.019, 0.015, 0.012, 0.010, 0.008, 0.007, 0.006, 0.005, 0.004, 0.003, 0.002];
   const PROPER_CTR = 0.275;
-  const CONVERSION_RATE = 0.08;
+  const CONVERSION_RATE = 0.08; // visit-to-customer for local trades
 
-  // Easing counter — animates from current to target over ~700ms
-  let displayValue = 0, targetValue = 0, rafId = null;
-  function tweenCounter(){
-    const diff = targetValue - displayValue;
-    if (Math.abs(diff) < 1) {
-      displayValue = targetValue;
-      amountEl.textContent = Math.round(displayValue).toLocaleString();
-      rafId = null;
-      return;
-    }
-    displayValue += diff * 0.18; // ease
-    amountEl.textContent = Math.round(displayValue).toLocaleString();
-    rafId = requestAnimationFrame(tweenCounter);
+  let display = { total: 0, fees: 0, clicks: 0, missed: 0, sunk: 0, payback: 0 };
+  let target  = { total: 0, fees: 0, clicks: 0, missed: 0, sunk: 0, payback: 0 };
+  let rafId = null;
+
+  function tween(){
+    let stillAnimating = false;
+    Object.keys(target).forEach(k => {
+      const diff = target[k] - display[k];
+      if (Math.abs(diff) < 1) { display[k] = target[k]; }
+      else { display[k] += diff * 0.18; stillAnimating = true; }
+    });
+    totalEl.textContent   = Math.round(display.total).toLocaleString();
+    feesEl.textContent    = Math.round(display.fees).toLocaleString();
+    clicksEl.textContent  = Math.round(display.clicks).toLocaleString();
+    missedEl.textContent  = Math.round(display.missed).toLocaleString();
+    sunkEl.textContent    = Math.round(display.sunk).toLocaleString();
+    paybackEl.textContent = Math.round(display.payback).toLocaleString();
+    rafId = stillAnimating ? requestAnimationFrame(tween) : null;
   }
 
-  function updateTrail(el) {
-    const pct = (el.value - el.min) / (el.max - el.min);
-    const trail = el.parentElement.querySelector('.lc-dial-trail');
-    if (trail) trail.style.width = (pct * 100) + '%';
+  function getChecked(name, attr) {
+    const el = sec.querySelector('input[name="' + name + '"]:checked');
+    if (!el) return 0;
+    return parseFloat(el.dataset[attr] || el.value) || 0;
+  }
+
+  function updateSliderFill(el) {
+    const pct = (el.value - el.min) / (el.max - el.min) * 100;
+    el.style.setProperty('--p', pct + '%');
+    el.style.background = 'linear-gradient(90deg, #d9a071 ' + pct + '%, rgba(250,247,241,.15) ' + pct + '%)';
   }
 
   function calc(){
-    const value = parseInt(v.value);
-    const searches = parseInt(s.value);
-    const rank = parseInt(r.value);
-    document.getElementById('lc-value-display').textContent = '£' + value.toLocaleString();
-    document.getElementById('lc-searches-display').textContent = searches.toLocaleString();
-    document.getElementById('lc-rank-display').textContent = '#' + rank;
-    const currentCtr = ctrByRank[rank] || 0.003;
-    const currentCustomersPerMonth = searches * currentCtr * CONVERSION_RATE;
-    const potentialCustomersPerMonth = searches * PROPER_CTR * CONVERSION_RATE;
-    const lostPerMonth = Math.max(0, potentialCustomersPerMonth - currentCustomersPerMonth);
-    const lostRevenuePerYear = Math.round(lostPerMonth * 12 * value);
-    // Drive counter via easing tween
-    const prev = targetValue;
-    targetValue = lostRevenuePerYear;
-    if (!rafId) rafId = requestAnimationFrame(tweenCounter);
-    // COIN DROP — only when loss jumps up meaningfully (avoid spam on tiny moves)
-    if (typeof window.ssDropCoins === 'function' && lostRevenuePerYear > prev + 1500) {
-      const intensity = Math.min(1, (lostRevenuePerYear - prev) / 20000);
-      window.ssDropCoins(intensity);
-    }
-    // Severity colouring
-    amountEl.classList.remove('high', 'severe');
-    if (lostRevenuePerYear > 50000) amountEl.classList.add('severe');
-    else if (lostRevenuePerYear > 10000) amountEl.classList.add('high');
-    // Ring fill — based on "% of potential lost"
-    const lossPct = potentialCustomersPerMonth > 0 ? Math.min(1, lostPerMonth / potentialCustomersPerMonth) : 0;
-    if (ringEl) {
-      const C = 578; // 2 * Pi * r where r=92
-      ringEl.style.strokeDashoffset = (C - (C * lossPct)).toFixed(1);
-      ringEl.style.stroke = lostRevenuePerYear > 50000 ? '#a86c4d' : '#c89472';
-    }
-    const lostCustomersPerYear = Math.round(lostPerMonth * 12);
-    detailEl.textContent = lostCustomersPerYear + ' customers per year going to competitors — for a £149 fix';
-    // Track
-    if (typeof ssTrack === 'function') ssTrack('losscalc:dragged', { lost: lostRevenuePerYear, rank });
+    const fee   = getChecked('tc-fee', 'fee');
+    const rank  = getChecked('tc-rank', 'rank') || 14;
+    const enq   = getChecked('tc-enq', 'enq');
+    const value = parseInt(valueEl.value);
+    const years = parseInt(yearsEl.value);
+
+    valueOut.textContent = '£' + value.toLocaleString();
+    yearsOut.textContent = years;
+    updateSliderFill(valueEl);
+    updateSliderFill(yearsEl);
+
+    // 1. Platform fees — annual + sunk so far
+    const feesPerYear = fee * 12;
+    const sunkFees    = fee * 12 * years;
+
+    // 2. Lost clicks — based on rank vs top-3 ideal
+    // Assume small biz has 600 monthly searches for their service+town (UK avg)
+    const monthlySearches = 600;
+    const currentCtr = ctrByRank[Math.min(20, Math.round(rank))] || 0.003;
+    const currentClicks = monthlySearches * currentCtr;
+    const idealClicks   = monthlySearches * PROPER_CTR;
+    const lostClicks    = Math.max(0, idealClicks - currentClicks);
+    const lostClicksValue = lostClicks * CONVERSION_RATE * value * 12;
+
+    // 3. Missed enquiries — gap between actual and "if site converted at 4%"
+    // 4% conversion of clicks the site DOES get is realistic; current enq vs target
+    const idealEnq = currentClicks * 0.04;
+    const enqGap   = Math.max(0, idealEnq - enq) * value * 12;
+
+    // 4. Total annual leak
+    const total = Math.round(feesPerYear + lostClicksValue + enqGap);
+
+    // 5. Payback time for £149 in days
+    const payback = total > 0 ? Math.max(1, Math.round(149 / (total / 365))) : 365;
+
+    target.total   = total;
+    target.fees    = Math.round(feesPerYear);
+    target.clicks  = Math.round(lostClicksValue);
+    target.missed  = Math.round(enqGap);
+    target.sunk    = Math.round(sunkFees);
+    target.payback = payback;
+
+    if (!rafId) rafId = requestAnimationFrame(tween);
+
+    // Detail copy — varies by total
+    let detail;
+    if (total < 1500) detail = 'Not much leaking — but the platform fee adds up to ' + '£' + sunkFees.toLocaleString() + ' sunk so far. A one-off £149 site stops that.';
+    else if (total < 8000) detail = 'A medium leak. Mostly missed search traffic. £149 once buys back the rank.';
+    else if (total < 20000) detail = 'Big leak. Your platform + your Google rank are quietly costing you a holiday every year.';
+    else detail = 'Severe. This is more than the cost of a part-time employee. The rebuild pays itself back almost weekly.';
+    detailEl.textContent = detail;
+
+    screen.classList.remove('is-updated');
+    void screen.offsetWidth;
+    screen.classList.add('is-updated');
+
+    if (typeof ssTrack === 'function') ssTrack('truecost:updated', { total, rank, fee });
   }
 
-  // Dial dragging state — adds .dragging class so readout pulses
-  [v, s, r].forEach(el => {
-    el.addEventListener('input', () => { calc(); updateTrail(el); el.parentElement.classList.add('dragging'); });
-    el.addEventListener('change', () => el.parentElement.classList.remove('dragging'));
-    el.addEventListener('pointerdown', () => el.parentElement.classList.add('dragging'));
-    el.addEventListener('pointerup',   () => el.parentElement.classList.remove('dragging'));
-    el.addEventListener('pointerleave',() => el.parentElement.classList.remove('dragging'));
-    updateTrail(el);
+  // Hook all inputs
+  sec.querySelectorAll('input[type="radio"]').forEach(el => el.addEventListener('change', calc));
+  [valueEl, yearsEl].forEach(el => {
+    el.addEventListener('input', calc);
+    el.addEventListener('change', calc);
   });
-  // Initial calc on next frame so the ring animates from 0
-  setTimeout(calc, 600);
+  // Initial render
+  updateSliderFill(valueEl);
+  updateSliderFill(yearsEl);
+  setTimeout(calc, 100);
 })();
 
 /* ════════════════════════════════════════════════════════════════
@@ -8024,14 +8427,53 @@ if (/\/(thanks|sent|confirmed)/i.test(location.pathname)) {
   });
 })();
 
-/* TYPEWRITER RACE — audit headline gets typed live with a typo + fix.
-   Caret blinks. Mistypes "aufit", backspaces "fi", corrects to "dit".
-   Then 250ms later fires the stamp-impact on the RUN AUDIT button. */
+/* Audit form — belt-and-braces direct click handler as fallback
+   in case the onsubmit attribute fails to wire (some browsers strip
+   inline handlers under strict CSP). */
+(function auditClickFallback(){
+  const form = document.getElementById('auditForm');
+  const btn  = document.getElementById('auditBtn');
+  if (!form || !btn) return;
+  // Direct click handler that calls runPublicAudit explicitly
+  btn.addEventListener('click', (e) => {
+    if (typeof window.runPublicAudit === 'function') {
+      e.preventDefault();
+      window.runPublicAudit(e);
+    }
+  });
+  // Also handle Enter key in the input
+  const input = document.getElementById('auditUrl');
+  if (input) {
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && typeof window.runPublicAudit === 'function') {
+        e.preventDefault();
+        window.runPublicAudit(e);
+      }
+    });
+  }
+})();
+
+/* Typewriter disabled — headline now renders cleanly via static HTML.
+   Stamp impact still fires when section enters view. */
 (function typewriterAudit(){
   const target = document.querySelector('.lh-type');
-  const caret  = document.querySelector('.lh-caret');
   const section = document.querySelector('.audit-letterhead');
-  if (!target || !section) return;
+  if (!section) return;
+  // Just fire the stamp impact once section is in view
+  if (target === null && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries, obs) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          section.classList.add('stamp-fired');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    io.observe(section);
+    return;
+  }
+  if (!target) return;
+  const caret = document.querySelector('.lh-caret');
 
   // clean typewriter — single confident pass, no typo dance
   const seq = [
