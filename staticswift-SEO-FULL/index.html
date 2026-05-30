@@ -2677,6 +2677,246 @@ body { font-family: 'Switzer', -apple-system, BlinkMacSystemFont, sans-serif !im
   --terr-pale: #e3b274;
 }
 
+/* ════════════════════════════════════════════════════════
+   QUIRKY MOMENTS · the bits that get screenshotted
+   ════════════════════════════════════════════════════════ */
+
+/* ── TYPEWRITER caret + impact stamp + ink puff + shake ── */
+.lh-caret {
+  display: inline-block; width: 0.08em; height: .9em; background: var(--ink);
+  vertical-align: -0.05em; margin-left: .06em; animation: caret-blink 1.05s steps(1) infinite;
+}
+@keyframes caret-blink { 0%, 50% { opacity: 1; } 50.1%, 100% { opacity: 0; } }
+.lh-caret.is-done { animation: none; opacity: 0; }
+
+/* Stamp impact — fires when .audit-letterhead gets .stamp-fired */
+.audit-letterhead.stamp-fired .lh-stamp { animation: stamp-slam .55s cubic-bezier(.34,1.6,.6,1); }
+@keyframes stamp-slam {
+  0%   { transform: rotate(-2deg) translateY(-40px) scale(1.4); }
+  35%  { transform: rotate(-2deg) translateY(8px)  scale(1.05); }
+  50%  { transform: rotate(-2deg) translateY(-4px) scale(.96); }
+  100% { transform: rotate(-2deg) translateY(0)    scale(1); }
+}
+/* Ink-mist puff around the stamp */
+.lh-stamp-wrap { position: relative; display: inline-block; }
+.lh-stamp-wrap::before, .lh-stamp-wrap::after {
+  content: ""; position: absolute; left: 50%; top: 60%;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--terr-deep); opacity: 0; pointer-events: none;
+}
+.audit-letterhead.stamp-fired .lh-stamp-wrap::before {
+  animation: ink-puff-l .7s ease-out forwards .35s;
+}
+.audit-letterhead.stamp-fired .lh-stamp-wrap::after {
+  animation: ink-puff-r .7s ease-out forwards .35s;
+}
+@keyframes ink-puff-l {
+  0%   { opacity: 0; transform: translate(-50%, 0) scale(.4); }
+  20%  { opacity: .9; }
+  100% { opacity: 0; transform: translate(-180%, -70px) scale(2.4); }
+}
+@keyframes ink-puff-r {
+  0%   { opacity: 0; transform: translate(-50%, 0) scale(.4); }
+  20%  { opacity: .9; }
+  100% { opacity: 0; transform: translate(80%, -90px) scale(2); }
+}
+/* Page-shake on stamp impact */
+.audit-letterhead.stamp-fired .letterhead-inner { animation: page-shake .35s ease-out .25s; }
+@keyframes page-shake {
+  0%, 100% { transform: translate(0, 0); }
+  20%      { transform: translate(2px, -1px); }
+  40%      { transform: translate(-2px, 1px); }
+  60%      { transform: translate(1px, -2px) rotate(.15deg); }
+  80%      { transform: translate(-1px, 1px); }
+}
+
+/* ── COIN DROP — money physically falls out the receipt bottom ── */
+.coin-stage {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 200px;
+  pointer-events: none; overflow: visible; z-index: 5;
+}
+.coin {
+  position: absolute; bottom: 100%; left: 50%;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, var(--terr-pale), var(--terr) 55%, var(--terr-deep) 100%);
+  box-shadow: inset 0 -3px 4px rgba(0,0,0,.35), inset 0 2px 3px rgba(255,255,255,.4), 0 2px 6px rgba(0,0,0,.5);
+  font-family: 'Boska', serif; font-style: italic; font-weight: 700;
+  color: rgba(10,10,10,.65); font-size: 14px; line-height: 26px; text-align: center;
+  will-change: transform;
+  animation: coin-fall var(--dur, 1.6s) cubic-bezier(.4,.05,.7,1) forwards;
+}
+.coin::before { content: "£"; }
+@keyframes coin-fall {
+  0%   { transform: translate(var(--dx, 0px), -10px) rotate(0); opacity: 0; }
+  10%  { opacity: 1; }
+  65%  { transform: translate(calc(var(--dx, 0px) * 1.4), 110px) rotate(720deg); }
+  72%  { transform: translate(calc(var(--dx, 0px) * 1.4), 80px)  rotate(800deg); }
+  80%  { transform: translate(calc(var(--dx, 0px) * 1.6), 120px) rotate(850deg); }
+  87%  { transform: translate(calc(var(--dx, 0px) * 1.6), 100px) rotate(900deg); }
+  100% { transform: translate(calc(var(--dx, 0px) * 1.7), 150px) rotate(930deg); opacity: .9; }
+}
+/* Receipt position becomes relative so coin-stage anchors inside it */
+.receipt-tape { position: relative; }
+
+/* ── FB CARD ON FIRE · lit by a SwiftStatic-branded lighter ── */
+.sc-card-fb { overflow: visible; }
+.fire-stage {
+  position: absolute; inset: 0; pointer-events: none; overflow: visible; z-index: 4;
+}
+.fire-stage.lit .ss-lighter,
+.fire-stage.lit .flame,
+.fire-stage.lit .smoke-wisp { /* visible after .lit applied */ }
+
+/* The lighter — terracotta body with SWIFT branding */
+.ss-lighter {
+  position: absolute; right: -90px; bottom: 50px;
+  width: 70px; height: 110px; transform-origin: 100% 100%;
+  opacity: 0;
+}
+.fire-stage.lit .ss-lighter { animation: lighter-fly-in 1.2s cubic-bezier(.34,1.2,.6,1) forwards; }
+@keyframes lighter-fly-in {
+  0%   { opacity: 0; right: -180px; transform: translateY(80px) rotate(40deg); }
+  60%  { opacity: 1; right: -10px;  transform: translateY(0)    rotate(-12deg); }
+  100% { opacity: 1; right: -10px;  transform: translateY(0)    rotate(-12deg); }
+}
+.ss-lighter-body {
+  position: absolute; left: 0; bottom: 0; width: 70px; height: 78px;
+  background: linear-gradient(180deg, var(--terr) 0%, var(--terr-deep) 100%);
+  border-radius: 6px 6px 4px 4px;
+  box-shadow: inset -6px 0 12px rgba(0,0,0,.35), inset 6px 0 8px rgba(255,255,255,.15), 0 6px 14px rgba(0,0,0,.45);
+}
+.ss-lighter-label {
+  position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%);
+  font-family: 'Boska', serif; font-style: italic; font-weight: 700;
+  font-size: 11px; color: var(--paper); text-align: center; letter-spacing: .04em;
+  line-height: 1.05; text-shadow: 0 1px 0 rgba(0,0,0,.4);
+}
+.ss-lighter-label small { display: block; font-family: 'JetBrains Mono', monospace;
+  font-style: normal; font-size: 6.5px; letter-spacing: .25em; opacity: .8; margin-top: 2px; }
+.ss-lighter-head {
+  position: absolute; left: 14px; bottom: 78px; width: 42px; height: 18px;
+  background: linear-gradient(180deg, #c8b070, #8a6840);
+  border-radius: 3px 3px 0 0;
+  box-shadow: inset 0 -2px 3px rgba(0,0,0,.35), inset 0 2px 2px rgba(255,255,255,.3);
+}
+.ss-lighter-spark {
+  position: absolute; left: 28px; bottom: 96px; width: 14px; height: 8px;
+  background: linear-gradient(180deg, #d4b878, #9a7a48);
+  border-radius: 50% 50% 4px 4px;
+}
+.ss-lighter-flame {
+  position: absolute; left: 30px; bottom: 102px; width: 10px; height: 0;
+  background: radial-gradient(ellipse at 50% 100%, #ffd87a, var(--terr) 60%, transparent 90%);
+  border-radius: 50% 50% 20% 20%;
+  filter: blur(.4px);
+  transform-origin: 50% 100%;
+  opacity: 0;
+}
+.fire-stage.lit .ss-lighter-flame { animation: thumb-flick 1s ease-out forwards 1.2s; }
+@keyframes thumb-flick {
+  0%   { height: 0;  opacity: 0; transform: scaleY(0); }
+  20%  { height: 4px; opacity: 1; transform: scaleY(1); }
+  30%  { height: 22px; transform: scaleY(1) translateY(0); }
+  40%  { height: 18px; transform: scaleY(1) translateY(0) skewX(-3deg); }
+  60%  { height: 26px; transform: scaleY(1) translateY(0) skewX(2deg); }
+  80%  { height: 24px; }
+  100% { height: 26px; opacity: 1; }
+}
+
+/* The CARD FIRE — flames lick up from bottom-right corner of FB card */
+.flame {
+  position: absolute; bottom: 0;
+  width: 36px; height: 0;
+  background: radial-gradient(ellipse 60% 80% at 50% 100%, #ffe188 0%, #f4a93c 35%, var(--terr) 60%, var(--terr-deep) 80%, transparent 95%);
+  border-radius: 50% 50% 18% 18% / 60% 60% 18% 18%;
+  filter: blur(.6px);
+  transform-origin: 50% 100%;
+  opacity: 0;
+  mix-blend-mode: multiply;
+}
+.flame-1 { right: 6%;  width: 56px; }
+.flame-2 { right: 22%; width: 42px; }
+.flame-3 { right: 40%; width: 36px; }
+.flame-4 { right: 60%; width: 28px; }
+.flame-5 { right: 78%; width: 22px; }
+.fire-stage.lit .flame-1 { animation: flame-grow 2.2s cubic-bezier(.4,0,.4,1) forwards 2.1s, flame-flicker 1.7s ease-in-out infinite 4.3s; }
+.fire-stage.lit .flame-2 { animation: flame-grow 2s cubic-bezier(.4,0,.4,1) forwards 2.4s,   flame-flicker 1.5s ease-in-out infinite 4.4s; }
+.fire-stage.lit .flame-3 { animation: flame-grow 1.8s cubic-bezier(.4,0,.4,1) forwards 2.7s, flame-flicker 1.4s ease-in-out infinite 4.5s; }
+.fire-stage.lit .flame-4 { animation: flame-grow 1.6s cubic-bezier(.4,0,.4,1) forwards 3.0s, flame-flicker 1.3s ease-in-out infinite 4.6s; }
+.fire-stage.lit .flame-5 { animation: flame-grow 1.5s cubic-bezier(.4,0,.4,1) forwards 3.3s, flame-flicker 1.2s ease-in-out infinite 4.8s; }
+@keyframes flame-grow {
+  0%   { opacity: 0; height: 0; }
+  20%  { opacity: 1; height: 30px; }
+  60%  { height: 80px; }
+  100% { opacity: 1; height: 120px; }
+}
+@keyframes flame-flicker {
+  0%, 100% { transform: scale(1, 1)    skewX(-2deg); }
+  25%      { transform: scale(.96, 1.08) skewX(3deg); }
+  50%      { transform: scale(1.04, .94) skewX(-3deg); }
+  75%      { transform: scale(.94, 1.06) skewX(2deg); }
+}
+/* Smoke wisps rising above the flames */
+.smoke-wisp {
+  position: absolute; bottom: 80px; width: 60px; height: 60px;
+  background: radial-gradient(circle, rgba(80,70,65,.4) 0%, rgba(80,70,65,.1) 50%, transparent 80%);
+  border-radius: 50%;
+  filter: blur(6px);
+  opacity: 0;
+}
+.smoke-1 { right: 10%; }
+.smoke-2 { right: 35%; }
+.smoke-3 { right: 60%; }
+.fire-stage.lit .smoke-1 { animation: smoke-rise 4s ease-out infinite 4.5s; }
+.fire-stage.lit .smoke-2 { animation: smoke-rise 4.4s ease-out infinite 5s; }
+.fire-stage.lit .smoke-3 { animation: smoke-rise 4.2s ease-out infinite 5.5s; }
+@keyframes smoke-rise {
+  0%   { opacity: 0; transform: translate(0, 0) scale(.6); }
+  20%  { opacity: .7; }
+  100% { opacity: 0; transform: translate(20px, -240px) scale(1.8); }
+}
+/* Char marks on the card edge */
+.fire-stage.lit ~ .sc-list,
+.sc-card-fb .fire-stage.lit + * { /* placeholder; not needed */ }
+.sc-card-fb {
+  transition: background .6s, box-shadow .6s;
+}
+.sc-card-fb.scorched {
+  background-color: #ebe1ce;
+  box-shadow: 0 -10px 30px rgba(168,108,77,.4) inset, 0 22px 40px rgba(10,10,10,.2);
+}
+.sc-card-fb.scorched::before {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 50%;
+  background: linear-gradient(180deg, transparent, rgba(80,40,20,.18) 70%, rgba(40,20,10,.32));
+  pointer-events: none; z-index: 2;
+}
+
+/* ── ROAST POST-IT REVIEWS — flutter down onto each card ── */
+.roast-note {
+  position: absolute; top: -28px; left: 50%; transform: translate(-50%, -120%) rotate(-18deg);
+  background: #fff7c2; color: var(--ink);
+  padding: .55rem .75rem .5rem;
+  font-family: 'Boska', serif; font-style: italic;
+  font-size: .85rem; line-height: 1.25;
+  box-shadow: 0 6px 14px rgba(0,0,0,.22), 0 1px 2px rgba(0,0,0,.18);
+  white-space: nowrap; z-index: 6;
+  opacity: 0;
+  transition: opacity .5s ease, transform 1.1s cubic-bezier(.34,1.5,.55,1);
+}
+.roast-note::before {
+  content: ""; position: absolute; top: -8px; left: 50%; transform: translateX(-50%) rotate(-3deg);
+  width: 52px; height: 14px;
+  background: rgba(227,178,116,.7);
+  border-left: 1px dashed rgba(10,10,10,.25); border-right: 1px dashed rgba(10,10,10,.25);
+}
+.roast-note .stars { font-family: 'Switzer', sans-serif; font-style: normal; color: var(--terr-deep); font-weight: 700; margin-right: .35rem; letter-spacing: -.05em; }
+.roast-note small { display: block; font-family: 'JetBrains Mono', monospace; font-style: normal; font-size: .62rem; letter-spacing: .1em; opacity: .65; margin-top: .15rem; text-transform: uppercase; }
+.roast-note-good { background: #c8e6c8; }
+.scorecard-stack.is-dropped .roast-note { opacity: 1; transform: translate(-50%, -45%) rotate(var(--roast-rot, -6deg)); }
+.scorecard-stack.is-dropped .sc-card-fb  .roast-note { transition-delay: 1.6s; --roast-rot: -6deg; }
+.scorecard-stack.is-dropped .sc-card-wix .roast-note { transition-delay: 1.85s; --roast-rot: 4deg; }
+.scorecard-stack.is-dropped .sc-card-ss  .roast-note { transition-delay: 2.1s; --roast-rot: -3deg; }
+
 /* === CINEMATIC TRANSITIONS — choreographed multi-layer reveals === */
 @keyframes letter-drop  { 0% { opacity:0; transform: translateY(-1.2em) rotate(-8deg) scale(1.3); filter: blur(8px); } 60% { filter: blur(0); } 100% { opacity:1; transform:none; filter: blur(0); } }
 @keyframes line-draw    { from { transform: scaleX(0); } to { transform: scaleX(1); } }
@@ -4252,6 +4492,8 @@ body { font-family: 'Switzer', -apple-system, BlinkMacSystemFont, sans-serif !im
         </div>
       </div>
       <div class="rt-perf rt-perf-bot" aria-hidden="true"></div>
+      <!-- coins physically fall out the bottom when you change the calc -->
+      <div class="coin-stage" id="coinStage" aria-hidden="true"></div>
       <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><circle id="lc-ring" cx="0" cy="0" r="0"/></svg>
     </div>
 
@@ -4282,7 +4524,7 @@ body { font-family: 'Switzer', -apple-system, BlinkMacSystemFont, sans-serif !im
 
     <div class="letterhead-headline reveal-up">
       <span class="letterhead-eyebrow">A free</span>
-      <h2 class="letterhead-h1"><em>audit</em>.</h2>
+      <h2 class="letterhead-h1"><span class="lh-type" data-target="audit." aria-label="audit."></span><span class="lh-caret" aria-hidden="true"></span></h2>
       <div class="letterhead-rule" aria-hidden="true"></div>
       <p class="letterhead-sub">Type your URL on the dotted line below. The findings print underneath. No signup, no card, no follow-up sequence — unless you ask for one.</p>
     </div>
@@ -4291,7 +4533,7 @@ body { font-family: 'Switzer', -apple-system, BlinkMacSystemFont, sans-serif !im
       <label class="lh-line">
         <span class="lh-line-k">Subject &mdash;</span>
         <input type="url" id="auditUrl" placeholder="yourbusiness.co.uk" required autocomplete="url" class="lh-line-input">
-        <button type="submit" class="lh-stamp" id="auditBtn"><span>RUN&nbsp;AUDIT</span></button>
+        <span class="lh-stamp-wrap"><button type="submit" class="lh-stamp" id="auditBtn"><span>RUN&nbsp;AUDIT</span></button></span>
       </label>
       <div class="lh-fine">No card &middot; No email &middot; Real findings, not a sales pitch.</div>
       <div class="audit-live" id="auditLive" aria-live="polite"></div>
@@ -4321,6 +4563,30 @@ body { font-family: 'Switzer', -apple-system, BlinkMacSystemFont, sans-serif !im
       <article class="sc-card sc-card-fb reveal-up" style="--d:0ms" role="listitem">
         <span class="sc-tape sc-tape-tl" aria-hidden="true"></span>
         <span class="sc-tape sc-tape-br" aria-hidden="true"></span>
+        <!-- Roast post-it: 1-star Karen -->
+        <div class="roast-note" aria-hidden="true">
+          <span class="stars">&#9733;</span>"Wouldn't bother again."
+          <small>&mdash; Karen, 2&nbsp;weeks ago</small>
+        </div>
+        <!-- The lighter that ignites this card + flames + smoke -->
+        <div class="fire-stage" aria-hidden="true">
+          <div class="ss-lighter">
+            <div class="ss-lighter-body">
+              <div class="ss-lighter-label">Static<small>SWIFT&nbsp;CO.</small></div>
+            </div>
+            <div class="ss-lighter-head"></div>
+            <div class="ss-lighter-spark"></div>
+            <div class="ss-lighter-flame"></div>
+          </div>
+          <div class="flame flame-1"></div>
+          <div class="flame flame-2"></div>
+          <div class="flame flame-3"></div>
+          <div class="flame flame-4"></div>
+          <div class="flame flame-5"></div>
+          <div class="smoke-wisp smoke-1"></div>
+          <div class="smoke-wisp smoke-2"></div>
+          <div class="smoke-wisp smoke-3"></div>
+        </div>
         <header class="sc-head">
           <div class="sc-head-row">
             <span class="sc-no">No.&nbsp;01</span>
@@ -4345,6 +4611,10 @@ body { font-family: 'Switzer', -apple-system, BlinkMacSystemFont, sans-serif !im
       <!-- Card 2 — Wix (middle, tilted right, mid score) -->
       <article class="sc-card sc-card-wix reveal-up" style="--d:120ms" role="listitem">
         <span class="sc-tape sc-tape-tr" aria-hidden="true"></span>
+        <div class="roast-note" aria-hidden="true">
+          <span class="stars">&#9733;&#9733;</span>"It's&hellip; fine, I guess?"
+          <small>&mdash; Dave, last month</small>
+        </div>
         <header class="sc-head">
           <div class="sc-head-row">
             <span class="sc-no">No.&nbsp;02</span>
@@ -4369,6 +4639,10 @@ body { font-family: 'Switzer', -apple-system, BlinkMacSystemFont, sans-serif !im
       <article class="sc-card sc-card-ss reveal-up" style="--d:240ms" role="listitem">
         <span class="sc-tape sc-tape-tl" aria-hidden="true"></span>
         <span class="sc-tape sc-tape-bl" aria-hidden="true"></span>
+        <div class="roast-note roast-note-good" aria-hidden="true">
+          <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span>"Best £149 I ever spent."
+          <small>&mdash; you, in 6 months</small>
+        </div>
         <header class="sc-head">
           <div class="sc-head-row">
             <span class="sc-no">No.&nbsp;03</span>
@@ -6717,8 +6991,14 @@ window.sschatSend = function(ev){
     const lostPerMonth = Math.max(0, potentialCustomersPerMonth - currentCustomersPerMonth);
     const lostRevenuePerYear = Math.round(lostPerMonth * 12 * value);
     // Drive counter via easing tween
+    const prev = targetValue;
     targetValue = lostRevenuePerYear;
     if (!rafId) rafId = requestAnimationFrame(tweenCounter);
+    // COIN DROP — only when loss jumps up meaningfully (avoid spam on tiny moves)
+    if (typeof window.ssDropCoins === 'function' && lostRevenuePerYear > prev + 1500) {
+      const intensity = Math.min(1, (lostRevenuePerYear - prev) / 20000);
+      window.ssDropCoins(intensity);
+    }
     // Severity colouring
     amountEl.classList.remove('high', 'severe');
     if (lostRevenuePerYear > 50000) amountEl.classList.add('severe');
@@ -6989,32 +7269,95 @@ function escapeForExit(s){ return String(s||'').replace(/&/g,'&amp;').replace(/<
   set('sm-date', long);
 })();
 
-/* Cinematic content prep: split the audit H1 into per-char spans so each
-   letter can drop independently with a 40ms stagger. */
-(function splitAuditHeadline(){
-  const h1 = document.querySelector('.audit-letterhead .letterhead-h1');
-  if (!h1 || h1.dataset.split === '1') return;
-  const walk = (node) => {
-    if (node.nodeType === 3) {
-      // text node — wrap each char
-      const frag = document.createDocumentFragment();
-      [...node.textContent].forEach((ch, i) => {
-        if (ch === ' ') { frag.appendChild(document.createTextNode(' ')); return; }
-        const s = document.createElement('span');
-        s.className = 'lh-char'; s.textContent = ch;
-        frag.appendChild(s);
+/* TYPEWRITER RACE — audit headline gets typed live with a typo + fix.
+   Caret blinks. Mistypes "aufit", backspaces "fi", corrects to "dit".
+   Then 250ms later fires the stamp-impact on the RUN AUDIT button. */
+(function typewriterAudit(){
+  const target = document.querySelector('.lh-type');
+  const caret  = document.querySelector('.lh-caret');
+  const section = document.querySelector('.audit-letterhead');
+  if (!target || !section) return;
+
+  // sequence of (action, payload, delay) — quirky mistake then fix
+  const seq = [
+    ['type', 'a', 110], ['type', 'u', 130], ['type', 'f', 95],
+    ['pause', null, 380],
+    ['back', 1, 90], ['back', 1, 90],            // delete "fu"
+    ['type', 'u', 120],                          // wait we deleted u too — typo intentional
+    ['pause', null, 220],
+    ['type', 'd', 110], ['type', 'i', 105], ['type', 't', 130],
+    ['type', '.', 240],
+    ['caret-stop', null, 600],
+    ['stamp', null, 0],
+  ];
+
+  function play(i){
+    if (i >= seq.length) return;
+    const [act, val, delay] = seq[i];
+    setTimeout(() => {
+      if (act === 'type')  target.textContent += val;
+      if (act === 'back')  target.textContent = target.textContent.slice(0, -val);
+      if (act === 'caret-stop' && caret) caret.classList.add('is-done');
+      if (act === 'stamp') section.classList.add('stamp-fired');
+      play(i + 1);
+    }, delay);
+  }
+
+  // wait until section enters view to start typing
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries, obs) => {
+      entries.forEach(e => {
+        if (e.isIntersecting && !target.dataset.typed) {
+          target.dataset.typed = '1';
+          setTimeout(() => play(0), 700); // start after ink-bar passes
+          obs.unobserve(e.target);
+        }
       });
-      node.parentNode.replaceChild(frag, node);
-    } else if (node.nodeType === 1 && node.tagName !== 'BR') {
-      [...node.childNodes].forEach(walk);
-    }
-  };
-  [...h1.childNodes].forEach(walk);
-  // index the chars for stagger
-  h1.querySelectorAll('.lh-char').forEach((el, i) => {
-    el.style.transitionDelay = (0.7 + i * 0.035) + 's';
+    }, { threshold: 0.32 });
+    io.observe(section);
+  }
+})();
+
+/* COIN DROP — every time the loss number jumps up, spit out 2-5 £ coins
+   that physically fall out the bottom of the receipt and bounce. */
+window.ssDropCoins = function(intensity){
+  const stage = document.getElementById('coinStage');
+  if (!stage) return;
+  const count = Math.min(8, Math.max(2, Math.round(2 + intensity * 6)));
+  for (let i = 0; i < count; i++) {
+    const c = document.createElement('span');
+    c.className = 'coin';
+    const dx = (Math.random() - .5) * 240;
+    const dur = 1.4 + Math.random() * .9;
+    c.style.setProperty('--dx', dx.toFixed(0) + 'px');
+    c.style.setProperty('--dur', dur.toFixed(2) + 's');
+    c.style.left = (40 + Math.random() * 60) + '%';
+    c.style.animationDelay = (i * 60) + 'ms';
+    stage.appendChild(c);
+    // cleanup after the fall finishes
+    setTimeout(() => c.remove(), dur * 1000 + 800);
+  }
+};
+
+/* FB CARD ON FIRE — light the lighter once the scorecard stack enters view.
+   .lit class on the FB card's .fire-stage runs the full sequence:
+   lighter flies in (1.2s) → thumb-flick (1s) → flames grow (2.1-3.3s)
+   → smoke wisps (4.5s+ forever) → card slowly scorches. */
+(function fbCardFire(){
+  const fireStage = document.querySelector('.sc-card-fb .fire-stage');
+  const fbCard = document.querySelector('.sc-card-fb');
+  const stack = document.querySelector('.scorecard-stack');
+  if (!fireStage || !stack) return;
+  // wait for cards to land (~1s after .is-dropped), then ignite
+  const mo = new MutationObserver((muts) => {
+    muts.forEach(m => {
+      if (m.attributeName === 'class' && stack.classList.contains('is-dropped') && !fireStage.classList.contains('lit')) {
+        setTimeout(() => fireStage.classList.add('lit'), 1100);
+        setTimeout(() => fbCard.classList.add('scorched'), 4200);
+      }
+    });
   });
-  h1.dataset.split = '1';
+  mo.observe(stack, { attributes: true });
 })();
 
 /* Signature cinematic transitions — choreographed multi-layer reveals.
