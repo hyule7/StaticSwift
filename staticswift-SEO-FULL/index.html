@@ -3955,19 +3955,22 @@ body > footer:last-of-type { margin-bottom: 0 !important; padding-bottom: 0; }
    • "SCENE 01" director's slate top-left
    ═══════════════════════════════════════════════════════════════ */
 
-/* CINEMASCOPE letterbox bars — top + bottom black */
+/* CINEMASCOPE letterbox bars — top + bottom black
+   Top bar starts BELOW the nav header so it never covers the site. */
 .hero::before,
 .hero::after {
   content: "";
   position: fixed; left: 0; right: 0;
-  height: 8vh; z-index: 10;
+  height: 5vh; z-index: 50; /* above hero content, below nav */
   background: #000;
   pointer-events: none;
   transform-origin: top;
   will-change: transform;
 }
-.hero::before { top: 0; }
+.hero::before { top: 64px; } /* sit under the nav, not over it */
 .hero::after { bottom: 0; transform-origin: bottom; }
+/* Nav stays above the letterbox always */
+#nav { z-index: 100 !important; }
 /* Letterbox retracts as you scroll past hero */
 body.scrolled-past-hero .hero::before,
 body.scrolled-past-hero .hero::after { transform: scaleY(0); transition: transform .8s cubic-bezier(.65,.05,.35,1); }
@@ -4111,23 +4114,252 @@ body.scrolled-past-hero .hero::after { transform: scaleY(0); transition: transfo
   transition: transform .4s cubic-bezier(.2,.8,.2,1);
 }
 
-/* INK PARTICLES — floating terracotta dots in 3D space */
-.ink-particles {
-  position: absolute; inset: 0; z-index: 5; pointer-events: none; overflow: hidden;
+/* Particles disabled — replaced with serious motion layers below */
+.ink-particles { display: none !important; }
+
+/* ═══════════════════════════════════════════════════════════════
+   SERIOUS MOTION · giant kinetic marquee + cursor spotlight +
+   light leaks + sonar pulses. Real cinema, not decorative dots.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* GIANT HORIZONTAL MARQUEE — full-bleed scrolling type behind the hero */
+.hero-marquee {
+  position: absolute; left: 0; right: 0; top: 38%;
+  z-index: 1; pointer-events: none; overflow: hidden;
+  height: 22vh; min-height: 140px;
+  display: flex; align-items: center;
+  mix-blend-mode: overlay;
+  opacity: .35;
 }
-.ink-particle {
-  position: absolute; border-radius: 50%;
-  background: radial-gradient(circle, rgba(217,160,113,.9), rgba(168,108,77,.4) 50%, transparent);
-  filter: blur(.3px);
+.hero-marquee-track {
+  display: flex; gap: 4vw; white-space: nowrap;
+  font-family: 'Boska', Georgia, serif;
+  font-style: italic; font-weight: 500;
+  font-size: clamp(8rem, 18vw, 22rem);
+  line-height: 1; letter-spacing: -.04em;
+  color: var(--terr-pale, #d9a071);
+  animation: hero-marquee-slide 24s linear infinite;
   will-change: transform;
-  animation: ink-drift var(--dur, 14s) linear infinite;
-  animation-delay: var(--delay, 0s);
 }
-@keyframes ink-drift {
-  0%   { transform: translate3d(0, 100vh, 0) scale(.4); opacity: 0; }
-  10%  { opacity: 1; }
-  90%  { opacity: 1; }
-  100% { transform: translate3d(calc(var(--drift, 80px)), -20vh, 0) scale(1.3); opacity: 0; }
+.hero-marquee-track .ast {
+  color: var(--terr, #a86c4d);
+  font-style: normal; font-weight: 300;
+  font-family: 'JetBrains Mono', monospace;
+  vertical-align: super; font-size: .55em;
+  margin: 0 1vw;
+}
+@keyframes hero-marquee-slide {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+/* CURSOR SPOTLIGHT — soft golden light follows the mouse on desktop */
+.hero-spotlight {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: radial-gradient(
+    420px 420px at var(--spot-x, 50%) var(--spot-y, 50%),
+    rgba(217,160,113,.32),
+    rgba(217,160,113,.14) 35%,
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+  transition: background .15s linear;
+}
+
+/* LIGHT LEAKS — film-stock-style colored streaks slowly sweep across */
+.hero-leak {
+  position: absolute; z-index: 2; pointer-events: none;
+  width: 60vw; height: 90vh;
+  background: radial-gradient(ellipse 60% 50% at center, rgba(217,160,113,.18), transparent 70%);
+  filter: blur(20px);
+  mix-blend-mode: screen;
+}
+.hero-leak-1 {
+  top: -20vh; left: -10vw;
+  animation: leak-drift-a 14s ease-in-out infinite alternate;
+}
+.hero-leak-2 {
+  bottom: -20vh; right: -10vw;
+  background: radial-gradient(ellipse 70% 60% at center, rgba(168,108,77,.16), transparent 70%);
+  animation: leak-drift-b 18s ease-in-out infinite alternate;
+}
+@keyframes leak-drift-a {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(20vw, 20vh) scale(1.15); }
+}
+@keyframes leak-drift-b {
+  0%   { transform: translate(0, 0) scale(1.1); }
+  100% { transform: translate(-15vw, -15vh) scale(.9); }
+}
+
+/* Sonar pulses removed per user request */
+.hero .hero-rotator::before, .hero .hero-rotator::after { display: none !important; }
+
+/* Nav logo stack — "by Harry · Manchester" sub-label under brand */
+.nav-logo-stack { display: inline-flex; flex-direction: column; line-height: 1; }
+.nav-logo-name { font-size: 1rem; font-weight: 700; letter-spacing: .04em; }
+.nav-logo-by {
+  font-family: 'Boska', Georgia, serif;
+  font-style: italic; font-weight: 400;
+  font-size: .68rem; letter-spacing: .02em;
+  color: var(--terr-deep, #7e4f37);
+  opacity: .82; margin-top: 1px;
+  white-space: nowrap;
+}
+/* Hide sub-label on small screens to keep nav clean */
+@media (max-width: 760px) {
+  .nav-logo-by { display: none; }
+}
+
+/* VIDEO BACKGROUND — full-bleed cinematic loop */
+.hero .hero-bg-video video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  animation: ken-burns 22s cubic-bezier(.4,0,.6,1) infinite alternate;
+  filter: saturate(.92) contrast(1.08);
+  will-change: transform;
+}
+.hero .hero-bg-fallback {
+  position: absolute; inset: 0; z-index: -1;
+  width: 100%; height: 100%; object-fit: cover;
+}
+
+/* AUTONOMOUS FLOATING PHONE — a real built site, scrolling itself */
+.hero-phone-float {
+  position: absolute;
+  right: 5%; bottom: 18vh;
+  z-index: 6; pointer-events: none;
+  transform: rotate(-3deg);
+  filter: drop-shadow(0 30px 60px rgba(0,0,0,.55)) drop-shadow(0 8px 20px rgba(168,108,77,.25));
+  animation: phone-hover 6s ease-in-out infinite alternate;
+}
+@keyframes phone-hover {
+  from { transform: rotate(-3deg) translateY(0); }
+  to   { transform: rotate(-2deg) translateY(-12px); }
+}
+.hpf-frame {
+  width: 220px; height: 460px;
+  background: #0e0c0a;
+  border-radius: 32px;
+  padding: 10px;
+  box-shadow:
+    0 0 0 2px rgba(255,255,255,.04),
+    inset 0 0 0 1px rgba(255,255,255,.06);
+  position: relative;
+}
+.hpf-notch {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+  width: 80px; height: 22px; background: #0e0c0a;
+  border-radius: 0 0 12px 12px; z-index: 2;
+}
+.hpf-screen {
+  width: 100%; height: 100%;
+  background: #faf7f1;
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+}
+.hpf-mockup {
+  font-family: 'Switzer', -apple-system, sans-serif;
+  color: #0e0c0a;
+  animation: phone-autoscroll 22s ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes phone-autoscroll {
+  0%, 5%   { transform: translateY(0); }
+  35%, 40% { transform: translateY(-280px); }
+  70%, 75% { transform: translateY(-540px); }
+  95%, 100% { transform: translateY(0); }
+}
+.hpfm-nav {
+  position: sticky; top: 0; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.2rem 1rem .8rem; background: #faf7f1;
+  border-bottom: 1px solid rgba(0,0,0,.06);
+}
+.hpfm-brand { font-family: 'Boska', serif; font-style: italic; font-weight: 500; font-size: .82rem; letter-spacing: -.02em; }
+.hpfm-cta { font-size: .68rem; background: #0e0c0a; color: #faf7f1; padding: .25rem .55rem; border-radius: 999px; font-weight: 600; }
+.hpfm-hero { padding: 1rem 1rem 1.2rem; background: linear-gradient(180deg, #fdfbf5 0%, #faf7f1 100%); }
+.hpfm-hero-eyebrow { font-family: 'JetBrains Mono', monospace; font-size: .55rem; letter-spacing: .15em; text-transform: uppercase; color: #7e4f37; margin-bottom: .4rem; }
+.hpfm-hero-title { font-family: 'Boska', serif; font-weight: 400; font-size: 1.05rem; line-height: 1.1; letter-spacing: -.02em; margin: 0 0 .8rem; }
+.hpfm-hero-title em { font-style: italic; color: #7e4f37; }
+.hpfm-hero-cta { font-size: .62rem; background: #7e4f37; color: #faf7f1; border: 0; padding: .5rem .7rem; border-radius: 2px 4px 2px 4px; font-family: 'JetBrains Mono', monospace; letter-spacing: .12em; text-transform: uppercase; font-weight: 700; }
+.hpfm-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  padding: .8rem 1rem; border-top: 1px solid rgba(0,0,0,.06); border-bottom: 1px solid rgba(0,0,0,.06);
+  background: #fdfbf5;
+}
+.hpfm-stats div { text-align: center; }
+.hpfm-stats b { font-family: 'Boska', serif; font-style: italic; font-size: .92rem; display: block; color: #0e0c0a; }
+.hpfm-stats b i { font-style: normal; color: #d9a071; }
+.hpfm-stats span { font-family: 'JetBrains Mono', monospace; font-size: .5rem; letter-spacing: .1em; text-transform: uppercase; color: rgba(0,0,0,.55); }
+.hpfm-services { padding: 1rem; }
+.hpfm-svc-title { font-family: 'JetBrains Mono', monospace; font-size: .55rem; letter-spacing: .18em; text-transform: uppercase; color: #7e4f37; margin-bottom: .8rem; font-weight: 700; }
+.hpfm-svc-row { display: flex; justify-content: space-between; padding: .35rem 0; border-bottom: 1px dashed rgba(0,0,0,.12); font-size: .72rem; }
+.hpfm-svc-row b { font-family: 'Boska', serif; font-style: italic; font-weight: 500; }
+.hpfm-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; padding: .5rem .5rem; }
+.hpfm-gallery img { width: 100%; height: 80px; object-fit: cover; display: block; }
+.hpfm-foot {
+  padding: .8rem 1rem 1.2rem; background: #0e0c0a; color: #faf7f1;
+  display: flex; flex-direction: column; gap: .25rem;
+  font-family: 'JetBrains Mono', monospace; font-size: .56rem; letter-spacing: .06em;
+  opacity: .92;
+}
+
+.hpf-caption {
+  margin-top: .8rem; display: flex; align-items: center; gap: .5rem;
+  background: rgba(14,12,10,.85); backdrop-filter: blur(8px);
+  padding: .4rem .7rem; border-radius: 2px 4px 2px 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .68rem; letter-spacing: .1em;
+  color: rgba(250,247,241,.92);
+  width: fit-content; margin-left: 12px;
+}
+.hpf-cap-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #4ea36e;
+  box-shadow: 0 0 0 0 rgba(78,163,110,.55);
+  animation: opens-pulse 2.2s cubic-bezier(.4,0,.6,1) infinite;
+}
+
+/* Hide on small screens — phone competes with form on mobile */
+@media (max-width: 1080px) {
+  .hero-phone-float { display: none !important; }
+}
+
+/* SCROLL-DRIVEN MARQUEE WARP — letters squash + speed up as you scroll */
+.hero-marquee-track {
+  transform-origin: 50% 50%;
+  transform: scaleX(calc(1 - var(--hero-progress) * 0.25))
+             skewX(calc(var(--hero-progress) * 4deg));
+  transition: transform .15s linear;
+}
+.hero-marquee {
+  opacity: calc(.35 + var(--hero-progress) * .4);
+  transition: opacity .15s linear;
+}
+
+/* HUGE SCROLL-INDICATOR — bouncy, terracotta, magnetic */
+.hero-scroll-lure {
+  bottom: 8vh !important;
+}
+.hero-scroll-lure span:first-child {
+  font-size: 1.1rem !important;
+  font-weight: 500 !important;
+}
+
+/* When user is hovering near the bottom, the lure ramps up */
+.hero.is-near-bottom .hero-scroll-lure {
+  animation-duration: .9s !important;
+  color: var(--terr-pale, #d9a071) !important;
+}
+
+/* Mobile — marquee runs faster + smaller, no spotlight */
+@media (max-width: 760px) {
+  .hero-marquee { top: 42%; height: 14vh; min-height: 90px; opacity: .3; }
+  .hero-marquee-track { font-size: clamp(4rem, 22vw, 9rem); animation-duration: 18s; }
+  .hero-spotlight { display: none; } /* no cursor on touch */
+  .hero-leak-1, .hero-leak-2 { animation-duration: 22s; opacity: .85; }
 }
 
 /* LIQUID LETTER REVEAL — each character emerges from below with ink bleed */
@@ -5471,7 +5703,10 @@ p, li, dd, .lh-fine, .receipt-lede, .sm-deck, .letterhead-sub, .scorecard-footno
       <polyline points="22,64 8,50 22,36" stroke="currentColor" stroke-width="8" stroke-linecap="square" fill="none"/>
       <path d="M50,28 L53,46.5 L72,50 L53,53.5 L50,72 L47,53.5 L28,50 L47,46.5 Z" fill="url(#sg-nav)"/>
     </svg>
-    <span class="nav-logo-name">StaticSwift</span>
+    <span class="nav-logo-stack">
+      <span class="nav-logo-name">StaticSwift</span>
+      <span class="nav-logo-by">by Harry &middot; Manchester</span>
+    </span>
   </a>
   <div class="nav-links" role="navigation" aria-label="Primary navigation">
     <a href="#audit" class="nav-link-flag">Free audit</a>
@@ -5502,15 +5737,91 @@ p, li, dd, .lh-fine, .receipt-lede, .sm-deck, .letterhead-sub, .scorecard-footno
 
 <!-- ══ 01 · HERO — CINEMATIC ══ -->
 <section class="hero" aria-label="Hero" id="hero">
+  <!-- CINEMATIC VIDEO BACKGROUND — golden-hour coding scene, real motion -->
   <div class="hero-bg-video" aria-hidden="true">
-    <img src="https://images.pexels.com/photos/1571939/pexels-photo-1571939.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="" width="1600" height="1067" fetchpriority="high">
+    <video autoplay muted loop playsinline preload="auto" poster="https://images.pexels.com/photos/1571939/pexels-photo-1571939.jpeg?auto=compress&cs=tinysrgb&w=1600">
+      <source src="https://videos.pexels.com/video-files/3209663/3209663-hd_1920_1080_25fps.mp4" type="video/mp4">
+      <!-- Fallback poster shows if video fails -->
+    </video>
+    <img src="https://images.pexels.com/photos/1571939/pexels-photo-1571939.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="" width="1600" height="1067" fetchpriority="high" class="hero-bg-fallback">
+  </div>
+
+  <!-- AUTONOMOUS PHONE — a real built site scrolling itself in the corner -->
+  <div class="hero-phone-float" aria-hidden="true">
+    <div class="hpf-frame">
+      <div class="hpf-notch"></div>
+      <div class="hpf-screen">
+        <div class="hpf-mockup" id="hpfMockup">
+          <!-- A mini real-looking barbershop site that auto-scrolls -->
+          <div class="hpfm-nav">
+            <span class="hpfm-brand">FADE &amp; BLADE</span>
+            <span class="hpfm-cta">Book</span>
+          </div>
+          <div class="hpfm-hero">
+            <div class="hpfm-hero-eyebrow">Manchester · NQ</div>
+            <h3 class="hpfm-hero-title">Old&#8209;school cuts.<br><em>New&#8209;school</em> standards.</h3>
+            <button class="hpfm-hero-cta">Book online &rarr;</button>
+          </div>
+          <div class="hpfm-stats">
+            <div><b>12</b><span>years</span></div>
+            <div><b>2.4k</b><span>cuts/yr</span></div>
+            <div><b>4.9<i>&#9733;</i></b><span>reviews</span></div>
+          </div>
+          <div class="hpfm-services">
+            <div class="hpfm-svc-title">Services</div>
+            <div class="hpfm-svc-row"><span>Classic cut</span><b>&pound;18</b></div>
+            <div class="hpfm-svc-row"><span>Skin fade</span><b>&pound;24</b></div>
+            <div class="hpfm-svc-row"><span>Beard trim</span><b>&pound;14</b></div>
+            <div class="hpfm-svc-row"><span>Hot towel shave</span><b>&pound;28</b></div>
+          </div>
+          <div class="hpfm-gallery">
+            <img src="https://images.pexels.com/photos/1570807/pexels-photo-1570807.jpeg?auto=compress&cs=tinysrgb&w=300" alt="" loading="lazy">
+            <img src="https://images.pexels.com/photos/3998415/pexels-photo-3998415.jpeg?auto=compress&cs=tinysrgb&w=300" alt="" loading="lazy">
+          </div>
+          <div class="hpfm-foot">
+            <span>14 Oldham St &middot; M1 1JN</span>
+            <span>Open Tue&ndash;Sat &middot; 10&ndash;7</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hpf-caption">
+      <span class="hpf-cap-dot"></span>
+      <span class="hpf-cap-text">Built last Tuesday &middot; Bromley</span>
+    </div>
   </div>
 
   <!-- Cinematic film-grain overlay -->
   <div class="hero-grain" aria-hidden="true"></div>
 
-  <!-- Floating terracotta ink particles -->
+  <!-- Floating terracotta ink particles (replaced — see below) -->
   <div class="ink-particles" id="inkParticles" aria-hidden="true"></div>
+
+  <!-- GIANT scrolling kinetic marquee — full-bleed editorial typography -->
+  <div class="hero-marquee" aria-hidden="true">
+    <div class="hero-marquee-track">
+      <span>Accepting briefs</span><span class="ast">&divide;</span>
+      <span>One website at a time</span><span class="ast">&divide;</span>
+      <span>By Harry, in Manchester</span><span class="ast">&divide;</span>
+      <span>£149 flat</span><span class="ast">&divide;</span>
+      <span>By tomorrow morning</span><span class="ast">&divide;</span>
+      <span>Pay only if you love it</span><span class="ast">&divide;</span>
+      <!-- Duplicated for seamless loop -->
+      <span>Accepting briefs</span><span class="ast">&divide;</span>
+      <span>One website at a time</span><span class="ast">&divide;</span>
+      <span>By Harry, in Manchester</span><span class="ast">&divide;</span>
+      <span>£149 flat</span><span class="ast">&divide;</span>
+      <span>By tomorrow morning</span><span class="ast">&divide;</span>
+      <span>Pay only if you love it</span><span class="ast">&divide;</span>
+    </div>
+  </div>
+
+  <!-- Cursor spotlight — soft golden light follows the mouse -->
+  <div class="hero-spotlight" id="heroSpotlight" aria-hidden="true"></div>
+
+  <!-- Light leaks — film-stock-style colored streaks slowly drifting -->
+  <div class="hero-leak hero-leak-1" aria-hidden="true"></div>
+  <div class="hero-leak hero-leak-2" aria-hidden="true"></div>
 
   <!-- Paper-tear bottom edge — tears away as you scroll into the next scene -->
   <div class="hero-tear" aria-hidden="true"></div>
@@ -9617,22 +9928,29 @@ if (/\/(thanks|sent|confirmed)/i.test(location.pathname)) {
   const hero = document.querySelector('.hero');
   if (!hero) return;
 
-  // 1 · Spawn ink particles
-  const stage = document.getElementById('inkParticles');
-  if (stage) {
-    const count = window.matchMedia('(max-width: 760px)').matches ? 3 : 9;
-    for (let i = 0; i < count; i++) {
-      const p = document.createElement('span');
-      p.className = 'ink-particle';
-      const size = 3 + Math.random() * 8;
-      p.style.width = size + 'px';
-      p.style.height = size + 'px';
-      p.style.left = Math.random() * 100 + '%';
-      p.style.setProperty('--dur', (10 + Math.random() * 10) + 's');
-      p.style.setProperty('--delay', (-Math.random() * 14) + 's');
-      p.style.setProperty('--drift', ((Math.random() - .5) * 200) + 'px');
-      stage.appendChild(p);
+  // 1 · Cursor spotlight — soft golden light follows mouse (desktop)
+  const spot = document.getElementById('heroSpotlight');
+  if (spot && window.matchMedia('(pointer: fine)').matches) {
+    let tx = 50, ty = 50, cx = 50, cy = 50, srf = 0;
+    function pumpSpot() {
+      cx += (tx - cx) * 0.15;
+      cy += (ty - cy) * 0.15;
+      spot.style.setProperty('--spot-x', cx.toFixed(1) + '%');
+      spot.style.setProperty('--spot-y', cy.toFixed(1) + '%');
+      if (Math.abs(tx - cx) > 0.05 || Math.abs(ty - cy) > 0.05) {
+        srf = requestAnimationFrame(pumpSpot);
+      } else { srf = 0; }
     }
+    hero.addEventListener('mousemove', (e) => {
+      const r = hero.getBoundingClientRect();
+      tx = ((e.clientX - r.left) / r.width) * 100;
+      ty = ((e.clientY - r.top) / r.height) * 100;
+      if (!srf) srf = requestAnimationFrame(pumpSpot);
+    });
+    hero.addEventListener('mouseleave', () => {
+      tx = 50; ty = 50;
+      if (!srf) srf = requestAnimationFrame(pumpSpot);
+    });
   }
 
   // 2 · Cursor-look parallax — only on devices with a real pointer
