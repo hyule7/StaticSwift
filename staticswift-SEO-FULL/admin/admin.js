@@ -900,9 +900,19 @@ async function panelAction(type) {
     }
   }
   if (type === 'invoice') {
-    if (confirm('Send invoice to ' + c.delivery_email + '?')) {
-      await sendEmailAction({ clientId: currentClientId, emailType: 'invoice' });
-    }
+    // Open the invoice generator pre-filled with this client's data.
+    // The generator handles the actual SMTP send via send-email.js (emailType=generated-invoice).
+    // sessionStorage.ss_pw is inherited by the new tab when opened via window.open()
+    // (same-origin tabs get a copy of the opener's sessionStorage at open time).
+    const qs = new URLSearchParams();
+    qs.set('clientId', currentClientId);
+    if (c.business_name) qs.set('client_name', c.business_name);
+    if (c.name) qs.set('client_contact', c.name);
+    if (c.delivery_email) qs.set('client_email', c.delivery_email);
+    if (c.address || c.business_address) qs.set('client_addr', c.address || c.business_address);
+    if (c.package) qs.set('package', c.package);
+    if (c.hosting_addon) qs.set('hosting', c.hosting_addon);
+    window.open('/invoice/?' + qs.toString(), '_blank');
   }
   if (type === 'custom') {
     const subject = prompt('Email subject:');

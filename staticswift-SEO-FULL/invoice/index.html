@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Invoice Generator &mdash; StaticSwift</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0a0a0a; --muted:#6a6a6a; --dim:#9a9a9a;
+  --bg:#fff; --bg2:#f9f8f6; --bg3:#f2f0ec;
+  --gold:#b08a3e; --gold2:#c9a256; --gold-b:rgba(176,138,62,.18);
+  --border:rgba(0,0,0,.07); --border2:rgba(0,0,0,.12);
+  --green:#16a34a; --red:#dc2626;
+  --r:12px; --r-lg:20px;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{background:var(--bg3);color:var(--ink);font-family:'Outfit',sans-serif;line-height:1.5;font-size:14px}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;color:inherit}
+
+/* --- App shell --- */
+.app{display:grid;grid-template-columns:minmax(360px,440px) 1fr;height:100vh;overflow:hidden}
+.panel{overflow-y:auto;overflow-x:hidden}
+.panel::-webkit-scrollbar{width:8px;height:8px}
+.panel::-webkit-scrollbar-thumb{background:rgba(0,0,0,.18);border-radius:8px}
+.panel::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.32)}
+
+/* --- Left: form panel --- */
+.form-panel{background:var(--bg);border-right:1px solid var(--border2);padding:0}
+.form-head{position:sticky;top:0;background:rgba(255,255,255,.92);backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;z-index:10}
+.form-head-l{display:flex;align-items:center;gap:10px}
+.form-head-l svg{flex-shrink:0}
+.form-head-title{font-family:'Instrument Serif',serif;font-size:17px;letter-spacing:-.01em}
+.form-head-title b{color:var(--gold);font-style:italic;font-weight:400}
+.form-head-r{display:flex;align-items:center;gap:8px}
+.icon-btn{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:all .15s}
+.icon-btn:hover{background:var(--bg2);color:var(--ink)}
+.form-body{padding:20px 24px 60px}
+.fs{margin-bottom:22px}
+.fs-h{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.fs-h .add-btn{font-size:10px;font-weight:600;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--gold-b);border-radius:100px;transition:all .15s}
+.fs-h .add-btn:hover{background:var(--gold);color:#fff;border-color:var(--gold)}
+.fld{display:flex;flex-direction:column;margin-bottom:8px}
+.fld label{font-size:11px;font-weight:600;color:var(--muted);margin-bottom:4px;letter-spacing:.04em}
+.fld input, .fld textarea, .fld select{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:13px;outline:none;transition:border-color .15s,box-shadow .15s}
+.fld input:focus, .fld textarea:focus, .fld select:focus{border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px var(--gold-b)}
+.fld textarea{min-height:60px;resize:vertical;font-family:inherit;line-height:1.5}
+.fld-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fld-row-3{display:grid;grid-template-columns:2fr 60px 90px 28px;gap:6px;align-items:end}
+.fld-row-3 input{padding:8px 10px;font-size:12px}
+.fld-row-3 .del{width:28px;height:28px;border-radius:6px;color:var(--dim);font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.fld-row-3 .del:hover{background:rgba(220,38,38,.08);color:var(--red)}
+.line-items{display:flex;flex-direction:column;gap:6px}
+.logo-row{display:flex;align-items:center;gap:10px}
+.logo-thumb{width:54px;height:54px;border-radius:8px;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.logo-thumb img{max-width:100%;max-height:100%;object-fit:contain}
+.logo-thumb svg{color:var(--dim)}
+.logo-actions{display:flex;flex-direction:column;gap:4px;flex:1}
+.logo-actions button{font-size:12px;font-weight:500;color:var(--muted);text-align:left;padding:2px 0;transition:color .15s}
+.logo-actions button:hover{color:var(--gold)}
+.logo-actions input{display:none}
+.toggle-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:8px}
+.toggle{position:relative;width:32px;height:18px;background:var(--dim);border-radius:100px;transition:background .15s;flex-shrink:0;cursor:pointer}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:50%;transition:transform .15s}
+.toggle.on{background:var(--green)}
+.toggle.on::after{transform:translateX(14px)}
+.toggle-row label{font-size:13px;font-weight:500;flex:1;cursor:pointer}
+.toggle-row .toggle-meta{font-size:11px;color:var(--muted);font-weight:500}
+
+/* --- Sticky action bar --- */
+.actions{position:sticky;bottom:0;background:rgba(255,255,255,.94);backdrop-filter:blur(20px) saturate(1.4);border-top:1px solid var(--border2);padding:14px 24px;display:flex;gap:8px}
+.btn{flex:1;font-size:13px;font-weight:600;padding:11px 14px;border-radius:100px;text-align:center;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-primary{background:var(--ink);color:#fff}
+.btn-primary:hover{opacity:.88;transform:translateY(-1px);box-shadow:0 8px 20px rgba(0,0,0,.15)}
+.btn-secondary{background:var(--bg2);color:var(--ink);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--bg3)}
+
+/* --- Right: preview panel --- */
+.preview-panel{background:var(--bg3);padding:40px;display:flex;justify-content:center;align-items:flex-start}
+.invoice{
+  width:210mm;max-width:100%;
+  min-height:297mm;
+  background:#fff;
+  padding:24mm 22mm;
+  box-shadow:0 24px 60px rgba(0,0,0,.08),0 4px 14px rgba(0,0,0,.04);
+  font-size:11pt;
+  color:var(--ink);
+  line-height:1.55;
+  position:relative;
+  overflow:hidden;
+}
+.inv-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:36px;gap:24px}
+.inv-brand{display:flex;align-items:center;gap:12px}
+.inv-brand-logo{width:48px;height:48px;border-radius:8px;background:var(--bg2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0}
+.inv-brand-logo img{max-width:100%;max-height:100%;object-fit:contain}
+.inv-brand-text .biz-name{font-family:'Instrument Serif',serif;font-size:22pt;letter-spacing:-.02em;line-height:1.05}
+.inv-brand-text .biz-tag{font-size:9.5pt;color:var(--muted);margin-top:3px;line-height:1.4;white-space:pre-line}
+.inv-title{text-align:right}
+.inv-title .label{font-size:9pt;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
+.inv-title h1{font-family:'Instrument Serif',serif;font-size:30pt;letter-spacing:-.04em;line-height:1;color:var(--gold);font-style:italic;margin-top:2px;white-space:nowrap}
+.inv-meta{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:36px;padding:20px;background:var(--bg2);border-radius:var(--r-lg);font-size:10pt}
+.inv-meta-col h4{font-size:8.5pt;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.inv-meta-col p{line-height:1.55;white-space:pre-line}
+.inv-meta-col .biz-line{font-weight:600;font-size:11pt;margin-bottom:2px}
+.inv-info{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:36px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.inv-info-cell h4{font-size:8.5pt;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:4px}
+.inv-info-cell p{font-family:var(--mono);font-size:10.5pt;color:var(--ink);font-weight:500}
+table.inv-table{width:100%;border-collapse:collapse;margin-bottom:24px}
+table.inv-table thead th{font-size:8.5pt;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);text-align:left;padding:0 8px 10px;border-bottom:1.5px solid var(--ink)}
+table.inv-table thead th.num{text-align:right}
+table.inv-table tbody td{padding:14px 8px;border-bottom:1px solid var(--border);vertical-align:top;font-size:10.5pt}
+table.inv-table tbody td.num{text-align:right;font-family:var(--mono);font-weight:500;white-space:nowrap}
+table.inv-table tbody td.desc{font-weight:500}
+.inv-totals{display:flex;justify-content:flex-end;margin-bottom:28px}
+.inv-totals-inner{min-width:280px}
+.tot-row{display:flex;justify-content:space-between;align-items:baseline;padding:7px 8px;font-size:10.5pt}
+.tot-row .lbl{color:var(--muted)}
+.tot-row .val{font-family:var(--mono);font-weight:500}
+.tot-row.grand{margin-top:8px;padding:14px 8px;border-top:1.5px solid var(--ink);font-size:14pt}
+.tot-row.grand .lbl{font-family:'Instrument Serif',serif;font-style:italic;color:var(--ink);font-size:15pt}
+.tot-row.grand .val{font-weight:700;color:var(--ink)}
+.tot-row.due{margin-top:2px;background:var(--bg2);border-radius:8px;padding:10px 12px;font-size:10pt;color:var(--gold)}
+.tot-row.due .lbl{color:var(--gold);font-weight:600}
+.tot-row.due .val{font-weight:700;color:var(--gold)}
+.inv-notes{margin-bottom:24px;padding:16px 18px;background:var(--bg2);border-radius:var(--r-lg);font-size:9.5pt;color:var(--muted);line-height:1.6;white-space:pre-line}
+.inv-notes h4{font-size:8.5pt;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);margin-bottom:6px;font-family:'Outfit',sans-serif}
+.inv-pay{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:28px;font-size:9.5pt}
+.inv-pay-col h4{font-size:8.5pt;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+.inv-pay-col p{font-family:var(--mono);line-height:1.7;white-space:pre-line}
+.inv-foot{text-align:center;padding-top:18px;border-top:1px solid var(--border);font-size:8.5pt;color:var(--dim);letter-spacing:.05em}
+.inv-foot em{font-family:'Instrument Serif',serif;color:var(--gold);font-style:italic;font-size:10pt}
+
+/* Empty state in preview */
+.empty-pref{font-size:10pt;color:var(--dim);font-style:italic}
+
+/* --- Toast --- */
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,40px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:100px;font-size:13px;font-weight:500;box-shadow:0 12px 30px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:all .25s cubic-bezier(.19,1,.22,1);z-index:1000}
+.toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+
+/* --- Modal --- */
+.modal{position:fixed;inset:0;background:rgba(10,10,10,.55);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;z-index:500;padding:24px}
+.modal.show{display:flex}
+.modal-inner{background:#fff;border-radius:var(--r-lg);padding:24px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto}
+.modal h3{font-family:'Instrument Serif',serif;font-size:22px;margin-bottom:6px;letter-spacing:-.02em}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:18px}
+.draft-list{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.draft-item{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;transition:all .15s}
+.draft-item:hover{border-color:var(--gold-b);background:#fff}
+.draft-info{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.draft-name{font-size:13px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.draft-meta{font-size:11px;color:var(--muted)}
+.draft-actions{display:flex;gap:4px;flex-shrink:0}
+.draft-actions button{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:600;color:var(--muted);transition:all .15s}
+.draft-actions button:hover{background:var(--bg3);color:var(--ink)}
+.draft-actions .del-d:hover{color:var(--red);background:rgba(220,38,38,.08)}
+.modal-foot{display:flex;justify-content:flex-end;gap:8px;padding-top:14px;border-top:1px solid var(--border)}
+
+/* Responsive */
+@media(max-width:900px){
+  .app{grid-template-columns:1fr;height:auto}
+  .form-panel{max-height:none;border-right:none;border-bottom:1px solid var(--border2)}
+  .preview-panel{padding:20px}
+  .invoice{padding:18mm 14mm;min-height:auto}
+  .actions{position:static;border-top:1px solid var(--border)}
+}
+
+/* Print */
+@media print{
+  @page{size:A4;margin:0}
+  body{background:#fff}
+  .form-panel,.actions,.toast,.modal,.form-head,.preview-panel-head{display:none !important}
+  .app{display:block;height:auto;overflow:visible}
+  .preview-panel{padding:0;background:#fff;display:block;height:auto;overflow:visible}
+  .panel{overflow:visible;height:auto}
+  .invoice{box-shadow:none;width:auto;min-height:auto;padding:18mm 16mm;max-width:none}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ FORM PANEL ============ -->
+  <div class="panel form-panel">
+    <div class="form-head">
+      <div class="form-head-l">
+        <svg viewBox="0 0 28 28" fill="none" width="22" height="22"><polygon points="14,1 27,7.5 27,20.5 14,27 1,20.5 1,7.5" fill="none" stroke="#b08a3e" stroke-width="1.2" opacity=".7"/><polygon points="14,6 22,10 22,18 14,22 6,18 6,10" fill="#b08a3e" opacity=".12"/><polygon points="14,10 18,12 18,16 14,18 10,16 10,12" fill="#b08a3e" opacity=".45"/></svg>
+        <div class="form-head-title">Invoice <b>generator</b></div>
+      </div>
+      <div class="form-head-r">
+        <button class="icon-btn" id="btn-drafts" title="Drafts">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-reset" title="New invoice">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="form-body">
+
+      <div class="fs">
+        <div class="fs-h">Your business</div>
+        <div class="logo-row">
+          <div class="logo-thumb" id="logo-thumb">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+          </div>
+          <div class="logo-actions">
+            <button id="btn-logo">Upload logo</button>
+            <button id="btn-logo-clear" style="display:none">Remove logo</button>
+            <input type="file" id="logo-input" accept="image/*">
+          </div>
+        </div>
+        <div class="fld" style="margin-top:10px"><label>Business name</label><input type="text" id="biz-name" placeholder="StaticSwift"></div>
+        <div class="fld"><label>Tagline / address (multiline ok)</label><textarea id="biz-tag" placeholder="hello@staticswift.co.uk&#10;Manchester, UK"></textarea></div>
+      </div>
+
+      <div class="fs">
+        <div class="fs-h">Bill to</div>
+        <div class="fld"><label>Client / company</label><input type="text" id="cl-name" placeholder="Acme Plumbing Ltd"></div>
+        <div class="fld"><label>Contact name (optional)</label><input type="text" id="cl-contact" placeholder="John Smith"></div>
+        <div class="fld"><label>Email (optional)</label><input type="email" id="cl-email" placeholder="john@acmeplumbing.co.uk"></div>
+        <div class="fld"><label>Address (multiline ok)</label><textarea id="cl-addr" placeholder="12 High Street&#10;Letchworth&#10;SG6 3BJ"></textarea></div>
+      </div>
+
+      <div class="fs">
+        <div class="fs-h">Invoice details</div>
+        <div class="fld-row">
+          <div class="fld"><label>Invoice #</label><input type="text" id="inv-num" placeholder="SS-0001"></div>
+          <div class="fld"><label>Currency</label>
+            <select id="inv-curr">
+              <option value="GBP">£ GBP</option>
+              <option value="USD">$ USD</option>
+              <option value="EUR">€ EUR</option>
+              <option value="CAD">$ CAD</option>
+              <option value="AUD">$ AUD</option>
+            </select>
+          </div>
+        </div>
+        <div class="fld-row">
+          <div class="fld"><label>Issue date</label><input type="date" id="inv-date"></div>
+          <div class="fld"><label>Due date</label><input type="date" id="inv-due"></div>
+        </div>
+      </div>
+
+      <div class="fs">
+        <div class="fs-h">Line items <button class="add-btn" id="btn-add-item">+ Add line</button></div>
+        <div class="line-items" id="line-items"></div>
+      </div>
+
+      <div class="fs">
+        <div class="fs-h">Tax</div>
+        <div class="toggle-row">
+          <div class="toggle" id="tax-toggle"></div>
+          <label for="tax-toggle">Charge VAT</label>
+          <span class="toggle-meta">Rate %</span>
+          <input type="number" id="tax-rate" value="20" min="0" max="99" step="0.1" style="width:64px;background:#fff;border:1px solid var(--border);border-radius:6px;padding:6px 8px;font-size:12px;text-align:right">
+        </div>
+      </div>
+
+      <div class="fs">
+        <div class="fs-h">Notes &amp; payment</div>
+        <div class="fld"><label>Notes (shown on invoice)</label><textarea id="inv-notes" placeholder="Thank you for your business. Payment due within 14 days."></textarea></div>
+        <div class="fld"><label>Bank / payment details (shown on invoice)</label><textarea id="inv-bank" placeholder="Account name: StaticSwift Ltd&#10;Sort code: 00-00-00&#10;Account: 12345678&#10;Reference: SS-0001"></textarea></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-secondary" id="btn-save" title="Save a copy locally">Save draft</button>
+      <button class="btn btn-secondary" id="btn-print" title="Browser print → PDF">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+        PDF
+      </button>
+      <button class="btn btn-primary" id="btn-send" title="Send to client via email">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+        Send invoice
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ============ PREVIEW PANEL ============ -->
+  <div class="panel preview-panel">
+    <div class="invoice" id="invoice"></div>
+  </div>
+
+</div>
+
+<!-- Drafts modal -->
+<div class="modal" id="drafts-modal">
+  <div class="modal-inner">
+    <h3>Saved drafts</h3>
+    <p>Drafts live in your browser only. They never leave this device.</p>
+    <div class="draft-list" id="draft-list"></div>
+    <div class="modal-foot">
+      <button class="btn btn-secondary" id="btn-close-drafts" style="flex:0 0 auto;padding:8px 18px;font-size:12px">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Saved</div>
+
+<script>
+(function(){
+  'use strict';
+
+  const STORAGE_KEY = 'ss-invoice-current-v1';
+  const DRAFTS_KEY = 'ss-invoice-drafts-v1';
+  const NEXT_NUM_KEY = 'ss-invoice-next-num-v1';
+
+  const CURRENCY_SYMBOLS = { GBP:'£', USD:'$', EUR:'€', CAD:'$', AUD:'$' };
+
+  // --- State ---
+  let state = defaultState();
+
+  function defaultState(){
+    const today = new Date();
+    const due = new Date(today.getTime() + 14*86400000);
+    return {
+      biz: { name:'', tagline:'', logo:'' },
+      client: { name:'', contact:'', email:'', address:'' },
+      invoice: {
+        number: nextInvoiceNumber(),
+        currency: 'GBP',
+        issueDate: ymd(today),
+        dueDate: ymd(due),
+        items: [ { desc:'', qty:1, price:0 } ],
+        taxEnabled: true,
+        taxRate: 20,
+        notes: 'Thank you for your business. Payment is due within 14 days of the issue date.',
+        bank: '',
+      },
+    };
+  }
+  function ymd(d){ return d.toISOString().slice(0,10); }
+  function nextInvoiceNumber(){
+    let n = parseInt(localStorage.getItem(NEXT_NUM_KEY)||'1', 10);
+    return 'SS-' + String(n).padStart(4,'0');
+  }
+  function bumpInvoiceNumber(){
+    let n = parseInt(localStorage.getItem(NEXT_NUM_KEY)||'1', 10);
+    localStorage.setItem(NEXT_NUM_KEY, String(n+1));
+  }
+
+  // --- DOM refs ---
+  const $ = (id) => document.getElementById(id);
+
+  // --- Persistence ---
+  function saveCurrent(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+  function loadCurrent(){
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+      const parsed = JSON.parse(raw);
+      // Merge defensively in case of schema changes
+      state = Object.assign(defaultState(), parsed);
+      state.biz = Object.assign(defaultState().biz, parsed.biz||{});
+      state.client = Object.assign(defaultState().client, parsed.client||{});
+      state.invoice = Object.assign(defaultState().invoice, parsed.invoice||{});
+      if(!Array.isArray(state.invoice.items) || !state.invoice.items.length){
+        state.invoice.items = [{ desc:'', qty:1, price:0 }];
+      }
+    } catch(e){ /* swallow corrupted state */ }
+  }
+  function loadDrafts(){
+    try { return JSON.parse(localStorage.getItem(DRAFTS_KEY) || '[]'); }
+    catch(e){ return []; }
+  }
+  function writeDrafts(drafts){
+    localStorage.setItem(DRAFTS_KEY, JSON.stringify(drafts));
+  }
+  function saveDraft(){
+    const drafts = loadDrafts();
+    const name = (state.invoice.number || 'Untitled') + ' · ' + (state.client.name || 'No client');
+    const stamp = new Date().toISOString();
+    drafts.unshift({ id: stamp, name, savedAt: stamp, payload: JSON.parse(JSON.stringify(state)) });
+    // Keep last 30 drafts only
+    drafts.splice(30);
+    writeDrafts(drafts);
+    toast('Draft saved');
+  }
+
+  // --- Render: form (initial population) ---
+  function renderForm(){
+    $('biz-name').value = state.biz.name;
+    $('biz-tag').value  = state.biz.tagline;
+    renderLogo();
+    $('cl-name').value    = state.client.name;
+    $('cl-contact').value = state.client.contact;
+    $('cl-email').value   = state.client.email;
+    $('cl-addr').value    = state.client.address;
+    $('inv-num').value  = state.invoice.number;
+    $('inv-curr').value = state.invoice.currency;
+    $('inv-date').value = state.invoice.issueDate;
+    $('inv-due').value  = state.invoice.dueDate;
+    $('tax-rate').value = state.invoice.taxRate;
+    $('inv-notes').value = state.invoice.notes;
+    $('inv-bank').value  = state.invoice.bank;
+    $('tax-toggle').classList.toggle('on', !!state.invoice.taxEnabled);
+    renderLineItems();
+  }
+
+  function renderLogo(){
+    const thumb = $('logo-thumb');
+    const clearBtn = $('btn-logo-clear');
+    if(state.biz.logo){
+      thumb.innerHTML = '<img src="' + state.biz.logo + '" alt="logo">';
+      clearBtn.style.display = '';
+    } else {
+      thumb.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>';
+      clearBtn.style.display = 'none';
+    }
+  }
+
+  function renderLineItems(){
+    const wrap = $('line-items');
+    wrap.innerHTML = '';
+    state.invoice.items.forEach((item, i) => {
+      const row = document.createElement('div');
+      row.className = 'fld-row-3';
+      row.innerHTML = `
+        <div class="fld"><label>${i===0?'Description':''}</label><input type="text" placeholder="Custom website" data-li="${i}" data-field="desc" value="${escapeAttr(item.desc)}"></div>
+        <div class="fld"><label>${i===0?'Qty':''}</label><input type="number" min="0" step="0.5" placeholder="1" data-li="${i}" data-field="qty" value="${item.qty}"></div>
+        <div class="fld"><label>${i===0?'Unit price':''}</label><input type="number" min="0" step="0.01" placeholder="149" data-li="${i}" data-field="price" value="${item.price}"></div>
+        <button class="del" data-li-del="${i}" title="Remove line">×</button>
+      `;
+      wrap.appendChild(row);
+    });
+    // Wire inputs
+    wrap.querySelectorAll('[data-li]').forEach(el => {
+      el.addEventListener('input', (e) => {
+        const i = +e.target.dataset.li;
+        const f = e.target.dataset.field;
+        let v = e.target.value;
+        if(f === 'qty' || f === 'price') v = parseFloat(v) || 0;
+        state.invoice.items[i][f] = v;
+        renderInvoice();
+        saveCurrent();
+      });
+    });
+    wrap.querySelectorAll('[data-li-del]').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const i = +e.currentTarget.dataset.liDel;
+        if(state.invoice.items.length === 1){
+          state.invoice.items[0] = { desc:'', qty:1, price:0 };
+        } else {
+          state.invoice.items.splice(i,1);
+        }
+        renderLineItems();
+        renderInvoice();
+        saveCurrent();
+      });
+    });
+  }
+
+  function escapeAttr(s){ return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+  function escapeText(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  // --- Compute ---
+  function compute(){
+    const items = state.invoice.items.map(i => ({...i, total: (i.qty||0) * (i.price||0)}));
+    const subtotal = items.reduce((s,i) => s + i.total, 0);
+    const taxRate = state.invoice.taxEnabled ? (+state.invoice.taxRate||0) : 0;
+    const tax = subtotal * (taxRate/100);
+    const total = subtotal + tax;
+    return { items, subtotal, taxRate, tax, total };
+  }
+
+  function fmt(n, cur){
+    const sym = CURRENCY_SYMBOLS[cur] || '';
+    const v = (n||0).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return sym + v;
+  }
+  function fmtDate(ymd){
+    if(!ymd) return '—';
+    const [Y,M,D] = ymd.split('-').map(Number);
+    if(!Y||!M||!D) return ymd;
+    const d = new Date(Y, M-1, D);
+    return d.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+  }
+
+  // --- Render: invoice preview ---
+  function renderInvoice(){
+    const { items, subtotal, taxRate, tax, total } = compute();
+    const cur = state.invoice.currency;
+    const biz = state.biz, cl = state.client, inv = state.invoice;
+
+    const itemRows = items.map(i => `
+      <tr>
+        <td class="desc">${escapeText(i.desc) || '<span class="empty-pref">Line item description</span>'}</td>
+        <td class="num">${(+i.qty||0).toLocaleString('en-GB')}</td>
+        <td class="num">${fmt(+i.price||0, cur)}</td>
+        <td class="num">${fmt(i.total, cur)}</td>
+      </tr>
+    `).join('');
+
+    $('invoice').innerHTML = `
+      <div class="inv-head">
+        <div class="inv-brand">
+          <div class="inv-brand-logo">
+            ${biz.logo
+              ? '<img src="'+biz.logo+'" alt="logo">'
+              : '<svg viewBox="0 0 28 28" fill="none" width="32" height="32"><polygon points="14,1 27,7.5 27,20.5 14,27 1,20.5 1,7.5" fill="none" stroke="#b08a3e" stroke-width="1.2" opacity=".7"/><polygon points="14,6 22,10 22,18 14,22 6,18 6,10" fill="#b08a3e" opacity=".12"/><polygon points="14,10 18,12 18,16 14,18 10,16 10,12" fill="#b08a3e" opacity=".45"/></svg>'
+            }
+          </div>
+          <div class="inv-brand-text">
+            <div class="biz-name">${escapeText(biz.name) || '<span class="empty-pref">Your business name</span>'}</div>
+            <div class="biz-tag">${escapeText(biz.tagline)}</div>
+          </div>
+        </div>
+        <div class="inv-title">
+          <div class="label">Invoice</div>
+          <h1>${escapeText(inv.number) || '—'}</h1>
+        </div>
+      </div>
+
+      <div class="inv-meta">
+        <div class="inv-meta-col">
+          <h4>Billed to</h4>
+          <p>
+            <span class="biz-line">${escapeText(cl.name) || '<span class="empty-pref">Client name</span>'}</span>${cl.contact ? '<br>'+escapeText(cl.contact) : ''}
+            ${cl.address ? '<br>'+escapeText(cl.address).replace(/\n/g,'<br>') : ''}
+            ${cl.email ? '<br>'+escapeText(cl.email) : ''}
+          </p>
+        </div>
+        <div class="inv-meta-col" style="text-align:right">
+          <h4>From</h4>
+          <p>
+            <span class="biz-line">${escapeText(biz.name) || ''}</span>
+            ${biz.tagline ? '<br>'+escapeText(biz.tagline).replace(/\n/g,'<br>') : ''}
+          </p>
+        </div>
+      </div>
+
+      <div class="inv-info">
+        <div class="inv-info-cell"><h4>Invoice no.</h4><p>${escapeText(inv.number) || '—'}</p></div>
+        <div class="inv-info-cell"><h4>Issued</h4><p>${fmtDate(inv.issueDate)}</p></div>
+        <div class="inv-info-cell"><h4>Due</h4><p>${fmtDate(inv.dueDate)}</p></div>
+      </div>
+
+      <table class="inv-table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th class="num">Qty</th>
+            <th class="num">Unit</th>
+            <th class="num">Total</th>
+          </tr>
+        </thead>
+        <tbody>${itemRows}</tbody>
+      </table>
+
+      <div class="inv-totals">
+        <div class="inv-totals-inner">
+          <div class="tot-row"><span class="lbl">Subtotal</span><span class="val">${fmt(subtotal,cur)}</span></div>
+          ${inv.taxEnabled
+            ? `<div class="tot-row"><span class="lbl">VAT (${(+taxRate).toFixed(taxRate%1?1:0)}%)</span><span class="val">${fmt(tax,cur)}</span></div>`
+            : ''}
+          <div class="tot-row grand"><span class="lbl">Total</span><span class="val">${fmt(total,cur)}</span></div>
+          <div class="tot-row due"><span class="lbl">Amount due</span><span class="val">${fmt(total,cur)}</span></div>
+        </div>
+      </div>
+
+      ${inv.notes ? `<div class="inv-notes"><h4>Notes</h4>${escapeText(inv.notes).replace(/\n/g,'<br>')}</div>` : ''}
+
+      ${inv.bank ? `
+        <div class="inv-pay">
+          <div class="inv-pay-col">
+            <h4>Payment</h4>
+            <p>${escapeText(inv.bank).replace(/\n/g,'<br>')}</p>
+          </div>
+          <div class="inv-pay-col" style="text-align:right">
+            <h4>Reference</h4>
+            <p>${escapeText(inv.number)}</p>
+          </div>
+        </div>
+      ` : ''}
+
+      <div class="inv-foot">Generated with <em>StaticSwift</em> — staticswift.co.uk</div>
+    `;
+  }
+
+  // --- Wiring ---
+  function bind(){
+    const bindField = (id, path) => {
+      $(id).addEventListener('input', (e) => {
+        const parts = path.split('.');
+        let cur = state;
+        for(let i=0;i<parts.length-1;i++) cur = cur[parts[i]];
+        cur[parts[parts.length-1]] = e.target.value;
+        renderInvoice();
+        saveCurrent();
+      });
+    };
+    bindField('biz-name','biz.name');
+    bindField('biz-tag','biz.tagline');
+    bindField('cl-name','client.name');
+    bindField('cl-contact','client.contact');
+    bindField('cl-email','client.email');
+    bindField('cl-addr','client.address');
+    bindField('inv-num','invoice.number');
+    bindField('inv-curr','invoice.currency');
+    bindField('inv-date','invoice.issueDate');
+    bindField('inv-due','invoice.dueDate');
+    bindField('inv-notes','invoice.notes');
+    bindField('inv-bank','invoice.bank');
+
+    $('tax-rate').addEventListener('input', (e) => {
+      state.invoice.taxRate = parseFloat(e.target.value)||0;
+      renderInvoice(); saveCurrent();
+    });
+    $('tax-toggle').addEventListener('click', () => {
+      state.invoice.taxEnabled = !state.invoice.taxEnabled;
+      $('tax-toggle').classList.toggle('on', state.invoice.taxEnabled);
+      renderInvoice(); saveCurrent();
+    });
+
+    $('btn-add-item').addEventListener('click', () => {
+      state.invoice.items.push({ desc:'', qty:1, price:0 });
+      renderLineItems(); renderInvoice(); saveCurrent();
+    });
+
+    $('btn-logo').addEventListener('click', () => $('logo-input').click());
+    $('btn-logo-clear').addEventListener('click', () => {
+      state.biz.logo = '';
+      renderLogo(); renderInvoice(); saveCurrent();
+    });
+    $('logo-input').addEventListener('change', (e) => {
+      const file = e.target.files[0]; if(!file) return;
+      if(file.size > 2*1024*1024){ toast('Logo too large (2MB max)'); return; }
+      const r = new FileReader();
+      r.onload = () => {
+        state.biz.logo = r.result;
+        renderLogo(); renderInvoice(); saveCurrent();
+      };
+      r.readAsDataURL(file);
+    });
+
+    $('btn-save').addEventListener('click', saveDraft);
+    $('btn-print').addEventListener('click', () => {
+      bumpInvoiceNumber();
+      saveDraft();
+      window.print();
+    });
+
+    $('btn-reset').addEventListener('click', () => {
+      if(!confirm('Start a new invoice? Current edits are saved as a draft first.')) return;
+      saveDraft();
+      state = defaultState();
+      renderForm(); renderInvoice(); saveCurrent();
+      toast('New invoice');
+    });
+
+    $('btn-drafts').addEventListener('click', openDrafts);
+    $('btn-close-drafts').addEventListener('click', closeDrafts);
+    $('drafts-modal').addEventListener('click', (e) => {
+      if(e.target.id === 'drafts-modal') closeDrafts();
+    });
+  }
+
+  function openDrafts(){
+    const drafts = loadDrafts();
+    const list = $('draft-list');
+    if(!drafts.length){
+      list.innerHTML = '<div style="font-size:13px;color:var(--muted);text-align:center;padding:20px">No drafts yet. Click <b>Save draft</b> to keep a copy.</div>';
+    } else {
+      list.innerHTML = drafts.map(d => `
+        <div class="draft-item">
+          <div class="draft-info">
+            <div class="draft-name">${escapeText(d.name)}</div>
+            <div class="draft-meta">${new Date(d.savedAt).toLocaleString('en-GB')}</div>
+          </div>
+          <div class="draft-actions">
+            <button data-load="${d.id}">Load</button>
+            <button class="del-d" data-del="${d.id}">Delete</button>
+          </div>
+        </div>
+      `).join('');
+      list.querySelectorAll('[data-load]').forEach(b => b.addEventListener('click', () => loadDraft(b.dataset.load)));
+      list.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => deleteDraft(b.dataset.del)));
+    }
+    $('drafts-modal').classList.add('show');
+  }
+  function closeDrafts(){ $('drafts-modal').classList.remove('show'); }
+
+  function loadDraft(id){
+    const drafts = loadDrafts();
+    const d = drafts.find(x => x.id === id);
+    if(!d) return;
+    state = JSON.parse(JSON.stringify(d.payload));
+    renderForm(); renderInvoice(); saveCurrent();
+    closeDrafts();
+    toast('Draft loaded');
+  }
+  function deleteDraft(id){
+    const drafts = loadDrafts().filter(x => x.id !== id);
+    writeDrafts(drafts);
+    openDrafts();
+  }
+
+  let toastTimer = null;
+  function toast(msg){
+    const t = $('toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  // --- URL prefill (admin or manual deep-link) ---
+  function applyUrlPrefill(){
+    const qs = new URLSearchParams(window.location.search);
+    if(!qs.toString()) return false;
+
+    // Direct field prefills
+    const m = {
+      'biz_name':'biz.name', 'biz_tag':'biz.tagline',
+      'client_name':'client.name', 'client_contact':'client.contact',
+      'client_email':'client.email', 'client_addr':'client.address',
+      'inv_num':'invoice.number', 'currency':'invoice.currency',
+      'issue_date':'invoice.issueDate', 'due_date':'invoice.dueDate',
+      'notes':'invoice.notes', 'bank':'invoice.bank',
+    };
+    let touched = false;
+    Object.entries(m).forEach(([k, path]) => {
+      const v = qs.get(k);
+      if(v == null) return;
+      const parts = path.split('.');
+      let cur = state;
+      for(let i=0;i<parts.length-1;i++) cur = cur[parts[i]];
+      cur[parts[parts.length-1]] = v;
+      touched = true;
+    });
+
+    // Items: support item1_desc/item1_qty/item1_price up to ~10 lines
+    const items = [];
+    for(let i = 1; i <= 12; i++){
+      const desc = qs.get('item'+i+'_desc');
+      if(desc == null) continue;
+      items.push({
+        desc,
+        qty: parseFloat(qs.get('item'+i+'_qty')||'1') || 1,
+        price: parseFloat(qs.get('item'+i+'_price')||'0') || 0,
+      });
+    }
+    if(items.length){ state.invoice.items = items; touched = true; }
+
+    // Package shortcut for StaticSwift admin: package=advanced|starter + hosting=yes|no
+    const pkg = qs.get('package');
+    if(pkg){
+      const advanced = pkg === 'advanced';
+      const hosting = qs.get('hosting') === 'yes';
+      state.invoice.items = [
+        { desc: (advanced ? 'Advanced' : 'Starter') + ' Website Design', qty: 1, price: advanced ? 299 : 149 },
+      ];
+      if(hosting) state.invoice.items.push({ desc:'Hosting upload service', qty:1, price:29 });
+      // We do not charge VAT on these unless the admin explicitly turns it on
+      state.invoice.taxEnabled = false;
+      // Default StaticSwift bank details
+      state.invoice.bank = state.invoice.bank || 'Beneficiary: Harry Yule\nSort code: 04-00-75\nAccount: 98518224\nBank: Revolut Ltd\nIBAN: GB64 REVO 0099 7062 6486 05\nBIC: REVOGB21';
+      state.biz.name = state.biz.name || 'StaticSwift';
+      state.biz.tagline = state.biz.tagline || 'hello@staticswift.co.uk\nManchester, UK';
+      touched = true;
+    }
+
+    // Pipeline link: clientId tells us this invoice is tied to a client record
+    const clientId = qs.get('clientId');
+    if(clientId){
+      pipelineCtx.clientId = clientId;
+      touched = true;
+    }
+    return touched;
+  }
+
+  // --- Pipeline context (only set when admin opens us with clientId) ---
+  const pipelineCtx = {
+    clientId: null,
+    get adminPw(){ return sessionStorage.getItem('ss_pw') || ''; },
+  };
+
+  // --- Send via email ---
+  async function sendInvoice(){
+    const cl = state.client;
+    const inv = state.invoice;
+    const { total } = compute();
+    const currencySym = CURRENCY_SYMBOLS[inv.currency] || '';
+
+    if(!cl.email){
+      toast('Add a client email first');
+      $('cl-email').focus();
+      return;
+    }
+    if(!confirm('Send invoice ' + inv.number + ' to ' + cl.email + '?')) return;
+
+    // Use the rendered preview HTML as the email body, wrapped in an
+    // <html>-shell with inline styles only (no <link> tags) so Gmail/Outlook
+    // render it without external requests.
+    const invoiceHtml = buildEmailHtml();
+
+    const btn = $('btn-send');
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = 'Sending…';
+
+    try {
+      const r = await fetch('/.netlify/functions/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': pipelineCtx.adminPw },
+        body: JSON.stringify({
+          emailType: 'generated-invoice',
+          clientId: pipelineCtx.clientId,        // may be null for manual invoices
+          toEmail: cl.email,
+          toName: cl.contact || cl.name || '',
+          subject: 'Invoice ' + inv.number + ' — StaticSwift — ' + currencySym + total.toFixed(2),
+          invoiceHtml,
+          invoiceNumber: inv.number,
+          amount: total,
+          currency: inv.currency,
+        }),
+      });
+      const j = await r.json().catch(() => ({}));
+      if(!r.ok || (j && j.error)){
+        toast('Send failed: ' + (j.error || r.statusText));
+        btn.disabled = false;
+        btn.innerHTML = orig;
+        return;
+      }
+      bumpInvoiceNumber();
+      saveDraft();
+      toast('Invoice sent to ' + cl.email);
+      btn.disabled = false;
+      btn.innerHTML = orig;
+    } catch(err){
+      toast('Send failed: ' + (err && err.message || 'network error'));
+      btn.disabled = false;
+      btn.innerHTML = orig;
+    }
+  }
+
+  // Build an email-safe HTML version of the invoice. Email clients strip
+  // <link> tags and most <style> blocks; we inline everything and use only
+  // table-based layout for maximum compatibility (Outlook in particular).
+  function buildEmailHtml(){
+    const { items, subtotal, taxRate, tax, total } = compute();
+    const cur = state.invoice.currency;
+    const biz = state.biz, cl = state.client, inv = state.invoice;
+    const fmtN = (n) => fmt(n, cur);
+    const td = 'padding:11px 10px;border-bottom:1px solid #eee;font-size:14px;color:#0a0a0a;font-family:Arial,Helvetica,sans-serif';
+    const tdNum = td + ';text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap';
+    const lbl = 'font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#9a9a9a;font-family:Arial,Helvetica,sans-serif';
+    const rows = items.map(i => `
+      <tr>
+        <td style="${td}">${escapeText(i.desc)}</td>
+        <td style="${tdNum}">${(+i.qty||0).toLocaleString('en-GB')}</td>
+        <td style="${tdNum}">${fmtN(+i.price||0)}</td>
+        <td style="${tdNum};font-weight:600">${fmtN(i.total)}</td>
+      </tr>`).join('');
+    return `<!doctype html><html><body style="margin:0;padding:0;background:#f4f1ea;font-family:Arial,Helvetica,sans-serif;color:#0a0a0a">
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f4f1ea">
+ <tr><td align="center" style="padding:32px 12px">
+  <table cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;background:#ffffff;border-radius:8px;padding:36px 32px">
+   <tr><td style="padding-bottom:24px">
+    <table width="100%"><tr>
+     <td style="vertical-align:top">
+      <div style="font-size:22px;font-weight:700;color:#0a0a0a;letter-spacing:-.5px">${escapeText(biz.name) || 'StaticSwift'}</div>
+      <div style="font-size:12px;color:#6a6a6a;margin-top:4px;line-height:1.5">${escapeText(biz.tagline).replace(/\n/g,'<br>')}</div>
+     </td>
+     <td style="vertical-align:top;text-align:right">
+      <div style="${lbl}">Invoice</div>
+      <div style="font-size:26px;color:#b08a3e;font-style:italic;letter-spacing:-1px;margin-top:2px">${escapeText(inv.number)}</div>
+     </td>
+    </tr></table>
+   </td></tr>
+
+   <tr><td style="padding:16px;background:#f9f8f6;border-radius:8px">
+    <table width="100%"><tr>
+     <td style="vertical-align:top;padding-right:16px">
+      <div style="${lbl}">Billed to</div>
+      <div style="font-size:14px;color:#0a0a0a;font-weight:600;margin-top:6px">${escapeText(cl.name)}</div>
+      ${cl.contact ? '<div style="font-size:13px;color:#0a0a0a;margin-top:2px">'+escapeText(cl.contact)+'</div>' : ''}
+      ${cl.address ? '<div style="font-size:13px;color:#0a0a0a;margin-top:6px;line-height:1.5">'+escapeText(cl.address).replace(/\n/g,'<br>')+'</div>' : ''}
+      ${cl.email ? '<div style="font-size:13px;color:#0a0a0a;margin-top:6px">'+escapeText(cl.email)+'</div>' : ''}
+     </td>
+     <td style="vertical-align:top;text-align:right">
+      <div style="${lbl}">Issued</div>
+      <div style="font-size:14px;color:#0a0a0a;margin:4px 0 12px">${fmtDate(inv.issueDate)}</div>
+      <div style="${lbl}">Due</div>
+      <div style="font-size:14px;color:#0a0a0a;margin-top:4px">${fmtDate(inv.dueDate)}</div>
+     </td>
+    </tr></table>
+   </td></tr>
+
+   <tr><td style="padding-top:28px">
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+     <tr>
+      <th style="${lbl};text-align:left;padding:0 10px 8px;border-bottom:2px solid #0a0a0a">Description</th>
+      <th style="${lbl};text-align:right;padding:0 10px 8px;border-bottom:2px solid #0a0a0a">Qty</th>
+      <th style="${lbl};text-align:right;padding:0 10px 8px;border-bottom:2px solid #0a0a0a">Unit</th>
+      <th style="${lbl};text-align:right;padding:0 10px 8px;border-bottom:2px solid #0a0a0a">Total</th>
+     </tr>
+     ${rows}
+    </table>
+   </td></tr>
+
+   <tr><td style="padding-top:18px">
+    <table width="100%"><tr><td style="text-align:right">
+     <table cellpadding="0" cellspacing="0" border="0" style="min-width:280px">
+      <tr><td style="${td};border:0;color:#6a6a6a">Subtotal</td><td style="${tdNum};border:0">${fmtN(subtotal)}</td></tr>
+      ${inv.taxEnabled ? `<tr><td style="${td};border:0;color:#6a6a6a">VAT (${(+taxRate).toFixed(taxRate%1?1:0)}%)</td><td style="${tdNum};border:0">${fmtN(tax)}</td></tr>` : ''}
+      <tr><td style="${td};border:0;border-top:2px solid #0a0a0a;font-size:18px;font-weight:700">Total</td><td style="${tdNum};border:0;border-top:2px solid #0a0a0a;font-size:18px;font-weight:700">${fmtN(total)}</td></tr>
+      <tr><td colspan="2" style="padding:10px 12px;background:#f9f8f6;border-radius:8px;text-align:right;font-weight:700;color:#b08a3e;font-size:14px;font-family:Arial,Helvetica,sans-serif">Amount due ${fmtN(total)}</td></tr>
+     </table>
+    </td></tr></table>
+   </td></tr>
+
+   ${inv.notes ? `<tr><td style="padding-top:22px"><div style="${lbl}">Notes</div><div style="font-size:13px;color:#6a6a6a;margin-top:6px;line-height:1.6">${escapeText(inv.notes).replace(/\n/g,'<br>')}</div></td></tr>` : ''}
+
+   ${inv.bank ? `<tr><td style="padding-top:22px">
+    <table width="100%"><tr>
+     <td style="vertical-align:top;padding-right:16px">
+      <div style="${lbl}">Payment details</div>
+      <div style="font-size:13px;color:#0a0a0a;margin-top:6px;line-height:1.7;font-family:'Courier New',monospace">${escapeText(inv.bank).replace(/\n/g,'<br>')}</div>
+     </td>
+     <td style="vertical-align:top;text-align:right">
+      <div style="${lbl}">Reference</div>
+      <div style="font-size:13px;color:#0a0a0a;margin-top:6px;font-family:'Courier New',monospace">${escapeText(inv.number)}</div>
+     </td>
+    </tr></table>
+   </td></tr>` : ''}
+
+   <tr><td style="padding-top:26px;border-top:1px solid #eee;text-align:center;font-size:11px;color:#9a9a9a">
+    Generated with <span style="color:#b08a3e;font-style:italic">StaticSwift</span> — <a href="https://staticswift.co.uk" style="color:#9a9a9a;text-decoration:none">staticswift.co.uk</a>
+   </td></tr>
+  </table>
+ </td></tr>
+</table>
+</body></html>`;
+  }
+
+  // --- Boot ---
+  loadCurrent();
+  const prefilled = applyUrlPrefill();
+  if(prefilled) saveCurrent();
+  renderForm();
+  renderInvoice();
+  bind();
+  $('btn-send').addEventListener('click', sendInvoice);
+
+  // Keyboard shortcuts: Cmd+S save, Cmd+P print (we let browser handle print)
+  document.addEventListener('keydown', (e) => {
+    if((e.metaKey || e.ctrlKey) && e.key === 's'){
+      e.preventDefault();
+      saveDraft();
+    }
+  });
+})();
+</script>
+</body>
+</html>

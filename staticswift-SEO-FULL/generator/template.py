@@ -171,9 +171,30 @@ def render(niche_slug: str, city_slug: str, nearby_cities: list[str], cross_nich
         "logo": SITE + "/logo.png",
         "description": "StaticSwift handcrafts fast, premium static websites for UK small businesses. Delivered in 24 hours from £149.",
         "email": "hello@staticswift.co.uk",
-        "founder": {"@type": "Person", "name": "Harry Yule"},
+        "founder": {"@type": "Person", "@id": SITE + "/about/#harry", "name": "Harry Yule"},
         "areaServed": {"@type": "Country", "name": "United Kingdom"},
         "sameAs": [SITE + "/"],
+    }
+    # Per-page Service + Offer schema for richer AI/LLM + Google understanding
+    service = {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": f"{n['h1_label']} Website Design in {city_display}",
+        "serviceType": "Website Design",
+        "category": f"{n['singular']} website design",
+        "provider": {"@id": SITE + "/#org"},
+        "areaServed": {"@type": "Place", "name": city_display},
+        "offers": [
+            {"@type": "Offer", "name": "Starter", "price": "149", "priceCurrency": "GBP",
+             "description": f"Custom single-page {n['singular']} website, 24h delivery",
+             "url": SITE + "/order.html"},
+            {"@type": "Offer", "name": "Advanced", "price": "299", "priceCurrency": "GBP",
+             "description": f"Multi-section {n['singular']} site with gallery & testimonials",
+             "url": SITE + "/order.html"},
+            {"@type": "Offer", "name": "Hosting", "price": "29", "priceCurrency": "GBP",
+             "description": "Upload, domain connection, free Netlify hosting + SSL",
+             "url": SITE + "/order.html"},
+        ],
     }
 
     # Service grid
@@ -237,6 +258,9 @@ def render(niche_slug: str, city_slug: str, nearby_cities: list[str], cross_nich
 </script>
 <script type="application/ld+json">
 {json.dumps(org, ensure_ascii=False)}
+</script>
+<script type="application/ld+json">
+{json.dumps(service, ensure_ascii=False)}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -416,7 +440,8 @@ footer a:hover{{color:var(--gold2)}}
 
 <footer>
 <div class="ft-logo"><svg viewBox="0 0 28 28" fill="none" width="22" height="22"><polygon points="14,1 27,7.5 27,20.5 14,27 1,20.5 1,7.5" fill="none" stroke="#b08a3e" stroke-width="1.2" opacity=".7"/><polygon points="14,6 22,10 22,18 14,22 6,18 6,10" fill="#b08a3e" opacity=".12"/><polygon points="14,10 18,12 18,16 14,18 10,16 10,12" fill="#b08a3e" opacity=".45"/></svg><span>StaticSwift</span></div>
-<p>&copy; StaticSwift &mdash; UK &middot; Manchester &middot; <a href="{SITE}/">staticswift.co.uk</a></p>
+<p>Built by <a href="{SITE}/about/" rel="author"><em style="color:var(--gold2);font-style:italic">Harry Yule</em></a> &middot; UK studio based in Manchester &middot; <a href="{SITE}/">staticswift.co.uk</a></p>
+<p style="margin-top:6px;font-size:11px">&copy; StaticSwift &middot; <a href="{SITE}/about/">About</a> &middot; <a href="{SITE}/showcase/">Showcase</a> &middot; <a href="{SITE}/order.html">Start a project</a></p>
 </footer>
 
 <script>

@@ -36,8 +36,8 @@ def write_sitemap(paths: list[str], out: Path) -> None:
     static = [
         ("/", "1.0"),
         ("/order.html", "0.9"),
-        ("/showcase", "0.7"),
-        ("/pricing", "0.7"),
+        ("/about/", "0.8"),
+        ("/showcase/", "0.7"),
     ]
     for path, prio in static:
         lines.append(
@@ -114,8 +114,8 @@ def main():
     write_sitemap_index(["sitemap-seo.xml"], ROOT / "sitemap-index.xml")
     print("wrote sitemap-seo.xml, sitemap-index.xml")
 
-    write_redirects(retired, ROOT / "_redirects.seo")
-    print("wrote _redirects.seo (append/merge with your existing _redirects)")
+    write_redirects(retired, ROOT / "_redirects")
+    print("wrote _redirects (Netlify-ready, replaces any existing one)")
 
     write_robots(ROOT / "robots.txt")
     print("wrote robots.txt (now advertises only sitemap-index.xml)")

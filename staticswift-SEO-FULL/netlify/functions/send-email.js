@@ -11,22 +11,79 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { clientId, emailType, previewUrl, customSubject, customBody } = JSON.parse(event.body || '{}');
-    if (!clientId) return { statusCode: 400, body: JSON.stringify({ error: 'clientId required' }) };
+    const body = JSON.parse(event.body || '{}');
+    const { clientId, emailType, previewUrl, customSubject, customBody } = body;
     if (!emailType) return { statusCode: 400, body: JSON.stringify({ error: 'emailType required' }) };
 
-    
+    // Check SMTP config before doing anything
+    const provider = process.env.MAIL_PROVIDER || 'fasthosts';
+    if (provider === 'fasthosts' && (!process.env.SMTP_USER || !process.env.SMTP_PASS)) {
+      return { statusCode: 500, body: JSON.stringify({ error: 'SMTP not configured — add SMTP_USER and SMTP_PASS in Netlify environment variables' }) };
+    }
+
+    // -----------------------------------------------------------------
+    // generated-invoice: pre-rendered invoice HTML coming from /invoice/
+    // - Does NOT require clientId (manual invoices work too)
+    // - If clientId provided, looks up client to update stage + emailLog
+    // - Always uses provided toEmail (the generator's client.email field)
+    // -----------------------------------------------------------------
+    if (emailType === 'generated-invoice') {
+      const { toEmail, toName, subject, invoiceHtml, invoiceNumber, amount, currency } = body;
+      if (!toEmail) return { statusCode: 400, body: JSON.stringify({ error: 'toEmail required' }) };
+      if (!invoiceHtml) return { statusCode: 400, body: JSON.stringify({ error: 'invoiceHtml required' }) };
+
+      const fromAddr = process.env.SMTP_USER || process.env.GMAIL_USER || 'hello@staticswift.co.uk';
+      const subj = subject || ('Invoice ' + (invoiceNumber || '') + ' — StaticSwift');
+
+      const transporter = createTransporter();
+      await transporter.sendMail({
+        from: '"StaticSwift" <' + fromAddr + '>',
+        to: toName ? ('"' + toName + '" <' + toEmail + '>') : toEmail,
+        subject: subj,
+        html: invoiceHtml,
+        replyTo: fromAddr,
+      });
+
+      console.log('[send-email] sent generated-invoice', invoiceNumber, 'to', toEmail);
+
+      // If this invoice is tied to a pipeline client, update their record
+      if (clientId) {
+        try {
+          const client = await getClient(clientId);
+          if (client) {
+            const emailLog = Array.isArray(client.emailLog) ? client.emailLog : [];
+            emailLog.push({ type: 'generated-invoice', sentAt: new Date().toISOString(), direction: 'outbound', subject: subj });
+            await updateClient(clientId, {
+              stage: 'invoice-sent',
+              invoiceNumber: invoiceNumber || client.invoiceNumber,
+              amount: amount || client.amount,
+              currency: currency || 'GBP',
+              invoiceSentAt: new Date().toISOString(),
+              emailLog,
+            });
+          }
+        } catch (e) {
+          console.warn('[send-email] generated-invoice: client update failed', e.message);
+        }
+      }
+
+      return {
+        statusCode: 200,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ok: true, emailType, to: toEmail, subject: subj, invoiceNumber }),
+      };
+    }
+
+    // -----------------------------------------------------------------
+    // All other emailTypes require a clientId
+    // -----------------------------------------------------------------
+    if (!clientId) return { statusCode: 400, body: JSON.stringify({ error: 'clientId required' }) };
+
     const client = await getClient(clientId);
     if (!client) return { statusCode: 404, body: JSON.stringify({ error: 'Client not found in Blobs' }) };
 
     const toAddr = client.delivery_email;
     if (!toAddr) return { statusCode: 400, body: JSON.stringify({ error: 'Client has no delivery_email' }) };
-
-    // Check SMTP config before attempting send
-    const provider = process.env.MAIL_PROVIDER || 'fasthosts';
-    if (provider === 'fasthosts' && (!process.env.SMTP_USER || !process.env.SMTP_PASS)) {
-      return { statusCode: 500, body: JSON.stringify({ error: 'SMTP not configured — add SMTP_USER and SMTP_PASS in Netlify environment variables' }) };
-    }
 
     const fromAddr = process.env.SMTP_USER || process.env.GMAIL_USER || 'hello@staticswift.co.uk';
 
