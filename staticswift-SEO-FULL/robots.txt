@@ -5,9 +5,6 @@ Disallow: /admin/
 Disallow: /client/
 Crawl-delay: 1
 
-Sitemap: https://staticswift.co.uk/sitemap-index.xml
-Sitemap: https://staticswift.co.uk/sitemap.xml
-
 User-agent: Bingbot
 Allow: /
 Crawl-delay: 1
@@ -20,3 +17,5 @@ Allow: /
 
 User-agent: PerplexityBot
 Allow: /
+
+Sitemap: https://staticswift.co.uk/sitemap-index.xml
