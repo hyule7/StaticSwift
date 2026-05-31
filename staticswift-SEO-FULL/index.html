@@ -4270,9 +4270,36 @@ body.scrolled-past-hero .hero::after { transform: scaleY(0); transition: transfo
   border-color: var(--terr-pale, #d9a071) !important;
   background: rgba(14,12,10,.85) !important;
 }
-/* Single-field form — only email visible initially */
+/* FORM — guaranteed visible. Was being hidden by inherited rules. */
+.hero .hero-lead { display: block !important; visibility: visible !important; opacity: 1 !important; }
+.hero #hf { display: block !important; visibility: visible !important; }
+.hero .hero-lead-form { display: flex !important; visibility: visible !important; }
+.hero .hero-lead {
+  flex-direction: column !important;
+  max-width: 480px !important;
+  margin-top: 1.4rem !important;
+}
+.hero #hf { flex-direction: column; width: 100%; }
+.hero .hero-lead-label {
+  display: flex !important;
+  align-items: center; gap: .6rem;
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+  font-size: .72rem !important; letter-spacing: .14em !important;
+  text-transform: uppercase !important;
+  color: var(--terr-pale, #d9a071) !important;
+  margin-bottom: .85rem !important;
+  opacity: 1 !important;
+  font-weight: 700;
+}
+/* Single-field form — only email visible */
 .hero #hf-biz, .hero #hf-site, .hero #hf-wa { display: none !important; }
-.hero #hf-email { font-size: 1.05rem !important; padding: 1.1rem 1.2rem !important; }
+.hero #hf-email {
+  display: block !important;
+  font-size: 1.05rem !important;
+  padding: 1.05rem 1.2rem !important;
+  width: 100% !important;
+  margin-bottom: .55rem;
+}
 
 /* ════════════════════════════════════════════════════
    COMPACT HERO · post-terminal · "what I do · who for · form"
@@ -4318,6 +4345,20 @@ body.scrolled-past-hero .hero::after { transform: scaleY(0); transition: transfo
 
 /* Kill the giant background marquee — too loud now */
 .hero-marquee { display: none !important; }
+
+/* Kill the top kinetic ticker bar — reads as AI */
+.hero-ticker { display: none !important; }
+
+/* Kill the director's slate + timestamp — also too AI */
+.hero-slate, .hero-timestamp { display: none !important; }
+
+/* Cinema bars off — keep the hero clean and editorial */
+.hero::before, .hero::after { display: none !important; }
+
+/* Soften the heavy vignette + leaks — let the cream paper read */
+.hero-leak-1, .hero-leak-2 { opacity: .25 !important; }
+.hero-grain { opacity: .03 !important; }
+.hero-spotlight { opacity: .35 !important; }
 
 /* Phone shrinks + tucks tighter in corner */
 .hero-phone-float {
@@ -4392,23 +4433,64 @@ body.scrolled-past-hero .hero::after { transform: scaleY(0); transition: transfo
   .nav-logo-by { display: none; }
 }
 
-/* HERO BACKGROUND — solid ink with subtle terracotta grid (no video) */
-.hero { background: #0a0907 !important; }
+/* HERO BACKGROUND — clean cream paper to match the screenshot */
+.hero { background: var(--paper, #faf7f1) !important; color: var(--ink, #0e0c0a) !important; }
 .hero-bg-grid {
   position: absolute; inset: 0; z-index: 0;
   background:
-    radial-gradient(ellipse 70% 50% at 20% 30%, rgba(168,108,77,.16), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(168,108,77,.10), transparent 60%),
-    linear-gradient(rgba(217,160,113,.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(217,160,113,.04) 1px, transparent 1px),
-    #0e0c0a;
-  background-size: auto, auto, 80px 80px, 80px 80px, auto;
+    radial-gradient(ellipse 50% 40% at 20% 20%, rgba(168,108,77,.06), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 90%, rgba(168,108,77,.04), transparent 60%),
+    var(--paper, #faf7f1);
+}
+/* Hide the bg video / fallback image — keep clean cream */
+.hero-bg-video video, .hero-bg-fallback { display: none !important; }
+.hero-bg-video::before { display: none !important; }
+
+/* Make headline + sub readable on cream */
+.hero .hero-headline {
+  color: var(--ink, #0e0c0a) !important;
+  text-shadow: none !important;
+}
+.hero .hero-headline em {
+  color: var(--terr-deep, #7e4f37) !important;
+  text-shadow: none !important;
+}
+.hero-text::before { display: none !important; }
+.hero .hero-sub { color: var(--ink, #0e0c0a) !important; opacity: .85; }
+.hero .ss-hero-eyebrow {
+  color: var(--terr-deep, #7e4f37) !important;
+  opacity: .85;
+}
+
+/* Form inputs on cream — readable */
+.hero #hf-email {
+  background: rgba(255,255,255,.7) !important;
+  border: 1.5px solid rgba(10,10,10,.15) !important;
+  color: var(--ink, #0e0c0a) !important;
+  backdrop-filter: none !important;
+}
+.hero #hf-email::placeholder { color: rgba(10,10,10,.42) !important; }
+.hero #hf-email:focus {
+  border-color: var(--terr-deep, #7e4f37) !important;
+  background: #fff !important;
+}
+.hero .hero-lead-label {
+  color: var(--terr-deep, #7e4f37) !important;
+}
+.hero-scroll-lure { color: var(--ink, #0e0c0a) !important; opacity: .7; }
+.hero-scroll-lure span:first-child { color: var(--terr-deep, #7e4f37) !important; }
+.hero-scroll-lure-line {
+  background: linear-gradient(180deg, transparent, var(--terr-deep, #7e4f37)) !important;
 }
 
 /* ════════════════════════════════════════════════════
-   HERO TERMINAL — Harry types real code, site builds itself
+   HERO TERMINAL — DISABLED. Skipping straight to the
+   autonomous scrolling phone hero. The terminal was added
+   then removed because the autonomous phone hero is cleaner.
    ════════════════════════════════════════════════════ */
-.hero-terminal {
+.hero-terminal { display: none !important; }
+#heroTerminal { display: none !important; }
+.hero-terminal-disabled-was {
   position: fixed; inset: 0; z-index: 90;
   background: rgba(10,9,7,.97);
   backdrop-filter: blur(20px);
@@ -10321,9 +10403,10 @@ if (/\/(thanks|sent|confirmed)/i.test(location.pathname)) {
   }
 })();
 
-/* HERO TERMINAL OPENING — Harry types code, the site builds itself,
-   then the terminal fades to reveal the real hero behind it. */
+/* HERO TERMINAL — disabled. Skipping straight to the autonomous phone hero. */
 (function heroTerminal(){
+  return; // disabled per user request
+  // eslint-disable-next-line no-unreachable
   const term = document.getElementById('heroTerminal');
   const codeEl = document.getElementById('ht-code');
   const previewBody = document.getElementById('ht-preview-body');
