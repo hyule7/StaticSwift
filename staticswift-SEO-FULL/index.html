@@ -4630,18 +4630,28 @@ body.scrolled-past-hero .hero::after { transform: scaleY(0); transition: transfo
   .nav-logo-by { display: none; }
 }
 
-/* HERO BACKGROUND — clean cream paper to match the screenshot */
+/* HERO BACKGROUND — clean cream paper to match the screenshot.
+   IMPORTANT: .hero-bg-video is an absolute-positioned child div with
+   inset:0 that originally held a video. Its base style (line ~189)
+   hard-codes a dark gradient (linear-gradient(180deg,#06070b,#0a0c12))
+   which sits OVER the .hero element's cream background and reads as a
+   "black bar" across the top of the hero. We override it to paper
+   below — pure cream with only the gentle terracotta hot-spots from
+   .hero-bg-grid. */
 .hero { background: var(--paper, #faf7f1) !important; color: var(--ink, #0e0c0a) !important; }
+.hero-bg-video {
+  background: var(--paper, #faf7f1) !important;
+}
 .hero-bg-grid {
   position: absolute; inset: 0; z-index: 0;
   background:
     radial-gradient(ellipse 50% 40% at 20% 20%, rgba(168,108,77,.06), transparent 60%),
     radial-gradient(ellipse 50% 40% at 80% 90%, rgba(168,108,77,.04), transparent 60%),
-    var(--paper, #faf7f1);
+    var(--paper, #faf7f1) !important;
 }
 /* Hide the bg video / fallback image — keep clean cream */
 .hero-bg-video video, .hero-bg-fallback { display: none !important; }
-.hero-bg-video::before { display: none !important; }
+.hero-bg-video::before, .hero-bg-video::after { display: none !important; }
 
 /* Make headline + sub readable on cream */
 .hero .hero-headline {
@@ -8555,62 +8565,140 @@ window.tf = (btn) => {
   } catch (_) {}
 })();
 
-/* —— HERO FORM submit (compact, above the fold) —— */
-window.sqHero = async (e) => {
-  e.preventDefault();
-  const form = e.target;
-  const btn = form.querySelector('.hl-submit');
-  const orig = btn.textContent;
-  btn.textContent = 'Got it →'; btn.disabled = true;
-  const data = Object.fromEntries(new FormData(form));
-  data.source = 'index-hero';
-  data.stage = 'new-lead'; // full lead — email captured
-  data.createdAt = new Date().toISOString();
-  data.name = data.business_name || '';
-  data.brief = (data.current_website && data.current_website.toLowerCase() !== 'none')
-    ? 'Current site: ' + data.current_website
-    : 'No current website yet';
-  // Persist locally so the optional long form picks up answers
-  try { sessionStorage.setItem('ss_hero_lead', JSON.stringify(data)); } catch(e) {}
-  // Pre-fill the long brief form so the visitor only fills the optional extras
-  const fillMap = {'f-biz':data.business_name,'f-email':data.delivery_email,'f-wa':data.whatsapp};
-  Object.entries(fillMap).forEach(([id,val]) => { const el = document.getElementById(id); if (el && val) el.value = val; });
-  // Analytics — fire on intent, not on server success (server may not even be reachable in dev).
-  // BUG FIX: previously this block had an orphan `}` after the generate_lead gtag
-  // call which closed the sqHero arrow function early. That syntax error meant the
-  // whole <script> block silently failed to parse — taking down the main #contact
-  // form handler (sq) too. Test submissions disappeared into the void.
-  if (typeof gtag === 'function') {
-    gtag('event', 'form_submit', {form_location: 'hero'});
-    gtag('event', 'generate_lead', {currency:'GBP', value:149, form_location:'hero'});
+/* ─── HERO FORM (#hf) — bulletproofed, same pattern as #qf ──────────
+   Independent submit. Posts to /handle-intake as source=index-hero.
+   - 25s hard timeout via AbortController
+   - One automatic retry on transient failures (800ms backoff)
+   - Inline error banner with mailto / WhatsApp fallbacks if both tries fail
+   - localStorage backup of the payload so a network drop doesn't lose data
+   - The contact form (#qf) below it stays fully editable and submits
+     independently — both leads land in the pipeline as separate records.
+   - Pre-fills #qf with whatever the hero captured (email, name, WhatsApp)
+     to save the user re-typing IF they choose to send the full brief too. */
+(function setupHF(){
+  const HERO_BACKUP_KEY = 'ss-hf-backup-v1';
+
+  async function postIntake(payload, timeoutMs = 25000) {
+    const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    const to = setTimeout(() => ctrl && ctrl.abort(), timeoutMs);
+    try {
+      return await fetch('/.netlify/functions/handle-intake', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: ctrl ? ctrl.signal : undefined,
+      });
+    } finally { clearTimeout(to); }
   }
-  if (typeof ssTrack === 'function') ssTrack('conversion:hero-form', { biz: data.business_name });
-  // Belt-and-braces server-side tracker fire so the analytics-self counter
-  // catches the submit even if a tracker script earlier on the page errored.
+
+  function setBtnLoading(btn, on) {
+    if (!btn) return;
+    if (on) {
+      if (!btn.dataset.orig) btn.dataset.orig = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span style="display:inline-flex;align-items:center;gap:.55rem"><span class="qf-spin" aria-hidden="true"></span>Sending…</span>';
+    } else {
+      btn.disabled = false;
+      btn.innerHTML = btn.dataset.orig || 'Send my brief →';
+    }
+  }
+
+  function renderHeroError(form, message) {
+    let box = form.querySelector('.hf-err');
+    if (!box) {
+      box = document.createElement('div');
+      box.className = 'hf-err';
+      box.setAttribute('role', 'alert');
+      box.style.cssText = 'margin-top:.8rem;padding:.85rem 1rem;border-radius:10px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:#fca5a5;font-size:.86rem;line-height:1.5;font-family:inherit';
+      form.appendChild(box);
+    }
+    box.innerHTML = message + ' <div style="margin-top:.45rem;font-size:.82rem;color:#fda4a4">Or reach me: <a href="mailto:hello@staticswift.co.uk" style="color:#fda4a4;font-weight:600;text-decoration:underline">hello@staticswift.co.uk</a> &middot; <a href="https://wa.me/447502731799" target="_blank" rel="noopener" style="color:#fda4a4;font-weight:600;text-decoration:underline">WhatsApp</a></div>';
+  }
+
+  window.sqHero = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('.hl-submit');
+    const existingErr = form.querySelector('.hf-err'); if (existingErr) existingErr.remove();
+
+    const data = Object.fromEntries(new FormData(form));
+    data.source = 'index-hero';
+    data.stage = 'new-lead';
+    data.createdAt = new Date().toISOString();
+    data.name = data.business_name || data.name || '';
+    data.brief = (data.current_website && data.current_website.toLowerCase() !== 'none')
+      ? 'Current site: ' + data.current_website
+      : 'No current website yet';
+
+    // Pre-fill the longer contact form below — purely a UX nicety. Never
+    // collapses or destroys #qf; user can still send a separate full brief.
+    const fillMap = { 'f-biz': data.business_name, 'f-email': data.delivery_email, 'f-wa': data.whatsapp };
+    Object.entries(fillMap).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el && val && !el.value) el.value = val;
+    });
+
+    try { localStorage.setItem(HERO_BACKUP_KEY, JSON.stringify(data)); } catch (_) {}
+    setBtnLoading(btn, true);
+
+    // Fire analytics + tracker right now so we don't lose the conversion
+    // signal even if the network drops mid-fetch.
+    if (typeof gtag === 'function') {
+      gtag('event', 'form_submit', { form_location: 'hero' });
+      gtag('event', 'generate_lead', { currency: 'GBP', value: 149, form_location: 'hero' });
+    }
+    if (typeof ssTrack === 'function') ssTrack('conversion:hero-form', { biz: data.business_name });
+    try {
+      fetch('/.netlify/functions/track-event', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
+        body: JSON.stringify({ type: 'event', evt: 'form_submit', path: '/', meta: { form: 'hero' } }),
+      }).catch(() => {});
+    } catch (_) {}
+
+    let lastErr = null;
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const r = await postIntake(data);
+        if (r.ok) {
+          try { localStorage.removeItem(HERO_BACKUP_KEY); } catch (_) {}
+          form.style.display = 'none';
+          const ok = document.getElementById('hl-ok'); if (ok) ok.classList.add('show');
+          try { if (navigator.vibrate) navigator.vibrate(14); } catch (_) {}
+          setTimeout(() => {
+            const c = document.getElementById('contact');
+            if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 500);
+          return;
+        }
+        lastErr = new Error('Server returned HTTP ' + r.status);
+      } catch (err) {
+        lastErr = err;
+        if (attempt === 1) await new Promise(res => setTimeout(res, 800));
+      }
+    }
+
+    // Both attempts failed — show inline recovery message instead of silently
+    // looking successful (which would lose the lead).
+    setBtnLoading(btn, false);
+    const msg = (lastErr && lastErr.name === 'AbortError')
+      ? '<strong>That took too long.</strong> Your connection might be slow.'
+      : '<strong>Could not send.</strong> ' + (lastErr ? lastErr.message : 'Unknown error') + '.';
+    renderHeroError(form, msg + ' Your details are saved — tap Send again.');
+  };
+
+  // Recover backed-up draft on load
   try {
-    fetch('/.netlify/functions/track-event', {
-      method:'POST', headers:{'Content-Type':'application/json'}, keepalive:true,
-      body: JSON.stringify({ type:'event', evt:'form_submit', path:'/', meta:{ form:'hero' } }),
-    }).catch(()=>{});
-  } catch(e){}
-  // Best-effort POST the lead — UX never blocks on the network
-  fetch('/.netlify/functions/handle-intake', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(data)
-  }).catch(() => {});
-  // Always show success + scroll to the detail form.
-  // Use .classList.add('show') — display:block alone skips the entry
-  // animation because CSS keyframes need the class toggle to trigger.
-  form.style.display = 'none';
-  const ok = document.getElementById('hl-ok'); if (ok) ok.classList.add('show');
-  try { if (navigator.vibrate) navigator.vibrate(14); } catch(e){}
-  setTimeout(() => {
-    const c = document.getElementById('contact');
-    if (c) c.scrollIntoView({behavior:'smooth', block:'start'});
-  }, 500);
-  // Once hero captures the lead, collapse the long brief form to "optional extras"
-  collapseLongForm();
-};
+    const raw = localStorage.getItem(HERO_BACKUP_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      const form = document.getElementById('hf');
+      if (form) Object.entries(data).forEach(([k, v]) => {
+        const el = form.querySelector('[name="' + k + '"]');
+        if (el && !el.value && typeof v === 'string') el.value = v;
+      });
+    }
+  } catch (_) {}
+})();
 
 /* ─────────────────────────────────────── */
 /*  TRADE PICKER — swap iframe + button + url chrome
@@ -8630,36 +8718,18 @@ window.sqHero = async (e) => {
   });
 })();
 
-/* ─────────────────────────────────────── */
-/*  COLLAPSE LONG BRIEF FORM after hero capture
-/* ─────────────────────────────────────── */
-function collapseLongForm(){
-  const qf = document.getElementById('qf');
-  if (!qf || qf.dataset.collapsed === '1') return;
-  qf.dataset.collapsed = '1';
-  qf.innerHTML = `
-    <div class="qf-collapsed">
-      <div class="qf-collapsed-head">Anything else we should know? <span>(optional)</span></div>
-      <textarea name="brief" id="f-brief-extra" placeholder="Brand colours, must-have sections, examples you love, weird requests — anything." style="min-height:120px"></textarea>
-      <button type="submit" class="btn btn-dark" style="margin-top:1rem;padding:.95rem 1.6rem">Send extra detail →</button>
-    </div>`;
-  // Re-route submit: piggy-back the saved hero lead + the extra note
-  qf.onsubmit = (ev) => {
-    ev.preventDefault();
-    const extra = (document.getElementById('f-brief-extra') || {}).value || '';
-    let saved = {}; try { saved = JSON.parse(sessionStorage.getItem('ss_hero_lead') || '{}'); } catch(e) {}
-    const payload = {...saved, brief: (saved.brief || '') + (extra ? '\n\nExtra: ' + extra : ''), source: 'index-brief-extra', stage: 'new-lead'};
-    fetch('/.netlify/functions/handle-intake', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
-    }).catch(() => {});
-    qf.innerHTML = `<div class="qf-collapsed-done">Thanks — we've got everything we need. Reply within the hour.</div>`;
-  };
-}
-// If hero was submitted in a prior page-view, collapse on load too
-if (sessionStorage.getItem('ss_hero_lead')) {
-  document.addEventListener('DOMContentLoaded', collapseLongForm);
-}
+/* ─────────────────────────────────────────────────────────────
+   DISABLED — auto-collapse of #qf after hero submit.
+   The old behaviour destroyed the full brief form and replaced it
+   with a "Send extra detail" stub, which meant a returning visitor
+   could no longer fill in their proper details. Both forms now
+   stay live and each independently posts to /handle-intake — so
+   both reach the pipeline as separate leads.
+   We also clear any stale ss_hero_lead so older sessions don't
+   trigger the dead collapse path.
+   ───────────────────────────────────────────────────────────── */
+function collapseLongForm(){ /* intentionally a no-op — see comment above */ }
+try { sessionStorage.removeItem('ss_hero_lead'); } catch (e) {}
 
 /* ─────────────────────────────────────── */
 /*  LIVING SHOWCASE — niche switcher

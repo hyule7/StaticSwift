@@ -148,7 +148,28 @@ async function fetchClients() {
       headers: { 'x-admin-password': ADMIN_PW, 'Cache-Control': 'no-cache' }
     });
     if (!r.ok) throw new Error('HTTP ' + r.status);
-    allClients = await r.json();
+    const raw = await r.json();
+    // CRITICAL: soft-deleted records (stage='deleted' OR deletedAt set) must
+    // NEVER appear in the admin UI. Previously the delete fallback wrote
+    // stage='deleted' to the bin but the UI didn't filter — so deleted clients
+    // reappeared on every refresh, which felt like "delete isn't working".
+    // We also schedule a background purge for any soft-deleted records the
+    // server hasn't garbage-collected yet, so they really disappear.
+    const list = Array.isArray(raw) ? raw : [];
+    const visible = list.filter(c => c && c.stage !== 'deleted' && !c.deletedAt);
+    const stillSoftDeleted = list.filter(c => c && (c.stage === 'deleted' || c.deletedAt));
+    if (stillSoftDeleted.length) {
+      console.warn('[fetchClients] purging', stillSoftDeleted.length, 'soft-deleted records server-side');
+      // Fire-and-forget hard-deletes for the leftovers.
+      stillSoftDeleted.forEach(c => {
+        fetch('/.netlify/functions/delete-client', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+          body: JSON.stringify({ clientId: c.clientId }),
+        }).catch(() => {});
+      });
+    }
+    allClients = visible;
     saveClientsLocally(allClients);
     return allClients;
   } catch(err) {
@@ -1275,6 +1296,20 @@ async function panelAction(type) {
     }
   }
   if (type === 'delete') {
+    // ─── DELETE — rebuilt to be honest and reliable ─────────────
+    // The old path silently fell back to a "soft delete" (stage=deleted)
+    // when the server returned 401, which felt like delete worked — until
+    // the next refresh, when the record reappeared because the UI never
+    // filtered out soft-deleted entries.
+    //
+    // New flow:
+    //   1. Confirm + type DELETE.
+    //   2. Hard-delete server-side.
+    //   3. On 401 → tell the user the password is wrong, prompt for it,
+    //      retry the hard-delete with the new password. Then save it for
+    //      future requests.
+    //   4. On any other error → surface the exact error message; never
+    //      pretend success. The UI doesn't clear until the server confirms.
     const label = c.business_name || c.name || 'this client';
     if (!confirm('PERMANENTLY DELETE ' + label + '?\n\nClient, brief, prompt, notes, files and portal access — all gone. Cannot be undone.')) return;
     const typed = prompt('To confirm, type DELETE exactly:');
@@ -1285,41 +1320,58 @@ async function panelAction(type) {
     }
     msg.style.display = 'block'; msg.style.color = 'var(--muted)';
     msg.textContent = 'Deleting…';
+
     const idToDelete = currentClientId;
-    let serverOk = false, serverErr = '';
-    // Try server endpoint
-    try {
-      const r = await fetch('/.netlify/functions/delete-client', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
-        body: JSON.stringify({ clientId: idToDelete })
-      });
-      const body = await r.text();
-      if (r.ok) { serverOk = true; }
-      else { serverErr = 'HTTP ' + r.status + ' · ' + body.slice(0, 200); }
-    } catch(err) {
-      serverErr = 'Network: ' + err.message;
-    }
-    // If server failed, fall back to soft-delete via update-client so the UI still clears
-    if (!serverOk) {
-      console.warn('[delete] server failed (' + serverErr + ') — falling back to stage=deleted');
+
+    async function tryDelete(password) {
       try {
-        await updateClient(idToDelete, { stage: 'deleted', deletedAt: new Date().toISOString() });
-      } catch (e2) {
-        msg.style.color = 'var(--red)';
-        msg.textContent = 'Delete failed both ways: ' + serverErr + ' / fallback: ' + e2.message;
-        return;
+        const r = await fetch('/.netlify/functions/delete-client', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+          body: JSON.stringify({ clientId: idToDelete }),
+        });
+        const body = await r.text();
+        return { status: r.status, ok: r.ok, body };
+      } catch (err) {
+        return { status: 0, ok: false, body: err.message, networkError: true };
       }
     }
-    // Local cleanup — always do this
+
+    let result = await tryDelete(ADMIN_PW);
+
+    // 401 → almost certainly a stale / wrong sessionStorage password.
+    // Prompt for the real one, retry, save it on success.
+    if (result.status === 401) {
+      const pw = prompt('Admin password mismatch — the server rejected your stored password.\n\nEnter the correct admin password to finish deleting:');
+      if (!pw) {
+        msg.style.color = 'var(--amber)';
+        msg.textContent = 'Delete cancelled — no password provided. The client is NOT deleted.';
+        return;
+      }
+      result = await tryDelete(pw);
+      if (result.ok) {
+        // Save for future use so this doesn't happen again
+        ADMIN_PW = pw;
+        try { sessionStorage.setItem('ss_pw', pw); } catch (_) {}
+      }
+    }
+
+    if (!result.ok) {
+      msg.style.color = 'var(--red)';
+      msg.textContent = 'Delete FAILED — ' + (result.networkError
+        ? ('network error: ' + result.body)
+        : ('HTTP ' + result.status + ' · ' + (result.body || '').slice(0, 200)))
+        + '. The client is still in the database. Retry, or check the function logs.';
+      return;
+    }
+
+    // Real success: server confirmed the record is gone.
     allClients = allClients.filter(x => x.clientId !== idToDelete);
     saveClientsLocally(allClients);
     closePanel();
     await refreshData();
-    // Toast: real or soft delete
-    if (!serverOk) {
-      setTimeout(() => alert('Client removed from your view.\n\n(Server delete didn\'t fire — likely the delete-client function hasn\'t deployed yet. Trigger a Netlify build, then retry to fully remove from the database.)'), 100);
-    }
+    msg.style.color = 'var(--green)';
+    msg.textContent = '✓ Permanently deleted.';
   }
 }
 
