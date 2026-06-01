@@ -160,6 +160,32 @@ function buildPortal(c, uuid) {
   const revisionsUsed = (messages.filter(m => m.type === 'changes').length) || 0;
   const portalUrl = (process.env.URL || 'https://staticswift.co.uk') + '/client?uuid=' + uuid;
 
+  // ── Pin annotations (Pastel/Marker.io-style on the preview) ──
+  // Stored on c.previewAnnotations as { x, y, mode, comment, at, resolved }.
+  // Customer drops pins in "comment mode"; admin sees them in their panel
+  // with click-to-jump. Each pin is numbered in submission order.
+  const annotations = Array.isArray(c.previewAnnotations) ? c.previewAnnotations : [];
+
+  // ── Project progress % — drives the linear meter in the hero ──
+  const stageWeight = { 'new-lead': 5, 'building': 25, 'preview-sent': 50, 'approved': 75, 'invoice-sent': 88, 'paid': 95, 'complete': 100 };
+  const progressPct = stageWeight[stage] ?? 5;
+
+  // ── Onboarding checklist — what we still need from the customer ──
+  const checklist = [
+    { key: 'brief',       done: !!c.business_description,                label: 'Tell us about your business',  cta: 'Briefed' },
+    { key: 'assets',      done: (Array.isArray(c.clientAssets) ? c.clientAssets.length : 0) > 0, label: 'Drop your logo + photos', cta: 'Upload now' },
+    { key: 'preview',     done: stageIndex(stage) >= stageIndex('preview-sent'),  label: 'Review your live preview',     cta: 'Awaiting build' },
+    { key: 'approve',     done: stageIndex(stage) >= stageIndex('approved'),      label: 'Approve or request changes',   cta: 'Awaiting preview' },
+    { key: 'pay',         done: !!c.paid || stage === 'complete',                 label: 'Settle the invoice',           cta: 'Awaiting approval' },
+    { key: 'live',        done: stage === 'complete',                             label: 'Files in your hands',          cta: 'Soon' },
+  ];
+  const nextStep = checklist.find(s => !s.done);
+
+  // ── Referral code — deterministic, easy to read, tied to the UUID ──
+  // (Same UUID → same code, so we don't need to store anything extra.)
+  const referralCode = ('HARRY-' + uuid.replace(/[^A-Z0-9]/gi, '').slice(0, 6).toUpperCase());
+  const referralUrl = (process.env.URL || 'https://staticswift.co.uk') + '/?ref=' + referralCode;
+
   return `<!doctype html>
 <html lang="en-gb">
 <head>
@@ -426,6 +452,96 @@ textarea:focus,input[type=text]:focus,input[type=email]:focus{border-color:var(-
 .reveal.in{opacity:1;transform:translateY(0)}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
 
+/* ── Progress meter (hero ribbon) ──────────────────────────── */
+.progress{display:flex;align-items:center;gap:14px;margin-top:22px;padding:14px 18px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;max-width:680px}
+.progress-bar{flex:1;height:6px;background:var(--line-strong);border-radius:100px;overflow:hidden;position:relative}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--cyan-dim),var(--cyan),var(--cyan-2));border-radius:100px;transition:width 1.4s var(--spring);box-shadow:0 0 14px var(--cyan-glow);position:relative;overflow:hidden}
+.progress-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);transform:translateX(-100%);animation:progress-shine 2.8s ease-in-out infinite}
+@keyframes progress-shine{50%{transform:translateX(100%)}100%{transform:translateX(100%)}}
+.progress-pct{font-family:'Cormorant',Georgia,serif;font-style:italic;font-size:22px;color:var(--cyan-2);font-weight:400;letter-spacing:.02em;font-variant-numeric:tabular-nums;min-width:55px}
+.progress-stage{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600;white-space:nowrap}
+
+/* ── Onboarding checklist ──────────────────────────────────── */
+.checklist{display:flex;flex-direction:column;gap:8px}
+.cl-item{display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:var(--r);transition:all .25s var(--spring);position:relative;overflow:hidden}
+.cl-item.done{background:rgba(34,197,94,.05);border-color:rgba(34,197,94,.18)}
+.cl-item.current{background:linear-gradient(120deg,rgba(0,198,255,.08),rgba(125,232,255,.02));border-color:rgba(0,198,255,.32);box-shadow:0 0 0 4px rgba(0,198,255,.06)}
+.cl-check{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;background:var(--ink-3);border:1.5px solid var(--line-strong);transition:all .35s var(--spring);color:transparent;font-size:13px;font-weight:700}
+.cl-item.done .cl-check{background:var(--green);border-color:var(--green);color:var(--ink)}
+.cl-item.done .cl-check::before{content:'✓'}
+.cl-item.current .cl-check{border-color:var(--cyan);box-shadow:0 0 0 4px rgba(0,198,255,.16);animation:pulse 1.6s ease-out infinite}
+.cl-info{flex:1;min-width:0}
+.cl-label{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.cl-meta{font-size:11.5px;color:var(--muted);letter-spacing:.04em}
+.cl-item.done .cl-meta{color:var(--green)}
+.cl-tag{font-size:10.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan-2);background:rgba(0,198,255,.08);border:1px solid rgba(0,198,255,.18);padding:5px 12px;border-radius:100px;flex-shrink:0}
+.cl-item.done .cl-tag{color:var(--green);background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.18)}
+.cl-item.current .cl-tag{background:linear-gradient(135deg,#7de8ff,#00c6ff);color:var(--ink);border:0}
+
+/* ── Annotation overlay over preview iframe ────────────────── */
+.preview-tools{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding:10px 14px;background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:var(--r);font-size:13px;color:var(--muted)}
+.preview-tools-lbl{font-family:'Cormorant',Georgia,serif;font-style:italic;font-size:14px;color:var(--muted);margin-right:auto}
+.pt-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;background:rgba(255,255,255,.04);border:1px solid var(--line-strong);color:var(--text);transition:all .25s var(--spring)}
+.pt-btn:hover{border-color:var(--cyan-dim);color:var(--cyan-2);background:rgba(0,168,204,.08)}
+.pt-btn.on{background:linear-gradient(135deg,#7de8ff,#00c6ff);color:var(--ink);border:0;box-shadow:0 6px 16px rgba(0,168,216,.32)}
+.pt-btn svg{width:13px;height:13px}
+.pt-count{margin-left:auto;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--cyan-2);font-weight:600}
+.preview-stage{position:relative}
+.annot-overlay{position:absolute;inset:16px;cursor:crosshair;z-index:5;display:none;background:rgba(0,0,0,0.25);border-radius:8px;backdrop-filter:saturate(0.6);transition:background .3s}
+.annot-overlay.on{display:block;animation:annot-fade .3s ease both}
+@keyframes annot-fade{from{opacity:0}to{opacity:1}}
+.annot-overlay-hint{position:absolute;top:14px;left:50%;transform:translateX(-50%);background:rgba(13,16,24,.95);color:var(--cyan-2);padding:8px 16px;border-radius:100px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--cyan-dim);box-shadow:var(--shadow-soft);pointer-events:none}
+/* Numbered pins layered on top of iframe — visible whether comment mode is on or off */
+.annot-pin{position:absolute;width:28px;height:28px;border-radius:50% 50% 50% 4px;background:#ff5f57;color:#fff;font-size:13px;font-weight:800;display:grid;place-items:center;cursor:pointer;transform:translate(-50%,-100%) rotate(-45deg);box-shadow:0 6px 16px rgba(0,0,0,.45),0 0 0 2px rgba(255,255,255,.85);z-index:6;animation:annot-pop .55s cubic-bezier(.34,1.56,.64,1) both;font-family:'Switzer','Inter Tight',sans-serif}
+.annot-pin span{transform:rotate(45deg);display:block}
+.annot-pin:hover{background:#ff8a82}
+.annot-pin.active{background:var(--cyan);color:var(--ink);box-shadow:0 0 0 4px rgba(0,198,255,.25),0 8px 22px rgba(0,168,216,.45),0 0 0 2px #fff}
+@keyframes annot-pop{from{opacity:0;transform:translate(-50%,-100%) rotate(-45deg) scale(.3)}to{opacity:1;transform:translate(-50%,-100%) rotate(-45deg) scale(1)}}
+.annot-bubble{position:absolute;background:rgba(13,16,24,.97);border:1px solid var(--line-strong);border-radius:14px;padding:16px;width:280px;z-index:7;box-shadow:var(--shadow-strong);backdrop-filter:blur(12px);animation:annot-fade .3s ease both}
+.annot-bubble-arrow{position:absolute;top:-8px;left:24px;width:16px;height:16px;background:rgba(13,16,24,.97);border-left:1px solid var(--line-strong);border-top:1px solid var(--line-strong);transform:rotate(45deg)}
+.annot-bubble textarea{width:100%;min-height:70px;background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:9px 11px;font-family:inherit;font-size:13px;resize:vertical;outline:none;line-height:1.5;margin-bottom:10px}
+.annot-bubble textarea:focus{border-color:var(--cyan-dim);box-shadow:0 0 0 3px rgba(0,168,204,.12)}
+.annot-bubble-row{display:flex;gap:6px;justify-content:flex-end}
+.annot-bubble-row button{padding:7px 14px;font-size:12px;font-weight:600;border-radius:100px;cursor:pointer;border:0;font-family:inherit;transition:all .2s}
+.annot-bubble .ab-cancel{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--line)}
+.annot-bubble .ab-cancel:hover{color:var(--text);background:rgba(255,255,255,.1)}
+.annot-bubble .ab-save{background:linear-gradient(135deg,#7de8ff,#00c6ff);color:var(--ink)}
+.annot-bubble .ab-save:hover{box-shadow:0 6px 18px rgba(0,168,216,.4)}
+.annot-bubble-text{font-size:13.5px;color:var(--text);line-height:1.55;margin-bottom:10px;white-space:pre-wrap}
+.annot-bubble-meta{font-size:10.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+
+/* Annotation list (below preview) — shows all pins as a thread */
+.annot-list{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.annot-row{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:var(--r);cursor:pointer;transition:all .2s}
+.annot-row:hover{border-color:var(--cyan-dim);background:rgba(0,168,204,.05)}
+.annot-row-num{width:24px;height:24px;border-radius:50%;background:#ff5f57;color:#fff;font-weight:800;font-size:11px;display:grid;place-items:center;flex-shrink:0;border:1.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.annot-row-num.resolved{background:var(--green)}
+.annot-row-body{flex:1;min-width:0}
+.annot-row-txt{font-size:13.5px;color:var(--text);line-height:1.5;margin-bottom:3px}
+.annot-row-meta{font-size:11px;color:var(--muted)}
+
+/* ── Referral card ─────────────────────────────────────────── */
+.ref{position:relative;padding:20px 22px;border-radius:var(--r-lg);background:linear-gradient(135deg,rgba(212,175,55,.08),rgba(212,175,55,.02));border:1px solid rgba(212,175,55,.22);overflow:hidden}
+.ref::before{content:'';position:absolute;top:-40%;right:-10%;width:60%;height:160%;background:radial-gradient(circle,rgba(212,175,55,.15),transparent 60%);filter:blur(20px);pointer-events:none}
+.ref > *{position:relative}
+.ref-eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.ref-h{font-family:'Switzer','Inter Tight',sans-serif;font-size:20px;font-weight:500;letter-spacing:-.02em;margin-bottom:6px;line-height:1.2}
+.ref-h em{font-family:'Cormorant',Georgia,serif;font-style:italic;color:var(--gold);font-weight:400}
+.ref-sub{font-size:13.5px;color:var(--muted);line-height:1.55;margin-bottom:14px}
+.ref-code{display:flex;align-items:center;gap:8px;padding:10px 12px 10px 16px;background:rgba(0,0,0,.3);border:1px dashed rgba(212,175,55,.4);border-radius:100px;font-family:ui-monospace,Menlo,monospace;font-size:13px;color:var(--gold);font-weight:600;margin-bottom:10px}
+.ref-code-val{flex:1;letter-spacing:.04em}
+.ref-code-btn{padding:6px 14px;border-radius:100px;background:rgba(212,175,55,.15);color:var(--gold);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;border:1px solid rgba(212,175,55,.35);cursor:pointer;font-family:inherit;transition:all .2s}
+.ref-code-btn:hover{background:rgba(212,175,55,.25)}
+.ref-foot{font-size:11.5px;color:var(--muted);letter-spacing:.04em}
+
+/* ── Quick "next step" banner (drives action) ──────────────── */
+.next-banner{display:flex;align-items:center;gap:14px;padding:16px 20px;background:linear-gradient(135deg,rgba(0,198,255,.08),rgba(125,232,255,.02));border:1px solid rgba(0,198,255,.25);border-radius:var(--r);margin-bottom:18px;position:relative;overflow:hidden}
+.next-banner::after{content:'';position:absolute;top:-50%;right:-10%;width:50%;height:200%;background:radial-gradient(circle,rgba(0,198,255,.18),transparent 60%);filter:blur(24px);pointer-events:none}
+.next-banner > *{position:relative}
+.next-icon{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7de8ff,#00c6ff);color:var(--ink);display:grid;place-items:center;font-size:16px;flex-shrink:0;box-shadow:0 6px 16px rgba(0,168,216,.4);font-weight:700}
+.next-txt{flex:1;font-size:13.5px;line-height:1.5;color:var(--text)}
+.next-txt strong{color:var(--cyan-2)}
+
 /* ── Footer ────────────────────────────────────────────────────── */
 footer{padding:32px clamp(16px,4vw,28px);text-align:center;font-size:12px;color:var(--dim);border-top:1px solid var(--line)}
 footer .row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:8px}
@@ -476,6 +592,13 @@ footer .row a:hover{color:var(--cyan-2)}
       <div class="stat-val">${revisionsUsed}<span style="font-size:14px;color:var(--muted);font-weight:400"> / 1 free</span></div>
       <div class="stat-meta">${revisionsUsed === 0 ? 'Full revision still available' : 'Extra revisions £29 each'}</div>
     </div>
+  </div>
+
+  <!-- Progress meter — animated bar showing project completion % -->
+  <div class="progress reveal" aria-label="Project progress">
+    <span class="progress-stage">${e((STAGE_LABELS[stage] || stage).toUpperCase())}</span>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <span class="progress-pct" id="progress-pct" data-target="${progressPct}">0%</span>
   </div>
 </section>
 
@@ -531,6 +654,16 @@ footer .row a:hover{color:var(--cyan-2)}
         <h2>Your <em>${e(bizName)}</em> site is built.</h2>
         <p class="card-lede">Click through every link. Try it on desktop and on your phone. One free revision is included — use it.</p>
 
+        <!-- Annotation toolbar — toggles comment mode on the preview overlay -->
+        <div class="preview-tools">
+          <span class="preview-tools-lbl">Spotted something? Drop a pin on it.</span>
+          <button type="button" class="pt-btn" id="pt-annot-toggle" onclick="ssToggleAnnot(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span class="pt-btn-label">Comment mode</span>
+          </button>
+          ${annotations.length ? `<span class="pt-count">${annotations.length} pinned</span>` : ''}
+        </div>
+
         <div class="preview-shell">
           <div class="preview-bar">
             <div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
@@ -542,9 +675,24 @@ footer .row a:hover{color:var(--cyan-2)}
           </div>
           <div class="preview-stage" id="preview-stage">
             <iframe class="preview-frame" src="${e(c.previewUrl)}" loading="lazy" title="Preview" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
+            <!-- Click-anywhere overlay for dropping comment pins -->
+            <div class="annot-overlay" id="annot-overlay" onclick="ssDropPin(event)">
+              <div class="annot-overlay-hint">Click anywhere on the preview to leave a comment</div>
+            </div>
+            ${annotations.map((a, i) => `<div class="annot-pin" data-i="${i}" style="left:${a.x}%;top:${a.y}%" onclick="ssShowPin(${i})"><span>${i + 1}</span></div>`).join('')}
           </div>
         </div>
         <a class="preview-open-link" href="${e(c.previewUrl)}" target="_blank" rel="noopener">Open full-screen in a new tab →</a>
+
+        ${annotations.length ? `<div class="annot-list" id="annot-list">${annotations.map((a, i) => `
+          <div class="annot-row" onclick="ssShowPin(${i})">
+            <div class="annot-row-num${a.resolved ? ' resolved' : ''}">${i + 1}</div>
+            <div class="annot-row-body">
+              <div class="annot-row-txt">${e(a.comment || '').slice(0, 200)}</div>
+              <div class="annot-row-meta">${e(a.mode || 'desktop')} · ${e(relTime(a.at))}${a.resolved ? ' · resolved' : ''}</div>
+            </div>
+          </div>
+        `).join('')}</div>` : ''}
 
         <div class="reactions" id="reactions">
           <span class="reactions-lbl">First take</span>
@@ -653,6 +801,36 @@ footer .row a:hover{color:var(--cyan-2)}
 
     <div>
 
+      ${nextStep ? `
+      <!-- NEXT-STEP banner — calm but specific call-to-action drawn from
+           the checklist. Shows exactly what the customer should do next. -->
+      <div class="next-banner reveal">
+        <div class="next-icon">→</div>
+        <div class="next-txt"><strong>Next:</strong> ${e(nextStep.label)} ${nextStep.key === 'assets' ? '<a href="#" onclick="document.getElementById(\'drop\').scrollIntoView({behavior:\'smooth\',block:\'center\'});return false" style="color:var(--cyan-2);font-weight:600">↓ scroll to drop-zone</a>' : nextStep.key === 'preview' ? '<span style="color:var(--muted)">— I&rsquo;ll email you the moment it&rsquo;s ready.</span>' : ''}</div>
+      </div>` : ''}
+
+      <!-- ONBOARDING CHECKLIST — every step of the project in order -->
+      <div class="card reveal">
+        <div class="card-eyebrow">Your project <span class="line"></span></div>
+        <h2>What's <em>next</em>.</h2>
+        <p class="card-lede">Six steps from brief to live site. Tick them off together.</p>
+        <div class="checklist">
+          ${checklist.map((item, i) => {
+            const isCurrent = !item.done && (i === 0 || checklist[i - 1].done);
+            const tagText = item.done ? 'Done' : (isCurrent ? (item.cta || 'Now') : 'Up next');
+            return `
+            <div class="cl-item ${item.done ? 'done' : ''} ${isCurrent ? 'current' : ''}">
+              <div class="cl-check" aria-hidden="true"></div>
+              <div class="cl-info">
+                <div class="cl-label">${e(item.label)}</div>
+                <div class="cl-meta">${item.done ? '✓ Complete' : (isCurrent ? 'In progress' : 'Waiting on earlier steps')}</div>
+              </div>
+              <span class="cl-tag">${e(tagText)}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+
       <!-- SHARE / BOOKMARK -->
       <div class="share reveal">
         <div class="share-txt"><strong>Bookmark this page</strong> — it's the fastest way back. Or copy the link to invite a partner who needs to approve.</div>
@@ -662,6 +840,19 @@ footer .row a:hover{color:var(--cyan-2)}
             Copy link
           </button>
         </div>
+      </div>
+
+      <!-- REFERRAL — £50 cash for the referrer when their friend buys.
+           Straight money to your bank, no points, no credit notes. -->
+      <div class="ref reveal">
+        <div class="ref-eyebrow">Know someone who needs a site?</div>
+        <div class="ref-h"><em>£50</em> in your bank when they buy.</div>
+        <p class="ref-sub">Send them your link. The moment they pay for their build, I transfer £50 to your account. No points, no credit notes — just cash. Refer as many as you like.</p>
+        <div class="ref-code">
+          <span class="ref-code-val">${e(referralCode)}</span>
+          <button class="ref-code-btn" onclick="ssCopyRef(this)" data-url="${e(referralUrl)}">Copy link</button>
+        </div>
+        <div class="ref-foot">Tracked automatically — every signup with your code is tied to your portal.</div>
       </div>
 
       <!-- PROJECT TIMELINE / ACTIVITY -->
@@ -814,10 +1005,159 @@ document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 requestAnimationFrame(() => {
   const fill = document.getElementById('timeline-fill');
   if (!fill || STAGE_COUNT < 2) return;
-  // Position the fill end at the dot of the current stage
   const pct = Math.min(100, (CURRENT_STAGE_IDX / (STAGE_COUNT - 1)) * 100);
   setTimeout(() => { fill.style.width = pct + '%'; }, 280);
 });
+
+// ── Animated progress meter (ribbon under the hero) ──────────
+requestAnimationFrame(() => {
+  const fill = document.getElementById('progress-fill');
+  const pctEl = document.getElementById('progress-pct');
+  if (!fill || !pctEl) return;
+  const target = parseInt(pctEl.dataset.target, 10) || 0;
+  setTimeout(() => {
+    fill.style.width = target + '%';
+    // Count-up the numeric label so it feels alive, not static
+    const start = Date.now();
+    const dur = 1400;
+    const tick = () => {
+      const t = Math.min(1, (Date.now() - start) / dur);
+      const eased = 1 - Math.pow(1 - t, 3);
+      pctEl.textContent = Math.round(target * eased) + '%';
+      if (t < 1) requestAnimationFrame(tick);
+    };
+    tick();
+  }, 320);
+});
+
+// ── Annotation system — drop-pin comments on the preview ──────
+// State held in-page; persisted via portal-response 'annotation' action.
+let ssAnnotMode = false;
+let ssActivePinIdx = null;
+
+function ssToggleAnnot(btn) {
+  ssAnnotMode = !ssAnnotMode;
+  btn.classList.toggle('on', ssAnnotMode);
+  const overlay = document.getElementById('annot-overlay');
+  if (overlay) overlay.classList.toggle('on', ssAnnotMode);
+  const label = btn.querySelector('.pt-btn-label');
+  if (label) label.textContent = ssAnnotMode ? 'Done commenting' : 'Comment mode';
+  // Closing comment mode also closes any open bubble
+  if (!ssAnnotMode) ssCloseAnnotBubble();
+}
+
+function ssDropPin(ev) {
+  if (!ssAnnotMode) return;
+  const overlay = ev.currentTarget;
+  const r = overlay.getBoundingClientRect();
+  const x = ((ev.clientX - r.left) / r.width) * 100;
+  const y = ((ev.clientY - r.top) / r.height) * 100;
+  // Drop a transient pin where they clicked + open the comment composer
+  ssOpenAnnotBubble({ x, y, draft: true });
+}
+
+function ssCloseAnnotBubble() {
+  const existing = document.getElementById('annot-bubble');
+  if (existing) existing.remove();
+  document.querySelectorAll('.annot-pin.active').forEach(p => p.classList.remove('active'));
+  ssActivePinIdx = null;
+}
+
+function ssOpenAnnotBubble(opts) {
+  ssCloseAnnotBubble();
+  const stage = document.getElementById('preview-stage');
+  if (!stage) return;
+  const bubble = document.createElement('div');
+  bubble.id = 'annot-bubble';
+  bubble.className = 'annot-bubble';
+  const isDraft = !!opts.draft;
+  const data = opts.data || {};
+  const numLabel = isDraft ? (document.querySelectorAll('.annot-pin').length + 1) : (opts.idx + 1);
+  bubble.innerHTML = isDraft
+    ? '<div class="annot-bubble-meta">Pin #' + numLabel + ' &middot; new comment</div>'
+      + '<textarea id="annot-input" placeholder="What\\'s on your mind? Specific is good — &quot;the gold here is too warm&quot; beats &quot;hmm&quot;." autofocus></textarea>'
+      + '<div class="annot-bubble-row"><button type="button" class="ab-cancel" onclick="ssCloseAnnotBubble()">Cancel</button><button type="button" class="ab-save" onclick="ssSaveAnnot(' + opts.x + ',' + opts.y + ')">Drop pin</button></div>'
+    : '<div class="annot-bubble-meta">Pin #' + numLabel + ' &middot; ' + (data.mode || 'desktop') + ' &middot; ' + (data.atRel || '') + '</div>'
+      + '<div class="annot-bubble-text">' + ssEsc(data.comment || '') + '</div>'
+      + '<div class="annot-bubble-row"><button type="button" class="ab-cancel" onclick="ssCloseAnnotBubble()">Close</button></div>';
+  bubble.style.left = Math.max(2, Math.min(opts.x - 6, 100)) + '%';
+  bubble.style.top  = Math.max(2, Math.min(opts.y + 2, 100)) + '%';
+  bubble.style.transform = 'translate(0, 0)';
+  // Arrow pointer
+  const arrow = document.createElement('div');
+  arrow.className = 'annot-bubble-arrow';
+  bubble.appendChild(arrow);
+  stage.appendChild(bubble);
+  // Autofocus the textarea on draft
+  if (isDraft) setTimeout(() => { const t = document.getElementById('annot-input'); if (t) t.focus(); }, 30);
+}
+
+async function ssSaveAnnot(x, y) {
+  const input = document.getElementById('annot-input');
+  const comment = input ? input.value.trim() : '';
+  if (!comment) { if (input) input.focus(); return; }
+  const stage = document.getElementById('preview-stage');
+  const mode = stage && stage.classList.contains('is-mobile') ? 'mobile' : 'desktop';
+  try {
+    const r = await fetch('/.netlify/functions/portal-response', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ portalUUID: UUID, type: 'annotation', annotation: { x, y, mode, comment } }),
+    });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error || 'Server error');
+    ssCloseAnnotBubble();
+    ssToast('Pin saved', 'Harry sees this immediately in your dashboard.');
+    // Optimistic render — push a new pin without waiting for reload
+    const pinIdx = document.querySelectorAll('.annot-pin').length;
+    const pin = document.createElement('div');
+    pin.className = 'annot-pin';
+    pin.dataset.i = pinIdx;
+    pin.style.left = x + '%';
+    pin.style.top = y + '%';
+    pin.innerHTML = '<span>' + (pinIdx + 1) + '</span>';
+    pin.onclick = () => ssShowPin(pinIdx);
+    if (stage) stage.appendChild(pin);
+    // Cache locally so reload shows it before next poll
+    if (!window.__ssLocalAnnots) window.__ssLocalAnnots = [];
+    window.__ssLocalAnnots.push({ x, y, mode, comment, at: new Date().toISOString() });
+  } catch (err) {
+    ssToast('Save failed', err.message);
+  }
+}
+
+function ssShowPin(idx) {
+  const pins = document.querySelectorAll('.annot-pin');
+  if (!pins[idx]) return;
+  pins.forEach((p, i) => p.classList.toggle('active', i === idx));
+  ssActivePinIdx = idx;
+  // Pull annotation data from the data already rendered in the list below
+  const rows = document.querySelectorAll('.annot-row');
+  const row = rows[idx];
+  let data = {};
+  if (row) {
+    const txt = row.querySelector('.annot-row-txt');
+    const meta = row.querySelector('.annot-row-meta');
+    data.comment = txt ? txt.textContent : '';
+    data.mode = meta ? meta.textContent.split(' · ')[0] : 'desktop';
+    data.atRel = meta ? meta.textContent.split(' · ')[1] || '' : '';
+  } else if (window.__ssLocalAnnots && window.__ssLocalAnnots[idx - (rows.length)]) {
+    data = window.__ssLocalAnnots[idx - rows.length];
+  }
+  const x = parseFloat(pins[idx].style.left);
+  const y = parseFloat(pins[idx].style.top);
+  ssOpenAnnotBubble({ x, y, idx, data });
+}
+
+// Referral copy
+function ssCopyRef(btn) {
+  const url = btn.dataset.url;
+  if (!url) return;
+  navigator.clipboard.writeText(url).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied';
+    setTimeout(() => { btn.textContent = orig; }, 1800);
+  }).catch(() => ssToast('Copy failed', 'Long-press the code instead.'));
+}
 
 // ── Device toggle ────────────────────────────────────────────
 function ssDevice(mode, btn) {

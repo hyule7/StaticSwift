@@ -4742,22 +4742,10 @@ body.scrolled-past-hero .hero::after { transform: scaleY(0); transition: transfo
   gap: .6rem !important;
   max-width: 460px;
 }
-.hero #hf-biz, .hero #hf-site, .hero #hf-email, .hero #hf-wa {
-  background: rgba(14,12,10,.65) !important;
-  border: 1.5px solid rgba(217,160,113,.4) !important;
-  color: #faf7f1 !important;
-  padding: .95rem 1.1rem !important;
-  font-family: 'Switzer', sans-serif !important;
-  font-size: 1rem !important;
-  border-radius: 1px 3px 2px 4px !important;
-  backdrop-filter: blur(8px);
-}
-.hero #hf-biz::placeholder, .hero #hf-site::placeholder, .hero #hf-email::placeholder, .hero #hf-wa::placeholder { color: rgba(250,247,241,.55); }
-.hero #hf-biz:focus, .hero #hf-site:focus, .hero #hf-email:focus, .hero #hf-wa:focus {
-  outline: 0;
-  border-color: var(--terr-pale, #d9a071) !important;
-  background: rgba(14,12,10,.85) !important;
-}
+/* DISABLED — this old dark-glass-on-ink field styling was bleeding
+   into the new cream-paper form, making the email field look like a
+   different element than the phone field. The .hl-quick block owns
+   both fields' visual styling now and renders them as a single unit. */
 /* FORM — guaranteed visible. Was being hidden by inherited rules. */
 .hero .hero-lead { display: block !important; visibility: visible !important; opacity: 1 !important; }
 .hero #hf { display: block !important; visibility: visible !important; }
@@ -4779,57 +4767,45 @@ body.scrolled-past-hero .hero::after { transform: scaleY(0); transition: transfo
   opacity: 1 !important;
   font-weight: 700;
 }
-/* Single-field form — only email visible */
-.hero #hf-biz, .hero #hf-site, .hero #hf-wa { display: none !important; }
-.hero #hf-email {
-  display: block !important;
-  font-size: 1.05rem !important;
-  padding: 1.05rem 1.2rem !important;
-  width: 100% !important;
-  margin-bottom: .55rem;
-}
+/* ─── HERO FORM — STALE OVERRIDES NEUTRALISED ───────────────
+   The old "email-only" layout left several !important rules in
+   place that were hiding the phone field and stretching the form
+   weirdly. We wipe all of them with the unset reset below and
+   defer to the slim editorial layout defined in the .hl-quick
+   block earlier in the stylesheet. */
+.hero #hf-biz, .hero #hf-site { display: none !important; }
+/* Phone field IS visible — the old display:none rule is dead */
+.hero #hf-wa { display: block !important; }
+/* No more font-size / padding / flex hacks here — the .hl-quick
+   block earlier owns all hero-form sizing. */
 
-/* ════════════════════════════════════════════════════
-   COMPACT HERO · post-terminal · "what I do · who for · form"
-   The terminal already did the wow. Hero is now a clean
-   editorial slice so visitors get to the meat fast.
-   ════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════
+   HERO TYPE & SPACING — calmer, more editorial proportions
+   The headline was hitting 4.4rem on desktop which made the rest
+   of the hero feel squashed. Pulling the cap down + tightening
+   sub-copy gives the form more breathing room.
+   ════════════════════════════════════════════════════════════════ */
 .hero {
-  min-height: 78vh !important;
+  min-height: auto !important;
   height: auto !important;
-  padding-top: 11vh !important;
-  padding-bottom: 4vh !important;
+  padding-top: 9vh !important;
+  padding-bottom: 5vh !important;
 }
 .hero .hero-headline {
-  font-size: clamp(2.2rem, 5.4vw, 4.4rem) !important;
-  line-height: 1.02 !important;
-  margin-bottom: 1.2rem !important;
-  max-width: 720px !important;
+  font-size: clamp(2.1rem, 4.6vw, 3.8rem) !important;
+  line-height: 1.04 !important;
+  letter-spacing: -.025em !important;
+  margin-bottom: 1.1rem !important;
+  max-width: 660px !important;
 }
-.hero .hero-sub { font-size: .98rem !important; line-height: 1.55 !important; margin-bottom: 1.3rem !important; max-width: 540px !important; }
-.hero .hero-lead { margin-top: .8rem !important; max-width: 520px !important; }
-.hero .hero-lead-label { font-size: .72rem !important; margin-bottom: .65rem !important; }
-
-/* Form goes inline — email + button side by side on desktop */
-.hero .hero-lead-form {
-  flex-direction: row !important;
-  gap: .5rem !important;
-  align-items: stretch !important;
-  max-width: 520px !important;
-}
-.hero #hf-email {
-  flex: 1 1 auto !important;
+.hero .hero-sub {
   font-size: 1rem !important;
-  padding: .95rem 1.1rem !important;
+  line-height: 1.6 !important;
+  margin-bottom: 1.5rem !important;
+  max-width: 520px !important;
+  color: rgba(15,17,23,.7) !important;
 }
-.hero .hl-submit {
-  flex: 0 0 auto !important;
-  padding: 0 1.3rem !important;
-  font-size: .72rem !important;
-  min-height: 52px;
-  margin-top: 0 !important;
-  white-space: nowrap;
-}
+.hero .hero-lead { margin-top: 1.4rem !important; max-width: 540px !important; }
 
 /* Kill the giant background marquee — too loud now */
 .hero-marquee { display: none !important; }
@@ -4987,18 +4963,11 @@ body.scrolled-past-hero .hero::after { transform: scaleY(0); transition: transfo
   opacity: .85;
 }
 
-/* Form inputs on cream — readable */
-.hero #hf-email {
-  background: rgba(255,255,255,.7) !important;
-  border: 1.5px solid rgba(10,10,10,.15) !important;
-  color: var(--ink, #0e0c0a) !important;
-  backdrop-filter: none !important;
-}
-.hero #hf-email::placeholder { color: rgba(10,10,10,.42) !important; }
-.hero #hf-email:focus {
-  border-color: var(--terr-deep, #7e4f37) !important;
-  background: #fff !important;
-}
+/* DISABLED — the .hl-quick block already owns the email + phone
+   field styling and these duplicates were creating cascade conflicts
+   that made the form fields render at different sizes. The slim
+   editorial layout handles backgrounds, borders, focus states for
+   BOTH fields uniformly. */
 .hero .hero-lead-label {
   color: var(--terr-deep, #7e4f37) !important;
 }

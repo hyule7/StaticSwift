@@ -1253,6 +1253,44 @@ function openClient(id) {
       rxSec.style.display = 'none';
     }
 
+    // ── Annotated preview pins ────────────────────────────────────
+    // Each is a real coordinate pin the client dropped on the preview.
+    // Show them numbered with location, mode, and a "resolve" link so
+    // the admin can mark them done after addressing.
+    const annots = Array.isArray(c.previewAnnotations) ? c.previewAnnotations : [];
+    const anSec = document.getElementById('panel-annotations-section');
+    const anEl = document.getElementById('panel-annotations');
+    const anCount = document.getElementById('panel-annotations-count');
+    if (annots.length > 0 && anSec) {
+      anSec.style.display = 'block';
+      const unresolved = annots.filter(a => !a.resolved).length;
+      if (anCount) anCount.textContent = '(' + annots.length + (unresolved ? ' · ' + unresolved + ' open' : '') + ')';
+      anEl.innerHTML = annots.map((a, i) => {
+        const when = new Date(a.at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+        return (
+          '<div style="display:flex;gap:10px;padding:10px 12px;background:' +
+            (a.resolved ? 'rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.18)' : 'var(--dark3);border:1px solid var(--border)') +
+            ';border-radius:8px">' +
+            '<div style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:' +
+              (a.resolved ? 'var(--green)' : '#ff5f57') +
+              ';color:#fff;font-weight:800;font-size:11px;display:grid;place-items:center">' + (i + 1) + '</div>' +
+            '<div style="flex:1;min-width:0">' +
+              '<div style="color:var(--text);line-height:1.5;margin-bottom:4px">' + escapeHTML(a.comment || '') + '</div>' +
+              '<div style="color:var(--muted);font-size:11px">' +
+                escapeHTML(a.mode || 'desktop') + ' · ' + Number(a.x || 0).toFixed(0) + '%, ' + Number(a.y || 0).toFixed(0) + '% · ' + when +
+              '</div>' +
+            '</div>' +
+            (a.resolved
+              ? '<span style="color:var(--green);font-size:11px;font-weight:600;align-self:center">✓ Resolved</span>'
+              : '<button onclick="resolveAnnotation(\'' + c.clientId + '\',' + i + ')" style="background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.3);padding:5px 11px;border-radius:100px;font-size:11px;font-weight:600;cursor:pointer;align-self:center">Mark resolved</button>'
+            ) +
+          '</div>'
+        );
+      }).join('');
+    } else if (anSec) {
+      anSec.style.display = 'none';
+    }
+
     // ── Client assets (brand kit uploads) ────────────────────────
     const assets = Array.isArray(c.clientAssets) ? c.clientAssets : [];
     const aSec = document.getElementById('panel-assets-section');
@@ -1298,7 +1336,7 @@ function openClient(id) {
       '<button class="copy-btn" style="background:var(--cyan);color:#07090f;border-color:var(--cyan)" onclick="panelAction(\'portal-link\')">Generate &amp; Send Portal Link</button>';
     document.getElementById('panel-messages-section').style.display = 'none';
     // Hide the new sections too — they only make sense once a portal exists.
-    ['panel-activity-section', 'panel-reactions-section', 'panel-assets-section', 'panel-addons-section'].forEach(id => {
+    ['panel-activity-section', 'panel-reactions-section', 'panel-annotations-section', 'panel-assets-section', 'panel-addons-section'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
@@ -1314,6 +1352,21 @@ function openClient(id) {
 
 function closePanel() { document.getElementById('client-panel').classList.remove('open'); currentClientId = null; }
 function closePanelBg(e) { if (e.target.id === 'client-panel') closePanel(); }
+
+// Mark a preview annotation as resolved — visible immediately in the panel
+// AND on the customer's portal next time they refresh (gives them a clear
+// signal "Harry has actioned this comment").
+async function resolveAnnotation(clientId, idx) {
+  const c = allClients.find(x => x.clientId === clientId);
+  if (!c || !Array.isArray(c.previewAnnotations) || !c.previewAnnotations[idx]) return;
+  c.previewAnnotations[idx] = { ...c.previewAnnotations[idx], resolved: true, resolvedAt: new Date().toISOString() };
+  try {
+    await updateClient(clientId, { previewAnnotations: c.previewAnnotations });
+    openClient(clientId); // re-render
+  } catch (err) {
+    alert('Could not resolve: ' + err.message);
+  }
+}
 
 function copyPrompt() {
   navigator.clipboard.writeText(document.getElementById('panel-prompt').textContent)

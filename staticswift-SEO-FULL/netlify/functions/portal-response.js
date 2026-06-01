@@ -25,7 +25,7 @@
 const { getClients, saveClient } = require('./_db');
 const { createTransporter, LOGO_HTML } = require('./_mailer');
 
-const VALID_TYPES = new Set(['approve', 'changes', 'message', 'reaction', 'addon', 'asset']);
+const VALID_TYPES = new Set(['approve', 'changes', 'message', 'reaction', 'addon', 'asset', 'annotation']);
 const VALID_REACTIONS = new Set(['love', 'hmm', 'nice', 'issues']);
 
 exports.handler = async (event) => {
@@ -35,7 +35,7 @@ exports.handler = async (event) => {
   try { body = JSON.parse(event.body || '{}'); }
   catch { return { statusCode: 400, body: JSON.stringify({ error: 'bad JSON' }) }; }
 
-  const { portalUUID, type, notes, signature, key, addon, asset } = body;
+  const { portalUUID, type, notes, signature, key, addon, asset, annotation } = body;
   if (!portalUUID || !type) return { statusCode: 400, body: JSON.stringify({ error: 'missing fields' }) };
   if (!VALID_TYPES.has(type)) return { statusCode: 400, body: JSON.stringify({ error: 'unknown type' }) };
 
@@ -269,6 +269,45 @@ Beneficiary: Harry Yule<br>Sort code: 04-00-75<br>Account: 98518224<br>Reference
       logActivity({ summary: 'Uploaded asset: ' + meta.name });
       await saveClient(client);
       return ok({});
+    }
+
+    // ── ANNOTATION — pin-style comment on the preview ────────────
+    if (type === 'annotation') {
+      const a = annotation || {};
+      const x = Math.max(0, Math.min(100, Number(a.x) || 0));
+      const y = Math.max(0, Math.min(100, Number(a.y) || 0));
+      const mode = (a.mode === 'mobile') ? 'mobile' : 'desktop';
+      const comment = String(a.comment || '').slice(0, 1000).trim();
+      if (!comment) return { statusCode: 400, body: JSON.stringify({ error: 'comment required' }) };
+      if (!Array.isArray(client.previewAnnotations)) client.previewAnnotations = [];
+      const entry = { x, y, mode, comment, at: new Date().toISOString(), resolved: false };
+      client.previewAnnotations.push(entry);
+      // Cap at 100 — protects bin size
+      if (client.previewAnnotations.length > 100) client.previewAnnotations = client.previewAnnotations.slice(-100);
+      // Bump unread count so admin sees a badge
+      client.portalUnread = (client.portalUnread || 0) + 1;
+      client.portalLastClientAt = new Date().toISOString();
+      logActivity({ summary: 'Pinned comment #' + client.previewAnnotations.length + ': ' + comment.slice(0, 80) });
+      await saveClient(client);
+
+      // Notify Harry — these are concrete actionable feedback, worth a ping.
+      if (transporter) {
+        try {
+          await transporter.sendMail({
+            from: '"StaticSwift Portal" <' + fromAddr + '>',
+            to: fromAddr,
+            replyTo: client.delivery_email || fromAddr,
+            subject: '📍 ' + (client.business_name || 'Client') + ' pinned a comment on the preview',
+            html: LOGO_HTML + `<div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:0 24px 32px">
+              <h2>${escapeHtml(client.name || 'Client')} pinned a comment</h2>
+              <p style="font-size:13px;color:#666;margin:0 0 8px"><strong>Pin #${client.previewAnnotations.length}</strong> at ${x.toFixed(1)}%, ${y.toFixed(1)}% (${mode})</p>
+              <blockquote style="border-left:3px solid #00C8E0;padding-left:16px;color:#333;margin:12px 0;font-style:italic">${escapeHtml(comment).replace(/\n/g, '<br>')}</blockquote>
+              <p><a href="${process.env.URL || 'https://staticswift.co.uk'}/admin">Open admin →</a></p>
+            </div>`,
+          });
+        } catch (e) { /* ignore — never fail the save */ }
+      }
+      return ok({ index: client.previewAnnotations.length - 1, total: client.previewAnnotations.length });
     }
 
     return { statusCode: 400, body: JSON.stringify({ error: 'unhandled type' }) };

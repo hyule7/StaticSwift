@@ -961,6 +961,14 @@
           <div id="panel-reactions" style="font-size:12.5px;display:flex;gap:8px;flex-wrap:wrap"></div>
         </div>
 
+        <!-- Annotated pins on the preview — every comment the client dropped
+             via "Comment mode" lands here as a numbered, click-to-resolve
+             list. Mirror of what the customer sees on their portal. -->
+        <div class="panel-section" id="panel-annotations-section" style="display:none">
+          <h4>Preview Comments <span id="panel-annotations-count" style="font-size:10px;color:var(--muted);font-weight:500;margin-left:6px"></span></h4>
+          <div id="panel-annotations" style="display:flex;flex-direction:column;gap:6px;font-size:12.5px"></div>
+        </div>
+
         <!-- NEW: Client-uploaded brand kit assets. -->
         <div class="panel-section" id="panel-assets-section" style="display:none">
           <h4>Client Assets <span id="panel-assets-count" style="font-size:10px;color:var(--muted);font-weight:500;margin-left:6px"></span></h4>
