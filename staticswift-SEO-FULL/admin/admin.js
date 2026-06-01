@@ -625,35 +625,28 @@ async function sendFirstReply(clientId, btn) {
 //      generator, for the rare case the user needs to add a line item or
 //      change pricing.
 function ssShowInvoiceModal(c) {
-  // Defensive: never silently no-op. If the client object is missing or
-  // malformed, tell the user something concrete instead of nothing happening.
-  try {
-    if (!c || typeof c !== 'object') {
-      console.error('[invoice modal] client object missing:', c);
-      alert('Invoice cannot open — client record is missing. Refresh and retry.');
-      return;
-    }
-    if (!c.clientId) {
-      console.error('[invoice modal] client has no clientId:', c);
-      alert('Invoice cannot open — this client has no ID. Refresh and retry.');
-      return;
-    }
-  } catch (e) {
-    alert('Invoice modal error: ' + e.message);
-    return;
+  // Two modes:
+  //   - WITH a client (c is the record): everything pre-filled, one-click send.
+  //   - WITHOUT a client (c = null): blank mode for ad-hoc / referral billing.
+  //     The user types recipient + amount manually; send still works.
+  const isBlank = !c;
+  if (!isBlank && !c.clientId) {
+    console.warn('[invoice modal] client missing clientId, falling back to blank mode:', c);
+    c = null;
   }
 
   // Remove an old one if it's already up (re-click resets it cleanly)
   const existing = document.getElementById('ss-invoice-modal');
   if (existing) existing.remove();
 
-  const adv = c.package === 'advanced';
-  const hosting = c.hosting_addon === 'yes';
+  const adv = !isBlank && c.package === 'advanced';
+  const hosting = !isBlank && c.hosting_addon === 'yes';
   const base = adv ? 299 : 149;
   const hostingAmt = hosting ? 29 : 0;
   const total = base + hostingAmt;
-  const email = c.delivery_email || '';
-  const bizName = c.business_name || c.name || 'Client';
+  const email = (!isBlank && c.delivery_email) || '';
+  const bizName = !isBlank ? (c.business_name || c.name || 'Client') : 'New invoice';
+  const clientName = !isBlank ? (c.name || c.business_name || '') : '';
 
   const wrap = document.createElement('div');
   wrap.id = 'ss-invoice-modal';
@@ -695,27 +688,50 @@ function ssShowInvoiceModal(c) {
       <div id="ssim-head">
         <div>
           <div id="ssim-eyebrow">£ Invoice</div>
-          <div id="ssim-title">Send invoice to ${escapeHTML(bizName)}</div>
+          <div id="ssim-title">${isBlank ? 'Create &amp; send invoice' : 'Send invoice to ' + escapeHTML(bizName)}</div>
         </div>
         <button id="ssim-close" aria-label="Close">✕</button>
       </div>
       <div id="ssim-body">
+        ${isBlank ? `
+        <!-- Blank mode: user picks package + types recipient details by hand -->
+        <div class="ssim-field">
+          <label for="ssim-toName">Client / business name</label>
+          <input type="text" id="ssim-toName" placeholder="Acme Plumbing" autocomplete="organization">
+        </div>
+        <div class="ssim-field">
+          <label for="ssim-pkg">Package</label>
+          <select id="ssim-pkg" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#f0f2f8;font-family:inherit;font-size:14px;padding:11px 14px;border-radius:10px;outline:none">
+            <option value="starter">Starter — £149</option>
+            <option value="advanced">Advanced — £299</option>
+            <option value="custom">Custom amount</option>
+          </select>
+        </div>
+        <div class="ssim-field" id="ssim-customWrap" style="display:none">
+          <label for="ssim-customAmt">Custom amount (£)</label>
+          <input type="number" id="ssim-customAmt" min="0" step="1" placeholder="149" value="149">
+        </div>
+        <label style="display:flex;align-items:center;gap:8px;color:#8890a8;font-size:13px;margin-bottom:18px;cursor:pointer">
+          <input type="checkbox" id="ssim-hosting" style="accent-color:#00c6ff"> Include hosting upload (+£29)
+        </label>
+        ` : `
         <div class="ssim-rows">
           <div class="ssim-row"><span class="l">${adv ? 'Advanced' : 'Starter'} Website Design</span><span class="r">£${base}</span></div>
           ${hosting ? `<div class="ssim-row"><span class="l">Hosting upload service</span><span class="r">£29</span></div>` : ''}
           <div class="ssim-row total"><span class="l">Total due</span><span class="r">£${total}</span></div>
         </div>
+        `}
         <div class="ssim-field">
-          <label for="ssim-email">Send to (auto-filled from client record)</label>
+          <label for="ssim-email">Send to ${isBlank ? '' : '(auto-filled from client record)'}</label>
           <input type="email" id="ssim-email" value="${escapeHTML(email)}" autocomplete="email" placeholder="client@example.com">
         </div>
         <div class="ssim-notice">
-          ✓ Includes bank transfer details, polished email template, and auto-progresses the client to <strong>Invoice Sent</strong> stage.
+          ✓ Includes bank transfer details, polished email template${isBlank ? '' : ', and auto-progresses the client to <strong>Invoice Sent</strong> stage'}.
         </div>
       </div>
       <div id="ssim-status"></div>
       <div id="ssim-foot">
-        <button class="ssim-secondary" id="ssim-customise">Customise first</button>
+        ${isBlank ? '' : '<button class="ssim-secondary" id="ssim-customise">Customise line items</button>'}
         <button class="ssim-primary" id="ssim-send">Send invoice now →</button>
       </div>
     </div>
@@ -730,30 +746,38 @@ function ssShowInvoiceModal(c) {
     if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }
   });
 
-  // "Customise first" → opens the full generator with everything pre-filled.
-  wrap.querySelector('#ssim-customise').addEventListener('click', () => {
-    const qs = new URLSearchParams();
-    qs.set('clientId', c.clientId);
-    if (c.business_name) qs.set('client_name', c.business_name);
-    if (c.name) qs.set('client_contact', c.name);
-    const liveEmail = wrap.querySelector('#ssim-email').value.trim() || c.delivery_email || '';
-    if (liveEmail) qs.set('client_email', liveEmail);
-    if (c.address || c.business_address) qs.set('client_addr', c.address || c.business_address);
-    if (c.package) qs.set('package', c.package);
-    if (c.hosting_addon) qs.set('hosting', c.hosting_addon);
-    try { localStorage.setItem('ss_pw_handoff', JSON.stringify({ pw: ADMIN_PW, t: Date.now() })); } catch (e) {}
-    const hash = ADMIN_PW ? ('#pw=' + encodeURIComponent(ADMIN_PW)) : '';
-    const url = '/invoice/?' + qs.toString() + hash;
-    // Try window.open first; fall back to same-tab navigation if popups blocked.
-    const w = window.open(url, '_blank');
-    if (!w) {
-      // Popup blocked — fall back gracefully so we never leave the user stuck.
-      window.location.href = url;
-    }
-    close();
-  });
+  // Blank mode: show/hide custom-amount field when "Custom" selected
+  if (isBlank) {
+    const pkgSel = wrap.querySelector('#ssim-pkg');
+    const customWrap = wrap.querySelector('#ssim-customWrap');
+    pkgSel.addEventListener('change', () => {
+      customWrap.style.display = pkgSel.value === 'custom' ? '' : 'none';
+    });
+  }
 
-  // "Send invoice now" → posts to send-email, no tab dance.
+  // "Customise line items" → opens the full /invoice/ generator pre-filled
+  const customBtn = wrap.querySelector('#ssim-customise');
+  if (customBtn) {
+    customBtn.addEventListener('click', () => {
+      const qs = new URLSearchParams();
+      qs.set('clientId', c.clientId);
+      if (c.business_name) qs.set('client_name', c.business_name);
+      if (c.name) qs.set('client_contact', c.name);
+      const liveEmail = wrap.querySelector('#ssim-email').value.trim() || c.delivery_email || '';
+      if (liveEmail) qs.set('client_email', liveEmail);
+      if (c.address || c.business_address) qs.set('client_addr', c.address || c.business_address);
+      if (c.package) qs.set('package', c.package);
+      if (c.hosting_addon) qs.set('hosting', c.hosting_addon);
+      try { localStorage.setItem('ss_pw_handoff', JSON.stringify({ pw: ADMIN_PW, t: Date.now() })); } catch (e) {}
+      const hash = ADMIN_PW ? ('#pw=' + encodeURIComponent(ADMIN_PW)) : '';
+      const url = '/invoice/?' + qs.toString() + hash;
+      const w = window.open(url, '_blank');
+      if (!w) window.location.href = url;
+      close();
+    });
+  }
+
+  // "Send invoice now" — single in-place POST. Works for client AND blank.
   wrap.querySelector('#ssim-send').addEventListener('click', async () => {
     const btn = wrap.querySelector('#ssim-send');
     const status = wrap.querySelector('#ssim-status');
@@ -769,13 +793,43 @@ function ssShowInvoiceModal(c) {
     const orig = btn.innerHTML;
     btn.innerHTML = 'Sending…';
 
-    // If the user edited the email, persist that to the client record so
-    // future sends from the panel use it too. Best-effort.
-    if (emailVal !== c.delivery_email) {
-      try { await updateClient(c.clientId, { delivery_email: emailVal }); c.delivery_email = emailVal; } catch (e) {}
-    }
-
     try {
+      if (isBlank) {
+        // Build a polished invoice HTML inline (we're not posting clientId,
+        // so send-email's 'generated-invoice' path takes over — that path
+        // accepts invoiceHtml + toEmail with no client lookup required).
+        const pkgVal = wrap.querySelector('#ssim-pkg').value;
+        const hostingOn = wrap.querySelector('#ssim-hosting').checked;
+        let lineAmt = 149, lineDesc = 'Starter Website Design';
+        if (pkgVal === 'advanced') { lineAmt = 299; lineDesc = 'Advanced Website Design'; }
+        else if (pkgVal === 'custom') { lineAmt = parseFloat(wrap.querySelector('#ssim-customAmt').value) || 0; lineDesc = 'Website Design'; }
+        const totalAmt = lineAmt + (hostingOn ? 29 : 0);
+        const toName = wrap.querySelector('#ssim-toName').value.trim() || 'Customer';
+        const invNumStr = 'SS-' + new Date().getFullYear() + '-' + String(Math.floor(Date.now()/1000) % 10000).padStart(4,'0');
+        const invoiceHtml = `<!doctype html><html><body style="margin:0;padding:0;background:#f4f1ea;font-family:Arial,Helvetica,sans-serif;color:#0a0a0a"><table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f4f1ea"><tr><td align="center" style="padding:32px 14px"><table cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 12px 36px rgba(0,0,0,.06)"><tr><td style="padding:30px 36px 8px"><div style="font-size:20px;font-weight:800">StaticSwift</div><div style="font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#b08a3e;margin-top:18px">Invoice ${invNumStr}</div><h1 style="font-family:Georgia,serif;font-size:24px;line-height:1.2;margin:8px 0 14px;font-weight:500">Hi ${escapeHTML(toName.split(/\s+/)[0])},</h1><p style="font-size:15px;line-height:1.65;color:#3a3a3a;margin:0 0 18px">Invoice attached. Bank transfer (or card on request) and we're sorted.</p></td></tr><tr><td style="padding:0 36px 12px"><table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;font-size:14px"><tr style="background:#faf8f2"><td style="padding:12px 14px;border:1px solid #ece6d6">${escapeHTML(lineDesc)}</td><td style="padding:12px 14px;border:1px solid #ece6d6;text-align:right">£${lineAmt}</td></tr>${hostingOn ? `<tr><td style="padding:12px 14px;border:1px solid #ece6d6">Hosting upload service</td><td style="padding:12px 14px;border:1px solid #ece6d6;text-align:right">£29</td></tr>` : ''}<tr style="background:#0a0a0a;color:#fff;font-weight:700"><td style="padding:14px;border:1px solid #0a0a0a">Total due</td><td style="padding:14px;border:1px solid #0a0a0a;text-align:right;font-size:18px">£${totalAmt}</td></tr></table></td></tr><tr><td style="padding:18px 36px 26px"><div style="background:#faf8f2;border:1px solid #ece6d6;border-radius:10px;padding:18px 20px;font-size:13.5px;line-height:1.7"><strong>Bank transfer</strong><br>Beneficiary: Harry Yule<br>Sort code: 04-00-75<br>Account: 98518224<br>Reference: ${invNumStr}<br>Bank: Revolut Ltd</div></td></tr><tr><td style="padding:20px 36px 30px;border-top:1px solid #eee;text-align:center;font-size:12px;color:#999">Harry &middot; StaticSwift &middot; <a href="https://staticswift.co.uk" style="color:#b08a3e;text-decoration:none">staticswift.co.uk</a></td></tr></table></td></tr></table></body></html>`;
+        const r = await fetch('/.netlify/functions/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+          body: JSON.stringify({
+            emailType: 'generated-invoice',
+            toEmail: emailVal, toName,
+            subject: 'Invoice ' + invNumStr + ' — StaticSwift — £' + totalAmt.toFixed(2),
+            invoiceHtml, invoiceNumber: invNumStr, amount: totalAmt, currency: 'GBP',
+          }),
+        });
+        const d = await r.json();
+        if (!r.ok || (d && d.error)) throw new Error(d.error || ('HTTP ' + r.status));
+        status.className = 'ok';
+        status.textContent = '✓ Sent. ' + invNumStr + ' — £' + totalAmt + ' to ' + emailVal;
+        btn.innerHTML = '✓ Sent';
+        setTimeout(close, 1500);
+        return;
+      }
+
+      // Client mode — if the user edited the email, persist it.
+      if (emailVal !== c.delivery_email) {
+        try { await updateClient(c.clientId, { delivery_email: emailVal }); c.delivery_email = emailVal; } catch (e) {}
+      }
       const r = await fetch('/.netlify/functions/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
@@ -787,7 +841,6 @@ function ssShowInvoiceModal(c) {
       status.textContent = '✓ Sent. ' + (d.invoiceNumber ? d.invoiceNumber + ' — ' : '') + 'pipeline updated.';
       btn.innerHTML = '✓ Sent';
       await refreshData();
-      // Re-open panel so the new stage is visible
       setTimeout(() => { openClient(c.clientId); close(); }, 1100);
     } catch (err) {
       status.className = 'err';
@@ -810,43 +863,123 @@ function ssShowInvoiceModal(c) {
   });
 }
 
-// One-click: jump straight into the invoice generator with no client preselected.
-// Handy when you're billing someone who isn't in the pipeline (referral, consulting, etc.)
+// ─── UNIFIED INVOICE ENTRY POINTS ─────────────────────────────
+// All three invoice buttons (Send Invoice on panel, £ Invoice from
+// client at top, £ Blank invoice at top) now use the SAME in-place
+// modal flow. No popups, no new tabs, no auth handoff dance, no
+// chance of a popup blocker eating the click.
+//
+// Three entry points:
+//   panelAction('invoice')    →  ssShowInvoiceModal(c)         (existing client)
+//   quickInvoice()            →  ssShowInvoiceClientPicker()   (pick then modal)
+//   openBlankInvoice()        →  ssShowInvoiceModal(null)      (blank mode)
+
 function openBlankInvoice() {
-  try { localStorage.setItem('ss_pw_handoff', JSON.stringify({ pw: ADMIN_PW, t: Date.now() })); } catch (e) {}
-  const hash = ADMIN_PW ? ('#pw=' + encodeURIComponent(ADMIN_PW)) : '';
-  window.open('/invoice/' + hash, '_blank');
+  ssShowInvoiceModal(null);
 }
 
 function quickInvoice() {
-  // Don't block when there are no clients — let the user open a BLANK invoice
-  // so they can bill anyone (referral work, ad-hoc, whatever). The generator
-  // page handles unconnected invoices via the manual SMTP flow already.
   const unpaid = allClients.filter(c => !c.paid && !['archived', 'complete'].includes(c.stage));
-  const openBlank = () => {
-    // Same auth handoff dance as panelAction('invoice') so the new tab can send.
-    try { localStorage.setItem('ss_pw_handoff', JSON.stringify({ pw: ADMIN_PW, t: Date.now() })); } catch (e) {}
-    const hash = ADMIN_PW ? ('#pw=' + encodeURIComponent(ADMIN_PW)) : '';
-    window.open('/invoice/' + hash, '_blank');
-  };
   if (!unpaid.length) {
-    const yes = confirm('No unpaid clients yet — open a BLANK invoice you can fill in by hand?');
-    if (yes) openBlank();
+    if (confirm('No unpaid clients yet — open a BLANK invoice you can fill in by hand?')) {
+      ssShowInvoiceModal(null);
+    }
     return;
   }
-  const list = unpaid.slice(0, 20).map((c, i) => (i + 1) + '. ' + (c.business_name || c.name)).join('\n');
-  const choice = prompt('Pick a client to invoice (number), or leave blank for a brand-new empty invoice:\n\n' + list);
-  if (choice == null) return;            // cancelled
-  if (choice.trim() === '') { openBlank(); return; }
-  const idx = parseInt(choice, 10) - 1;
-  if (isNaN(idx) || !unpaid[idx]) {
-    const fallback = confirm('That number didn\'t match a client. Open a blank invoice instead?');
-    if (fallback) openBlank();
-    return;
-  }
-  openClient(unpaid[idx].clientId);
-  setTimeout(() => panelAction('invoice'), 200);
+  ssShowInvoiceClientPicker(unpaid);
 }
+
+// In-place client picker — replaces the old window.prompt() that
+// users found clunky. Shows up to 20 unpaid clients with their
+// totals, click to launch the invoice modal pre-filled.
+function ssShowInvoiceClientPicker(clients) {
+  const existing = document.getElementById('ss-picker-modal');
+  if (existing) existing.remove();
+
+  const wrap = document.createElement('div');
+  wrap.id = 'ss-picker-modal';
+  wrap.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px;font-family:"DM Sans",system-ui,sans-serif';
+
+  const rows = clients.slice(0, 30).map(c => {
+    const adv = c.package === 'advanced';
+    const hosting = c.hosting_addon === 'yes';
+    const total = (adv ? 299 : 149) + (hosting ? 29 : 0);
+    return `
+      <button class="ssp-row" data-id="${escapeAttr(c.clientId)}">
+        <div class="ssp-row-l">
+          <div class="ssp-biz">${escapeHTML(c.business_name || c.name || 'Untitled')}</div>
+          <div class="ssp-meta">${escapeHTML(c.name || '')} · ${escapeHTML(c.delivery_email || 'no email')}</div>
+        </div>
+        <div class="ssp-row-r">
+          <span class="ssp-pkg">${adv ? 'Advanced' : 'Starter'}${hosting ? ' + Host' : ''}</span>
+          <span class="ssp-amt">£${total}</span>
+        </div>
+      </button>`;
+  }).join('');
+
+  wrap.innerHTML = `
+    <style>
+      #ssp-box{background:linear-gradient(180deg,#0f1320,#0a0d16);border:1px solid rgba(255,255,255,.1);border-radius:18px;max-width:560px;width:100%;color:#f0f2f8;box-shadow:0 30px 80px rgba(0,0,0,.6);max-height:80vh;display:flex;flex-direction:column;overflow:hidden;animation:ssppop .35s cubic-bezier(.19,1,.22,1)}
+      @keyframes ssppop{from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+      #ssp-head{padding:22px 26px 18px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between}
+      #ssp-eyebrow{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#00c6ff;margin-bottom:4px}
+      #ssp-title{font-size:18px;font-weight:600;color:#fff}
+      #ssp-close{background:rgba(255,255,255,.06);width:32px;height:32px;border-radius:8px;color:#aaa;font-size:18px;cursor:pointer;border:0;display:grid;place-items:center}
+      #ssp-close:hover{background:rgba(255,255,255,.12);color:#fff}
+      #ssp-body{padding:14px 18px;overflow-y:auto;display:flex;flex-direction:column;gap:6px}
+      .ssp-row{display:flex;justify-content:space-between;align-items:center;gap:12px;background:#0d1018;border:1px solid rgba(255,255,255,.06);border-radius:11px;padding:13px 16px;text-align:left;cursor:pointer;color:inherit;font-family:inherit;transition:all .2s}
+      .ssp-row:hover{border-color:rgba(0,198,255,.3);background:rgba(0,198,255,.05);transform:translateX(2px)}
+      .ssp-row-l{flex:1;min-width:0}
+      .ssp-biz{font-size:14px;font-weight:600;color:#fff;margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+      .ssp-meta{font-size:11.5px;color:#8890a8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+      .ssp-row-r{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+      .ssp-pkg{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#7de8ff}
+      .ssp-amt{font-size:15px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums}
+      #ssp-foot{padding:14px 18px 18px;border-top:1px solid rgba(255,255,255,.06);text-align:center}
+      .ssp-blank{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);color:#f0f2f8;padding:9px 18px;border-radius:100px;font-size:12.5px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .2s}
+      .ssp-blank:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2)}
+    </style>
+    <div id="ssp-box" role="dialog" aria-modal="true">
+      <div id="ssp-head">
+        <div>
+          <div id="ssp-eyebrow">£ Invoice</div>
+          <div id="ssp-title">Pick a client to invoice</div>
+        </div>
+        <button id="ssp-close" aria-label="Close">✕</button>
+      </div>
+      <div id="ssp-body">${rows || '<div style="padding:40px;text-align:center;color:#8890a8">No unpaid clients.</div>'}</div>
+      <div id="ssp-foot">
+        <button class="ssp-blank" id="ssp-blank">+ Or create a blank invoice instead</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(wrap);
+
+  const close = () => wrap.remove();
+  wrap.querySelector('#ssp-close').addEventListener('click', close);
+  wrap.addEventListener('click', (e) => { if (e.target === wrap) close(); });
+  document.addEventListener('keydown', function esc(e) {
+    if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }
+  });
+
+  wrap.querySelectorAll('.ssp-row').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      const c = allClients.find(x => x.clientId === id);
+      close();
+      if (c) {
+        currentClientId = id;
+        ssShowInvoiceModal(c);
+      }
+    });
+  });
+  wrap.querySelector('#ssp-blank').addEventListener('click', () => {
+    close();
+    ssShowInvoiceModal(null);
+  });
+}
+
+function escapeAttr(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;'); }
 
 function quickBroadcast() {
   const subject = prompt('Broadcast subject:');
@@ -1026,11 +1159,24 @@ function openClient(id) {
   if (c.portalUUID) {
     const portalUrl = 'https://staticswift.co.uk/client?uuid=' + encodeURIComponent(c.portalUUID);
     document.getElementById('panel-portal-section').style.display = 'block';
+    // Pull live portal stats (unread messages, last activity, asset count) into
+    // the panel so you can see at-a-glance whether the customer has actually
+    // visited their portal — high signal for "should I follow up?"
+    const unread = c.portalUnread || 0;
+    const assetCount = Array.isArray(c.clientAssets) ? c.clientAssets.length : 0;
+    const activityCount = Array.isArray(c.portalActivity) ? c.portalActivity.length : 0;
+    const lastClientAt = c.portalLastClientAt ? new Date(c.portalLastClientAt).toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) : 'never';
     document.getElementById('panel-portal').innerHTML =
-      '<a href="' + portalUrl + '" target="_blank" style="color:var(--cyan);font-weight:600;font-size:13px;word-break:break-all;display:block;margin-bottom:8px">Open portal ↗</a>' +
-      '<div style="display:flex;gap:8px">' +
+      '<div style="margin-bottom:10px;padding:10px 12px;background:rgba(0,200,224,.06);border:1px solid rgba(0,200,224,.18);border-radius:8px;font-size:12px;color:var(--text);display:grid;grid-template-columns:1fr 1fr;gap:6px">' +
+        '<div><span style="color:var(--muted)">Last client visit:</span> <strong>' + escapeHTML(lastClientAt) + '</strong></div>' +
+        '<div><span style="color:var(--muted)">Activity events:</span> <strong>' + activityCount + '</strong></div>' +
+        '<div><span style="color:var(--muted)">Unread messages:</span> <strong style="' + (unread ? 'color:#fbbf24' : '') + '">' + unread + '</strong></div>' +
+        '<div><span style="color:var(--muted)">Files uploaded:</span> <strong>' + assetCount + '</strong></div>' +
+      '</div>' +
+      '<a href="' + portalUrl + '" target="_blank" style="color:var(--cyan);font-weight:600;font-size:13px;word-break:break-all;display:block;margin-bottom:8px">↗ View this customer’s portal (live)</a>' +
+      '<div style="display:flex;gap:8px;flex-wrap:wrap">' +
       '<button class="copy-btn" id="copy-portal-btn">Copy Link</button>' +
-      '<button class="copy-btn" onclick="panelAction(\'portal-link\')" style="background:var(--cyan);color:#07090f;border-color:var(--cyan)">Resend Email</button>' +
+      '<button class="copy-btn" onclick="panelAction(\'portal-link\')" style="background:var(--cyan);color:#07090f;border-color:var(--cyan)">Send / Resend</button>' +
       '</div>';
     const cpb = document.getElementById('copy-portal-btn');
     if (cpb) cpb.addEventListener('click', function() {
@@ -1266,7 +1412,22 @@ async function panelAction(type) {
     // the existing send-email function in ONE CLICK. If the user wants to
     // customise (different items, a refund, etc.), there's a second button
     // that opens the full /invoice/ generator pre-filled.
-    return ssShowInvoiceModal(c);
+    //
+    // Wrap in try/catch so a bad theme override or stylesheet conflict
+    // can't kill the click silently. Any thrown error becomes a visible
+    // alert + console trace.
+    try {
+      if (typeof ssShowInvoiceModal !== 'function') {
+        console.error('[invoice] ssShowInvoiceModal not defined — admin.js may be partially loaded');
+        alert('Invoice modal is missing — hard-refresh the admin (Cmd+Shift+R / Ctrl+F5) and try again.');
+        return;
+      }
+      ssShowInvoiceModal(c);
+    } catch (err) {
+      console.error('[invoice] modal threw:', err);
+      alert('Invoice could not open: ' + (err && err.message ? err.message : 'unknown error') + '\n\nOpen DevTools → Console for the full trace.');
+    }
+    return;
   }
   if (type === 'custom') {
     const subject = prompt('Email subject:');

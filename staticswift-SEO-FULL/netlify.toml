@@ -57,6 +57,25 @@
   to = "/admin/index.html"
   status = 200
 
+# ─── Client portal routing ─────────────────────────────────────
+# Every portal email points at https://staticswift.co.uk/client?uuid=…
+# Without these rules the bare /client path is a 404 because Netlify
+# only knows about /.netlify/functions/client-portal. THIS WAS THE
+# ROOT CAUSE OF "the portal link my customer got 404s". Both query-
+# string AND path-segment variants resolve to the same function so
+# either pattern works in the wild.
+[[redirects]]
+  from = "/client"
+  to = "/.netlify/functions/client-portal"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/client/*"
+  to = "/.netlify/functions/client-portal"
+  status = 200
+  force = true
+
 # Friendly unsubscribe URL — old emails sent before we shipped the proper
 # /.netlify/functions/unsubscribe link may use https://staticswift.co.uk/unsubscribe.
 # Both must resolve to the same function so neither audience clicks a 404.
