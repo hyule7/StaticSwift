@@ -111,16 +111,54 @@ exports.handler = async (event) => {
 
     } else if (emailType === 'preview') {
       if (!previewUrl) return { statusCode: 400, body: JSON.stringify({ error: 'previewUrl required for preview email' }) };
-      subject = 'Your ' + (client.business_name || '') + ' website preview is ready';
-      // previewUrl is always the portal URL now
-      html = LOGO_HTML +
-        '<div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:0 24px 32px;">' +
-        '<h2 style="font-family:sans-serif">Hi ' + (client.name || 'there') + ',</h2>' +
-        '<p>Your ' + (client.business_name || 'website') + ' is built and ready to review.</p>' +
-        '<p style="text-align:center;margin:28px 0;"><a href="' + previewUrl + '" style="background:#00C8E0;color:#07090f;font-weight:700;padding:14px 28px;border-radius:8px;text-decoration:none;display:inline-block;">View Your Preview &amp; Approve ↗</a></p>' +
-        '<p style="font-size:14px;color:#555">Check it on desktop and mobile. From your portal you can approve the design or request changes — everything is handled there.</p>' +
-        '<p style="color:#888;font-size:13px;margin-top:28px;">StaticSwift — <a href="https://staticswift.co.uk">staticswift.co.uk</a></p>' +
-        '</div>';
+      const bizName = client.business_name || 'your';
+      const firstName = (client.name || '').trim().split(/\s+/)[0] || 'there';
+      subject = 'Your ' + (client.business_name || 'website') + ' preview — ready to review';
+      // Table-based layout so Outlook + Gmail Web both render this cleanly.
+      // Bigger CTA, two-line value framing, mobile-safe widths.
+      html = `<!doctype html>
+<html><body style="margin:0;padding:0;background:#f4f1ea;font-family:Arial,Helvetica,sans-serif;color:#0a0a0a;-webkit-font-smoothing:antialiased">
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f4f1ea">
+ <tr><td align="center" style="padding:32px 14px">
+  <table cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 12px 36px rgba(0,0,0,.06)">
+   <tr><td style="padding:30px 36px 8px;text-align:left">
+    <div style="font-size:20px;font-weight:800;color:#0a0a0a;letter-spacing:-.4px;">StaticSwift</div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#b08a3e;margin-top:18px">Preview ready</div>
+    <h1 style="font-family:Georgia,serif;font-size:28px;line-height:1.2;color:#0a0a0a;margin:8px 0 18px;font-weight:500">Hi ${firstName.replace(/[<>]/g,'')}, your ${String(bizName).replace(/[<>]/g,'')} site is built.</h1>
+    <p style="font-size:15px;line-height:1.65;color:#3a3a3a;margin:0 0 22px">Open it on your phone and on a desktop. Click through every link. If anything looks off — one button on the portal sends me the change request.</p>
+   </td></tr>
+   <tr><td align="center" style="padding:0 36px 8px">
+    <table cellpadding="0" cellspacing="0" border="0">
+     <tr><td style="background:#0a0a0a;border-radius:100px;padding:0">
+      <a href="${previewUrl}" style="display:inline-block;padding:16px 38px;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;letter-spacing:.01em;font-family:Arial,Helvetica,sans-serif">View your preview &rarr;</a>
+     </td></tr>
+    </table>
+   </td></tr>
+   <tr><td style="padding:6px 36px 28px;text-align:center">
+    <p style="font-size:12px;color:#888;margin:0">Or paste this link in any browser: <a href="${previewUrl}" style="color:#b08a3e;word-break:break-all">${previewUrl}</a></p>
+   </td></tr>
+   <tr><td style="padding:0 36px 30px">
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#faf8f2;border:1px solid #ece6d6;border-radius:10px">
+     <tr>
+      <td style="padding:18px 20px;font-size:13.5px;line-height:1.6;color:#3a3a3a">
+       <strong style="color:#0a0a0a">What to do next</strong><br>
+       1. Open the preview on your phone &amp; laptop.<br>
+       2. Click every button and link.<br>
+       3. From the portal: <strong>Approve</strong> if you love it, or <strong>Request a change</strong> if anything needs a tweak (1 free revision included).
+      </td>
+     </tr>
+    </table>
+   </td></tr>
+   <tr><td style="padding:0 36px 30px;font-size:13px;color:#555;line-height:1.6">
+    No payment is due until you approve the design. Reply to this email any time — it lands straight in my inbox.
+   </td></tr>
+   <tr><td style="padding:20px 36px 30px;border-top:1px solid #eee;text-align:center;font-size:12px;color:#999">
+    Harry &middot; StaticSwift &middot; <a href="https://staticswift.co.uk" style="color:#b08a3e;text-decoration:none">staticswift.co.uk</a>
+   </td></tr>
+  </table>
+ </td></tr>
+</table>
+</body></html>`;
       stageUpdate = { stage: 'preview-sent', previewUrl, previewSentAt: new Date().toISOString() };
 
     } else if (emailType === 'invoice') {

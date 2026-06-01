@@ -593,13 +593,40 @@ async function sendFirstReply(clientId, btn) {
   }
 }
 
+// One-click: jump straight into the invoice generator with no client preselected.
+// Handy when you're billing someone who isn't in the pipeline (referral, consulting, etc.)
+function openBlankInvoice() {
+  try { localStorage.setItem('ss_pw_handoff', JSON.stringify({ pw: ADMIN_PW, t: Date.now() })); } catch (e) {}
+  const hash = ADMIN_PW ? ('#pw=' + encodeURIComponent(ADMIN_PW)) : '';
+  window.open('/invoice/' + hash, '_blank');
+}
+
 function quickInvoice() {
+  // Don't block when there are no clients — let the user open a BLANK invoice
+  // so they can bill anyone (referral work, ad-hoc, whatever). The generator
+  // page handles unconnected invoices via the manual SMTP flow already.
   const unpaid = allClients.filter(c => !c.paid && !['archived', 'complete'].includes(c.stage));
-  if (!unpaid.length) { alert('No unpaid clients to invoice. Add a new order first.'); return; }
+  const openBlank = () => {
+    // Same auth handoff dance as panelAction('invoice') so the new tab can send.
+    try { localStorage.setItem('ss_pw_handoff', JSON.stringify({ pw: ADMIN_PW, t: Date.now() })); } catch (e) {}
+    const hash = ADMIN_PW ? ('#pw=' + encodeURIComponent(ADMIN_PW)) : '';
+    window.open('/invoice/' + hash, '_blank');
+  };
+  if (!unpaid.length) {
+    const yes = confirm('No unpaid clients yet — open a BLANK invoice you can fill in by hand?');
+    if (yes) openBlank();
+    return;
+  }
   const list = unpaid.slice(0, 20).map((c, i) => (i + 1) + '. ' + (c.business_name || c.name)).join('\n');
-  const choice = prompt('Pick a client to invoice (number):\n\n' + list);
+  const choice = prompt('Pick a client to invoice (number), or leave blank for a brand-new empty invoice:\n\n' + list);
+  if (choice == null) return;            // cancelled
+  if (choice.trim() === '') { openBlank(); return; }
   const idx = parseInt(choice, 10) - 1;
-  if (isNaN(idx) || !unpaid[idx]) return;
+  if (isNaN(idx) || !unpaid[idx]) {
+    const fallback = confirm('That number didn\'t match a client. Open a blank invoice instead?');
+    if (fallback) openBlank();
+    return;
+  }
   openClient(unpaid[idx].clientId);
   setTimeout(() => panelAction('invoice'), 200);
 }

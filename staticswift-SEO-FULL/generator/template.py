@@ -396,7 +396,7 @@ footer em{{font-family:'Cormorant',Georgia,serif;font-style:italic;color:var(--c
 <body>
 <header>
 <a href="{SITE}" class="logo"><svg viewBox="0 0 28 28" fill="none" width="22" height="22"><polygon points="14,1 27,7.5 27,20.5 14,27 1,20.5 1,7.5" fill="none" stroke="#b08a3e" stroke-width="1.2" opacity=".7"/><polygon points="14,6 22,10 22,18 14,22 6,18 6,10" fill="#b08a3e" opacity=".12"/><polygon points="14,10 18,12 18,16 14,18 10,16 10,12" fill="#b08a3e" opacity=".45"/></svg><span>StaticSwift</span></a>
-<a class="hcta" href="/order.html?niche={niche_slug}&amp;city={city_slug}" data-cta-from="seo-{niche_slug}-{city_slug}">Get Started from £149</a>
+<a class="hcta" href="#ss-seo-form" data-cta-from="seo-{niche_slug}-{city_slug}">Get Started from £149</a>
 </header>
 
 <div class="hero">
@@ -451,16 +451,16 @@ footer em{{font-family:'Cormorant',Georgia,serif;font-style:italic;color:var(--c
 <span class="tag">Pricing</span>
 <h2>Simple, honest <em>pricing.</em></h2>
 <div class="pgrid">
-<div class="pcard"><div class="pname">Starter</div><div class="pprice">£149 <span>one-time</span></div><div class="pdesc">Single-page site for {n['plural']}</div><ul class="plist"><li>Custom single-page design</li><li>Mobile responsive</li><li>SEO optimised for {_esc(city_display)}</li><li>Contact form</li><li>24-hour delivery</li><li>1 free revision</li></ul><a class="pbtn pbtn-o" href="/order.html?niche={niche_slug}&amp;city={city_slug}" data-cta-from="seo-{niche_slug}-{city_slug}">Get started →</a></div>
-<div class="pcard feat"><div class="pbadge">Most popular</div><div class="pname">Advanced</div><div class="pprice">£299 <span>one-time</span></div><div class="pdesc">Multi-section site with extras</div><ul class="plist"><li>Everything in Starter</li><li>Gallery section</li><li>Testimonials</li><li>About section</li><li>Premium animations</li><li>Priority build</li></ul><a class="pbtn pbtn-f" href="/order.html?niche={niche_slug}&amp;city={city_slug}" data-cta-from="seo-{niche_slug}-{city_slug}">Get started →</a></div>
-<div class="pcard"><div class="pname">Hosting</div><div class="pprice">£29 <span>one-time</span></div><div class="pdesc">We upload and connect your domain</div><ul class="plist"><li>We handle upload</li><li>Connect your domain</li><li>Free Netlify hosting</li><li>SSL included</li></ul><a class="pbtn pbtn-o" href="/order.html?niche={niche_slug}&amp;city={city_slug}" data-cta-from="seo-{niche_slug}-{city_slug}">Add to order →</a></div>
+<div class="pcard"><div class="pname">Starter</div><div class="pprice">£149 <span>one-time</span></div><div class="pdesc">Single-page site for {n['plural']}</div><ul class="plist"><li>Custom single-page design</li><li>Mobile responsive</li><li>SEO optimised for {_esc(city_display)}</li><li>Contact form</li><li>24-hour delivery</li><li>1 free revision</li></ul><a class="pbtn pbtn-o" href="#ss-seo-form" data-cta-from="seo-{niche_slug}-{city_slug}">Get started →</a></div>
+<div class="pcard feat"><div class="pbadge">Most popular</div><div class="pname">Advanced</div><div class="pprice">£299 <span>one-time</span></div><div class="pdesc">Multi-section site with extras</div><ul class="plist"><li>Everything in Starter</li><li>Gallery section</li><li>Testimonials</li><li>About section</li><li>Premium animations</li><li>Priority build</li></ul><a class="pbtn pbtn-f" href="#ss-seo-form" data-cta-from="seo-{niche_slug}-{city_slug}">Get started →</a></div>
+<div class="pcard"><div class="pname">Hosting</div><div class="pprice">£29 <span>one-time</span></div><div class="pdesc">We upload and connect your domain</div><ul class="plist"><li>We handle upload</li><li>Connect your domain</li><li>Free Netlify hosting</li><li>SSL included</li></ul><a class="pbtn pbtn-o" href="#ss-seo-form" data-cta-from="seo-{niche_slug}-{city_slug}">Add to order →</a></div>
 </div>
 </div></section>
 
 <div class="cta-band fi">
 <h2>Ready to grow your {n['singular']} business in <em>{_esc(city_display)}?</em></h2>
 <p>Get a free preview in 24 hours. Pay only when you love it.</p>
-<a class="cta-btn" href="/order.html?niche={niche_slug}&amp;city={city_slug}" data-cta-from="seo-{niche_slug}-{city_slug}">Get started — free preview →</a>
+<a class="cta-btn" href="#ss-seo-form" data-cta-from="seo-{niche_slug}-{city_slug}">Get started — free preview →</a>
 </div>
 
 <section style="background:var(--bg2)"><div class="si fi">
@@ -480,7 +480,7 @@ footer em{{font-family:'Cormorant',Georgia,serif;font-style:italic;color:var(--c
 <footer>
 <div class="ft-logo"><svg viewBox="0 0 28 28" fill="none" width="22" height="22"><polygon points="14,1 27,7.5 27,20.5 14,27 1,20.5 1,7.5" fill="none" stroke="#b08a3e" stroke-width="1.2" opacity=".7"/><polygon points="14,6 22,10 22,18 14,22 6,18 6,10" fill="#b08a3e" opacity=".12"/><polygon points="14,10 18,12 18,16 14,18 10,16 10,12" fill="#b08a3e" opacity=".45"/></svg><span>StaticSwift</span></div>
 <p>Built by <a href="{SITE}/about/" rel="author"><em style="color:var(--gold2);font-style:italic">Harry Yule</em></a> &middot; UK studio based in Manchester &middot; <a href="{SITE}/">staticswift.co.uk</a></p>
-<p style="margin-top:6px;font-size:11px">&copy; StaticSwift &middot; <a href="{SITE}/about/">About</a> &middot; <a href="{SITE}/showcase/">Showcase</a> &middot; <a href="{SITE}/order.html">Start a project</a></p>
+<p style="margin-top:6px;font-size:11px">&copy; StaticSwift &middot; <a href="{SITE}/about/">About</a> &middot; <a href="{SITE}/showcase/">Showcase</a> &middot; <a href="{SITE}/#contact">Start a project</a></p>
 </footer>
 
 <script>

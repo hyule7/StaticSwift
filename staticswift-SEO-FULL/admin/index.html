@@ -108,7 +108,8 @@
       <!-- QUICK ACTIONS BAR -->
       <div class="quick-actions">
         <button class="qa-btn primary" onclick="showPage('new-order',document.querySelector('[data-page=&quot;new-order&quot;]'))">+ New Client</button>
-        <button class="qa-btn" onclick="quickInvoice()">£ New Invoice</button>
+        <button class="qa-btn" onclick="quickInvoice()" title="Pick a client to invoice, or open a blank invoice">£ Invoice from client</button>
+        <button class="qa-btn" onclick="openBlankInvoice()" title="Open the invoice generator with no client pre-filled">£ Blank invoice</button>
         <button class="qa-btn" onclick="quickBroadcast()">✉ Broadcast Email</button>
         <button class="qa-btn" onclick="exportLeadsCSV()">⬇ Export Leads CSV</button>
         <div class="qa-spacer"></div>
@@ -320,8 +321,8 @@
         <div class="stat-card"><div class="label">30d Sessions</div><div class="value" id="sa-sessions">—</div></div>
         <div class="stat-card"><div class="label">Avg duration</div><div class="value" id="sa-duration">—</div></div>
         <div class="stat-card"><div class="label">Bounce</div><div class="value" id="sa-bounce">—</div></div>
-        <div class="stat-card"><div class="label">Form submits</div><div class="value" id="sa-forms" style="color:var(--cyan)">—</div></div>
-        <div class="stat-card"><div class="label">CTA clicks</div><div class="value" id="sa-ctas">—</div></div>
+        <div class="stat-card" title="Counts both clean form_submit events and any 'submit:<id>' step from the in-page tracker. After the analytics fix, this should match your real submits in 24h."><div class="label">Form submits <span style="color:var(--muted);font-weight:500;font-size:9px;letter-spacing:0;text-transform:none">ⓘ</span></div><div class="value" id="sa-forms" style="color:var(--cyan)">—</div></div>
+        <div class="stat-card" title="Unique session × CTA pairs (deduped so one user mashing the same button counts once). Counts both type:'event' rows and type:'step' rows with the 'click:' prefix."><div class="label">CTA clicks <span style="color:var(--muted);font-weight:500;font-size:9px;letter-spacing:0;text-transform:none">ⓘ</span></div><div class="value" id="sa-ctas">—</div></div>
       </div>
 
       <!-- Traffic chart -->

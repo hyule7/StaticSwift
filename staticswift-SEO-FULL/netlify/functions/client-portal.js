@@ -57,7 +57,18 @@ h1{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:6p
 .b-cyan{background:rgba(0,200,224,.12);color:#00C8E0;border:1px solid rgba(0,200,224,.2)}
 .b-green{background:rgba(34,197,94,.12);color:#22c55e;border:1px solid rgba(34,197,94,.2)}
 .b-red{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.2)}
-iframe{width:100%;height:400px;border:1px solid rgba(255,255,255,.08);border-radius:10px;display:block;background:#0d1018}
+.preview-shell{border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;background:#0d1018;margin-bottom:12px}
+.preview-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:#0a0d16;border-bottom:1px solid rgba(255,255,255,.06);font-size:12px;color:#8890a8}
+.preview-bar .dots{display:flex;gap:6px}
+.preview-bar .dots i{width:9px;height:9px;border-radius:50%;background:#3a3f4e;display:block}
+.preview-bar .url{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:100px;padding:5px 12px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#8890a8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:280px}
+.preview-bar .device-toggle{display:flex;gap:4px}
+.preview-bar .device-toggle button{background:transparent;border:1px solid rgba(255,255,255,.08);color:#8890a8;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit}
+.preview-bar .device-toggle button.on{background:rgba(0,200,224,.14);color:#00C8E0;border-color:rgba(0,200,224,.3)}
+.preview-stage{padding:14px;background:#0d1018;display:flex;justify-content:center;align-items:flex-start}
+iframe.preview-frame{width:100%;height:680px;border:0;border-radius:8px;display:block;background:#fff;box-shadow:0 16px 40px rgba(0,0,0,.4);transition:width .35s cubic-bezier(.16,1,.3,1),height .35s cubic-bezier(.16,1,.3,1)}
+.preview-stage.is-mobile iframe.preview-frame{width:380px;height:740px;border-radius:24px;border:8px solid #1a1d28}
+@media(max-width:560px){iframe.preview-frame{height:540px}.preview-stage.is-mobile iframe.preview-frame{width:100%;height:600px;border-width:6px}}
 .btn{display:block;width:100%;padding:13px;border-radius:9px;font-size:14px;font-weight:700;text-align:center;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:opacity .15s;margin-bottom:8px}
 .btn-primary{background:#00C8E0;color:#07090f}.btn-primary:hover{opacity:.85}
 .btn-ghost{background:transparent;color:#00C8E0;border:1.5px solid rgba(0,200,224,.4)}.btn-ghost:hover{border-color:#00C8E0}
@@ -117,8 +128,20 @@ footer{padding:20px;text-align:center;font-size:12px;color:#4a5068;border-top:1p
   <div class="card">
     <div class="card-title">Your website preview</div>
     <span class="badge b-cyan">Ready for review</span>
-    <iframe src="${e(c.previewUrl)}" loading="lazy" title="Preview" sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
-    <a href="${e(c.previewUrl)}" target="_blank" style="font-size:13px;color:#00C8E0;display:inline-block;margin:10px 0 18px">Open in new tab ↗</a>
+    <div class="preview-shell">
+      <div class="preview-bar">
+        <div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
+        <div class="url" title="${e(c.previewUrl)}">${e(c.previewUrl)}</div>
+        <div class="device-toggle">
+          <button type="button" class="on" onclick="ssDevice('desktop',this)">Desktop</button>
+          <button type="button" onclick="ssDevice('mobile',this)">Mobile</button>
+        </div>
+      </div>
+      <div class="preview-stage" id="preview-stage">
+        <iframe class="preview-frame" src="${e(c.previewUrl)}" loading="lazy" title="Preview" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
+      </div>
+    </div>
+    <a href="${e(c.previewUrl)}" target="_blank" style="font-size:13px;color:#00C8E0;display:inline-block;margin:0 0 18px">Open full-screen in new tab ↗</a>
     <p style="font-size:13px;color:#8890a8;margin-bottom:14px">Check on desktop and mobile. Then let us know:</p>
     <button class="btn btn-primary" id="btn-approve" onclick="show('approve')">Looks great — approve it ✓</button>
     <button class="btn btn-red" id="btn-changes" onclick="show('changes')">Request changes</button>
@@ -145,8 +168,20 @@ footer{padding:20px;text-align:center;font-size:12px;color:#4a5068;border-top:1p
   <div class="card">
     <div class="card-title">Your website preview</div>
     <span class="badge b-amber">Awaiting your review</span>
-    <iframe src="${e(c.previewUrl)}" loading="lazy" title="Preview" sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
-    <a href="${e(c.previewUrl)}" target="_blank" style="font-size:13px;color:#00C8E0;display:inline-block;margin:10px 0 18px">Open in new tab ↗</a>
+    <div class="preview-shell">
+      <div class="preview-bar">
+        <div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
+        <div class="url" title="${e(c.previewUrl)}">${e(c.previewUrl)}</div>
+        <div class="device-toggle">
+          <button type="button" class="on" onclick="ssDevice('desktop',this)">Desktop</button>
+          <button type="button" onclick="ssDevice('mobile',this)">Mobile</button>
+        </div>
+      </div>
+      <div class="preview-stage" id="preview-stage">
+        <iframe class="preview-frame" src="${e(c.previewUrl)}" loading="lazy" title="Preview" sandbox="allow-same-origin allow-scripts allow-forms allow-popups"></iframe>
+      </div>
+    </div>
+    <a href="${e(c.previewUrl)}" target="_blank" style="font-size:13px;color:#00C8E0;display:inline-block;margin:0 0 18px">Open full-screen in new tab ↗</a>
     <p style="font-size:13px;color:#8890a8;margin-bottom:14px">Use the message box below if you have questions.</p>
   </div>` :
 
@@ -184,6 +219,18 @@ footer{padding:20px;text-align:center;font-size:12px;color:#4a5068;border-top:1p
 
 <script>
 const UUID = '${uuid}';
+
+// Desktop / mobile device-frame toggle for the preview iframe.
+// Keeps the user on-page (no extra navigation) while letting them check
+// how their site looks at phone widths — a thing every client asks about.
+function ssDevice(mode, btn) {
+  const stage = document.getElementById('preview-stage');
+  if (!stage) return;
+  stage.classList.toggle('is-mobile', mode === 'mobile');
+  // Highlight the active button in the toolbar
+  const wrap = btn && btn.parentElement;
+  if (wrap) wrap.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn));
+}
 
 function show(type) {
   ['approve','changes'].forEach(t => {

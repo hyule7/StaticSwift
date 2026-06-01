@@ -146,9 +146,26 @@ exports.handler = async (event) => {
       .map(k => ({ date: k, views: seriesMap[k].views, visitors: seriesMap[k].visitors.size }))
       .reverse(); // chronological
 
-    // Conversion events
-    const formSubmits = events.filter(e => e.type === 'event' && e.evt === 'form_submit').length;
-    const ctaClicks = events.filter(e => e.type === 'event' && e.evt === 'cta_click').length;
+    // Conversion events.
+    // BUG FIX: previously this filter looked for `type === 'event'` and exact
+    // evt names `form_submit` / `cta_click` — but the in-page tracker emits
+    // `type: 'step'` with `evt: 'submit:<formId>'` and `evt: 'click:<label>'`,
+    // and ALSO (after the patch in index.html) `type: 'event'` rows with the
+    // canonical names. Counting both keeps old + new analytics buckets honest.
+    const formSubmits =
+      events.filter(e => e.type === 'event' && e.evt === 'form_submit').length +
+      events.filter(e => e.type === 'step' && typeof e.evt === 'string' && e.evt.startsWith('submit:')).length;
+
+    // CTA clicks: dedupe by session so a user mashing the same button doesn't
+    // inflate the number. A "real" CTA click is anything with the click: prefix
+    // OR an explicit type:'event' evt:'cta_click' ping.
+    const ctaSessionPairs = new Set();
+    events.forEach(e => {
+      if (e.type === 'event' && e.evt === 'cta_click' && e.sid) ctaSessionPairs.add(e.sid + '|' + (e.path || '') + '|cta');
+      else if (e.type === 'step' && typeof e.evt === 'string' && e.evt.startsWith('click:') && e.sid)
+        ctaSessionPairs.add(e.sid + '|' + e.evt);
+    });
+    const ctaClicks = ctaSessionPairs.size;
 
     // ── Journey + step aggregations ──────────────────────────────────
     // Top sections viewed

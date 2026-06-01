@@ -12,6 +12,7 @@
 
 const ADMIN = process.env.ADMIN_PASSWORD || 'Harry2001!';
 const OPENAI_KEY = process.env.OPENAI_API_KEY;
+const { addSuppression, isUnsubReply } = require('./_suppression');
 
 const SYSTEM_PROMPT = `You categorize replies to a cold B2B outreach email from a UK web designer.
 Reply with strict JSON: {"category":"...","reason":"...","suggestion":"..."}.
@@ -62,15 +63,37 @@ exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
   const auth = event.headers['x-admin-password'];
   if (auth !== ADMIN) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
-  let text;
-  try { ({ text } = JSON.parse(event.body || '{}')); } catch {}
+  let text, fromEmail, prospectId;
+  try { ({ text, fromEmail, prospectId } = JSON.parse(event.body || '{}')); } catch {}
   if (!text || !text.trim()) return { statusCode: 400, body: JSON.stringify({ error: 'text required' }) };
+
+  let result;
+  let mode;
   try {
-    const result = OPENAI_KEY ? await aiClassify(text) : ruleClassify(text);
-    return { statusCode: 200, body: JSON.stringify({ ok: true, ...result, mode: OPENAI_KEY ? 'ai' : 'rule' }) };
+    result = OPENAI_KEY ? await aiClassify(text) : ruleClassify(text);
+    mode = OPENAI_KEY ? 'ai' : 'rule';
   } catch (err) {
-    // Fail open to rule classifier so admin keeps working when OpenAI is down
-    const fallback = ruleClassify(text);
-    return { statusCode: 200, body: JSON.stringify({ ok: true, ...fallback, mode: 'rule-fallback', error: err.message }) };
+    result = ruleClassify(text);
+    mode = 'rule-fallback';
+    result.aiError = err.message;
   }
+
+  // Auto-suppression: any unsubscribe-intent reply MUST hit the suppression
+  // list immediately. Belt-and-braces: check both the AI category AND the
+  // regex — if either says unsub, we suppress. Cheaper to over-suppress.
+  let suppressed = false;
+  const looksLikeUnsub = result.category === 'unsubscribe' || isUnsubReply(text);
+  if (looksLikeUnsub && fromEmail) {
+    try {
+      await addSuppression(fromEmail, { reason: 'reply_unsubscribe', source: 'categorize-reply', prospectId });
+      suppressed = true;
+    } catch (e) {
+      console.warn('[categorize-reply] auto-suppression failed:', e.message);
+    }
+  }
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ ok: true, ...result, mode, autoSuppressed: suppressed }),
+  };
 };

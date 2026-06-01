@@ -57,6 +57,21 @@
   to = "/admin/index.html"
   status = 200
 
+# Friendly unsubscribe URL — old emails sent before we shipped the proper
+# /.netlify/functions/unsubscribe link may use https://staticswift.co.uk/unsubscribe.
+# Both must resolve to the same function so neither audience clicks a 404.
+[[redirects]]
+  from = "/unsubscribe"
+  to = "/.netlify/functions/unsubscribe"
+  status = 200
+  force = true
+
 # Scheduled function — runs cron-scan every 15 min server-side
 [functions."cron-scan"]
   schedule = "*/15 * * * *"
+
+# Scheduled function — runs the cold-outreach follow-up sequence engine
+# once a day at 06:30 UTC (just before working hours in the UK so the
+# admin's first morning glance shows queued drafts ready to review).
+[functions."daily-followup"]
+  schedule = "30 6 * * *"
