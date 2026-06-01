@@ -779,6 +779,36 @@ table.inv-table tbody td.desc{font-weight:500}
   }
 
   // --- Pipeline context (only set when admin opens us with clientId) ---
+  // Admin password handoff: admin.js stores the password in localStorage AND
+  // appends it as a URL fragment (#pw=...) when opening this page in a new tab,
+  // because sessionStorage is not reliably inherited across new tabs. We accept
+  // either, immediately copy into sessionStorage for this tab, then scrub them.
+  (function recoverAdminPw(){
+    try {
+      // 1. URL fragment (#pw=...) — never sent to server
+      if (window.location.hash && window.location.hash.indexOf('pw=') !== -1) {
+        const m = window.location.hash.match(/pw=([^&]+)/);
+        if (m && m[1]) {
+          sessionStorage.setItem('ss_pw', decodeURIComponent(m[1]));
+          // Strip the hash so the password doesn't sit visible in the address bar
+          history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+      }
+      // 2. Short-lived localStorage handoff (max 2 min old)
+      if (!sessionStorage.getItem('ss_pw')) {
+        const raw = localStorage.getItem('ss_pw_handoff');
+        if (raw) {
+          const obj = JSON.parse(raw);
+          if (obj && obj.pw && (Date.now() - obj.t) < 120000) {
+            sessionStorage.setItem('ss_pw', obj.pw);
+          }
+        }
+      }
+    } catch(e) { /* ignore */ }
+    // Always clear the handoff blob so the password doesn't linger on disk
+    try { localStorage.removeItem('ss_pw_handoff'); } catch(e){}
+  })();
+
   const pipelineCtx = {
     clientId: null,
     get adminPw(){ return sessionStorage.getItem('ss_pw') || ''; },
@@ -795,6 +825,12 @@ table.inv-table tbody td.desc{font-weight:500}
       toast('Add a client email first');
       $('cl-email').focus();
       return;
+    }
+    // Make missing-auth explicit instead of failing silently with a 401.
+    if(!pipelineCtx.adminPw){
+      const pw = prompt('Admin password required to send. Enter your StaticSwift admin password:');
+      if(!pw){ toast('Send cancelled — no admin password'); return; }
+      sessionStorage.setItem('ss_pw', pw);
     }
     if(!confirm('Send invoice ' + inv.number + ' to ' + cl.email + '?')) return;
 

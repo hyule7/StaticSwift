@@ -902,8 +902,13 @@ async function panelAction(type) {
   if (type === 'invoice') {
     // Open the invoice generator pre-filled with this client's data.
     // The generator handles the actual SMTP send via send-email.js (emailType=generated-invoice).
-    // sessionStorage.ss_pw is inherited by the new tab when opened via window.open()
-    // (same-origin tabs get a copy of the opener's sessionStorage at open time).
+    //
+    // Auth handoff: sessionStorage is NOT reliably inherited by new tabs across
+    // browsers (Safari + Chrome with strict popup/opener policies often drop it),
+    // which was breaking "Send Invoice" because the new tab had no admin password
+    // and the SMTP call returned 401. We pass the password via URL fragment (#pw=)
+    // — fragments are NEVER sent to the server, so this stays client-side only.
+    // We also write it to localStorage with a short-lived key as a second fallback.
     const qs = new URLSearchParams();
     qs.set('clientId', currentClientId);
     if (c.business_name) qs.set('client_name', c.business_name);
@@ -912,7 +917,12 @@ async function panelAction(type) {
     if (c.address || c.business_address) qs.set('client_addr', c.address || c.business_address);
     if (c.package) qs.set('package', c.package);
     if (c.hosting_addon) qs.set('hosting', c.hosting_addon);
-    window.open('/invoice/?' + qs.toString(), '_blank');
+    try {
+      // Short-lived handoff (~2 min) — the invoice tab consumes + deletes this.
+      localStorage.setItem('ss_pw_handoff', JSON.stringify({ pw: ADMIN_PW, t: Date.now() }));
+    } catch (e) { /* localStorage disabled — fall back to hash */ }
+    const hash = ADMIN_PW ? ('#pw=' + encodeURIComponent(ADMIN_PW)) : '';
+    window.open('/invoice/?' + qs.toString() + hash, '_blank');
   }
   if (type === 'custom') {
     const subject = prompt('Email subject:');
