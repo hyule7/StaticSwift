@@ -4642,6 +4642,33 @@ body.scrolled-past-hero .hero::after { transform: scaleY(0); transition: transfo
 .hero-bg-video {
   background: var(--paper, #faf7f1) !important;
 }
+
+/* ─── FINAL NUKE: any dark overlay anywhere in the hero ─────────
+   Multiple legacy rules layered dark gradients via .hero-bg-video,
+   .hero-bg-fallback, .hero-bg-grid, .hero::before / ::after pseudos,
+   .hero-tear, .hero-marquee, .hero-ticker. We previously hid these
+   one-by-one. This is a blanket rule that catches anything we missed:
+   every absolute-positioned full-bleed child of .hero gets a cream
+   background or transparency, never dark. */
+.hero > div[class^="hero-bg"],
+.hero > .hero-bg-video,
+.hero > .hero-bg-fallback,
+.hero > .hero-bg-grid,
+.hero > .hero-tear,
+.hero > .hero-marquee,
+.hero > .hero-ticker {
+  background: transparent !important;
+}
+/* And nothing inside the hero except actual <button> / .btn elements
+   may have a near-black background. Catches any straggler pseudo
+   with rgba(6,7,11,*) gradients. */
+.hero::before, .hero::after,
+.hero > div:not(.hero-inner):not(.hero-text):not(.hero-phone-float):not(.hero-anchor):not(.hero-proof)::before,
+.hero > div:not(.hero-inner):not(.hero-text):not(.hero-phone-float):not(.hero-anchor):not(.hero-proof)::after {
+  display: none !important;
+  background: transparent !important;
+  content: none !important;
+}
 .hero-bg-grid {
   position: absolute; inset: 0; z-index: 0;
   background:

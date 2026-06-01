@@ -625,6 +625,24 @@ async function sendFirstReply(clientId, btn) {
 //      generator, for the rare case the user needs to add a line item or
 //      change pricing.
 function ssShowInvoiceModal(c) {
+  // Defensive: never silently no-op. If the client object is missing or
+  // malformed, tell the user something concrete instead of nothing happening.
+  try {
+    if (!c || typeof c !== 'object') {
+      console.error('[invoice modal] client object missing:', c);
+      alert('Invoice cannot open — client record is missing. Refresh and retry.');
+      return;
+    }
+    if (!c.clientId) {
+      console.error('[invoice modal] client has no clientId:', c);
+      alert('Invoice cannot open — this client has no ID. Refresh and retry.');
+      return;
+    }
+  } catch (e) {
+    alert('Invoice modal error: ' + e.message);
+    return;
+  }
+
   // Remove an old one if it's already up (re-click resets it cleanly)
   const existing = document.getElementById('ss-invoice-modal');
   if (existing) existing.remove();
@@ -1175,11 +1193,22 @@ async function saveNotes() {
 }
 
 async function panelAction(type) {
-  if (!currentClientId) return;
+  if (!currentClientId) {
+    console.warn('[panelAction] no currentClientId — open a client first');
+    alert('Open a client first, then try this action.');
+    return;
+  }
   const c = allClients.find(x => x.clientId === currentClientId);
-  if (!c) return;
+  if (!c) {
+    console.warn('[panelAction] currentClientId not in allClients:', currentClientId);
+    alert('Could not find that client. Refresh the page and try again.');
+    return;
+  }
+  // Null-guard the status message element — if the panel HTML hasn't
+  // rendered yet (rare but possible during re-init), we don't want
+  // `msg.style.display = ...` to TypeError and abort the whole action.
   const msg = document.getElementById('panel-action-msg');
-  msg.style.display = 'none';
+  if (msg) msg.style.display = 'none';
 
   async function sendEmailAction(body) {
     try {

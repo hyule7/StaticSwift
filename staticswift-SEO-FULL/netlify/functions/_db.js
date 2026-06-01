@@ -117,11 +117,24 @@ async function incrementInvoiceCounter() {
 }
 
 async function deleteClient(clientId) {
-  const db = await readDB();
-  const clients = Array.isArray(db.clients) ? db.clients : [];
+  // CRITICAL: force-read fresh from JSONBin (bypass the 60s cache). Without
+  // force=true a different Lambda instance can hold a stale snapshot and
+  // either (a) throw "Client not found" for a record that genuinely exists,
+  // or (b) re-write the stale snapshot back over a different Lambda's recent
+  // delete. The cache is fine for reads but lethal for write paths.
+  let db = await readDB(true);
+  let clients = Array.isArray(db.clients) ? db.clients : [];
   const before = clients.length;
-  const next = clients.filter(c => c.clientId !== clientId);
-  if (next.length === before) throw new Error('Client not found: ' + clientId);
+  let next = clients.filter(c => c.clientId !== clientId);
+
+  // IDEMPOTENT: if the record isn't in the freshly-fetched DB it's already
+  // gone (could be a duplicate click, a different tab, a previous successful
+  // delete cached as failed). Treat as success — the goal is "this id is not
+  // in the bin", which is true. We just don't need to write back.
+  if (next.length === before) {
+    return { ok: true, removed: clientId, alreadyAbsent: true };
+  }
+
   await writeDB({ ...db, clients: next });
   return { ok: true, removed: clientId };
 }
