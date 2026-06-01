@@ -822,27 +822,129 @@ function openClient(id) {
       setTimeout(() => this.textContent = 'Copy Link', 2000);
     });
 
+    // ── Messages thread + unread badge ───────────────────────────
     const msgs = Array.isArray(c.portalMessages) ? c.portalMessages : [];
     const msgsEl = document.getElementById('panel-messages');
     const msgsSec = document.getElementById('panel-messages-section');
+    const unreadBadge = document.getElementById('panel-unread-badge');
+    if (unreadBadge) {
+      if (c.portalUnread && c.portalUnread > 0) {
+        unreadBadge.style.display = 'inline-block';
+        unreadBadge.textContent = c.portalUnread + ' unread';
+      } else {
+        unreadBadge.style.display = 'none';
+      }
+    }
     if (msgs.length > 0 || c.changeRequest) {
       msgsSec.style.display = 'block';
       let html = '';
       if (c.changeRequest) {
         html += '<div style="background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:10px 12px;margin-bottom:10px;font-size:13px"><div style="font-size:11px;font-weight:700;color:#fbbf24;margin-bottom:4px;text-transform:uppercase">⚠ Change Request ' + (c.changeRequestAt ? '· ' + new Date(c.changeRequestAt).toLocaleDateString('en-GB') : '') + '</div>' + escapeHTML(c.changeRequest || '') + '</div>';
       }
-      html += msgs.map(m => '<div style="background:' + (m.from === 'client' ? 'rgba(0,200,224,.08);border:1px solid rgba(0,200,224,.15)' : 'rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)') + ';border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:13px"><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;text-transform:uppercase">' + (m.from === 'client' ? escapeHTML(c.name || 'Client') : 'You') + ' · ' + new Date(m.sentAt).toLocaleDateString('en-GB') + '</div>' + escapeHTML(m.notes || m.text || '') + '</div>').join('');
+      html += msgs.map(m => '<div style="background:' + (m.from === 'client' ? 'rgba(0,200,224,.08);border:1px solid rgba(0,200,224,.15)' : 'rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)') + ';border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:13px"><div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;text-transform:uppercase">' + (m.from === 'client' ? escapeHTML(c.name || 'Client') : 'You') + ' · ' + new Date(m.sentAt).toLocaleDateString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) + (m.signature ? ' · <span style="color:var(--green)">signed: ' + escapeHTML(m.signature) + '</span>' : '') + (m.type === 'approve' ? ' · <span style="color:var(--green)">✓ APPROVED</span>' : '') + '</div>' + escapeHTML(m.notes || m.text || '').replace(/\n/g, '<br>') + '</div>').join('');
       msgsEl.innerHTML = html;
       msgsEl.scrollTop = msgsEl.scrollHeight;
     } else {
       msgsSec.style.display = 'none';
     }
+
+    // ── Portal activity audit trail ──────────────────────────────
+    const activity = Array.isArray(c.portalActivity) ? c.portalActivity.slice().reverse() : [];
+    const actSec = document.getElementById('panel-activity-section');
+    const actEl = document.getElementById('panel-activity');
+    const actCount = document.getElementById('panel-activity-count');
+    if (activity.length > 0 && actSec) {
+      actSec.style.display = 'block';
+      if (actCount) actCount.textContent = '(' + activity.length + ')';
+      const iconFor = (t) => ({
+        approve: '✓', changes: '✎', message: '💬',
+        reaction: '✨', addon: '£', asset: '📎',
+      })[t] || '·';
+      actEl.innerHTML = activity.slice(0, 50).map(a =>
+        '<div style="display:grid;grid-template-columns:20px 1fr auto;gap:8px;padding:6px 0;border-bottom:1px solid var(--border)">' +
+        '<span style="color:var(--cyan);text-align:center">' + iconFor(a.type) + '</span>' +
+        '<span style="color:var(--text)">' + escapeHTML(a.summary || a.type) + (a.signature ? ' <em style="color:var(--green)">— "' + escapeHTML(a.signature) + '"</em>' : '') + '</span>' +
+        '<span style="color:var(--muted);font-size:11px;white-space:nowrap">' + new Date(a.at).toLocaleDateString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' }) + '</span>' +
+        '</div>'
+      ).join('');
+    } else if (actSec) {
+      actSec.style.display = 'none';
+    }
+
+    // ── Preview reactions ────────────────────────────────────────
+    const reactions = c.previewReactions || {};
+    const rxSec = document.getElementById('panel-reactions-section');
+    const rxEl = document.getElementById('panel-reactions');
+    const rxTotal = Object.values(reactions).reduce((s, n) => s + (parseInt(n) || 0), 0);
+    if (rxTotal > 0 && rxSec) {
+      rxSec.style.display = 'block';
+      const labels = { love: '🔥 Love it', hmm: '🤔 Hmm', nice: '✨ Nice touches', issues: '❌ Issues' };
+      rxEl.innerHTML = Object.entries(reactions)
+        .filter(([_, n]) => n > 0)
+        .map(([k, n]) =>
+          '<span style="background:' + (k === 'issues' ? 'rgba(248,113,113,.1);color:var(--red)' : 'rgba(0,200,224,.1);color:var(--cyan)') + ';border:1px solid currentColor;border-radius:100px;padding:5px 12px;font-weight:600">' +
+            escapeHTML(labels[k] || k) + ' · ' + n +
+          '</span>'
+        ).join('');
+    } else if (rxSec) {
+      rxSec.style.display = 'none';
+    }
+
+    // ── Client assets (brand kit uploads) ────────────────────────
+    const assets = Array.isArray(c.clientAssets) ? c.clientAssets : [];
+    const aSec = document.getElementById('panel-assets-section');
+    const aEl = document.getElementById('panel-assets');
+    const aCount = document.getElementById('panel-assets-count');
+    if (assets.length > 0 && aSec) {
+      aSec.style.display = 'block';
+      if (aCount) aCount.textContent = '(' + assets.length + ')';
+      aEl.innerHTML = assets.slice().reverse().map(a => {
+        const sizeStr = a.bytes ? (a.bytes > 1024 * 1024 ? (a.bytes / 1024 / 1024).toFixed(1) + ' MB' : (a.bytes / 1024).toFixed(1) + ' KB') : '';
+        const link = a.fileId ? '/.netlify/functions/serve-preview?id=' + encodeURIComponent(a.fileId) : '#';
+        return '<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--dark3);border:1px solid var(--border);border-radius:8px">' +
+          '<span style="color:var(--cyan)">📎</span>' +
+          '<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + escapeHTML(a.name) + '">' + escapeHTML(a.name) + '</span>' +
+          '<span style="color:var(--muted);font-size:11px">' + sizeStr + '</span>' +
+          (a.fileId ? '<a href="' + link + '" target="_blank" style="color:var(--cyan);font-size:11px;font-weight:600;text-decoration:none">↓</a>' : '') +
+          '</div>';
+      }).join('');
+    } else if (aSec) {
+      aSec.style.display = 'none';
+    }
+
+    // ── Add-on interest (sales surface) ──────────────────────────
+    const addons = Array.isArray(c.addonInterest) ? c.addonInterest : [];
+    const adSec = document.getElementById('panel-addons-section');
+    const adEl = document.getElementById('panel-addons');
+    if (addons.length > 0 && adSec) {
+      adSec.style.display = 'block';
+      adEl.innerHTML = addons.slice().reverse().slice(0, 10).map(a =>
+        '<div style="display:flex;justify-content:space-between;gap:10px;padding:8px 10px;background:rgba(176,138,62,.06);border:1px solid rgba(176,138,62,.2);border-radius:8px;font-size:12px">' +
+          '<span style="color:var(--gold)">💰 ' + escapeHTML(a.key || '?') + '</span>' +
+          '<span style="color:var(--muted);font-size:11px">' + new Date(a.at).toLocaleDateString('en-GB') + '</span>' +
+        '</div>'
+      ).join('');
+    } else if (adSec) {
+      adSec.style.display = 'none';
+    }
+
   } else {
     document.getElementById('panel-portal-section').style.display = 'block';
     document.getElementById('panel-portal').innerHTML =
       '<p style="font-size:13px;color:var(--muted);margin-bottom:10px">No portal generated yet.</p>' +
       '<button class="copy-btn" style="background:var(--cyan);color:#07090f;border-color:var(--cyan)" onclick="panelAction(\'portal-link\')">Generate &amp; Send Portal Link</button>';
     document.getElementById('panel-messages-section').style.display = 'none';
+    // Hide the new sections too — they only make sense once a portal exists.
+    ['panel-activity-section', 'panel-reactions-section', 'panel-assets-section', 'panel-addons-section'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+  }
+
+  // When the admin opens a client panel, clear their portalUnread counter —
+  // they've now "seen" it. Best-effort; never blocks the UI.
+  if (c.portalUnread && c.portalUnread > 0) {
+    try { updateClient(c.clientId, { portalUnread: 0 }); c.portalUnread = 0; } catch (e) {}
   }
   document.getElementById('client-panel').classList.add('open');
 }
