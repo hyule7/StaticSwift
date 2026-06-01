@@ -362,9 +362,106 @@ nav:not(.scrolled) .ham-bar{background:#fff}
 .trust-row{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(0,0,0,.08)}
 .trust-badge{font-family:'Switzer','Inter Tight',sans-serif;font-size:.78rem;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:.4rem}
 .trust-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--cyan)}
-#qf-ok{display:none;background:linear-gradient(135deg,rgba(125,232,255,.06),rgba(0,198,255,.04));border:1.5px solid rgba(125,232,255,.3);border-radius:16px;padding:2.25rem;text-align:center}
-.qf-ok-title{font-family:'Cormorant',serif;font-size:1.7rem;margin-bottom:.5rem;color:var(--ink)}
-.qf-ok-sub{font-size:.94rem;color:var(--muted);line-height:1.6}
+/* ════════════════════════════════════════════════════════════════
+   FORM SUCCESS — editorial confirmation panel
+   Restrained. A single drawn check, a hairline that ticks across,
+   one confident headline, three quiet meta chips. No particles, no
+   halos, no breathing glows. Same restraint as the rest of the site.
+   ════════════════════════════════════════════════════════════════ */
+#qf-ok{
+  display:none;
+  position:relative;
+  text-align:left;
+  padding:2.5rem 2.25rem 2.25rem;
+  border-radius:18px;
+  background:#fdfbf6;                  /* warmer paper than pure white */
+  border:1px solid rgba(15,17,23,.08);
+  box-shadow:0 1px 0 rgba(255,255,255,.6) inset;
+}
+#qf-ok.show{display:block; animation:ssOkRise .85s cubic-bezier(.16,1,.3,1) both}
+@keyframes ssOkRise{
+  from {opacity:0; transform:translateY(18px)}
+  to   {opacity:1; transform:translateY(0)}
+}
+
+/* Top hairline rule with a small index numeral — like a printed letterhead.
+   The rule draws in left-to-right; the numeral fades in. */
+.ssok-rule{
+  display:flex; align-items:center; gap:1rem;
+  margin-bottom:1.4rem;
+  font-family:'Switzer','Inter Tight',sans-serif;
+  font-size:.66rem; font-weight:600; letter-spacing:.26em;
+  text-transform:uppercase; color:rgba(15,17,23,.55);
+}
+.ssok-rule .num{
+  font-family:'Cormorant',Georgia,serif; font-style:italic;
+  font-size:1rem; letter-spacing:.02em; color:#00a8d8;
+  font-weight:500; line-height:1; padding-top:.05em;
+}
+.ssok-rule .line{
+  flex:1; height:1px; background:rgba(15,17,23,.18);
+  transform-origin:left center; transform:scaleX(0);
+  animation:ssRule .9s cubic-bezier(.65,0,.35,1) .15s forwards;
+}
+@keyframes ssRule{to{transform:scaleX(1)}}
+
+/* Hand-drawn check mark — single stroke, ink-coloured. No disc, no glow.
+   Just a confident gesture: the line draws from start to finish in 0.6s. */
+.ssok-check{
+  width:42px; height:42px;
+  display:block; margin-bottom:1.4rem;
+  color:#00a8d8;
+}
+.ssok-check path{
+  fill:none; stroke:currentColor; stroke-width:3.2;
+  stroke-linecap:round; stroke-linejoin:round;
+  stroke-dasharray:64; stroke-dashoffset:64;
+  animation:ssCheckDraw .65s cubic-bezier(.65,0,.35,1) .45s forwards;
+}
+@keyframes ssCheckDraw{to{stroke-dashoffset:0}}
+
+/* Headline — editorial Cormorant italic. Slides up calmly, no scaling. */
+.qf-ok-title{
+  font-family:'Cormorant',Georgia,serif;
+  font-style:italic; font-weight:500;
+  font-size:clamp(1.9rem, 3.3vw, 2.55rem);
+  letter-spacing:-.02em; line-height:1.08;
+  color:var(--ink); margin-bottom:.8rem;
+  opacity:0; transform:translateY(10px);
+  animation:ssTextUp .75s cubic-bezier(.16,1,.3,1) .7s forwards;
+}
+.qf-ok-title strong{font-style:normal; font-weight:500; color:#00a8d8}
+.qf-ok-sub{
+  font-size:1rem; color:var(--muted); line-height:1.7;
+  max-width:480px;
+  opacity:0; transform:translateY(10px);
+  animation:ssTextUp .75s cubic-bezier(.16,1,.3,1) .82s forwards;
+}
+.qf-ok-sub strong{color:var(--ink); font-weight:600}
+@keyframes ssTextUp{to{opacity:1; transform:translateY(0)}}
+
+/* Quiet meta row — three plain text items separated by a hairline middot.
+   No pills, no chips, no colored badges. Just typography. */
+.ssok-meta{
+  display:flex; flex-wrap:wrap; align-items:center; gap:.45rem 1rem;
+  margin-top:1.5rem; padding-top:1.25rem;
+  border-top:1px solid rgba(15,17,23,.06);
+  font-family:'Switzer','Inter Tight',sans-serif;
+  font-size:.78rem; font-weight:500; color:rgba(15,17,23,.6);
+  opacity:0; transform:translateY(10px);
+  animation:ssTextUp .75s cubic-bezier(.16,1,.3,1) .95s forwards;
+}
+.ssok-meta span{display:inline-flex; align-items:center; gap:.45rem}
+.ssok-meta svg{width:13px; height:13px; color:#00a8d8; flex-shrink:0}
+.ssok-meta .sep{width:2px; height:2px; border-radius:50%; background:rgba(15,17,23,.22)}
+
+@media(prefers-reduced-motion:reduce){
+  #qf-ok, .ssok-rule .line, .ssok-check path,
+  .qf-ok-title, .qf-ok-sub, .ssok-meta {
+    animation:none !important; opacity:1 !important; transform:none !important;
+    stroke-dashoffset:0 !important;
+  }
+}
 
 /* ──────────────────────────────────────────────────────────── */
 /* ░░░ BEFORE/AFTER DRAG SLIDER ░░░ */
@@ -740,9 +837,69 @@ footer::before{content:'';position:absolute;top:0;left:50%;transform:translateX(
 .hero-lead-fine{display:flex;align-items:center;flex-wrap:wrap;gap:1.2rem;margin-top:.9rem;font-family:'Switzer','Inter Tight',sans-serif;font-size:.74rem;color:rgba(255,255,255,.5)}
 .hero-lead-fine span{display:flex;align-items:center;gap:.4rem}
 .hero-lead-fine span::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--cyan);opacity:.8}
-#hl-ok{display:none;background:linear-gradient(135deg,rgba(125,232,255,.1),rgba(0,198,255,.06));border:1px solid rgba(125,232,255,.35);border-radius:14px;padding:1.25rem 1.4rem;color:#fff;font-family:'Switzer','Inter Tight',sans-serif}
-#hl-ok strong{display:block;font-family:'Cormorant',serif;font-size:1.4rem;margin-bottom:.3rem;font-weight:500}
-#hl-ok p{color:rgba(255,255,255,.7);font-size:.88rem;line-height:1.5}
+/* Hero form success — compact editorial variant for above-the-fold.
+   Same restraint as the contact one: hairline rule, single drawn check,
+   confident Cormorant headline. No glow, no pulse. */
+#hl-ok{
+  display:none;
+  position:relative;
+  padding:1.4rem 1.6rem 1.3rem;
+  border-radius:12px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.12);
+  color:#fff; font-family:'Switzer','Inter Tight',sans-serif;
+  backdrop-filter:blur(8px);
+}
+#hl-ok.show{display:block; animation:ssOkRise .8s cubic-bezier(.16,1,.3,1) both}
+
+#hl-ok .hlok-rule{
+  display:flex; align-items:center; gap:.85rem; margin-bottom:1rem;
+  font-size:.62rem; font-weight:600; letter-spacing:.26em;
+  text-transform:uppercase; color:rgba(255,255,255,.55);
+}
+#hl-ok .hlok-rule .num{
+  font-family:'Cormorant',Georgia,serif; font-style:italic;
+  font-size:.95rem; letter-spacing:.02em; color:#7de8ff;
+  font-weight:500; line-height:1;
+}
+#hl-ok .hlok-rule .line{
+  flex:1; height:1px; background:rgba(255,255,255,.16);
+  transform-origin:left; transform:scaleX(0);
+  animation:ssRule .85s cubic-bezier(.65,0,.35,1) .15s forwards;
+}
+
+#hl-ok .hlok-check{
+  width:32px; height:32px;
+  display:block; margin-bottom:.85rem; color:#7de8ff;
+}
+#hl-ok .hlok-check path{
+  fill:none; stroke:currentColor; stroke-width:3;
+  stroke-linecap:round; stroke-linejoin:round;
+  stroke-dasharray:64; stroke-dashoffset:64;
+  animation:ssCheckDraw .6s cubic-bezier(.65,0,.35,1) .4s forwards;
+}
+
+#hl-ok strong{
+  display:block;
+  font-family:'Cormorant',Georgia,serif; font-style:italic;
+  font-size:1.45rem; margin-bottom:.4rem; font-weight:500;
+  letter-spacing:-.01em; color:#fff;
+  opacity:0; transform:translateY(8px);
+  animation:ssTextUp .7s cubic-bezier(.16,1,.3,1) .65s forwards;
+}
+#hl-ok strong em{font-style:normal; color:#7de8ff; font-weight:500}
+#hl-ok p{
+  color:rgba(255,255,255,.72); font-size:.9rem; line-height:1.55;
+  opacity:0; transform:translateY(8px);
+  animation:ssTextUp .7s cubic-bezier(.16,1,.3,1) .78s forwards;
+}
+
+@media(prefers-reduced-motion:reduce){
+  #hl-ok, #hl-ok .hlok-rule .line, #hl-ok .hlok-check path, #hl-ok strong, #hl-ok p {
+    animation:none !important; opacity:1 !important; transform:none !important;
+    stroke-dashoffset:0 !important;
+  }
+}
 @media(max-width:900px){
   .hero-lead-form{grid-template-columns:1fr 1fr;padding:.5rem;gap:.45rem}
   .hero-lead-form .hl-submit{grid-column:span 2}
@@ -1865,16 +2022,50 @@ html { scroll-behavior:smooth }
 .hero-headline .line:nth-child(2) span { animation-delay:.72s }
 @keyframes lineSlideUp { from { opacity:0; transform:translate3d(0,28px,0) } to { opacity:1; transform:translate3d(0,0,0) } }
 
-/* Section enter — every section gets a soft lift-in via IntersectionObserver classes
-   NOTE: contact-section + faq-section are CRITICAL conversion areas — they must
-   render even if the IntersectionObserver never fires (JS error, slow load, etc.).
-   So we exclude them from the opacity:0 starting state. */
-.cinema-v2, .trades-photos, .price-strip, .trade-section { opacity:0; transform:translate3d(0,40px,0); transition:opacity 1s cubic-bezier(.16,1,.3,1), transform 1.2s cubic-bezier(.16,1,.3,1); will-change:opacity,transform }
-.cinema.is-in, .trades-photos.is-in, .price-strip.is-in, .trade-section.is-in { opacity:1; transform:translate3d(0,0,0) }
-/* Hard-guarantee the contact form + FAQ are visible no matter what */
-.contact-section, .faq-section { opacity:1 !important; transform:none !important; visibility:visible !important; }
+/* Section enter — was hide-until-IO. Removed for the nav-anchor sections so
+   clicking "Pricing", "Examples", "Reviews", "FAQ" always jumps to a visible
+   section even if the IntersectionObserver hasn't fired yet (slow JS, blocked
+   tracker, or hash-jump before observers attach). The lift-in animation now
+   ONLY fires for elements with .reveal — which still get the dramatic entrance
+   without ever blocking the user from seeing them. */
+.cinema-v2, .trades-photos, .price-strip, .trade-section, .contact-section, .faq-section,
+.pricing-section, .reviews-section, .work-section, .showcase-section, .audit-letterhead {
+  opacity:1 !important; transform:none !important; visibility:visible !important;
+}
 .contact-section .form-wrap, .contact-section #qf, .contact-section .contact-grid,
-.contact-section .reveal, .contact-section .reveal-up, .contact-section .contact-aside { opacity:1 !important; visibility:visible !important; transform:none !important; }
+.contact-section .reveal, .contact-section .reveal-up, .contact-section .contact-aside,
+.pricing-section .reveal, .reviews-section .reveal, .trade-section .reveal,
+.faq-section .reveal { opacity:1 !important; visibility:visible !important; transform:none !important; }
+/* Scroll-margin so anchor-jumps don't land UNDER the sticky nav.
+   72px = ~nav height (64px) + a comfortable visual gap. */
+section[id], div[id="contact"], div[id="pricing"] { scroll-margin-top:72px }
+
+/* ─── CONTRAST GUARDRAILS ───────────────────────────────────────
+   The hero used to be dark ink → nav text was white. We later overrode
+   the hero to a cream background but the nav still rendered white on
+   cream above-the-fold = invisible. These rules guarantee navigation
+   is always readable regardless of which hero version is shipping. */
+nav#nav .nav-links a,
+nav#nav .nav-phone,
+nav#nav .nav-logo-name { color:#0f0f0f !important }
+nav#nav .nav-logo-by { color:rgba(15,17,23,.55) !important }
+nav#nav .nav-links a:hover { background:rgba(15,17,23,.06) !important; color:#000 !important }
+/* The active "Free audit" terracotta pill keeps its own colour. */
+nav#nav .nav-links a.nav-link-flag { color:#a86c4d !important }
+nav#nav .nav-links a.nav-link-flag:hover { color:#fff !important }
+
+/* Nav CTA — high-contrast ink button on cream */
+nav#nav .nav-cta { background:#0a0a0a !important; color:#fff !important; border:0 !important }
+nav#nav .nav-cta:hover { background:#000 !important; color:#fff !important }
+
+/* Make sure scrolled-state stays readable too */
+nav#nav.scrolled .nav-links a { color:#0a0a0a !important }
+nav#nav.scrolled .nav-logo-name { color:#0a0a0a !important }
+nav#nav.scrolled .nav-cta { background:#0a0a0a !important; color:#fff !important }
+
+/* Sticky-CTA bottom bar — was rendering with weak contrast over light bg */
+.sticky-cta-btn { background:#0a0a0a !important; color:#fff !important; font-weight:600 !important }
+.sticky-cta-btn:hover { background:#00a8d8 !important; color:#fff !important }
 
 /* Hover physics — every card visually responds */
 .ps-card, .tp-cell, .trade-frame-wrap, .hero-proof, .hero-anchor, .hero-trust { transition:transform .5s cubic-bezier(.16,1,.3,1), box-shadow .5s cubic-bezier(.16,1,.3,1), border-color .3s; }
@@ -6427,9 +6618,15 @@ p, li, dd, .lh-fine, .receipt-lede, .sm-deck, .letterhead-sub, .scorecard-footno
             <a class="hero-alt-call" href="tel:+447502731799">Call 07502 731 799</a>
           </div>
         </form>
-        <div id="hl-ok" role="alert">
-          <strong>Got it — preview on its way.</strong>
-          <p>You'll have a real, working preview in your inbox within 24 hours. If you'd like to give us more detail (colours, vibe, must-have sections), use the brief form below — but it's optional.</p>
+        <div id="hl-ok" role="status" aria-live="polite">
+          <div class="hlok-rule" aria-hidden="true">
+            <span class="num">01</span>
+            <span>Brief locked in</span>
+            <span class="line"></span>
+          </div>
+          <svg class="hlok-check" viewBox="0 0 52 52" aria-hidden="true"><path d="M11 27 L23 38 L42 16"/></svg>
+          <strong>Preview <em>incoming</em>.</strong>
+          <p>A working preview lands in your inbox within 24 hours. Drop more detail in the brief below if you want — it's optional but it sharpens the result.</p>
         </div>
 
         <!-- Live-feeling social proof — conversion booster -->
@@ -7517,9 +7714,22 @@ p, li, dd, .lh-fine, .receipt-lede, .sm-deck, .letterhead-sub, .scorecard-footno
           </button>
         </form>
 
-        <div id="qf-ok" role="alert">
-          <div class="qf-ok-title">Got it. Sit tight.</div>
-          <p class="qf-ok-sub">We've received your brief. Your free preview will be in your inbox within 24 hours — and on WhatsApp if you shared your number.</p>
+        <div id="qf-ok" role="status" aria-live="polite">
+          <div class="ssok-rule" aria-hidden="true">
+            <span class="num">01</span>
+            <span>Brief received</span>
+            <span class="line"></span>
+          </div>
+          <svg class="ssok-check" viewBox="0 0 52 52" aria-hidden="true"><path d="M11 27 L23 38 L42 16"/></svg>
+          <h3 class="qf-ok-title">Your preview is <strong>on its way</strong>.</h3>
+          <p class="qf-ok-sub">I've got your details. A real, working preview of your site will land in your inbox <strong>within 24 hours</strong> — and on WhatsApp if you shared your number. No card, no commitment.</p>
+          <div class="ssok-meta">
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>24-hour delivery</span>
+            <span class="sep"></span>
+            <span>No card upfront</span>
+            <span class="sep"></span>
+            <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>07502 731 799</span>
+          </div>
         </div>
 
         <div class="trust-row">
@@ -8214,8 +8424,14 @@ window.sq = async (e) => {
         gtag('event', 'generate_lead', {currency:'GBP', value: data.package==='advanced'?299:149, form_location:'contact'});
       }
       document.getElementById('qf').style.display='none';
-      document.getElementById('qf-ok').style.display='block';
-      document.getElementById('qf-ok').scrollIntoView({behavior:'smooth',block:'center'});
+      // Add the .show class — that's what triggers the entry animation +
+      // staggered text reveals. Plain display:block would skip them all
+      // because CSS animations need a "from" state.
+      const okEl = document.getElementById('qf-ok');
+      okEl.classList.add('show');
+      okEl.scrollIntoView({behavior:'smooth',block:'center'});
+      // Light haptic on mobile so the confirmation feels physical
+      try { if (navigator.vibrate) navigator.vibrate([18, 60, 24]); } catch(e){}
     } else throw new Error('Server error');
   } catch(err) {
     btn.textContent = 'Something went wrong — try again';
@@ -8244,21 +8460,35 @@ window.sqHero = async (e) => {
   // Pre-fill the long brief form so the visitor only fills the optional extras
   const fillMap = {'f-biz':data.business_name,'f-email':data.delivery_email,'f-wa':data.whatsapp};
   Object.entries(fillMap).forEach(([id,val]) => { const el = document.getElementById(id); if (el && val) el.value = val; });
-  // Analytics — fire on intent, not on server success (server may not even be reachable in dev)
+  // Analytics — fire on intent, not on server success (server may not even be reachable in dev).
+  // BUG FIX: previously this block had an orphan `}` after the generate_lead gtag
+  // call which closed the sqHero arrow function early. That syntax error meant the
+  // whole <script> block silently failed to parse — taking down the main #contact
+  // form handler (sq) too. Test submissions disappeared into the void.
   if (typeof gtag === 'function') {
     gtag('event', 'form_submit', {form_location: 'hero'});
-  }
-  if (typeof ssTrack === 'function') ssTrack('conversion:hero-form', { biz: data.business_name });
     gtag('event', 'generate_lead', {currency:'GBP', value:149, form_location:'hero'});
   }
+  if (typeof ssTrack === 'function') ssTrack('conversion:hero-form', { biz: data.business_name });
+  // Belt-and-braces server-side tracker fire so the analytics-self counter
+  // catches the submit even if a tracker script earlier on the page errored.
+  try {
+    fetch('/.netlify/functions/track-event', {
+      method:'POST', headers:{'Content-Type':'application/json'}, keepalive:true,
+      body: JSON.stringify({ type:'event', evt:'form_submit', path:'/', meta:{ form:'hero' } }),
+    }).catch(()=>{});
+  } catch(e){}
   // Best-effort POST the lead — UX never blocks on the network
   fetch('/.netlify/functions/handle-intake', {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify(data)
   }).catch(() => {});
-  // Always show success + scroll to the detail form
+  // Always show success + scroll to the detail form.
+  // Use .classList.add('show') — display:block alone skips the entry
+  // animation because CSS keyframes need the class toggle to trigger.
   form.style.display = 'none';
-  const ok = document.getElementById('hl-ok'); if (ok) ok.style.display = 'block';
+  const ok = document.getElementById('hl-ok'); if (ok) ok.classList.add('show');
+  try { if (navigator.vibrate) navigator.vibrate(14); } catch(e){}
   setTimeout(() => {
     const c = document.getElementById('contact');
     if (c) c.scrollIntoView({behavior:'smooth', block:'start'});

@@ -980,13 +980,65 @@ table.inv-table tbody td.desc{font-weight:500}
   }
 
   // --- Boot ---
-  loadCurrent();
-  const prefilled = applyUrlPrefill();
-  if(prefilled) saveCurrent();
-  renderForm();
-  renderInvoice();
-  bind();
-  $('btn-send').addEventListener('click', sendInvoice);
+  // Defence-in-depth: wrap each phase in try/catch so a single bad localStorage
+  // blob (or a broken URL param) can't leave the page stuck on a white screen.
+  // Any failure becomes a visible banner at the top of the page so we know
+  // exactly what went wrong instead of debugging blind.
+  function ssBootError(stage, err) {
+    console.error('[invoice boot]', stage, err);
+    const b = document.createElement('div');
+    b.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#dc2626;color:#fff;padding:10px 16px;font-family:Outfit,sans-serif;font-size:13px;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,.2)';
+    b.innerHTML = '<strong>Loading problem in ' + stage + ':</strong> ' + (err && err.message || err) + ' <button onclick="this.parentElement.remove()" style="float:right;background:rgba(255,255,255,.2);border:0;color:#fff;padding:2px 10px;border-radius:4px;cursor:pointer">Dismiss</button>';
+    document.body.appendChild(b);
+  }
+  function ssBootBanner(msg) {
+    const b = document.createElement('div');
+    b.style.cssText = 'position:fixed;top:0;left:0;right:0;background:linear-gradient(90deg,#0a0a0a,#1a1a1a);color:#c9a256;padding:8px 16px;font-family:Outfit,sans-serif;font-size:12px;font-weight:500;z-index:9998;letter-spacing:.04em;box-shadow:0 2px 8px rgba(0,0,0,.2);text-align:center';
+    b.innerHTML = '<span style="color:#b08a3e">●</span> ' + msg;
+    document.body.appendChild(b);
+    setTimeout(() => b.style.transition = 'opacity .6s', 100);
+    setTimeout(() => { b.style.opacity = '0'; setTimeout(() => b.remove(), 700); }, 4500);
+  }
+
+  try { loadCurrent(); } catch (err) { ssBootError('load saved state', err); }
+
+  let prefilled = false;
+  try { prefilled = applyUrlPrefill(); } catch (err) { ssBootError('URL prefill', err); }
+
+  if (prefilled) {
+    try { saveCurrent(); } catch (e) {}
+    // Tell the user we hydrated from URL — confirms email auto-fill worked
+    const qs = new URLSearchParams(window.location.search);
+    const fromEmail = qs.get('client_email');
+    const fromName = qs.get('client_name');
+    if (fromEmail || fromName) {
+      ssBootBanner('Pre-filled from client record' + (fromName ? ': ' + fromName : '') + (fromEmail ? ' · ' + fromEmail : ''));
+    }
+  }
+
+  try { renderForm(); } catch (err) { ssBootError('render form', err); }
+  try { renderInvoice(); } catch (err) { ssBootError('render preview', err); }
+  try { bind(); } catch (err) { ssBootError('bind events', err); }
+
+  // Always wire the Send button last and defensively — this is the
+  // critical path the user complained about. Listener installed before
+  // any potential earlier failure can block it.
+  const sendBtn = $('btn-send');
+  if (sendBtn) sendBtn.addEventListener('click', sendInvoice);
+  else console.error('[invoice] btn-send element missing');
+
+  // Highlight the email field if it was pre-filled — visual confirmation
+  // that the auto-fill actually arrived.
+  if (prefilled && state.client && state.client.email) {
+    setTimeout(() => {
+      const f = document.getElementById('cl-email');
+      if (f) {
+        f.style.transition = 'box-shadow 1.2s';
+        f.style.boxShadow = '0 0 0 3px rgba(176,138,62,.32)';
+        setTimeout(() => { f.style.boxShadow = ''; }, 2200);
+      }
+    }, 300);
+  }
 
   // Keyboard shortcuts: Cmd+S save, Cmd+P print (we let browser handle print)
   document.addEventListener('keydown', (e) => {

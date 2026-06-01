@@ -593,6 +593,184 @@ async function sendFirstReply(clientId, btn) {
   }
 }
 
+// ─── INVOICE MODAL ─────────────────────────────────────────────
+// A single, in-place modal that takes a client record and:
+//   1. Shows exactly what's about to be billed (package, hosting, total).
+//   2. Has the delivery email PRE-FILLED and editable in case it's wrong.
+//   3. Has ONE primary button — "Send invoice now" — that posts directly to
+//      send-email with emailType='invoice'. No tab dance, no auth handoff,
+//      no popup blockers. Works first time, every time.
+//   4. Has a secondary "Customise first" button that does open the full
+//      generator, for the rare case the user needs to add a line item or
+//      change pricing.
+function ssShowInvoiceModal(c) {
+  // Remove an old one if it's already up (re-click resets it cleanly)
+  const existing = document.getElementById('ss-invoice-modal');
+  if (existing) existing.remove();
+
+  const adv = c.package === 'advanced';
+  const hosting = c.hosting_addon === 'yes';
+  const base = adv ? 299 : 149;
+  const hostingAmt = hosting ? 29 : 0;
+  const total = base + hostingAmt;
+  const email = c.delivery_email || '';
+  const bizName = c.business_name || c.name || 'Client';
+
+  const wrap = document.createElement('div');
+  wrap.id = 'ss-invoice-modal';
+  wrap.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px;font-family:"DM Sans",system-ui,sans-serif;animation:ssfadein .25s';
+  wrap.innerHTML = `
+    <style>
+      @keyframes ssfadein{from{opacity:0}to{opacity:1}}
+      @keyframes ssslidein{from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+      #ssim-box{background:linear-gradient(180deg,#0f1320,#0a0d16);border:1px solid rgba(255,255,255,.1);border-radius:18px;max-width:520px;width:100%;padding:0;color:#f0f2f8;box-shadow:0 30px 80px rgba(0,0,0,.6);overflow:hidden;animation:ssslidein .35s cubic-bezier(.19,1,.22,1)}
+      #ssim-head{padding:22px 26px 18px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:space-between}
+      #ssim-title{font-size:18px;font-weight:600;letter-spacing:-.01em;color:#fff}
+      #ssim-eyebrow{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#00c6ff;margin-bottom:4px}
+      #ssim-close{background:rgba(255,255,255,.06);width:32px;height:32px;border-radius:8px;color:#aaa;font-size:18px;cursor:pointer;border:0;display:grid;place-items:center}
+      #ssim-close:hover{background:rgba(255,255,255,.12);color:#fff}
+      #ssim-body{padding:22px 26px}
+      .ssim-rows{display:flex;flex-direction:column;gap:1px;background:rgba(255,255,255,.06);border-radius:12px;overflow:hidden;margin-bottom:18px}
+      .ssim-row{display:flex;justify-content:space-between;padding:14px 16px;background:#0d1018;font-size:14px}
+      .ssim-row .l{color:#8890a8}
+      .ssim-row .r{color:#f0f2f8;font-variant-numeric:tabular-nums;font-weight:500}
+      .ssim-row.total{background:rgba(0,198,255,.08);font-weight:700}
+      .ssim-row.total .l,.ssim-row.total .r{color:#7de8ff;font-size:16px}
+      .ssim-field{margin-bottom:18px}
+      .ssim-field label{display:block;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#8890a8;margin-bottom:8px}
+      .ssim-field input{width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#f0f2f8;font-family:inherit;font-size:14px;padding:11px 14px;border-radius:10px;outline:none;transition:all .2s}
+      .ssim-field input:focus{border-color:#00c6ff;background:rgba(0,198,255,.06);box-shadow:0 0 0 3px rgba(0,198,255,.14)}
+      .ssim-notice{padding:12px 14px;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.22);border-radius:10px;font-size:12.5px;color:#22c55e;margin-bottom:18px;line-height:1.55}
+      #ssim-foot{padding:18px 26px 22px;border-top:1px solid rgba(255,255,255,.06);display:flex;gap:10px;flex-wrap:wrap}
+      #ssim-foot button{flex:1;padding:14px;border-radius:100px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;border:0;transition:all .25s;min-width:140px}
+      .ssim-primary{background:linear-gradient(135deg,#7de8ff,#00c6ff);color:#0a0a0a;box-shadow:0 8px 24px rgba(0,168,216,.4)}
+      .ssim-primary:hover{transform:translateY(-1px);box-shadow:0 12px 32px rgba(0,168,216,.55)}
+      .ssim-primary:disabled{opacity:.5;cursor:wait;transform:none}
+      .ssim-secondary{background:rgba(255,255,255,.06);color:#f0f2f8;border:1px solid rgba(255,255,255,.12)}
+      .ssim-secondary:hover{background:rgba(255,255,255,.1)}
+      #ssim-status{padding:0 26px 18px;font-size:13px;display:none}
+      #ssim-status.err{color:#f87171;display:block}
+      #ssim-status.ok{color:#22c55e;display:block}
+    </style>
+    <div id="ssim-box" role="dialog" aria-modal="true" aria-labelledby="ssim-title">
+      <div id="ssim-head">
+        <div>
+          <div id="ssim-eyebrow">£ Invoice</div>
+          <div id="ssim-title">Send invoice to ${escapeHTML(bizName)}</div>
+        </div>
+        <button id="ssim-close" aria-label="Close">✕</button>
+      </div>
+      <div id="ssim-body">
+        <div class="ssim-rows">
+          <div class="ssim-row"><span class="l">${adv ? 'Advanced' : 'Starter'} Website Design</span><span class="r">£${base}</span></div>
+          ${hosting ? `<div class="ssim-row"><span class="l">Hosting upload service</span><span class="r">£29</span></div>` : ''}
+          <div class="ssim-row total"><span class="l">Total due</span><span class="r">£${total}</span></div>
+        </div>
+        <div class="ssim-field">
+          <label for="ssim-email">Send to (auto-filled from client record)</label>
+          <input type="email" id="ssim-email" value="${escapeHTML(email)}" autocomplete="email" placeholder="client@example.com">
+        </div>
+        <div class="ssim-notice">
+          ✓ Includes bank transfer details, polished email template, and auto-progresses the client to <strong>Invoice Sent</strong> stage.
+        </div>
+      </div>
+      <div id="ssim-status"></div>
+      <div id="ssim-foot">
+        <button class="ssim-secondary" id="ssim-customise">Customise first</button>
+        <button class="ssim-primary" id="ssim-send">Send invoice now →</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(wrap);
+
+  // Close handlers
+  const close = () => wrap.remove();
+  wrap.querySelector('#ssim-close').addEventListener('click', close);
+  wrap.addEventListener('click', (e) => { if (e.target === wrap) close(); });
+  document.addEventListener('keydown', function esc(e) {
+    if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }
+  });
+
+  // "Customise first" → opens the full generator with everything pre-filled.
+  wrap.querySelector('#ssim-customise').addEventListener('click', () => {
+    const qs = new URLSearchParams();
+    qs.set('clientId', c.clientId);
+    if (c.business_name) qs.set('client_name', c.business_name);
+    if (c.name) qs.set('client_contact', c.name);
+    const liveEmail = wrap.querySelector('#ssim-email').value.trim() || c.delivery_email || '';
+    if (liveEmail) qs.set('client_email', liveEmail);
+    if (c.address || c.business_address) qs.set('client_addr', c.address || c.business_address);
+    if (c.package) qs.set('package', c.package);
+    if (c.hosting_addon) qs.set('hosting', c.hosting_addon);
+    try { localStorage.setItem('ss_pw_handoff', JSON.stringify({ pw: ADMIN_PW, t: Date.now() })); } catch (e) {}
+    const hash = ADMIN_PW ? ('#pw=' + encodeURIComponent(ADMIN_PW)) : '';
+    const url = '/invoice/?' + qs.toString() + hash;
+    // Try window.open first; fall back to same-tab navigation if popups blocked.
+    const w = window.open(url, '_blank');
+    if (!w) {
+      // Popup blocked — fall back gracefully so we never leave the user stuck.
+      window.location.href = url;
+    }
+    close();
+  });
+
+  // "Send invoice now" → posts to send-email, no tab dance.
+  wrap.querySelector('#ssim-send').addEventListener('click', async () => {
+    const btn = wrap.querySelector('#ssim-send');
+    const status = wrap.querySelector('#ssim-status');
+    const emailVal = wrap.querySelector('#ssim-email').value.trim();
+    status.className = '';
+    status.textContent = '';
+    if (!emailVal || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+      status.className = 'err';
+      status.textContent = 'Enter a valid email address.';
+      return;
+    }
+    btn.disabled = true;
+    const orig = btn.innerHTML;
+    btn.innerHTML = 'Sending…';
+
+    // If the user edited the email, persist that to the client record so
+    // future sends from the panel use it too. Best-effort.
+    if (emailVal !== c.delivery_email) {
+      try { await updateClient(c.clientId, { delivery_email: emailVal }); c.delivery_email = emailVal; } catch (e) {}
+    }
+
+    try {
+      const r = await fetch('/.netlify/functions/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+        body: JSON.stringify({ clientId: c.clientId, emailType: 'invoice' }),
+      });
+      const d = await r.json();
+      if (!r.ok || !d.ok) throw new Error(d.error || ('HTTP ' + r.status));
+      status.className = 'ok';
+      status.textContent = '✓ Sent. ' + (d.invoiceNumber ? d.invoiceNumber + ' — ' : '') + 'pipeline updated.';
+      btn.innerHTML = '✓ Sent';
+      await refreshData();
+      // Re-open panel so the new stage is visible
+      setTimeout(() => { openClient(c.clientId); close(); }, 1100);
+    } catch (err) {
+      status.className = 'err';
+      status.textContent = 'Send failed: ' + (err.message || 'unknown error');
+      btn.disabled = false;
+      btn.innerHTML = orig;
+    }
+  });
+
+  // Autofocus the email field so user can hit Enter to send if it's already right
+  setTimeout(() => {
+    const inp = wrap.querySelector('#ssim-email');
+    inp.focus();
+    inp.setSelectionRange(inp.value.length, inp.value.length);
+  }, 40);
+
+  // Enter-to-send while focused on the email field
+  wrap.querySelector('#ssim-email').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); wrap.querySelector('#ssim-send').click(); }
+  });
+}
+
 // One-click: jump straight into the invoice generator with no client preselected.
 // Handy when you're billing someone who isn't in the pipeline (referral, consulting, etc.)
 function openBlankInvoice() {
@@ -1029,29 +1207,16 @@ async function panelAction(type) {
     }
   }
   if (type === 'invoice') {
-    // Open the invoice generator pre-filled with this client's data.
-    // The generator handles the actual SMTP send via send-email.js (emailType=generated-invoice).
+    // ── INVOICE FLOW — rebuilt to be foolproof ──────────────────
+    // Old flow: open /invoice/ in a new tab, hope sessionStorage transfers,
+    // hope the user clicks Send. Too many failure points.
     //
-    // Auth handoff: sessionStorage is NOT reliably inherited by new tabs across
-    // browsers (Safari + Chrome with strict popup/opener policies often drop it),
-    // which was breaking "Send Invoice" because the new tab had no admin password
-    // and the SMTP call returned 401. We pass the password via URL fragment (#pw=)
-    // — fragments are NEVER sent to the server, so this stays client-side only.
-    // We also write it to localStorage with a short-lived key as a second fallback.
-    const qs = new URLSearchParams();
-    qs.set('clientId', currentClientId);
-    if (c.business_name) qs.set('client_name', c.business_name);
-    if (c.name) qs.set('client_contact', c.name);
-    if (c.delivery_email) qs.set('client_email', c.delivery_email);
-    if (c.address || c.business_address) qs.set('client_addr', c.address || c.business_address);
-    if (c.package) qs.set('package', c.package);
-    if (c.hosting_addon) qs.set('hosting', c.hosting_addon);
-    try {
-      // Short-lived handoff (~2 min) — the invoice tab consumes + deletes this.
-      localStorage.setItem('ss_pw_handoff', JSON.stringify({ pw: ADMIN_PW, t: Date.now() }));
-    } catch (e) { /* localStorage disabled — fall back to hash */ }
-    const hash = ADMIN_PW ? ('#pw=' + encodeURIComponent(ADMIN_PW)) : '';
-    window.open('/invoice/?' + qs.toString() + hash, '_blank');
+    // New flow: a single in-place confirm modal that shows the auto-calculated
+    // invoice (package + hosting + total + email it lands at) and sends it via
+    // the existing send-email function in ONE CLICK. If the user wants to
+    // customise (different items, a refund, etc.), there's a second button
+    // that opens the full /invoice/ generator pre-filled.
+    return ssShowInvoiceModal(c);
   }
   if (type === 'custom') {
     const subject = prompt('Email subject:');
