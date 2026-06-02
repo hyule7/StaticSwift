@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Website Review — StaticSwift</title>
+<meta name="robots" content="noindex,nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#f5f7fa;color:#1d1d1f;min-height:100vh}
+.header{background:#fff;border-bottom:1px solid #e5e7eb;padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800}.logo span{color:#00C8E0}
+.container{max-width:900px;margin:0 auto;padding:40px 24px}
+.hero{text-align:center;margin-bottom:40px}
+.hero h1{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;margin-bottom:12px}
+.hero p{font-size:16px;color:#666;max-width:500px;margin:0 auto}
+.preview-frame{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.1);margin-bottom:32px}
+.frame-bar{background:#f5f5f5;padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #e5e7eb}
+.dots{display:flex;gap:6px}.dot{width:12px;height:12px;border-radius:50%}
+.dot-r{background:#ef4444}.dot-y{background:#f59e0b}.dot-g{background:#22c55e}
+.frame-url{flex:1;background:#fff;border:1px solid #e5e7eb;border-radius:6px;padding:6px 12px;font-size:13px;color:#666;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.frame-open{font-size:13px;color:#00C8E0;font-weight:600;white-space:nowrap;cursor:pointer;text-decoration:none}
+iframe{width:100%;height:600px;border:none;display:block}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
+.action-card{background:#fff;border-radius:12px;padding:24px;border:2px solid #e5e7eb;cursor:pointer;transition:all .2s;text-align:center}
+.action-card:hover{border-color:#00C8E0;box-shadow:0 4px 16px rgba(0,200,224,0.15)}
+.action-card.selected{border-color:#00C8E0;background:#f0fafe}
+.action-card h3{font-size:17px;font-weight:700;margin-bottom:6px}
+.action-card p{font-size:13px;color:#666;line-height:1.5}
+.action-icon{font-size:32px;margin-bottom:12px}
+.feedback-box{background:#fff;border-radius:12px;padding:24px;margin-bottom:24px;display:none}
+.feedback-box h3{font-size:16px;font-weight:700;margin-bottom:12px}
+textarea{width:100%;min-height:120px;border:1px solid #e5e7eb;border-radius:8px;padding:12px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;resize:vertical;color:#1d1d1f}
+textarea:focus{border-color:#00C8E0}
+.submit-btn{background:#00C8E0;color:#07090f;font-weight:700;font-size:15px;padding:13px 32px;border-radius:8px;border:none;cursor:pointer;display:inline-block;transition:opacity .2s}
+.submit-btn:hover{opacity:.85}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed}
+.success-msg{background:#f0fdf4;border:1px solid #22c55e;border-radius:12px;padding:24px;text-align:center;display:none}
+.success-msg h3{color:#16a34a;font-size:20px;font-weight:700;margin-bottom:8px}
+.success-msg p{color:#666;font-size:14px}
+.loading{text-align:center;padding:80px;color:#666}
+.error-msg{text-align:center;padding:60px;color:#ef4444}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">STATIC<span>SWIFT</span></div>
+  <span style="font-size:13px;color:#666">Client Review Portal</span>
+</div>
+
+<div id="loading" class="loading">
+  <div style="font-size:32px;margin-bottom:16px">⏳</div>
+  <p>Loading your preview...</p>
+</div>
+
+<div id="error" class="error-msg" style="display:none">
+  <div style="font-size:32px;margin-bottom:16px">❌</div>
+  <p id="error-msg">Preview not found. Please check your link.</p>
+</div>
+
+<div id="portal" class="container" style="display:none">
+  <div class="hero">
+    <h1>Your website is ready! 🎉</h1>
+    <p>Hi <strong id="client-name"></strong> — here's your <strong id="biz-name"></strong> preview. Take your time, review it on mobile too.</p>
+  </div>
+
+  <div class="preview-frame">
+    <div class="frame-bar">
+      <div class="dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+      <div class="frame-url" id="preview-url-bar"></div>
+      <a id="preview-open-btn" href="#" target="_blank" class="frame-open">Open in new tab ↗</a>
+    </div>
+    <iframe id="preview-iframe" src="" title="Your website preview" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+  </div>
+
+  <div class="actions">
+    <div class="action-card" id="card-approve" onclick="selectAction('approve')">
+      <div class="action-icon">✅</div>
+      <h3>Looks great — approve it!</h3>
+      <p>I'm happy with the design. Send me the invoice and let's get it live.</p>
+    </div>
+    <div class="action-card" id="card-changes" onclick="selectAction('changes')">
+      <div class="action-icon">✏️</div>
+      <h3>I'd like some changes</h3>
+      <p>One free revision is included. Tell me what you'd like updated.</p>
+    </div>
+  </div>
+
+  <div class="feedback-box" id="approve-box">
+    <h3>Great! Anything to add before we invoice?</h3>
+    <textarea id="approve-notes" placeholder="Optional — any final comments, or just leave blank and click confirm..."></textarea>
+    <div style="margin-top:16px">
+      <button class="submit-btn" onclick="submitResponse('approve')">Confirm Approval — Send Invoice</button>
+    </div>
+  </div>
+
+  <div class="feedback-box" id="changes-box">
+    <h3>What would you like changed?</h3>
+    <textarea id="changes-notes" placeholder="e.g. Change the hero text to..., use a blue colour instead of green, add our phone number to the header..."></textarea>
+    <div style="margin-top:16px">
+      <button class="submit-btn" onclick="submitResponse('changes')">Submit Change Request</button>
+    </div>
+  </div>
+
+  <div class="success-msg" id="success-msg">
+    <h3 id="success-title"></h3>
+    <p id="success-body"></p>
+  </div>
+</div>
+
+<script>
+// Get portalUUID from URL path /client/portal-xxx
+const path = window.location.pathname;
+const portalUUID = path.split('/').filter(Boolean).pop();
+let portalData = null;
+let selectedAction = null;
+
+async function init() {
+  if (!portalUUID || portalUUID.length < 5) {
+    showError('Invalid portal link.');
+    return;
+  }
+  try {
+    const r = await fetch('/.netlify/functions/get-portal?id=' + encodeURIComponent(portalUUID));
+    if (!r.ok) { showError('Preview not found or link expired.'); return; }
+    portalData = await r.json();
+    if (!portalData || !portalData.previewUrl) { showError('No preview URL set yet. Check back soon.'); return; }
+    document.getElementById('client-name').textContent = portalData.name || 'there';
+    document.getElementById('biz-name').textContent = portalData.business_name || 'your business';
+    document.getElementById('preview-url-bar').textContent = portalData.previewUrl;
+    document.getElementById('preview-open-btn').href = portalData.previewUrl;
+    document.getElementById('preview-iframe').src = portalData.previewUrl;
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('portal').style.display = 'block';
+  } catch(err) {
+    showError('Failed to load: ' + err.message);
+  }
+}
+
+function showError(msg) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('error-msg').textContent = msg;
+  document.getElementById('error').style.display = 'block';
+}
+
+function selectAction(type) {
+  selectedAction = type;
+  document.getElementById('card-approve').classList.toggle('selected', type === 'approve');
+  document.getElementById('card-changes').classList.toggle('selected', type === 'changes');
+  document.getElementById('approve-box').style.display = type === 'approve' ? 'block' : 'none';
+  document.getElementById('changes-box').style.display = type === 'changes' ? 'block' : 'none';
+  document.getElementById('success-msg').style.display = 'none';
+  if (type === 'approve') {
+    document.getElementById('approve-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    document.getElementById('changes-box').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+async function submitResponse(type) {
+  const notes = type === 'approve'
+    ? document.getElementById('approve-notes').value
+    : document.getElementById('changes-notes').value;
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  try {
+    const r = await fetch('/.netlify/functions/portal-response', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ portalUUID, type, notes })
+    });
+    const d = await r.json();
+    if (d.ok) {
+      document.getElementById('approve-box').style.display = 'none';
+      document.getElementById('changes-box').style.display = 'none';
+      const suc = document.getElementById('success-msg');
+      suc.style.display = 'block';
+      if (type === 'approve') {
+        document.getElementById('success-title').textContent = 'Approved! Invoice on its way.';
+        document.getElementById('success-body').textContent = 'Your invoice will arrive shortly at ' + (portalData.delivery_email || 'your email') + '. Files delivered within 1 hour of payment.';
+      } else {
+        document.getElementById('success-title').textContent = 'Change request received!';
+        document.getElementById('success-body').textContent = "We'll get your updates done and send a revised preview within 24 hours.";
+      }
+      suc.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      btn.disabled = false;
+      btn.textContent = type === 'approve' ? 'Confirm Approval — Send Invoice' : 'Submit Change Request';
+      alert('Something went wrong: ' + (d.error || 'unknown'));
+    }
+  } catch(err) {
+    btn.disabled = false;
+    btn.textContent = type === 'approve' ? 'Confirm Approval — Send Invoice' : 'Submit Change Request';
+    alert('Network error. Please try again.');
+  }
+}
+
+init();
+</script>
+</body>
+</html>

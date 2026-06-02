@@ -874,16 +874,33 @@ function ssShowInvoiceModal(c) {
 //   quickInvoice()            →  ssShowInvoiceClientPicker()   (pick then modal)
 //   openBlankInvoice()        →  ssShowInvoiceModal(null)      (blank mode)
 
+// Open the full /invoice/ generator. clientCtx may be null (blank) or a client object.
+function openInvoiceGenerator(clientCtx) {
+  const qs = new URLSearchParams();
+  if (clientCtx && clientCtx.clientId) {
+    qs.set('clientId', clientCtx.clientId);
+    if (clientCtx.business_name) qs.set('client_name', clientCtx.business_name);
+    if (clientCtx.name) qs.set('client_contact', clientCtx.name);
+    if (clientCtx.delivery_email) qs.set('client_email', clientCtx.delivery_email);
+    if (clientCtx.address || clientCtx.business_address) qs.set('client_addr', clientCtx.address || clientCtx.business_address);
+    if (clientCtx.package) qs.set('package', clientCtx.package);
+    if (clientCtx.hosting_addon) qs.set('hosting', clientCtx.hosting_addon);
+  }
+  try { localStorage.setItem('ss_pw_handoff', JSON.stringify({ pw: ADMIN_PW, t: Date.now() })); } catch (e) {}
+  const hash = ADMIN_PW ? ('#pw=' + encodeURIComponent(ADMIN_PW)) : '';
+  const url = '/invoice/' + (qs.toString() ? '?' + qs.toString() : '') + hash;
+  const w = window.open(url, '_blank');
+  if (!w) window.location.href = url;
+}
+
 function openBlankInvoice() {
-  ssShowInvoiceModal(null);
+  openInvoiceGenerator(null);
 }
 
 function quickInvoice() {
   const unpaid = allClients.filter(c => !c.paid && !['archived', 'complete'].includes(c.stage));
   if (!unpaid.length) {
-    if (confirm('No unpaid clients yet — open a BLANK invoice you can fill in by hand?')) {
-      ssShowInvoiceModal(null);
-    }
+    openInvoiceGenerator(null);
     return;
   }
   ssShowInvoiceClientPicker(unpaid);
@@ -969,13 +986,13 @@ function ssShowInvoiceClientPicker(clients) {
       close();
       if (c) {
         currentClientId = id;
-        ssShowInvoiceModal(c);
+        openInvoiceGenerator(c);
       }
     });
   });
   wrap.querySelector('#ssp-blank').addEventListener('click', () => {
     close();
-    ssShowInvoiceModal(null);
+    openInvoiceGenerator(null);
   });
 }
 
@@ -1470,15 +1487,10 @@ async function panelAction(type) {
     // can't kill the click silently. Any thrown error becomes a visible
     // alert + console trace.
     try {
-      if (typeof ssShowInvoiceModal !== 'function') {
-        console.error('[invoice] ssShowInvoiceModal not defined — admin.js may be partially loaded');
-        alert('Invoice modal is missing — hard-refresh the admin (Cmd+Shift+R / Ctrl+F5) and try again.');
-        return;
-      }
-      ssShowInvoiceModal(c);
+      openInvoiceGenerator(c);
     } catch (err) {
-      console.error('[invoice] modal threw:', err);
-      alert('Invoice could not open: ' + (err && err.message ? err.message : 'unknown error') + '\n\nOpen DevTools → Console for the full trace.');
+      console.error('[invoice] open generator threw:', err);
+      alert('Invoice generator could not open: ' + (err && err.message ? err.message : 'unknown error'));
     }
     return;
   }
