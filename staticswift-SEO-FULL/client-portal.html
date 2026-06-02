@@ -3,297 +3,461 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Your Website Review — StaticSwift</title>
+<title>Your Review — StaticSwift</title>
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#F7F6F3">
+<meta name="theme-color" content="#F2EFE7">
+<meta name="color-scheme" content="light">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=sentient@400,400i,500,500i,700,700i&f[]=switzer@300,400,500,600,700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
+
 <style>
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-  html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;scroll-behavior:smooth}
-  :root{
-    --bone:#F7F6F3; --paper:#FBFBFA; --ink:#111111; --ink-soft:#2F3437;
-    --muted:#787774; --dim:#B3B0AA; --hair:#EAEAEA; --hair-soft:rgba(17,17,17,.06);
-    --gold-bg:#FBF3DB; --gold:#956400;
-    --green-bg:#EDF3EC; --green:#346538;
-    --red-bg:#FDEBEC; --red:#9F2F2D;
-    --r-card:12px; --r-input:8px; --r-pill:9999px;
-    --serif:'Instrument Serif','Lyon Text',Georgia,serif;
-    --sans:'Geist','SF Pro Display','Helvetica Neue',system-ui,sans-serif;
-    --mono:'Geist Mono','SF Mono',ui-monospace,monospace;
-    --ease:cubic-bezier(.16,1,.3,1);
-    --container:1120px;
-  }
-  body{
-    font-family:var(--sans); background:var(--bone); color:var(--ink);
-    line-height:1.6; font-size:16px; min-height:100vh;
-    overflow-x:hidden;
-  }
-  ::selection{background:var(--ink);color:var(--bone)}
+/* ──────────────────────────────────────────────────────────────
+   STATICSWIFT — PRIVATE REVIEW PORTAL
+   Same field-guide grammar as the homepage.
+   ────────────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;scroll-behavior:smooth;text-rendering:optimizeLegibility}
+:root{
+  --paper:#F2EFE7;
+  --paper-deep:#EBE7DD;
+  --ink:#0E0B07;
+  --ink-soft:#29221C;
+  --ink-mid:#5A4E40;
+  --bronze:#8A7B62;
+  --bronze-dim:#BFB4A0;
+  --signal:#9C2615;
+  --signal-deep:#7A1D10;
+  --green:#347537;
+  --hair:rgba(14,11,7,.22);
+  --hair-soft:rgba(14,11,7,.10);
+  --hair-faint:rgba(14,11,7,.06);
 
-  /* Ambient subtle background */
-  .ambient{
-    position:fixed; inset:-40vh -20vw -40vh -20vw; pointer-events:none; z-index:0;
-    background:
-      radial-gradient(40vw 40vh at 80% 10%, rgba(149,100,0,.05), transparent 60%),
-      radial-gradient(35vw 35vh at 10% 80%, rgba(52,101,56,.04), transparent 60%);
-    animation:drift 32s var(--ease) infinite alternate; opacity:.85;
-  }
-  @keyframes drift{ from{transform:translate3d(0,0,0)} to{transform:translate3d(-30px,20px,0)} }
-  @media(prefers-reduced-motion:reduce){ .ambient{animation:none} }
+  --serif:'Sentient','PP Editorial New','GT Sectra Display',Georgia,serif;
+  --sans:'Switzer','Söhne','Suisse Int''l','Helvetica Neue',system-ui,sans-serif;
+  --mono:'JetBrains Mono','IBM Plex Mono',ui-monospace,monospace;
 
-  /* Reveal primitive */
-  [data-reveal]{opacity:0;transform:translateY(14px);transition:opacity .7s var(--ease), transform .7s var(--ease)}
-  [data-reveal].in{opacity:1;transform:none}
-  @media(prefers-reduced-motion:reduce){ [data-reveal]{opacity:1;transform:none;transition:none} }
+  --ease:cubic-bezier(.16,1,.3,1);
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --container:1240px;
+  --gutter:clamp(20px,5vw,72px);
+}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  font-size:17px;
+  line-height:1.55;
+  font-weight:400;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,textarea,select{font:inherit;color:inherit}
+img,svg{display:block;max-width:100%;height:auto}
+::selection{background:var(--ink);color:var(--paper)}
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 
-  /* Nav */
-  .nav{position:sticky;top:12px;z-index:50;margin:12px auto 0;max-width:var(--container);padding:0 12px}
-  .nav-inner{
-    display:flex;align-items:center;justify-content:space-between;
-    background:rgba(247,246,243,.78);
-    backdrop-filter:saturate(140%) blur(14px);
-    -webkit-backdrop-filter:saturate(140%) blur(14px);
-    border:1px solid var(--hair); border-radius:14px;
-    padding:10px 14px 10px 18px;
-  }
-  .nav-brand{display:flex;align-items:center;gap:10px;font-weight:600;letter-spacing:-.01em;font-size:15px;color:var(--ink);text-decoration:none}
-  .nav-brand-dot{width:8px;height:8px;border-radius:50%;background:var(--ink)}
-  .nav-meta{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+/* Grain overlay */
+.grain{position:fixed;inset:0;pointer-events:none;z-index:2;opacity:.07;mix-blend-mode:multiply}
 
-  /* Container */
-  .container{width:100%;max-width:var(--container);margin:0 auto;padding:0 20px;position:relative;z-index:1}
-  @media(min-width:720px){ .container{padding:0 32px} }
+/* Custom cursor — desktop only */
+.cursor{
+  position:fixed; top:0; left:0; pointer-events:none; z-index:9999;
+  width:10px; height:10px; border-radius:50%;
+  background:var(--ink); transform:translate(-50%,-50%);
+  transition:width .25s var(--ease), height .25s var(--ease), background .25s, border-color .25s;
+  mix-blend-mode:difference; display:none;
+}
+.cursor.is-hover{ width:46px; height:46px; background:transparent; border:1px solid var(--paper); }
+@media(hover:hover) and (pointer:fine){
+  html, body{ cursor:none; }
+  a, button, input, textarea, select, label, .cursor-grow{ cursor:none; }
+  .cursor{ display:block; }
+}
 
-  /* Loading + error states */
-  .state{
-    min-height:calc(100vh - 100px); display:flex; align-items:center; justify-content:center;
-    padding:60px 20px; position:relative; z-index:1;
-  }
-  .state-inner{max-width:480px;text-align:center}
-  .state-eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:18px}
-  .state-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px var(--gold-bg);animation:pulse 1.6s var(--ease) infinite}
-  @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.4} }
-  .state-title{font-family:var(--serif);font-size:2.2rem;line-height:1.08;letter-spacing:-.02em;font-weight:400;margin-bottom:12px}
-  .state-sub{color:var(--ink-soft);font-size:15px;line-height:1.55}
+/* Reveal */
+[data-rv]{
+  clip-path:inset(0 0 100% 0); transform:translateY(20px); opacity:0;
+  transition:clip-path 1.1s var(--ease-out), transform 1.1s var(--ease-out), opacity 1.1s var(--ease-out);
+}
+[data-rv].in{ clip-path:inset(0 0 0 0); transform:none; opacity:1; }
+@media(prefers-reduced-motion:reduce){
+  [data-rv]{clip-path:none;transform:none;opacity:1;transition:none}
+}
 
-  /* Header (hero of the portal) */
-  .ph{padding:48px 0 32px}
-  .ph-eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
-  .ph-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 4px var(--green-bg)}
-  .ph-title{font-family:var(--serif);font-size:clamp(2rem,4.6vw,3.2rem);line-height:1.05;letter-spacing:-.02em;font-weight:400;margin-bottom:14px;max-width:22ch}
-  .ph-title em{font-style:italic;color:var(--gold)}
-  .ph-sub{color:var(--ink-soft);font-size:1.02rem;line-height:1.55;max-width:54ch}
-  .ph-sub b{color:var(--ink);font-weight:500}
+/* Running head */
+.rh{
+  position:sticky; top:0; z-index:30;
+  display:grid; grid-template-columns:1fr auto 1fr;
+  align-items:center; gap:24px;
+  padding:14px var(--gutter);
+  background:var(--paper); border-bottom:1px solid var(--hair);
+  font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--bronze);
+}
+.rh-l{ font-family:var(--serif); font-style:italic; font-weight:500; font-size:18px; letter-spacing:-.01em; text-transform:none; color:var(--ink); display:flex; align-items:center; gap:10px; }
+.rh-l-dot{width:7px;height:7px;background:var(--ink);border-radius:50%;display:inline-block}
+.rh-c{text-align:center; line-height:1.4}
+.rh-r{text-align:right}
+.rh-r a{color:var(--ink); transition:color .2s}
+.rh-r a:hover{color:var(--signal)}
+@media(max-width:760px){
+  .rh{grid-template-columns:1fr auto; gap:14px}
+  .rh-c{display:none}
+}
 
-  /* Preview frame */
-  .preview{
-    background:var(--paper); border:1px solid var(--hair); border-radius:var(--r-card);
-    overflow:hidden; margin-bottom:32px;
-    transition:box-shadow .4s var(--ease);
-  }
-  .preview:hover{box-shadow:0 2px 14px rgba(0,0,0,.045)}
-  .preview-bar{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--hair);background:var(--paper)}
-  .preview-dots{display:flex;gap:6px;flex-shrink:0}
-  .preview-dot{width:8px;height:8px;border-radius:50%}
-  .preview-dot.r{background:#E5DAD7} .preview-dot.y{background:#EADFC4} .preview-dot.g{background:#D8E2D5}
-  .preview-url{
-    flex:1; min-width:0;
-    background:var(--bone); border:1px solid var(--hair); border-radius:6px;
-    padding:7px 12px; font-family:var(--mono); font-size:11.5px; color:var(--ink-soft);
-    text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-  }
-  .preview-open{
-    font-family:var(--mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase;
-    color:var(--ink); background:var(--gold-bg); padding:7px 12px; border-radius:6px;
-    white-space:nowrap; transition:background .2s var(--ease); text-decoration:none;
-  }
-  .preview-open:hover{background:#F4E8C0}
-  .preview-frame iframe{width:100%;height:640px;border:0;display:block;background:var(--bone)}
-  @media(max-width:720px){
-    .preview-frame iframe{height:520px}
-    .preview-url{font-size:10.5px}
-  }
+/* Container */
+.wrap{ max-width:var(--container); margin:0 auto; padding:0 var(--gutter); position:relative; z-index:1; }
 
-  /* Mobile note */
-  .mobile-note{display:flex;align-items:flex-start;gap:14px;background:var(--paper);border:1px solid var(--hair);border-radius:var(--r-card);padding:18px 20px;margin-bottom:36px}
-  .mobile-note-icon{flex-shrink:0;width:36px;height:36px;border-radius:8px;background:var(--gold-bg);display:flex;align-items:center;justify-content:center;color:var(--gold)}
-  .mobile-note-body{font-size:14px;line-height:1.55;color:var(--ink-soft)}
-  .mobile-note-body b{color:var(--ink);font-weight:500;display:block;margin-bottom:2px}
+/* State (loading + error) */
+.state{
+  min-height:calc(100vh - 100px); display:flex; align-items:center; justify-content:center;
+  padding:60px var(--gutter); position:relative; z-index:1;
+}
+.state-inner{max-width:520px}
+.state-mark{
+  font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin-bottom:32px; display:inline-flex; align-items:center; gap:12px;
+}
+.state-mark::before{content:''; width:24px; height:1px; background:var(--ink)}
+.state-spinner{
+  width:14px; height:14px; border:1.5px solid var(--bronze-dim);
+  border-top-color:var(--ink); border-radius:50%;
+  animation:spin .9s linear infinite; display:inline-block; vertical-align:middle;
+}
+@keyframes spin{ to{transform:rotate(360deg)} }
+.state h1{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(36px,5vw,68px); line-height:1; letter-spacing:-.028em;
+  margin-bottom:18px;
+}
+.state h1 em{color:var(--signal); font-style:italic}
+.state p{
+  font-family:var(--serif); font-size:18px; line-height:1.6;
+  color:var(--ink-soft); max-width:42ch;
+}
 
-  /* Action heading */
-  .actions-head{display:flex;align-items:baseline;gap:14px;margin-bottom:18px;flex-wrap:wrap}
-  .actions-head h2{font-family:var(--serif);font-size:1.6rem;line-height:1.1;letter-spacing:-.015em;font-weight:400}
-  .actions-head span{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+/* MASTHEAD / opener */
+.ph{ padding:clamp(48px,8vw,96px) 0 clamp(36px,5vw,56px) }
+.ph-mark{
+  font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin-bottom:32px;
+  display:inline-flex; align-items:center; gap:12px;
+}
+.ph-mark::before{content:''; width:24px; height:1px; background:var(--ink)}
+.ph-mark-dot{width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 0 4px rgba(52,117,55,.15)}
+.ph-title{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(40px,7vw,108px); line-height:.96; letter-spacing:-.03em;
+  margin-bottom:24px; max-width:22ch;
+}
+.ph-title em{color:var(--signal); font-style:italic}
+.ph-sub{
+  font-family:var(--serif); font-size:clamp(17px, 1.4vw, 21px); line-height:1.6;
+  color:var(--ink-soft); max-width:54ch;
+}
+.ph-sub b{color:var(--ink); font-weight:500; background:linear-gradient(transparent 60%, rgba(156,38,21,.16) 60%); padding:0 2px}
 
-  /* Action cards */
-  .actions{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:28px}
-  @media(min-width:720px){ .actions{grid-template-columns:1fr 1fr;gap:18px} }
-  .acard{
-    background:var(--paper); border:1px solid var(--hair); border-radius:var(--r-card);
-    padding:26px 24px; cursor:pointer; text-align:left; font-family:inherit;
-    transition:border-color .25s var(--ease), transform .25s var(--ease), background .2s var(--ease);
-  }
-  .acard:hover{border-color:#D8D6D0;transform:translateY(-2px)}
-  .acard:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
-  .acard.selected{border-color:var(--ink);background:#FFFFFF;box-shadow:0 2px 14px rgba(0,0,0,.04)}
-  .acard-tag{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:var(--r-pill);margin-bottom:18px}
-  .acard.approve .acard-tag{background:var(--green-bg);color:var(--green)}
-  .acard.changes .acard-tag{background:var(--gold-bg);color:var(--gold)}
-  .acard h3{font-family:var(--serif);font-size:1.45rem;line-height:1.12;letter-spacing:-.015em;font-weight:400;margin-bottom:10px}
-  .acard p{font-size:14px;line-height:1.55;color:var(--ink-soft)}
-  .acard.selected::after{content:'';display:block;height:1px;background:var(--ink);margin-top:18px;width:30px}
+/* Preview frame — phone-like top bar, hairline border */
+.preview{
+  margin-top:clamp(32px,5vw,56px);
+  background:var(--paper-deep);
+  border:1px solid var(--hair-soft);
+  overflow:hidden;
+  transition:border-color .3s var(--ease);
+}
+.preview:hover{border-color:var(--hair)}
+.preview-bar{
+  display:flex; align-items:center; gap:12px;
+  padding:14px 18px; border-bottom:1px solid var(--hair-soft);
+  background:var(--paper);
+}
+.preview-dots{display:flex; gap:6px; flex-shrink:0}
+.preview-dot{width:7px; height:7px; border-radius:50%}
+.preview-dot.r{background:#E5DAD7} .preview-dot.y{background:#EADFC4} .preview-dot.g{background:#D8E2D5}
+.preview-url{
+  flex:1; min-width:0;
+  font-family:var(--mono); font-size:11.5px; color:var(--ink-soft);
+  text-align:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  padding:6px 0;
+  letter-spacing:.02em;
+}
+.preview-open{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink); border:1px solid var(--ink); padding:7px 12px;
+  transition:background .2s var(--ease), color .2s var(--ease);
+}
+.preview-open:hover{background:var(--ink); color:var(--paper)}
+.preview-frame iframe{ width:100%; height:680px; border:0; display:block; background:var(--paper); }
+@media(max-width:720px){
+  .preview-frame iframe{ height:540px }
+  .preview-url{font-size:10.5px}
+}
 
-  /* Feedback boxes */
-  .feedback{display:none;background:var(--paper);border:1px solid var(--hair);border-radius:var(--r-card);padding:28px 26px;margin-bottom:28px}
-  .feedback.show{display:block;animation:slideIn .35s var(--ease)}
-  @keyframes slideIn{ from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
-  .feedback h3{font-family:var(--serif);font-size:1.35rem;line-height:1.15;letter-spacing:-.015em;font-weight:400;margin-bottom:6px}
-  .feedback p.fb-sub{color:var(--ink-soft);font-size:14px;line-height:1.55;margin-bottom:16px}
-  .feedback textarea{
-    width:100%; min-height:130px; background:var(--bone);
-    border:1px solid var(--hair); border-radius:var(--r-input);
-    padding:14px 16px; font-family:var(--sans); font-size:14.5px; line-height:1.55;
-    outline:none; resize:vertical; color:var(--ink);
-    transition:border-color .2s var(--ease), box-shadow .2s var(--ease);
-  }
-  .feedback textarea:focus{border-color:var(--ink);box-shadow:0 0 0 3px var(--hair-soft)}
-  .feedback textarea::placeholder{color:var(--muted)}
-  .feedback-foot{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:18px;flex-wrap:wrap}
-  .feedback-hint{font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted)}
-  .submit-btn{
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    background:var(--ink); color:var(--paper); padding:14px 22px; border-radius:var(--r-input);
-    font-size:14px; font-weight:500; border:0; cursor:pointer; font-family:inherit;
-    transition:transform .2s var(--ease), background .2s var(--ease);
-  }
-  .submit-btn:hover:not(:disabled){background:#000;transform:translateY(-1px)}
-  .submit-btn:active:not(:disabled){transform:scale(.98)}
-  .submit-btn:disabled{opacity:.5;cursor:wait}
+/* Mobile note — magazine pull-quote style */
+.mob{
+  margin-top:36px; padding:24px 28px;
+  border-top:1px solid var(--ink); border-bottom:1px solid var(--hair-soft);
+  display:grid; grid-template-columns:auto 1fr; gap:24px; align-items:start;
+}
+.mob-num{ font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--bronze) }
+.mob-body{ font-family:var(--serif); font-size:18px; line-height:1.55; color:var(--ink-soft) }
+.mob-body b{color:var(--ink); font-weight:500}
 
-  /* Success state */
-  .success{display:none;background:var(--paper);border:1px solid rgba(52,101,56,.2);border-radius:var(--r-card);padding:36px 32px;text-align:center}
-  .success.show{display:block;animation:slideIn .4s var(--ease)}
-  .success-eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);margin-bottom:16px;justify-content:center}
-  .success-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
-  .success h3{font-family:var(--serif);font-size:1.8rem;line-height:1.1;letter-spacing:-.015em;font-weight:400;margin-bottom:10px}
-  .success p{color:var(--ink-soft);font-size:15px;line-height:1.55;max-width:46ch;margin:0 auto}
+/* Actions header */
+.acts-head{
+  margin-top:clamp(60px,8vw,96px); margin-bottom:28px;
+  display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;
+}
+.acts-head-mark{
+  font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); display:inline-flex; align-items:center; gap:12px;
+}
+.acts-head-mark::before{content:''; width:24px; height:1px; background:var(--ink)}
+.acts-head h2{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(28px, 4vw, 48px); line-height:1.02; letter-spacing:-.02em;
+}
 
-  /* Footer */
-  .pfoot{padding:32px 0 40px;border-top:1px solid var(--hair);margin-top:48px}
-  .pfoot-inner{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted)}
-  .pfoot-inner a{color:var(--ink-soft);transition:color .2s var(--ease);text-decoration:none}
-  .pfoot-inner a:hover{color:var(--ink)}
+/* Action cards — editorial, not card grid */
+.acts{
+  display:grid; grid-template-columns:1fr; border-top:1px solid var(--ink);
+}
+.acard{
+  display:grid; grid-template-columns:60px 1fr auto;
+  gap:24px; align-items:start; padding:32px 0;
+  border-bottom:1px solid var(--hair-soft);
+  text-align:left; font-family:inherit;
+  transition:padding-left .4s var(--ease), background .3s, border-color .3s;
+  cursor:pointer; position:relative;
+}
+.acard:hover{ padding-left:18px; border-bottom-color:var(--ink) }
+.acard:hover .acard-num{ color:var(--signal) }
+.acard:hover .acard-title{ color:var(--ink) }
+.acard:hover .acard-arrow{ transform:translateX(6px); color:var(--signal) }
+.acard.selected{
+  padding-left:28px;
+  background:var(--paper-deep);
+}
+.acard.selected .acard-num{ color:var(--signal) }
+.acard.selected::before{
+  content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--signal);
+}
+.acard-num{
+  font-family:var(--mono); font-size:13px; letter-spacing:.06em;
+  color:var(--bronze); padding-top:6px;
+  transition:color .3s var(--ease);
+}
+.acard-body{ max-width:60ch }
+.acard-title{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(26px, 3.5vw, 42px); line-height:1.05;
+  letter-spacing:-.02em; color:var(--ink);
+  margin-bottom:10px; transition:color .3s var(--ease);
+}
+.acard-desc{
+  font-family:var(--serif); font-size:16px; line-height:1.55;
+  color:var(--ink-soft);
+}
+.acard-arrow{
+  font-family:var(--mono); font-size:14px; color:var(--ink);
+  padding-top:12px;
+  transition:transform .35s var(--ease), color .3s;
+}
+@media(max-width:640px){
+  .acard{grid-template-columns:30px 1fr 20px; gap:14px; padding:22px 0}
+  .acard-num{font-size:11px}
+  .acard-title{font-size:22px}
+  .acard-desc{font-size:14.5px}
+}
 
-  /* Spinner */
-  .spinner{
-    width:18px;height:18px;border:1.5px solid var(--hair);border-top-color:var(--ink);
-    border-radius:50%;animation:spin .8s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px
-  }
-  @keyframes spin{ to{transform:rotate(360deg)} }
+/* Feedback boxes */
+.feedback{
+  display:none;
+  padding:36px 0 12px;
+  border-bottom:1px solid var(--hair-soft);
+  margin-top:0;
+}
+.feedback.show{display:block; animation:slideIn .45s var(--ease)}
+@keyframes slideIn{ from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none} }
+.feedback h3{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(22px, 3vw, 32px); line-height:1.1; letter-spacing:-.018em;
+  margin-bottom:6px;
+}
+.fb-sub{
+  font-family:var(--serif); font-size:16px; line-height:1.55;
+  color:var(--ink-soft); margin-bottom:24px; max-width:54ch;
+}
+.feedback textarea{
+  width:100%; min-height:140px;
+  background:transparent;
+  border:0; border-top:1px solid var(--ink); border-bottom:1px solid var(--hair-soft);
+  padding:20px 0;
+  font-family:var(--serif); font-size:clamp(18px, 2vw, 22px); line-height:1.5;
+  letter-spacing:-.005em; color:var(--ink);
+  outline:none; resize:vertical;
+}
+.feedback textarea::placeholder{ color:var(--bronze-dim); font-style:italic }
+.feedback textarea:focus{ border-top-color:var(--signal) }
+.feedback-foot{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:18px; margin-top:24px; flex-wrap:wrap;
+}
+.feedback-hint{
+  font-family:var(--mono); font-size:11px; letter-spacing:.06em;
+  color:var(--bronze);
+}
+.submit-btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  padding:16px 26px; background:var(--ink); color:var(--paper);
+  font-family:var(--sans); font-size:14px; font-weight:500;
+  letter-spacing:.02em;
+  transition:background .2s var(--ease), transform .2s var(--ease);
+}
+.submit-btn:hover:not(:disabled){ background:var(--signal); transform:translateY(-2px) }
+.submit-btn:active:not(:disabled){ transform:scale(.98) }
+.submit-btn:disabled{ opacity:.5; cursor:wait; transform:none }
+
+/* Success state — editorial blockquote */
+.success{
+  display:none;
+  margin-top:48px;
+  padding:48px 0;
+  border-top:1px solid var(--signal);
+}
+.success.show{display:block; animation:slideIn .45s var(--ease)}
+.success-mark{
+  font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--signal); margin-bottom:24px; display:inline-flex; align-items:center; gap:12px;
+}
+.success-mark::before{content:''; width:24px; height:1px; background:var(--signal)}
+.success h3{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(32px, 5vw, 60px); line-height:1; letter-spacing:-.025em;
+  margin-bottom:16px; max-width:20ch;
+}
+.success p{
+  font-family:var(--serif); font-size:18px; line-height:1.6;
+  color:var(--ink-soft); max-width:50ch;
+}
+
+/* Colophon footer */
+.colophon{
+  padding:clamp(40px,5vw,60px) var(--gutter);
+  border-top:1px solid var(--ink); margin-top:80px;
+  font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--bronze);
+}
+.col-inner{
+  max-width:var(--container); margin:0 auto;
+  display:flex; flex-wrap:wrap; justify-content:space-between; gap:24px;
+}
+.col-inner a{color:var(--ink-mid); transition:color .2s}
+.col-inner a:hover{color:var(--signal)}
+.col-l b{font-family:var(--serif); font-style:italic; color:var(--ink); font-size:14px; letter-spacing:-.01em; text-transform:none; font-weight:500}
+
 </style>
 </head>
 <body>
 
-<div class="ambient" aria-hidden="true"></div>
+<svg class="grain" aria-hidden="true">
+  <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.92" numOctaves="2" seed="5"/></filter>
+  <rect width="100%" height="100%" filter="url(#grain)"/>
+</svg>
 
-<nav class="nav" aria-label="Portal">
-  <div class="nav-inner">
-    <a href="https://staticswift.co.uk" class="nav-brand" aria-label="StaticSwift, home">
-      <span class="nav-brand-dot"></span>
-      StaticSwift
-    </a>
-    <span class="nav-meta">Private review portal</span>
-  </div>
-</nav>
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+
+<header class="rh">
+  <a href="https://staticswift.co.uk" class="rh-l"><span class="rh-l-dot"></span>StaticSwift</a>
+  <div class="rh-c">Private review portal · Vol. I</div>
+  <div class="rh-r"><a href="mailto:hello@staticswift.co.uk">hello@staticswift.co.uk</a></div>
+</header>
 
 <!-- Loading state -->
 <div id="loading" class="state">
   <div class="state-inner">
-    <div class="state-eyebrow">
-      <span class="spinner" aria-hidden="true"></span>
-      Loading your preview
-    </div>
-    <h1 class="state-title">One moment.</h1>
-    <p class="state-sub">Fetching your private review link.</p>
+    <div class="state-mark"><span class="state-spinner" aria-hidden="true"></span> Loading your review</div>
+    <h1>One moment.</h1>
+    <p>Fetching your private review link.</p>
   </div>
 </div>
 
 <!-- Error state -->
 <div id="error" class="state" style="display:none">
   <div class="state-inner">
-    <div class="state-eyebrow">
-      <span class="state-eyebrow-dot" aria-hidden="true" style="background:var(--red);box-shadow:0 0 0 4px var(--red-bg)"></span>
-      Link issue
-    </div>
-    <h1 class="state-title">We couldn't find your preview.</h1>
-    <p class="state-sub" id="error-msg">The link may have expired or been mistyped. Reply to the email I sent and I'll send a fresh one.</p>
+    <div class="state-mark" style="color:var(--signal)"><span style="width:6px;height:6px;border-radius:50%;background:var(--signal);display:inline-block"></span> Link issue</div>
+    <h1>We couldn't find your <em>preview</em>.</h1>
+    <p id="error-msg">The link may have expired or been mistyped. Reply to the email I sent and I'll resend a fresh one.</p>
   </div>
 </div>
 
 <!-- Portal main -->
-<div id="portal" class="container" style="display:none">
+<main id="portal" class="wrap" style="display:none">
 
-  <header class="ph" data-reveal>
-    <div class="ph-eyebrow">
-      <span class="ph-eyebrow-dot" aria-hidden="true"></span>
-      Your preview is ready
-    </div>
+  <header class="ph" data-rv>
+    <div class="ph-mark"><span class="ph-mark-dot" aria-hidden="true"></span> Your preview is ready</div>
     <h1 class="ph-title">Hi <span id="client-name">there</span> — here's <em id="biz-name">your site</em>.</h1>
-    <p class="ph-sub">Take your time. Click around. <b>Try it on your phone too</b> — the link below opens in a new tab so you can share it with a partner. When you're ready, pick one of the two options underneath.</p>
+    <p class="ph-sub">Click around. <b>Open it on your phone too</b> — the link below opens in a new tab so you can share it with a partner. When you're ready, pick one of the two options below.</p>
   </header>
 
-  <div class="preview" data-reveal>
+  <div class="preview" data-rv>
     <div class="preview-bar">
       <div class="preview-dots" aria-hidden="true">
         <span class="preview-dot r"></span><span class="preview-dot y"></span><span class="preview-dot g"></span>
       </div>
       <div class="preview-url" id="preview-url-bar"></div>
-      <a id="preview-open-btn" href="#" target="_blank" rel="noopener" class="preview-open">Open in new tab</a>
+      <a id="preview-open-btn" href="#" target="_blank" rel="noopener" class="preview-open cursor-grow">Open in new tab →</a>
     </div>
     <div class="preview-frame">
       <iframe id="preview-iframe" src="" title="Your website preview" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
     </div>
   </div>
 
-  <div class="mobile-note" data-reveal>
-    <div class="mobile-note-icon" aria-hidden="true">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18h2"/>
-      </svg>
-    </div>
-    <div class="mobile-note-body">
-      <b>Half your customers will see this on mobile.</b>
-      Open the link above on your phone and scroll the whole page. Pay attention to the call button, the phone number visibility, and the speed.
-    </div>
+  <div class="mob" data-rv>
+    <div class="mob-num">Note —</div>
+    <div class="mob-body"><b>Half your customers will arrive on a phone.</b> Open the link above on yours and scroll the whole way through. Pay attention to the call button position, how fast it loads, and whether the photos load without judder.</div>
   </div>
 
-  <div class="actions-head" data-reveal>
+  <div class="acts-head" data-rv>
+    <span class="acts-head-mark">Decision</span>
     <h2>How does it look?</h2>
-    <span>Pick one</span>
   </div>
 
-  <div class="actions" data-reveal>
-    <button class="acard approve" id="card-approve" type="button" onclick="selectAction('approve')" aria-pressed="false">
-      <span class="acard-tag">Ship it</span>
-      <h3>Looks great. Send me the invoice.</h3>
-      <p>You're happy with the design and ready to go live. I'll send the invoice and we'll launch as soon as it's paid.</p>
+  <div class="acts" data-rv>
+    <button class="acard cursor-grow" id="card-approve" type="button" onclick="selectAction('approve')" aria-pressed="false">
+      <span class="acard-num">№ 01</span>
+      <span class="acard-body">
+        <span class="acard-title">Ship it — looks great.</span>
+        <span class="acard-desc">You're happy with the design and ready to go live. I'll send the invoice. Site launches as soon as it's paid.</span>
+      </span>
+      <span class="acard-arrow" aria-hidden="true">→</span>
     </button>
-    <button class="acard changes" id="card-changes" type="button" onclick="selectAction('changes')" aria-pressed="false">
-      <span class="acard-tag">Tweak it</span>
-      <h3>A few changes first.</h3>
-      <p>One free revision round is included. Tell me what to change in plain English — colours, copy, photos, layout — and I'll have a fresh preview within 24 hours.</p>
+    <button class="acard cursor-grow" id="card-changes" type="button" onclick="selectAction('changes')" aria-pressed="false">
+      <span class="acard-num">№ 02</span>
+      <span class="acard-body">
+        <span class="acard-title">A few changes first.</span>
+        <span class="acard-desc">One free revision round is included. Tell me what to change in plain English — colours, copy, photos, layout — and I'll send a fresh preview within 24 hours.</span>
+      </span>
+      <span class="acard-arrow" aria-hidden="true">→</span>
     </button>
   </div>
 
   <div class="feedback" id="approve-box">
     <h3>Anything to add before I invoice?</h3>
-    <p class="fb-sub">Optional. Leave it blank and hit confirm if there's nothing to flag.</p>
-    <textarea id="approve-notes" placeholder="e.g. Please CC accounts@ on the invoice, or — leave blank."></textarea>
+    <p class="fb-sub">Optional. Leave it blank and confirm if there's nothing to flag.</p>
+    <textarea id="approve-notes" placeholder="CC accounts@ on the invoice, or — leave blank."></textarea>
     <div class="feedback-foot">
       <span class="feedback-hint">Invoice arrives within the hour</span>
-      <button class="submit-btn" type="button" onclick="submitResponse('approve', event)">
+      <button class="submit-btn cursor-grow" type="button" onclick="submitResponse('approve', event)">
         Confirm — send invoice
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </button>
@@ -302,11 +466,11 @@
 
   <div class="feedback" id="changes-box">
     <h3>What would you like changed?</h3>
-    <p class="fb-sub">Plain English is fine. Specifics help — colour names, exact copy, which section. I'll come back with a fresh preview within 24 hours.</p>
-    <textarea id="changes-notes" placeholder="e.g. Change the hero headline to '24/7 emergency call-outs'. Use a deeper blue instead of green. Move the phone number to the top right. Swap the second photo for the one of the van."></textarea>
+    <p class="fb-sub">Plain English is fine. Specifics help — colour names, exact copy, which section. Fresh preview within 24 hours.</p>
+    <textarea id="changes-notes" placeholder="Change the hero headline to &quot;24/7 emergency call-outs&quot;. Use a deeper blue instead of green. Move the phone number to the top right. Swap the second photo for the one of the van."></textarea>
     <div class="feedback-foot">
       <span class="feedback-hint">Fresh preview within 24 hours</span>
-      <button class="submit-btn" type="button" onclick="submitResponse('changes', event)">
+      <button class="submit-btn cursor-grow" type="button" onclick="submitResponse('changes', event)">
         Submit change request
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </button>
@@ -314,138 +478,163 @@
   </div>
 
   <div class="success" id="success-msg" role="status">
-    <div class="success-eyebrow">
-      <span class="success-eyebrow-dot" aria-hidden="true"></span>
-      <span id="success-eyebrow-text">Sent</span>
-    </div>
+    <div class="success-mark"><span id="success-eyebrow-text">Sent</span></div>
     <h3 id="success-title"></h3>
     <p id="success-body"></p>
   </div>
 
-  <footer class="pfoot">
-    <div class="pfoot-inner">
-      <div>StaticSwift &copy; <span id="yr"></span></div>
-      <div style="display:flex;gap:18px;flex-wrap:wrap">
+  <footer class="colophon">
+    <div class="col-inner">
+      <div class="col-l">
+        <b>StaticSwift</b><br>
+        Year One · Manchester · MMXXVI
+      </div>
+      <div class="col-r" style="display:flex; gap:24px; flex-wrap:wrap">
         <a href="mailto:hello@staticswift.co.uk">hello@staticswift.co.uk</a>
-        <a href="https://wa.me/447502731799" target="_blank" rel="noopener">WhatsApp Harry</a>
+        <a href="https://wa.me/447502731799" target="_blank" rel="noopener">WhatsApp · 07502 731 799</a>
       </div>
     </div>
   </footer>
 
-</div>
+</main>
 
 <script>
-  document.getElementById('yr').textContent = new Date().getFullYear();
-
-  // Scroll reveal
-  (function(){
-    if (!('IntersectionObserver' in window)) {
-      document.querySelectorAll('[data-reveal]').forEach(el => el.classList.add('in'));
-      return;
-    }
-    const io = new IntersectionObserver((es) => {
-      es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-    }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
-    document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
-  })();
-
-  // Portal data load — preserves original endpoint contract
-  const path = window.location.pathname;
-  const portalUUID = path.split('/').filter(Boolean).pop();
-  let portalData = null;
-  let selectedAction = null;
-
-  async function init() {
-    if (!portalUUID || portalUUID.length < 5) {
-      return showError('That link looks incomplete. Reply to the email I sent and I will resend it.');
-    }
-    try {
-      const r = await fetch('/.netlify/functions/get-portal?id=' + encodeURIComponent(portalUUID));
-      if (!r.ok) return showError('Preview not found or link expired. Reply to the email I sent and I will resend it.');
-      portalData = await r.json();
-      if (!portalData || !portalData.previewUrl) {
-        return showError('Your preview is still being prepared. Check back in a few minutes, or reply to the email I sent.');
-      }
-      document.getElementById('client-name').textContent = portalData.name || 'there';
-      document.getElementById('biz-name').textContent = portalData.business_name || 'your site';
-      document.getElementById('preview-url-bar').textContent = portalData.previewUrl;
-      document.getElementById('preview-open-btn').href = portalData.previewUrl;
-      document.getElementById('preview-iframe').src = portalData.previewUrl;
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('portal').style.display = 'block';
-      // Re-run reveal in case elements just became visible after display switch
-      requestAnimationFrame(() => {
-        document.querySelectorAll('[data-reveal]:not(.in)').forEach(el => {
-          const rect = el.getBoundingClientRect();
-          if (rect.top < window.innerHeight * 0.92) el.classList.add('in');
-        });
-      });
-    } catch (err) {
-      showError('Could not load your preview right now. Try again, or reply to the email I sent.');
-    }
+/* Custom cursor */
+(function cursor(){
+  const c = document.getElementById('cursor');
+  if (!c) return;
+  if (!matchMedia('(hover:hover) and (pointer:fine)').matches) { c.style.display='none'; return; }
+  let x=window.innerWidth/2, y=window.innerHeight/2, tx=x, ty=y;
+  document.addEventListener('mousemove', e => { tx=e.clientX; ty=e.clientY; }, {passive:true});
+  function tick(){
+    x += (tx-x)*0.32; y += (ty-y)*0.32;
+    c.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
+    requestAnimationFrame(tick);
   }
+  tick();
+  function bind(){
+    document.querySelectorAll('a, button, input, textarea, select, label, .cursor-grow').forEach(el => {
+      el.addEventListener('mouseenter', () => c.classList.add('is-hover'));
+      el.addEventListener('mouseleave', () => c.classList.remove('is-hover'));
+    });
+  }
+  bind();
+  // Re-bind when portal content loads
+  window.rebindCursor = bind;
+})();
 
-  function showError(msg) {
+/* Reveal */
+(function reveal(){
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('[data-rv]').forEach(el => el.classList.add('in'));
+    return;
+  }
+  const io = new IntersectionObserver(es => {
+    es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
+  document.querySelectorAll('[data-rv]').forEach(el => io.observe(el));
+  window.rerunReveal = () => {
+    document.querySelectorAll('[data-rv]:not(.in)').forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.92) el.classList.add('in');
+    });
+  };
+})();
+
+/* Portal load — preserves original endpoint contract */
+const path = window.location.pathname;
+const portalUUID = path.split('/').filter(Boolean).pop();
+let portalData = null;
+let selectedAction = null;
+
+async function init() {
+  if (!portalUUID || portalUUID.length < 5) {
+    return showError('That link looks incomplete. Reply to the email I sent and I will resend it.');
+  }
+  try {
+    const r = await fetch('/.netlify/functions/get-portal?id=' + encodeURIComponent(portalUUID));
+    if (!r.ok) return showError('Preview not found or link expired. Reply to the email I sent and I will resend it.');
+    portalData = await r.json();
+    if (!portalData || !portalData.previewUrl) {
+      return showError('Your preview is still being prepared. Check back in a few minutes, or reply to the email I sent.');
+    }
+    document.getElementById('client-name').textContent = portalData.name || 'there';
+    document.getElementById('biz-name').textContent = portalData.business_name || 'your site';
+    document.getElementById('preview-url-bar').textContent = portalData.previewUrl;
+    document.getElementById('preview-open-btn').href = portalData.previewUrl;
+    document.getElementById('preview-iframe').src = portalData.previewUrl;
     document.getElementById('loading').style.display = 'none';
-    document.getElementById('error-msg').textContent = msg;
-    document.getElementById('error').style.display = 'flex';
+    document.getElementById('portal').style.display = 'block';
+    requestAnimationFrame(() => {
+      if (typeof window.rerunReveal === 'function') window.rerunReveal();
+      if (typeof window.rebindCursor === 'function') window.rebindCursor();
+    });
+  } catch (err) {
+    showError('Could not load your preview right now. Try again, or reply to the email I sent.');
   }
+}
 
-  function selectAction(type) {
-    selectedAction = type;
-    const a = document.getElementById('card-approve');
-    const c = document.getElementById('card-changes');
-    a.classList.toggle('selected', type === 'approve');
-    c.classList.toggle('selected', type === 'changes');
-    a.setAttribute('aria-pressed', type === 'approve' ? 'true' : 'false');
-    c.setAttribute('aria-pressed', type === 'changes' ? 'true' : 'false');
-    document.getElementById('approve-box').classList.toggle('show', type === 'approve');
-    document.getElementById('changes-box').classList.toggle('show', type === 'changes');
-    document.getElementById('success-msg').classList.remove('show');
-    const target = type === 'approve' ? 'approve-box' : 'changes-box';
-    setTimeout(() => document.getElementById(target).scrollIntoView({ behavior:'smooth', block:'start' }), 60);
-  }
+function showError(msg) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('error-msg').textContent = msg;
+  document.getElementById('error').style.display = 'flex';
+}
 
-  async function submitResponse(type, evt) {
-    const notes = type === 'approve'
-      ? document.getElementById('approve-notes').value
-      : document.getElementById('changes-notes').value;
-    const btn = (evt && evt.currentTarget) || (evt && evt.target) || null;
-    let origHtml = '';
-    if (btn) { origHtml = btn.innerHTML; btn.disabled = true; btn.innerHTML = 'Sending…'; }
-    try {
-      const r = await fetch('/.netlify/functions/portal-response', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ portalUUID, type, notes })
-      });
-      const d = await r.json();
-      if (d.ok) {
-        document.getElementById('approve-box').classList.remove('show');
-        document.getElementById('changes-box').classList.remove('show');
-        const suc = document.getElementById('success-msg');
-        suc.classList.add('show');
-        if (type === 'approve') {
-          document.getElementById('success-eyebrow-text').textContent = 'Approved';
-          document.getElementById('success-title').textContent = 'Brilliant. Invoice on its way.';
-          document.getElementById('success-body').textContent = 'Your invoice will arrive shortly at ' + (portalData.delivery_email || 'your email') + '. Files delivered within an hour of payment.';
-        } else {
-          document.getElementById('success-eyebrow-text').textContent = 'Changes received';
-          document.getElementById('success-title').textContent = 'Got it. Working on the changes now.';
-          document.getElementById('success-body').textContent = 'A fresh preview will land in your inbox within 24 hours. If there is anything urgent, WhatsApp me on +44 7502 731 799.';
-        }
-        suc.scrollIntoView({ behavior:'smooth', block:'start' });
+function selectAction(type) {
+  selectedAction = type;
+  const a = document.getElementById('card-approve');
+  const c = document.getElementById('card-changes');
+  a.classList.toggle('selected', type === 'approve');
+  c.classList.toggle('selected', type === 'changes');
+  a.setAttribute('aria-pressed', type === 'approve' ? 'true' : 'false');
+  c.setAttribute('aria-pressed', type === 'changes' ? 'true' : 'false');
+  document.getElementById('approve-box').classList.toggle('show', type === 'approve');
+  document.getElementById('changes-box').classList.toggle('show', type === 'changes');
+  document.getElementById('success-msg').classList.remove('show');
+  const target = type === 'approve' ? 'approve-box' : 'changes-box';
+  setTimeout(() => document.getElementById(target).scrollIntoView({behavior:'smooth', block:'start'}), 60);
+}
+
+async function submitResponse(type, evt) {
+  const notes = type === 'approve'
+    ? document.getElementById('approve-notes').value
+    : document.getElementById('changes-notes').value;
+  const btn = (evt && evt.currentTarget) || (evt && evt.target) || null;
+  let origHtml = '';
+  if (btn) { origHtml = btn.innerHTML; btn.disabled = true; btn.innerHTML = 'Sending…'; }
+  try {
+    const r = await fetch('/.netlify/functions/portal-response', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ portalUUID, type, notes })
+    });
+    const d = await r.json();
+    if (d.ok) {
+      document.getElementById('approve-box').classList.remove('show');
+      document.getElementById('changes-box').classList.remove('show');
+      const suc = document.getElementById('success-msg');
+      suc.classList.add('show');
+      if (type === 'approve') {
+        document.getElementById('success-eyebrow-text').textContent = 'Approved';
+        document.getElementById('success-title').textContent = 'Brilliant. Invoice on its way.';
+        document.getElementById('success-body').textContent = 'Your invoice will arrive shortly at ' + (portalData.delivery_email || 'your email') + '. Files delivered within an hour of payment.';
       } else {
-        if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
-        alert('Something went wrong: ' + (d.error || 'unknown'));
+        document.getElementById('success-eyebrow-text').textContent = 'Changes received';
+        document.getElementById('success-title').textContent = 'Got it. Working on the changes now.';
+        document.getElementById('success-body').textContent = 'A fresh preview will land in your inbox within 24 hours. If anything is urgent, WhatsApp me on +44 7502 731 799.';
       }
-    } catch (err) {
+      suc.scrollIntoView({ behavior:'smooth', block:'start' });
+    } else {
       if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
-      alert('Network error. Please try again, or email hello@staticswift.co.uk.');
+      alert('Something went wrong: ' + (d.error || 'unknown'));
     }
+  } catch (err) {
+    if (btn) { btn.disabled = false; btn.innerHTML = origHtml; }
+    alert('Network error. Please try again, or email hello@staticswift.co.uk.');
   }
+}
 
-  init();
+init();
 </script>
 </body>
 </html>
