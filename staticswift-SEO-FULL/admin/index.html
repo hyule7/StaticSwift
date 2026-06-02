@@ -5,20 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>StaticSwift Admin</title>
 <meta name="robots" content="noindex,nofollow">
-<meta name="theme-color" content="#07090f">
+<meta name="theme-color" content="#F2EFE7">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<!-- Sentient (editorial serif) + Switzer (humanist sans) — Fontshare. JetBrains Mono — Google.
+     Field-guide grammar shared with the marketing site. NOT DM Sans / Syne / Inter. -->
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=sentient@400,400i,500,500i,700,700i&f[]=switzer@300,400,500,600,700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
+<!-- Original DM Sans / Syne kept as a fallback for any rules in admin.css that name them directly. -->
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/admin/admin.css?v=12">
+<!-- Field-guide theme overlay — loaded LAST so it overrides admin.css surfaces. -->
+<link rel="stylesheet" href="/admin/admin-theme.css?v=1">
 </head>
 <body>
 
-<!-- FLOATING QUICK-ACCESS TOOLBAR — survives any tab navigation -->
-<div id="ss-quickbar" style="position:fixed;bottom:18px;right:18px;z-index:9998;display:flex;gap:.45rem;flex-wrap:wrap;max-width:calc(100vw - 36px);justify-content:flex-end">
-  <button onclick="showEmailDrafts()" title="Edit outreach email templates" style="padding:.55rem .9rem;background:#0e0c0a;color:#faf7f1;border:0;border-radius:2px 4px 2px 4px;cursor:pointer;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25)">✎&nbsp; Drafts</button>
-  <button onclick="showMyProspects()" title="See all prospects" style="padding:.55rem .9rem;background:#7e4f37;color:#faf7f1;border:0;border-radius:2px 4px 2px 4px;cursor:pointer;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25)">▤&nbsp; Prospects</button>
-  <button onclick="diagnoseAnalytics()" title="Run analytics diagnosis" style="padding:.55rem .9rem;background:transparent;color:#0e0c0a;border:1.5px solid #0e0c0a;border-radius:2px 4px 2px 4px;cursor:pointer;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.15)">⚙&nbsp; Diag</button>
-  <button onclick="showAutopilotConfig()" title="Autopilot regions, niches & excludes" style="padding:.55rem .9rem;background:#a86c4d;color:#faf7f1;border:0;border-radius:2px 4px 2px 4px;cursor:pointer;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.25)">◎&nbsp; Targeting</button>
+<!-- FLOATING QUICK-ACCESS TOOLBAR — survives any tab navigation.
+     Styled by admin-theme.css. Inline styles stripped so the editorial theme owns it. -->
+<div id="ss-quickbar" style="position:fixed;bottom:20px;right:20px;z-index:9998;display:flex">
+  <button class="qb-btn" onclick="showEmailDrafts()" title="Edit outreach email templates">Drafts</button>
+  <button class="qb-btn" onclick="showMyProspects()" title="See all prospects">Prospects</button>
+  <button class="qb-btn" onclick="diagnoseAnalytics()" title="Run analytics diagnosis">Diag</button>
+  <button class="qb-btn" onclick="showAutopilotConfig()" title="Autopilot regions, niches & excludes">Targeting</button>
 </div>
 
 <!-- LOGIN -->

@@ -926,50 +926,8 @@ img,svg{display:block;max-width:100%;height:auto}
     </div>
   </section>
 
-  <!-- CONTENTS INDEX -->
-  <nav class="toc" data-rv aria-label="Contents">
-    <div class="toc-eyebrow">Contents</div>
-    <a href="#pitch" class="toc-row cursor-grow">
-      <span class="toc-num">01</span>
-      <span class="toc-label">On quiet phones</span>
-      <span class="toc-page">p.1 <span class="toc-arrow">→</span></span>
-    </a>
-    <a href="#proof" class="toc-row cursor-grow">
-      <span class="toc-num">02</span>
-      <span class="toc-label">A glimpse of the work</span>
-      <span class="toc-page">p.2 <span class="toc-arrow">→</span></span>
-    </a>
-    <a href="#work" class="toc-row cursor-grow">
-      <span class="toc-num">03</span>
-      <span class="toc-label">Sites already shipped</span>
-      <span class="toc-page">p.3 <span class="toc-arrow">→</span></span>
-    </a>
-    <a href="#ship" class="toc-row cursor-grow">
-      <span class="toc-num">04</span>
-      <span class="toc-label">How a site ships</span>
-      <span class="toc-page">p.4 <span class="toc-arrow">→</span></span>
-    </a>
-    <a href="#cost" class="toc-row cursor-grow">
-      <span class="toc-num">05</span>
-      <span class="toc-label">What it costs</span>
-      <span class="toc-page">p.5 <span class="toc-arrow">→</span></span>
-    </a>
-    <a href="#guarantee" class="toc-row cursor-grow">
-      <span class="toc-num">06</span>
-      <span class="toc-label">The guarantee</span>
-      <span class="toc-page">p.6 <span class="toc-arrow">→</span></span>
-    </a>
-    <a href="#note" class="toc-row cursor-grow">
-      <span class="toc-num">07</span>
-      <span class="toc-label">A note from Harry</span>
-      <span class="toc-page">p.7 <span class="toc-arrow">→</span></span>
-    </a>
-    <a href="#begin" class="toc-row cursor-grow">
-      <span class="toc-num">08</span>
-      <span class="toc-label">Begin</span>
-      <span class="toc-page">p.8 <span class="toc-arrow">→</span></span>
-    </a>
-  </nav>
+  <!-- CONTENTS INDEX removed at owner's request — straight from masthead into the hero. -->
+
 
   <!-- 01 — HERO STATEMENT -->
   <section class="hero-stmt" id="pitch" data-rv>
@@ -1128,9 +1086,9 @@ img,svg{display:block;max-width:100%;height:auto}
       <p>Concept builds and live work, labelled honestly. Hover any row to see it. The first ten signed clients get the build at £249 in exchange for a video testimonial — say so in the brief.</p>
     </div>
     <ol class="work-list" data-rv-stagger data-rv>
-      <li class="work-row cursor-grow" data-thumb="https://picsum.photos/seed/harrison-electrical/520/680" data-cap="Concept · Bristol">
+      <li class="work-row cursor-grow" data-href="/work/harrison-electrical/" data-thumb="https://picsum.photos/seed/harrison-electrical/520/680" data-cap="Concept · Bristol — live demo">
         <span class="wr-num">№ 01</span>
-        <span class="wr-trade">Harrison Electrical <em>— concept</em></span>
+        <span class="wr-trade">Harrison Electrical <em>— live concept</em></span>
         <span class="wr-city">Bristol</span>
         <span class="wr-year">'26</span>
         <span class="wr-arrow" aria-hidden="true">→</span>
@@ -1553,6 +1511,11 @@ img,svg{display:block;max-width:100%;height:auto}
       ty = e.clientY;
       if (!x && !y) { x = tx; y = ty; }
     }, { passive: true });
+    // Clickable rows — navigate when data-href is set
+    if (row.dataset.href) {
+      row.style.cursor = 'pointer';
+      row.addEventListener('click', () => { window.location.href = row.dataset.href; });
+    }
   });
 })();
 

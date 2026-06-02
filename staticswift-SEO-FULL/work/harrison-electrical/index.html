@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Harrison Electrical — NICEIC electricians in Bristol &amp; Bath. Same-week appointments.</title>
+<meta name="description" content="NICEIC-registered electricians in Bristol &amp; Bath. Emergency callout in 60 minutes. Domestic, commercial, EV charge points and full rewires. £120 first hour. Call 07700 900 123.">
+<meta name="theme-color" content="#0A0F1A">
+<meta name="robots" content="index, follow">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Harrison Electrical — Bristol &amp; Bath electricians">
+<meta property="og:description" content="NICEIC-registered. Same-week appointments. Emergency callout in 60 minutes.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://images.unsplash.com">
+<!-- Switzer only — humanist sans, all weights. NOT editorial italic serif. -->
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@300,400,500,600,700,800&display=swap">
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Electrician","name":"Harrison Electrical","image":"https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=1200","telephone":"+447700900123","email":"tom@harrisonelectrical.co.uk","priceRange":"££","address":{"@type":"PostalAddress","streetAddress":"12 Cotham Hill","addressLocality":"Bristol","postalCode":"BS6 6JS","addressCountry":"GB"},"geo":{"@type":"GeoCoordinates","latitude":51.4665,"longitude":-2.6058},"areaServed":["Bristol","Bath","Clifton","Bedminster","Redland"],"openingHours":"Mo-Su 07:00-19:00","hasCredential":"NICEIC Registered No. 4127","aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","reviewCount":"148"}}
+</script>
+
+<style>
+/* ──────────────────────────────────────────────────────────────
+   HARRISON ELECTRICAL — concept by StaticSwift.
+   This is a real trade website — for Bristol homeowners.
+   NOT editorial. Clean modern trades aesthetic, photo-led.
+   Switzer only, navy + warm amber, photographic hero.
+   ────────────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;scroll-behavior:smooth;text-rendering:optimizeLegibility}
+:root{
+  --bg:#FFFFFF;
+  --bg-soft:#F7F4ED;
+  --bg-cream:#F2EEE3;
+  --ink:#0A0F1A;
+  --ink-soft:#1E2533;
+  --ink-mid:#4D5468;
+  --ink-dim:#8B92A3;
+  --hair:#E5E3DC;
+  --hair-soft:rgba(10,15,26,.08);
+  --brand:#0A0F1A;
+  --brand-soft:#152033;
+  --amber:#E89D2A;
+  --amber-deep:#B7791F;
+  --amber-soft:#FBF1DC;
+  --green:#2D8659;
+  --green-soft:#E5F1EA;
+  --red:#B23B2A;
+  --r-card:14px;
+  --r-button:8px;
+  --r-input:8px;
+  --sans:'Switzer','Söhne','Helvetica Neue',system-ui,sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --container:1240px;
+  --gutter:clamp(20px,5vw,72px);
+}
+body{
+  font-family:var(--sans); background:var(--bg); color:var(--ink);
+  font-size:17px; line-height:1.55; overflow-x:hidden;
+}
+a{color:inherit; text-decoration:none}
+button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
+input,select,textarea{font:inherit; color:inherit}
+img,svg{display:block; max-width:100%; height:auto}
+::selection{background:var(--amber); color:var(--ink)}
+
+[data-rv]{opacity:0; transform:translateY(16px); transition:opacity .9s var(--ease-out), transform .9s var(--ease-out)}
+[data-rv].in{opacity:1; transform:none}
+@media(prefers-reduced-motion:reduce){[data-rv]{opacity:1; transform:none; transition:none}}
+
+/* ─── HEADER ──────────────────────────────────────────────────── */
+.hdr{
+  position:sticky; top:0; z-index:40;
+  background:rgba(255,255,255,.94);
+  backdrop-filter:saturate(150%) blur(14px);
+  -webkit-backdrop-filter:saturate(150%) blur(14px);
+  border-bottom:1px solid var(--hair);
+}
+.hdr-inner{
+  max-width:var(--container); margin:0 auto;
+  padding:14px var(--gutter);
+  display:grid; grid-template-columns:auto 1fr auto; gap:24px; align-items:center;
+}
+.hdr-brand{
+  display:flex; align-items:center; gap:12px;
+  font-weight:700; letter-spacing:-.015em; font-size:18px; color:var(--ink);
+}
+.hdr-brand-bolt{
+  width:34px; height:34px; background:var(--brand); color:var(--amber);
+  display:flex; align-items:center; justify-content:center;
+  border-radius:8px;
+}
+.hdr-brand-bolt svg{width:18px; height:18px}
+.hdr-nav{display:none; gap:32px; font-size:14.5px; color:var(--ink-soft); font-weight:500}
+.hdr-nav a{transition:color .2s}
+.hdr-nav a:hover{color:var(--amber-deep)}
+@media(min-width:920px){.hdr-nav{display:flex; justify-content:center}}
+.hdr-call{
+  display:inline-flex; align-items:center; gap:10px;
+  background:var(--brand); color:#fff;
+  padding:11px 18px; border-radius:var(--r-button);
+  font-weight:600; font-size:14px;
+  transition:background .2s, transform .2s;
+}
+.hdr-call:hover{background:var(--brand-soft); transform:translateY(-1px)}
+.hdr-call svg{width:14px; height:14px}
+@media(max-width:640px){
+  .hdr-call-num{display:none}
+  .hdr-brand{font-size:16px}
+  .hdr-brand-bolt{width:30px; height:30px}
+}
+
+/* ─── HERO ────────────────────────────────────────────────────── */
+.hero{
+  padding:clamp(48px,8vw,96px) var(--gutter) clamp(64px,10vw,120px);
+  position:relative;
+}
+.hero-grid{
+  max-width:var(--container); margin:0 auto;
+  display:grid; grid-template-columns:1fr; gap:48px; align-items:center;
+}
+@media(min-width:980px){.hero-grid{grid-template-columns:1.05fr 1fr; gap:80px}}
+
+.hero-status{
+  display:inline-flex; align-items:center; gap:10px;
+  background:var(--green-soft); color:var(--green);
+  padding:8px 14px; border-radius:100px;
+  font-size:13px; font-weight:600; margin-bottom:28px;
+}
+.hero-status-dot{width:8px; height:8px; border-radius:50%; background:var(--green); animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1; transform:scale(1)} 50%{opacity:.6; transform:scale(.9)}}
+
+.hero-h{
+  font-size:clamp(40px, 6.5vw, 76px);
+  line-height:1.02; letter-spacing:-.028em;
+  font-weight:700; color:var(--ink);
+  margin-bottom:20px; max-width:14ch;
+}
+.hero-h .amber{color:var(--amber-deep)}
+.hero-sub{
+  font-size:clamp(17px, 1.4vw, 19px); line-height:1.55;
+  color:var(--ink-mid); margin-bottom:36px;
+  max-width:48ch;
+}
+.hero-sub b{color:var(--ink); font-weight:600}
+
+.hero-cta{display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:40px}
+.hero-call{
+  display:inline-flex; align-items:center; gap:12px;
+  background:var(--amber); color:var(--ink);
+  padding:18px 28px; border-radius:var(--r-button);
+  font-size:15.5px; font-weight:700; letter-spacing:.005em;
+  transition:background .2s, transform .2s, box-shadow .2s;
+  box-shadow:0 8px 24px rgba(232,157,42,.25);
+}
+.hero-call:hover{background:#F5AC42; transform:translateY(-2px); box-shadow:0 12px 30px rgba(232,157,42,.35)}
+.hero-call svg{width:18px; height:18px}
+.hero-book{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:18px 24px; background:transparent;
+  color:var(--ink); border:1.5px solid var(--ink);
+  border-radius:var(--r-button); font-weight:600; font-size:14.5px;
+  transition:background .2s, color .2s, transform .2s;
+}
+.hero-book:hover{background:var(--ink); color:var(--bg); transform:translateY(-2px)}
+
+.hero-trust{
+  display:grid; grid-template-columns:repeat(2, 1fr); gap:18px 24px;
+  padding-top:28px; border-top:1px solid var(--hair); max-width:520px;
+}
+.htrust{display:flex; align-items:flex-start; gap:10px}
+.htrust-tick{
+  flex-shrink:0; width:22px; height:22px; border-radius:50%;
+  background:var(--green-soft); color:var(--green);
+  display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:700;
+}
+.htrust-body{font-size:13.5px; line-height:1.4; color:var(--ink-mid)}
+.htrust-body b{display:block; color:var(--ink); font-weight:600; font-size:14px; margin-bottom:1px}
+
+.hero-img{
+  position:relative; aspect-ratio:4/5;
+  border-radius:var(--r-card); overflow:hidden;
+  background:var(--bg-soft);
+  box-shadow:0 30px 80px -20px rgba(10,15,26,.25);
+}
+.hero-img img{
+  width:100%; height:100%; object-fit:cover;
+}
+.hero-img::after{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg, transparent 50%, rgba(10,15,26,.6));
+  pointer-events:none;
+}
+.hero-img-stamp{
+  position:absolute; left:24px; right:24px; bottom:24px;
+  display:flex; gap:18px; align-items:center;
+  color:#fff; z-index:2;
+}
+.hero-img-stamp-num{
+  font-size:48px; line-height:.9; letter-spacing:-.035em; font-weight:700;
+  color:var(--amber);
+}
+.hero-img-stamp-body{font-size:13.5px; line-height:1.4; font-weight:500}
+.hero-img-stamp-body b{display:block; font-size:15px; color:#fff; margin-bottom:2px}
+
+/* ─── TRUST BAR ───────────────────────────────────────────────── */
+.tb{
+  background:var(--brand); color:#fff;
+  padding:18px var(--gutter);
+}
+.tb-inner{
+  max-width:var(--container); margin:0 auto;
+  display:flex; gap:24px 48px; align-items:center; justify-content:center; flex-wrap:wrap;
+  font-size:13px; font-weight:500; letter-spacing:.005em;
+}
+.tb-item{display:flex; align-items:center; gap:10px; color:rgba(255,255,255,.85)}
+.tb-item::before{
+  content:''; width:6px; height:6px; border-radius:50%; background:var(--amber);
+}
+.tb-item b{color:#fff; font-weight:700}
+
+/* ─── SECTION ─────────────────────────────────────────────────── */
+.sec{padding:clamp(72px,10vw,128px) var(--gutter); position:relative}
+.sec-inner{max-width:var(--container); margin:0 auto}
+.sec-eyebrow{
+  display:inline-flex; align-items:center; gap:10px;
+  font-size:13px; font-weight:600;
+  color:var(--amber-deep); margin-bottom:18px;
+  text-transform:uppercase; letter-spacing:.06em;
+}
+.sec-eyebrow::before{content:''; width:24px; height:2px; background:var(--amber)}
+.sec-h{
+  font-size:clamp(32px, 4.5vw, 56px); line-height:1.05;
+  letter-spacing:-.025em; font-weight:700; color:var(--ink);
+  margin-bottom:16px; max-width:24ch;
+}
+.sec-sub{font-size:17px; line-height:1.55; color:var(--ink-mid); max-width:54ch}
+
+/* ─── SERVICES GRID ───────────────────────────────────────────── */
+.services{background:var(--bg-soft)}
+.svc-grid{
+  display:grid; grid-template-columns:1fr; gap:18px;
+  margin-top:clamp(40px,5vw,64px);
+}
+@media(min-width:680px){.svc-grid{grid-template-columns:repeat(2,1fr); gap:20px}}
+@media(min-width:1080px){.svc-grid{grid-template-columns:repeat(2,1fr); gap:24px}}
+
+.svc{
+  background:#fff; border-radius:var(--r-card);
+  overflow:hidden;
+  border:1px solid var(--hair);
+  display:flex; flex-direction:column;
+  transition:transform .3s var(--ease-out), box-shadow .3s;
+}
+.svc:hover{transform:translateY(-4px); box-shadow:0 20px 50px -20px rgba(10,15,26,.18)}
+.svc-img{aspect-ratio:16/10; overflow:hidden; position:relative; background:var(--bg-cream)}
+.svc-img img{width:100%; height:100%; object-fit:cover; transition:transform .7s var(--ease)}
+.svc:hover .svc-img img{transform:scale(1.05)}
+.svc-img::after{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(0deg, rgba(10,15,26,.15), transparent 40%);
+}
+.svc-body{padding:24px 26px 26px; flex:1; display:flex; flex-direction:column}
+.svc-row{display:flex; justify-content:space-between; align-items:start; gap:18px; margin-bottom:10px}
+.svc-name{font-size:21px; font-weight:700; letter-spacing:-.015em; color:var(--ink); line-height:1.2}
+.svc-price{
+  font-size:24px; font-weight:700; letter-spacing:-.025em;
+  color:var(--amber-deep); white-space:nowrap;
+}
+.svc-price small{font-size:11px; font-weight:500; color:var(--ink-mid); letter-spacing:0; text-transform:uppercase; display:block; margin-top:2px; text-align:right}
+.svc-desc{font-size:14.5px; line-height:1.55; color:var(--ink-mid); margin-bottom:18px}
+.svc-incl{list-style:none; padding:0; display:flex; flex-direction:column; gap:8px; margin-top:auto}
+.svc-incl li{
+  display:flex; gap:10px; align-items:flex-start;
+  font-size:13.5px; line-height:1.45; color:var(--ink-soft);
+}
+.svc-incl li::before{
+  content:''; flex-shrink:0; width:16px; height:16px; border-radius:50%;
+  background:var(--green-soft);
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%232D8659' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><polyline points='4 8 7 11 12 5'/></svg>");
+  background-repeat:no-repeat; background-position:center;
+  margin-top:1px;
+}
+
+/* ─── STATS STRIP ─────────────────────────────────────────────── */
+.stats{
+  background:var(--brand); color:#fff;
+  padding:clamp(48px,6vw,80px) var(--gutter);
+}
+.stats-inner{
+  max-width:var(--container); margin:0 auto;
+  display:grid; grid-template-columns:repeat(2,1fr); gap:32px 40px;
+}
+@media(min-width:760px){.stats-inner{grid-template-columns:repeat(4,1fr)}}
+.stat{text-align:left}
+.stat-num{
+  font-size:clamp(44px, 5.5vw, 72px); line-height:.95;
+  letter-spacing:-.035em; font-weight:700;
+  color:var(--amber); margin-bottom:8px;
+}
+.stat-lbl{font-size:14px; font-weight:500; color:rgba(255,255,255,.7); line-height:1.4; max-width:24ch}
+
+/* ─── PROCESS ─────────────────────────────────────────────────── */
+.proc-grid{
+  display:grid; grid-template-columns:1fr; gap:18px;
+  margin-top:clamp(40px,5vw,64px);
+}
+@media(min-width:760px){.proc-grid{grid-template-columns:repeat(3,1fr); gap:24px}}
+.proc-step{
+  background:#fff; border:1px solid var(--hair); border-radius:var(--r-card);
+  padding:32px 28px; position:relative;
+  transition:border-color .25s, transform .25s;
+}
+.proc-step:hover{border-color:var(--amber); transform:translateY(-3px)}
+.proc-num{
+  display:flex; align-items:center; justify-content:center;
+  width:48px; height:48px; border-radius:50%;
+  background:var(--amber); color:var(--ink);
+  font-size:18px; font-weight:700;
+  margin-bottom:20px;
+}
+.proc-step h3{font-size:20px; font-weight:700; letter-spacing:-.015em; line-height:1.2; margin-bottom:10px}
+.proc-step p{font-size:14.5px; line-height:1.55; color:var(--ink-mid)}
+
+/* ─── REVIEWS ─────────────────────────────────────────────────── */
+.reviews{background:var(--bg-cream)}
+.rev-head{
+  display:grid; grid-template-columns:1fr; gap:32px; align-items:end;
+  margin-bottom:clamp(40px,6vw,72px);
+}
+@media(min-width:880px){.rev-head{grid-template-columns:1.4fr 1fr}}
+.rev-rating{
+  background:#fff; border-radius:var(--r-card); border:1px solid var(--hair);
+  padding:24px 28px;
+  display:flex; align-items:center; gap:24px;
+}
+.rev-rating-num{font-size:56px; font-weight:700; line-height:.9; letter-spacing:-.035em; color:var(--ink)}
+.rev-stars{color:#F2A93B; font-size:18px; letter-spacing:3px; margin-bottom:6px}
+.rev-rating-meta{font-size:13.5px; color:var(--ink-mid); line-height:1.4}
+.rev-rating-meta b{display:block; color:var(--ink); font-weight:600; font-size:14.5px; margin-bottom:2px}
+
+.rev-grid{
+  display:grid; grid-template-columns:1fr; gap:20px;
+}
+@media(min-width:760px){.rev-grid{grid-template-columns:repeat(2,1fr); gap:24px}}
+
+.rev-card{
+  background:#fff; border:1px solid var(--hair); border-radius:var(--r-card);
+  padding:28px;
+  display:flex; flex-direction:column;
+  transition:transform .25s, border-color .25s;
+}
+.rev-card:hover{transform:translateY(-3px); border-color:var(--amber)}
+.rev-stars-row{color:#F2A93B; font-size:15px; letter-spacing:2.5px; margin-bottom:14px}
+.rev-quote{
+  font-size:16.5px; line-height:1.55; color:var(--ink-soft);
+  margin-bottom:20px; flex:1;
+}
+.rev-quote::before{content:'"'; color:var(--amber-deep); margin-right:2px; font-size:1.1em}
+.rev-quote::after{content:'"'; color:var(--amber-deep); margin-left:2px; font-size:1.1em}
+.rev-who{
+  display:flex; align-items:center; gap:12px;
+  padding-top:18px; border-top:1px solid var(--hair-soft);
+}
+.rev-who-avatar{
+  width:42px; height:42px; border-radius:50%;
+  overflow:hidden; flex-shrink:0; background:var(--bg-soft);
+}
+.rev-who-avatar img{width:100%; height:100%; object-fit:cover}
+.rev-who-meta b{display:block; font-weight:600; font-size:14.5px; color:var(--ink); margin-bottom:2px}
+.rev-who-meta span{font-size:12.5px; color:var(--ink-mid)}
+
+/* ─── AREAS ───────────────────────────────────────────────────── */
+.areas-grid{
+  display:grid; grid-template-columns:1fr; gap:40px;
+  align-items:start; margin-top:clamp(40px,5vw,64px);
+}
+@media(min-width:880px){.areas-grid{grid-template-columns:1fr 1fr; gap:64px}}
+.areas-l p{font-size:17px; line-height:1.55; color:var(--ink-mid); margin-bottom:18px; max-width:46ch}
+.areas-r{
+  background:var(--bg-soft); border-radius:var(--r-card);
+  padding:28px 32px;
+}
+.areas-r h4{font-size:13.5px; font-weight:700; color:var(--amber-deep); text-transform:uppercase; letter-spacing:.06em; margin-bottom:18px}
+.areas-list{
+  display:grid; grid-template-columns:repeat(2,1fr); gap:8px 24px;
+  list-style:none; padding:0;
+}
+.areas-list li{
+  display:flex; align-items:center; gap:8px;
+  font-size:15px; color:var(--ink-soft); padding:8px 0;
+  border-bottom:1px solid var(--hair-soft);
+}
+.areas-list li::before{
+  content:''; width:6px; height:6px; border-radius:50%;
+  background:var(--amber); flex-shrink:0;
+}
+.areas-list li b{color:var(--ink); font-weight:600}
+
+/* ─── ABOUT ───────────────────────────────────────────────────── */
+.about{background:var(--bg-soft)}
+.about-grid{
+  display:grid; grid-template-columns:1fr; gap:48px; align-items:center;
+}
+@media(min-width:880px){.about-grid{grid-template-columns:.85fr 1.15fr; gap:80px}}
+.about-img{
+  aspect-ratio:4/5; border-radius:var(--r-card); overflow:hidden;
+  background:var(--bg-cream); max-width:420px;
+  box-shadow:0 24px 60px -20px rgba(10,15,26,.18);
+}
+.about-img img{width:100%; height:100%; object-fit:cover}
+.about-body p{
+  font-size:17px; line-height:1.65; color:var(--ink-soft);
+  margin-bottom:18px; max-width:56ch;
+}
+.about-body p:last-child{margin-bottom:0}
+.about-sig{
+  margin-top:32px; padding-top:20px; border-top:1px solid var(--hair);
+  display:flex; align-items:center; gap:14px;
+}
+.about-sig-name{font-weight:700; font-size:16px; color:var(--ink)}
+.about-sig-role{font-size:13px; color:var(--ink-mid)}
+
+/* ─── FAQ ─────────────────────────────────────────────────────── */
+.faq-list{
+  max-width:880px; margin:clamp(40px,5vw,64px) 0 0;
+  border-top:1px solid var(--hair);
+}
+.faq-item{border-bottom:1px solid var(--hair)}
+.faq-q{
+  display:flex; align-items:center; justify-content:space-between; gap:18px;
+  width:100%; text-align:left; padding:22px 0;
+  font-size:18px; font-weight:600; line-height:1.3; color:var(--ink); cursor:pointer;
+  transition:color .2s;
+}
+.faq-q:hover{color:var(--amber-deep)}
+.faq-icon{flex-shrink:0; width:24px; height:24px; position:relative}
+.faq-icon::before, .faq-icon::after{
+  content:''; position:absolute; top:50%; left:50%;
+  background:var(--ink); transition:transform .3s var(--ease);
+}
+.faq-icon::before{width:14px; height:2px; transform:translate(-50%,-50%)}
+.faq-icon::after{width:2px; height:14px; transform:translate(-50%,-50%)}
+.faq-item.open .faq-icon::after{transform:translate(-50%,-50%) scaleY(0)}
+.faq-item.open .faq-icon::before{background:var(--amber-deep)}
+.faq-a{max-height:0; overflow:hidden; transition:max-height .35s var(--ease)}
+.faq-a-inner{padding:0 0 22px; max-width:62ch}
+.faq-a-inner p{font-size:15.5px; line-height:1.6; color:var(--ink-mid)}
+.faq-item.open .faq-a{max-height:320px}
+
+/* ─── BOOK ────────────────────────────────────────────────────── */
+.book{background:var(--brand); color:#fff}
+.book-grid{
+  display:grid; grid-template-columns:1fr; gap:48px; align-items:start;
+}
+@media(min-width:980px){.book-grid{grid-template-columns:1fr 1fr; gap:80px}}
+.book-l h2{font-size:clamp(32px,4.5vw,56px); line-height:1.05; letter-spacing:-.025em; font-weight:700; margin-bottom:18px; color:#fff}
+.book-l h2 .amber{color:var(--amber)}
+.book-l p{font-size:17px; line-height:1.55; color:rgba(255,255,255,.78); max-width:42ch; margin-bottom:32px}
+.book-meta{display:flex; flex-direction:column; gap:18px}
+.book-meta-item{display:flex; align-items:start; gap:14px; padding:14px 0; border-top:1px solid rgba(255,255,255,.1)}
+.book-meta-item:first-child{border-top:0; padding-top:0}
+.book-meta-ico{
+  width:36px; height:36px; flex-shrink:0;
+  background:rgba(232,157,42,.18); color:var(--amber);
+  border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+}
+.book-meta-ico svg{width:16px; height:16px}
+.book-meta-body{font-size:14px; color:rgba(255,255,255,.7); line-height:1.4}
+.book-meta-body b{display:block; color:#fff; font-weight:600; font-size:16px; margin-bottom:2px}
+.book-meta-body a{transition:color .2s; border-bottom:1px solid rgba(255,255,255,.2)}
+.book-meta-body a:hover{color:var(--amber); border-color:var(--amber)}
+
+.book-form{
+  background:#fff; color:var(--ink);
+  border-radius:var(--r-card); padding:32px;
+}
+.bf-field{margin-bottom:16px}
+.bf-field label{
+  display:block; font-size:12.5px; font-weight:600;
+  color:var(--ink-soft); margin-bottom:6px;
+}
+.bf-field input, .bf-field select, .bf-field textarea{
+  width:100%; padding:13px 14px;
+  background:var(--bg-soft); border:1.5px solid var(--hair);
+  border-radius:var(--r-input);
+  font-size:15px; color:var(--ink); font-family:var(--sans);
+  outline:none; transition:border-color .2s, background .2s;
+}
+.bf-field input:focus, .bf-field select:focus, .bf-field textarea:focus{
+  border-color:var(--amber); background:#fff;
+}
+.bf-field textarea{min-height:100px; resize:vertical; line-height:1.55}
+.bf-row{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+@media(max-width:520px){.bf-row{grid-template-columns:1fr}}
+.bf-submit{
+  width:100%; padding:16px;
+  background:var(--amber); color:var(--ink);
+  border-radius:var(--r-button); font-weight:700; font-size:15.5px;
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  transition:background .2s, transform .2s, box-shadow .2s;
+  margin-top:8px;
+}
+.bf-submit:hover{background:#F5AC42; transform:translateY(-2px); box-shadow:0 12px 30px rgba(232,157,42,.3)}
+.bf-fine{font-size:12px; color:var(--ink-dim); text-align:center; margin-top:12px}
+
+/* ─── MOBILE STICKY CALL BAR ──────────────────────────────────── */
+.mob-bar{
+  position:fixed; bottom:0; left:0; right:0; z-index:30;
+  display:none; padding:10px 12px; gap:8px;
+  background:var(--bg);
+  border-top:1px solid var(--hair);
+  box-shadow:0 -6px 24px rgba(10,15,26,.08);
+}
+@media(max-width:760px){.mob-bar{display:flex}}
+.mob-bar a{flex:1; padding:14px; text-align:center; border-radius:var(--r-button); font-size:14px; font-weight:600; display:inline-flex; align-items:center; justify-content:center; gap:8px}
+.mob-call{background:var(--amber); color:var(--ink)}
+.mob-book{background:transparent; color:var(--ink); border:1.5px solid var(--ink)}
+
+/* ─── FOOTER ──────────────────────────────────────────────────── */
+.foot{
+  background:var(--ink); color:rgba(255,255,255,.7);
+  padding:clamp(48px,6vw,72px) var(--gutter) clamp(96px,8vw,48px);
+}
+.foot-inner{max-width:var(--container); margin:0 auto}
+.foot-top{
+  display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:32px;
+  padding-bottom:40px; border-bottom:1px solid rgba(255,255,255,.1);
+}
+@media(max-width:780px){.foot-top{grid-template-columns:1fr 1fr; gap:32px 24px}}
+@media(max-width:480px){.foot-top{grid-template-columns:1fr}}
+.foot-brand{font-weight:700; color:#fff; font-size:18px; letter-spacing:-.015em; display:flex; align-items:center; gap:10px; margin-bottom:14px}
+.foot-brand-bolt{width:30px; height:30px; background:var(--amber); color:var(--ink); border-radius:7px; display:flex; align-items:center; justify-content:center}
+.foot-brand-bolt svg{width:16px; height:16px}
+.foot-block h4{color:#fff; font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; margin-bottom:14px}
+.foot-block a, .foot-block span{display:block; font-size:14px; color:rgba(255,255,255,.65); margin-bottom:6px; line-height:1.5; transition:color .2s}
+.foot-block a:hover{color:var(--amber)}
+.foot-bot{
+  padding-top:24px; display:flex; justify-content:space-between; align-items:center;
+  gap:14px; flex-wrap:wrap;
+  font-size:12.5px; color:rgba(255,255,255,.5);
+}
+.foot-bot a{color:rgba(255,255,255,.7); transition:color .2s}
+.foot-bot a:hover{color:var(--amber)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-inner">
+    <a href="/" class="hdr-brand">
+      <span class="hdr-brand-bolt">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+      </span>
+      Harrison Electrical
+    </a>
+    <nav class="hdr-nav">
+      <a href="#services">Services</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#areas">Areas</a>
+      <a href="#about">About Tom</a>
+      <a href="#book">Book</a>
+    </nav>
+    <a href="tel:+447700900123" class="hdr-call">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <span class="hdr-call-num">07700 900 123</span>
+    </a>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" data-rv>
+    <div class="hero-grid">
+      <div>
+        <div class="hero-status">
+          <span class="hero-status-dot" aria-hidden="true"></span>
+          Open now · 60-min emergency response
+        </div>
+        <h1 class="hero-h">Power, fixed <span class="amber">properly</span>.</h1>
+        <p class="hero-sub">NICEIC-registered electricians serving Bristol and Bath. Same-week appointments for most jobs. <b>60-minute response on emergencies, day or night.</b></p>
+        <div class="hero-cta">
+          <a href="tel:+447700900123" class="hero-call">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Call 07700 900 123
+          </a>
+          <a href="#book" class="hero-book">Book online →</a>
+        </div>
+        <div class="hero-trust">
+          <div class="htrust">
+            <div class="htrust-tick">✓</div>
+            <div class="htrust-body"><b>NICEIC 4127</b>Registered &amp; certified</div>
+          </div>
+          <div class="htrust">
+            <div class="htrust-tick">✓</div>
+            <div class="htrust-body"><b>£5M insurance</b>Full public liability</div>
+          </div>
+          <div class="htrust">
+            <div class="htrust-tick">✓</div>
+            <div class="htrust-body"><b>12 years</b>In Bristol &amp; Bath</div>
+          </div>
+          <div class="htrust">
+            <div class="htrust-tick">✓</div>
+            <div class="htrust-body"><b>4.9★ from 148</b>Google reviews</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-img">
+        <img src="https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=1000&q=80&auto=format&fit=crop" alt="Tom Harrison fitting a consumer unit in a Bristol home" loading="eager">
+        <div class="hero-img-stamp">
+          <div class="hero-img-stamp-num">12</div>
+          <div class="hero-img-stamp-body">
+            <b>Years on the tools</b>
+            in Bristol &amp; Bath
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST BAR -->
+  <div class="tb">
+    <div class="tb-inner">
+      <div class="tb-item"><b>NICEIC</b> registered</div>
+      <div class="tb-item"><b>Part-P</b> certified</div>
+      <div class="tb-item"><b>OZEV</b> EV installer</div>
+      <div class="tb-item"><b>£5M</b> public liability</div>
+      <div class="tb-item"><b>DBS</b> checked</div>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section class="sec services" id="services" data-rv>
+    <div class="sec-inner">
+      <span class="sec-eyebrow">Services</span>
+      <h2 class="sec-h">What we do, plainly priced.</h2>
+      <p class="sec-sub">No surprise call-outs. No hidden charges. Anything more involved gets a fixed written quote on site before the work starts.</p>
+      <div class="svc-grid">
+
+        <article class="svc">
+          <div class="svc-img"><img src="https://picsum.photos/seed/harrison-callout-fuse/900/560?grayscale&blur=0" alt="Electrical fuse box being repaired" loading="lazy"></div>
+          <div class="svc-body">
+            <div class="svc-row">
+              <h3 class="svc-name">Emergency callout</h3>
+              <div class="svc-price">£120<small>First hour</small></div>
+            </div>
+            <p class="svc-desc">60-minute response across BS1 — BS9. Sockets, fuses, fault-finding, no-power situations. Day or night.</p>
+            <ul class="svc-incl">
+              <li>First hour fully covered</li>
+              <li>Same-day fix in 90% of cases</li>
+              <li>Honest second opinion if you've already had a quote</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="svc">
+          <div class="svc-img"><img src="https://images.unsplash.com/photo-1633419461186-7d40a38105ec?w=900&q=80&auto=format&fit=crop" alt="Wall-mounted EV charge point installation" loading="lazy"></div>
+          <div class="svc-body">
+            <div class="svc-row">
+              <h3 class="svc-name">EV charge points</h3>
+              <div class="svc-price">£899<small>Fitted &amp; certified</small></div>
+            </div>
+            <p class="svc-desc">Supplied, fitted, certified. We're OZEV-approved so you can claim the EV chargepoint grant if you're eligible.</p>
+            <ul class="svc-incl">
+              <li>Wallbox, Zappi, Easee, Ohme — your call</li>
+              <li>Two-hour install in most cases</li>
+              <li>Building Reg notification included</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="svc">
+          <div class="svc-img"><img src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=900&q=80&auto=format&fit=crop" alt="Full house rewire in progress" loading="lazy"></div>
+          <div class="svc-body">
+            <div class="svc-row">
+              <h3 class="svc-name">Full house rewire</h3>
+              <div class="svc-price">Quote<small>On site, free</small></div>
+            </div>
+            <p class="svc-desc">Whole-property rewire with minimal mess. Visit, schematic, fixed quote within 24 hours. No commitment to book.</p>
+            <ul class="svc-incl">
+              <li>2-bed terrace from £4,200</li>
+              <li>3-bed semi from £5,600</li>
+              <li>4-bed detached quoted on site</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="svc">
+          <div class="svc-img"><img src="https://images.unsplash.com/photo-1558002038-1055907df827?w=900&q=80&auto=format&fit=crop" alt="Modern smart-home lighting installation" loading="lazy"></div>
+          <div class="svc-body">
+            <div class="svc-row">
+              <h3 class="svc-name">Smart home &amp; lighting</h3>
+              <div class="svc-price">From £180</div>
+            </div>
+            <p class="svc-desc">Hue, Lutron, dimmer circuits, smart switches, garden lighting, outdoor sockets. Tidy installs, certified.</p>
+            <ul class="svc-incl">
+              <li>Single-room install from £180</li>
+              <li>Whole-house from £950</li>
+              <li>Garden lighting from £320</li>
+            </ul>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS STRIP -->
+  <section class="stats" data-rv>
+    <div class="stats-inner">
+      <div class="stat">
+        <div class="stat-num">148</div>
+        <div class="stat-lbl">Verified 5-star Google reviews</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">60<span style="font-size:.6em">min</span></div>
+        <div class="stat-lbl">Emergency response across BS postcodes</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">12</div>
+        <div class="stat-lbl">Years serving Bristol &amp; Bath homes</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">2,400+</div>
+        <div class="stat-lbl">Jobs completed since 2014</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="sec" data-rv>
+    <div class="sec-inner">
+      <span class="sec-eyebrow">How a callout works</span>
+      <h2 class="sec-h">Call. Confirm. We're there.</h2>
+      <p class="sec-sub">No call centre. No press-1-for-bookings. You speak to the electrician coming out.</p>
+      <div class="proc-grid">
+        <div class="proc-step">
+          <div class="proc-num">1</div>
+          <h3>Tom answers</h3>
+          <p>You ring 07700 900 123. Tom picks up — no call centre, no answering service. Tell him what's happened.</p>
+        </div>
+        <div class="proc-step">
+          <div class="proc-num">2</div>
+          <h3>Time, price, postcode</h3>
+          <p>He gives you an arrival window (usually within two hours) and the first-hour rate. You confirm. He's on his way.</p>
+        </div>
+        <div class="proc-step">
+          <div class="proc-num">3</div>
+          <h3>Fixed, same-day</h3>
+          <p>90% of jobs done same day. Anything more involved gets a written quote on site. You decide before any work starts.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section class="sec reviews" id="reviews" data-rv>
+    <div class="sec-inner">
+      <span class="sec-eyebrow">From Google</span>
+      <h2 class="sec-h">Real reviews from real Bristol homes.</h2>
+
+      <div class="rev-head" style="margin-top:32px">
+        <p class="sec-sub" style="margin:0">Every job is followed up — automatically — with a request for a Google review. The ones below are pulled live from our Google Business Profile.</p>
+        <div class="rev-rating">
+          <div class="rev-rating-num">4.9</div>
+          <div>
+            <div class="rev-stars">★ ★ ★ ★ ★</div>
+            <div class="rev-rating-meta"><b>148 verified reviews</b>Average over last 12 months</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rev-grid">
+        <article class="rev-card">
+          <div class="rev-stars-row">★ ★ ★ ★ ★</div>
+          <p class="rev-quote">Came out the same morning I called. Found the fault in twenty minutes. Honest pricing, no faff. Will use Tom again — and recommend him to anyone.</p>
+          <div class="rev-who">
+            <div class="rev-who-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&q=80&auto=format&fit=crop&crop=faces" alt="" loading="lazy"></div>
+            <div class="rev-who-meta"><b>Mark Patterson</b><span>Clifton · BS8</span></div>
+          </div>
+        </article>
+        <article class="rev-card">
+          <div class="rev-stars-row">★ ★ ★ ★ ★</div>
+          <p class="rev-quote">Fitted our EV charge point in one morning. Tidy work, properly explained the certificate, and the price he quoted was the price we paid.</p>
+          <div class="rev-who">
+            <div class="rev-who-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&q=80&auto=format&fit=crop&crop=faces" alt="" loading="lazy"></div>
+            <div class="rev-who-meta"><b>Anna Bennett</b><span>Bedminster · BS3</span></div>
+          </div>
+        </article>
+        <article class="rev-card">
+          <div class="rev-stars-row">★ ★ ★ ★ ★</div>
+          <p class="rev-quote">Full rewire on a three-bed in Redland. Started Monday, done by Friday. Less mess than I expected and they hoovered up before they left.</p>
+          <div class="rev-who">
+            <div class="rev-who-avatar"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&q=80&auto=format&fit=crop&crop=faces" alt="" loading="lazy"></div>
+            <div class="rev-who-meta"><b>James Holloway</b><span>Redland · BS6</span></div>
+          </div>
+        </article>
+        <article class="rev-card">
+          <div class="rev-stars-row">★ ★ ★ ★ ★</div>
+          <p class="rev-quote">Called Tom in a panic Sunday evening — half the house tripped and we had a baby coming. He was at the door in under an hour. Sorted it. Stayed for tea.</p>
+          <div class="rev-who">
+            <div class="rev-who-avatar"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=120&q=80&auto=format&fit=crop&crop=faces" alt="" loading="lazy"></div>
+            <div class="rev-who-meta"><b>Priya Shah</b><span>Cotham · BS6</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- AREAS -->
+  <section class="sec" id="areas" data-rv>
+    <div class="sec-inner">
+      <span class="sec-eyebrow">Service area</span>
+      <h2 class="sec-h">Bristol, Bath, and everything between.</h2>
+      <p class="sec-sub">All BS and BA postcodes within an hour's drive of Cotham Hill. If you're outside this area, give us a call — we usually say yes.</p>
+      <div class="areas-grid">
+        <div class="areas-l">
+          <p>Emergency callouts are prioritised by distance and severity. We'll tell you over the phone if it's likely to take more than 60 minutes to get to you, so you can decide whether to wait or call someone closer.</p>
+          <p>Planned work — rewires, EV installs, smart lighting — is booked Monday to Friday so we can give it our full attention. Weekends are reserved for emergencies.</p>
+          <a href="tel:+447700900123" class="hero-call" style="margin-top:12px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            Check your postcode
+          </a>
+        </div>
+        <div class="areas-r">
+          <h4>Postcodes covered</h4>
+          <ul class="areas-list">
+            <li><b>BS1</b> City Centre</li>
+            <li><b>BS2</b> St Pauls</li>
+            <li><b>BS3</b> Bedminster</li>
+            <li><b>BS4</b> Knowle</li>
+            <li><b>BS5</b> Easton</li>
+            <li><b>BS6</b> Cotham</li>
+            <li><b>BS7</b> Horfield</li>
+            <li><b>BS8</b> Clifton</li>
+            <li><b>BS9</b> Stoke Bishop</li>
+            <li><b>BA1</b> Bath central</li>
+            <li><b>BA2</b> Bath south</li>
+            <li><b>BA3</b> Radstock</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="sec about" id="about" data-rv>
+    <div class="sec-inner">
+      <div class="about-grid">
+        <div class="about-img">
+          <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?w=800&q=80&auto=format&fit=crop" alt="Tom Harrison, founder of Harrison Electrical" loading="lazy">
+        </div>
+        <div class="about-body">
+          <span class="sec-eyebrow">About Tom</span>
+          <h2 class="sec-h" style="margin-bottom:24px">A Bristol electrician, twelve years on the tools.</h2>
+          <p>I'm Tom Harrison. I've been wiring houses in Bristol for twelve years, ten of those on my own. Before that I served my apprenticeship with my uncle out in Yatton, who taught me that a tidy job done once is cheaper than a quick one done twice.</p>
+          <p>It's still me on the end of the phone. There's no call centre, no junior. When you book a callout I'm the one driving over. I started out doing emergency work because nobody else seemed to answer on Sunday evenings, and I've kept doing it for the same reason.</p>
+          <p>The promise is simple: I'll turn up when I said I would. I'll fix it properly. I'll charge what I quoted. And if anything's not right inside the year, I'll come back and put it right at no cost.</p>
+          <div class="about-sig">
+            <div>
+              <div class="about-sig-name">Tom Harrison</div>
+              <div class="about-sig-role">Founder · NICEIC 4127</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec" data-rv>
+    <div class="sec-inner" style="max-width:1080px">
+      <span class="sec-eyebrow">Common questions</span>
+      <h2 class="sec-h">Things you ask before booking.</h2>
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-q" type="button" aria-expanded="false">How much is a callout?<span class="faq-icon" aria-hidden="true"></span></button>
+          <div class="faq-a" aria-hidden="true"><div class="faq-a-inner"><p>£120 for the first hour, materials included. After the first hour it's £45 per half-hour. Anything beyond a single visit gets a written fixed quote on site before the work starts — you decide whether to go ahead.</p></div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" type="button" aria-expanded="false">Are you actually NICEIC?<span class="faq-icon" aria-hidden="true"></span></button>
+          <div class="faq-a" aria-hidden="true"><div class="faq-a-inner"><p>Yes — registration number 4127. You can verify it on the NICEIC find-a-contractor site. Everything we install gets a proper EIC, EICR or Minor Works certificate — Building Reg notified where required.</p></div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" type="button" aria-expanded="false">Do you work weekends?<span class="faq-icon" aria-hidden="true"></span></button>
+          <div class="faq-a" aria-hidden="true"><div class="faq-a-inner"><p>Yes. Saturday and Sunday emergency callouts are the same price as weekday — £120 first hour. Planned work (rewires, EV installs, lighting jobs) is weekdays only so we can give it our full attention.</p></div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" type="button" aria-expanded="false">Do you do landlord certificates (EICR)?<span class="faq-icon" aria-hidden="true"></span></button>
+          <div class="faq-a" aria-hidden="true"><div class="faq-a-inner"><p>Yes — five-year landlord EICR from £180 for a one-bed, £240 for a three-bed. We can do them while tenants are in occupation with 48-hour notice.</p></div></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-q" type="button" aria-expanded="false">What if it's not fixable in one visit?<span class="faq-icon" aria-hidden="true"></span></button>
+          <div class="faq-a" aria-hidden="true"><div class="faq-a-inner"><p>You pay for the first hour only. We write you a fixed quote for the proper repair before we leave. No pressure to book the follow-up with us if you'd rather get a second quote.</p></div></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOK -->
+  <section class="sec book" id="book" data-rv>
+    <div class="sec-inner">
+      <div class="book-grid">
+        <div class="book-l">
+          <span class="sec-eyebrow" style="color:var(--amber)">Book a callout</span>
+          <h2>Three details. <span class="amber">We'll do the rest.</span></h2>
+          <p>Send a quick brief and Tom replies within the hour during working times, by morning if you book overnight. If it's urgent right now, call instead.</p>
+          <div class="book-meta">
+            <div class="book-meta-item">
+              <div class="book-meta-ico">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </div>
+              <div class="book-meta-body">
+                <b>07700 900 123</b>
+                <a href="tel:+447700900123">Call now — Tom answers</a>
+              </div>
+            </div>
+            <div class="book-meta-item">
+              <div class="book-meta-ico">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+              </div>
+              <div class="book-meta-body">
+                <b>WhatsApp</b>
+                <a href="https://wa.me/447700900123" target="_blank" rel="noopener">07700 900 123</a>
+              </div>
+            </div>
+            <div class="book-meta-item">
+              <div class="book-meta-ico">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              </div>
+              <div class="book-meta-body">
+                <b>Email</b>
+                <a href="mailto:tom@harrisonelectrical.co.uk">tom@harrisonelectrical.co.uk</a>
+              </div>
+            </div>
+            <div class="book-meta-item">
+              <div class="book-meta-ico">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+              </div>
+              <div class="book-meta-body">
+                <b>Open 7am – 7pm · Mo–Su</b>
+                Same-week appointments for most jobs
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <form class="book-form" onsubmit="bookSubmit(event)" novalidate>
+          <div class="bf-row">
+            <div class="bf-field">
+              <label for="b-name">Your name</label>
+              <input type="text" id="b-name" name="name" required autocomplete="name" placeholder="Mark Patterson">
+            </div>
+            <div class="bf-field">
+              <label for="b-phone">Phone</label>
+              <input type="tel" id="b-phone" name="phone" required autocomplete="tel" placeholder="07…">
+            </div>
+          </div>
+          <div class="bf-field">
+            <label for="b-postcode">Postcode</label>
+            <input type="text" id="b-postcode" name="postcode" required autocomplete="postal-code" placeholder="BS6 6JS">
+          </div>
+          <div class="bf-field">
+            <label for="b-issue">What's happening?</label>
+            <textarea id="b-issue" name="issue" required placeholder="Half the house has tripped after a power cut. Tried the breakers, no luck."></textarea>
+          </div>
+          <button type="submit" class="bf-submit">
+            Book a callout
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+          <p class="bf-fine">Tom reads every form. Reply within the hour during working times.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="foot">
+    <div class="foot-inner">
+      <div class="foot-top">
+        <div class="foot-block">
+          <div class="foot-brand">
+            <span class="foot-brand-bolt">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+            </span>
+            Harrison Electrical
+          </div>
+          <span>12 Cotham Hill, Bristol BS6 6JS</span>
+          <span>Mo – Su · 07:00 – 19:00</span>
+          <span>NICEIC reg. 4127 · Part-P certified</span>
+        </div>
+        <div class="foot-block">
+          <h4>Reach</h4>
+          <a href="tel:+447700900123">07700 900 123</a>
+          <a href="mailto:tom@harrisonelectrical.co.uk">Email Tom</a>
+          <a href="https://wa.me/447700900123" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+        <div class="foot-block">
+          <h4>Services</h4>
+          <a href="#services">Emergency callout</a>
+          <a href="#services">EV charge points</a>
+          <a href="#services">House rewires</a>
+          <a href="#services">Smart lighting</a>
+        </div>
+        <div class="foot-block">
+          <h4>Area</h4>
+          <span>Bristol BS1 – BS9</span>
+          <span>Bath BA1 – BA3</span>
+          <span>Within 1 hour drive</span>
+        </div>
+      </div>
+      <div class="foot-bot">
+        <span>© Harrison Electrical · 2026 · A Bristol family business</span>
+        <span>Built by <a href="https://staticswift.co.uk" target="_blank" rel="noopener">StaticSwift</a></span>
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<!-- Mobile sticky call bar -->
+<div class="mob-bar">
+  <a href="tel:+447700900123" class="mob-call">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    Call Tom
+  </a>
+  <a href="#book" class="mob-book">Book online</a>
+</div>
+
+<script>
+  // Scroll reveal
+  (function(){
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('[data-rv]').forEach(el => el.classList.add('in')); return;
+    }
+    const io = new IntersectionObserver(es => {
+      es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
+    document.querySelectorAll('[data-rv]').forEach(el => io.observe(el));
+  })();
+
+  // FAQ accordions
+  document.querySelectorAll('.faq-q').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const open = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(o => {
+        o.classList.remove('open');
+        o.querySelector('.faq-q').setAttribute('aria-expanded','false');
+        o.querySelector('.faq-a').setAttribute('aria-hidden','true');
+      });
+      if (!open) {
+        item.classList.add('open');
+        btn.setAttribute('aria-expanded','true');
+        item.querySelector('.faq-a').setAttribute('aria-hidden','false');
+      }
+    });
+  });
+
+  // Demo form submit
+  window.bookSubmit = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('.bf-submit');
+    btn.disabled = true;
+    btn.innerHTML = 'Sending…';
+    setTimeout(() => {
+      form.innerHTML = '<div style="padding:32px 0;text-align:center"><div style="width:56px;height:56px;border-radius:50%;background:#E5F1EA;color:#2D8659;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:24px;font-weight:700">✓</div><h3 style="font-size:24px;font-weight:700;letter-spacing:-.02em;margin-bottom:10px">Tom\'s on it.</h3><p style="font-size:15.5px;line-height:1.55;color:#4D5468;max-width:36ch;margin:0 auto">He\'ll call you back within the hour during working time. If it\'s urgent right now, just ring <a href="tel:+447700900123" style="color:#B7791F;font-weight:600">07700 900 123</a>.</p></div>';
+    }, 700);
+  };
+</script>
+</body>
+</html>
