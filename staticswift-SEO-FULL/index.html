@@ -54,6 +54,16 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-4BZHQMG0RF"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-4BZHQMG0RF');</script>
 
+<!-- TikTok Pixel — pixel ID D8G5KVRC77UAEKHUL26G. Loads ttq global; PageView fires on load.
+     SubmitForm + CompletePayment events fire from form/conversion handlers further down. -->
+<script>
+!function (w, d, t) {
+  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+  ttq.load('D8G5KVRC77UAEKHUL26G');
+  ttq.page();
+}(window, document, 'ttq');
+</script>
+
 <style>
 /* ─────────────────────────────────────────────────────────────
    STATICSWIFT — FIELD GUIDE EDITION
@@ -1531,9 +1541,25 @@ window.sqContact = async (e) => {
   data.createdAt = new Date().toISOString();
   if (!btn.dataset.orig) btn.dataset.orig = btn.innerHTML;
   btn.disabled = true; btn.innerHTML = 'Sending…';
+  const leadValue = data.package === 'advanced' ? 999 : 499;
   if (typeof gtag === 'function') {
     gtag('event','form_submit',{ form_location:'contact', business_type:data.business_type||'', package:data.package||'' });
-    gtag('event','generate_lead',{ currency:'GBP', value:data.package === 'advanced' ? 999 : 499, form_location:'contact' });
+    gtag('event','generate_lead',{ currency:'GBP', value:leadValue, form_location:'contact' });
+  }
+  // TikTok pixel — SubmitForm is the standard lead event TikTok optimises against.
+  // Fires synchronously before the network round-trip so we never lose the conversion
+  // signal if the user closes the tab during the in-flight handle-intake POST.
+  if (typeof ttq !== 'undefined') {
+    try {
+      ttq.track('SubmitForm', {
+        contents: [{ content_id: data.package || 'unsure', content_type: 'product', content_name: 'StaticSwift website brief' }],
+        value: leadValue,
+        currency: 'GBP',
+        description: data.business_type || 'trade-website-brief'
+      });
+      // Also fire the higher-intent Lead event — TikTok treats this as harder signal.
+      ttq.track('Lead', { value: leadValue, currency: 'GBP' });
+    } catch(_) {}
   }
   try {
     fetch('/.netlify/functions/track-event', {
