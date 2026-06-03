@@ -68,20 +68,7 @@ img,svg{display:block;max-width:100%;height:auto}
 /* Grain overlay */
 .grain{position:fixed;inset:0;pointer-events:none;z-index:2;opacity:.07;mix-blend-mode:multiply}
 
-/* Custom cursor — desktop only */
-.cursor{
-  position:fixed; top:0; left:0; pointer-events:none; z-index:9999;
-  width:10px; height:10px; border-radius:50%;
-  background:var(--ink); transform:translate(-50%,-50%);
-  transition:width .25s var(--ease), height .25s var(--ease), background .25s, border-color .25s;
-  mix-blend-mode:difference; display:none;
-}
-.cursor.is-hover{ width:46px; height:46px; background:transparent; border:1px solid var(--paper); }
-@media(hover:hover) and (pointer:fine){
-  html, body{ cursor:none; }
-  a, button, input, textarea, select, label, .cursor-grow{ cursor:none; }
-  .cursor{ display:block; }
-}
+/* Custom cursor removed at owner's request — native OS cursor everywhere. */
 
 /* Reveal */
 [data-rv]{
@@ -374,7 +361,7 @@ img,svg{display:block;max-width:100%;height:auto}
   <rect width="100%" height="100%" filter="url(#grain)"/>
 </svg>
 
-<div class="cursor" id="cursor" aria-hidden="true"></div>
+<!-- Custom cursor div removed — native OS cursor. -->
 
 <header class="rh">
   <a href="https://staticswift.co.uk" class="rh-l"><span class="rh-l-dot"></span>StaticSwift</a>
@@ -499,29 +486,9 @@ img,svg{display:block;max-width:100%;height:auto}
 </main>
 
 <script>
-/* Custom cursor */
-(function cursor(){
-  const c = document.getElementById('cursor');
-  if (!c) return;
-  if (!matchMedia('(hover:hover) and (pointer:fine)').matches) { c.style.display='none'; return; }
-  let x=window.innerWidth/2, y=window.innerHeight/2, tx=x, ty=y;
-  document.addEventListener('mousemove', e => { tx=e.clientX; ty=e.clientY; }, {passive:true});
-  function tick(){
-    x += (tx-x)*0.32; y += (ty-y)*0.32;
-    c.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
-    requestAnimationFrame(tick);
-  }
-  tick();
-  function bind(){
-    document.querySelectorAll('a, button, input, textarea, select, label, .cursor-grow').forEach(el => {
-      el.addEventListener('mouseenter', () => c.classList.add('is-hover'));
-      el.addEventListener('mouseleave', () => c.classList.remove('is-hover'));
-    });
-  }
-  bind();
-  // Re-bind when portal content loads
-  window.rebindCursor = bind;
-})();
+/* Custom cursor removed — native OS cursor everywhere. window.rebindCursor kept as no-op
+   so any other code that still calls it doesn't throw. */
+window.rebindCursor = function(){};
 
 /* Reveal */
 (function reveal(){

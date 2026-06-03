@@ -123,26 +123,8 @@ img,svg{display:block;max-width:100%;height:auto}
   opacity:.07; mix-blend-mode:multiply;
 }
 
-/* Custom cursor — desktop only. A small ring that scales on interactive. */
-.cursor{
-  position:fixed; top:0; left:0; pointer-events:none; z-index:9999;
-  width:10px; height:10px; border-radius:50%;
-  background:var(--ink);
-  transform:translate(-50%,-50%);
-  transition:width .25s var(--ease), height .25s var(--ease), background .25s, opacity .25s;
-  mix-blend-mode:difference;
-  display:none;
-}
-.cursor.is-hover{
-  width:46px; height:46px;
-  background:transparent;
-  border:1px solid var(--paper);
-}
-@media(hover:hover) and (pointer:fine){
-  html, body{ cursor:none; }
-  a, button, input, textarea, select, label, .cursor-grow{ cursor:none; }
-  .cursor{ display:block; }
-}
+/* Custom cursor removed — native OS cursor restored at owner's request.
+   The .cursor-grow class is left on a few elements but is now a no-op. */
 
 /* ─── REVEAL: clip-path wipe from bottom, like ink hitting paper ─── */
 [data-rv]{
@@ -908,8 +890,6 @@ img,svg{display:block;max-width:100%;height:auto}
 </svg>
 
 <!-- Custom cursor (desktop only, hidden on touch) -->
-<div class="cursor" id="cursor" aria-hidden="true"></div>
-
 <!-- Floating work thumbnail (tracks cursor in the work section) -->
 <div class="work-thumb" id="workThumb" aria-hidden="true">
   <img id="workThumbImg" src="" alt="">
@@ -1394,33 +1374,7 @@ img,svg{display:block;max-width:100%;height:auto}
    No frameworks. No libraries. Vanilla, fast, intentional.
    ────────────────────────────────────────────────────────────── */
 
-/* ─── CUSTOM CURSOR ────────────────────────────────────────── */
-(function cursor(){
-  const c = document.getElementById('cursor');
-  if (!c) return;
-  // Skip on touch / coarse pointers
-  if (!matchMedia('(hover:hover) and (pointer:fine)').matches) {
-    c.style.display = 'none'; return;
-  }
-  let x = window.innerWidth/2, y = window.innerHeight/2;
-  let tx = x, ty = y;
-  document.addEventListener('mousemove', (e) => { tx = e.clientX; ty = e.clientY; }, { passive: true });
-  function tick(){
-    x += (tx - x) * 0.32;
-    y += (ty - y) * 0.32;
-    c.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`;
-    requestAnimationFrame(tick);
-  }
-  tick();
-  // Hover state on interactive elements
-  function bindHover(){
-    document.querySelectorAll('a, button, input, textarea, select, label, .cursor-grow').forEach(el => {
-      el.addEventListener('mouseenter', () => c.classList.add('is-hover'));
-      el.addEventListener('mouseleave', () => c.classList.remove('is-hover'));
-    });
-  }
-  bindHover();
-})();
+/* Custom cursor removed at owner's request — native OS cursor is used everywhere. */
 
 /* ─── REVEAL ON SCROLL ─────────────────────────────────────── */
 (function reveal(){
