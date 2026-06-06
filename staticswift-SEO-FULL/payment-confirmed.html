@@ -1,57 +1,187 @@
 <!DOCTYPE html>
 <html lang="en-gb">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-4BZHQMG0RF"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-4BZHQMG0RF');
-</script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Payment Confirmed — StaticSwift</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Payment received — StaticSwift</title>
 <meta name="robots" content="noindex">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#F2EFE7">
+<meta name="color-scheme" content="light">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=sentient@400,500,500i&f[]=switzer@400,500,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4BZHQMG0RF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-4BZHQMG0RF');</script>
+
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{background:#07090f;color:#f0f2f8;font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
-.wrap{max-width:520px}
-.icon{width:80px;height:80px;background:rgba(34,197,94,0.12);border:2px solid rgba(34,197,94,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 28px}
-h1{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,48px);font-weight:800;letter-spacing:-0.02em;margin-bottom:14px}
-.sub{font-size:17px;color:#8890a8;margin-bottom:36px;line-height:1.7}
-.card{background:#12151f;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:28px;margin-bottom:28px;text-align:left}
-.card h3{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin-bottom:16px}
-.step{display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;font-size:14px;color:#8890a8;line-height:1.5}
-.step-num{background:#00C8E0;color:#07090f;font-weight:700;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;margin-top:1px}
-.support{background:rgba(0,200,224,0.08);border:1px solid rgba(0,200,224,0.2);border-radius:10px;padding:16px;font-size:14px;color:#8890a8;margin-bottom:28px}
-.support a{color:#00C8E0;font-weight:600}
-.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.btn{display:inline-block;padding:13px 24px;border-radius:8px;font-weight:700;text-decoration:none;font-size:15px}
-.btn-p{background:#00C8E0;color:#07090f}
-.btn-o{background:transparent;color:#00C8E0;border:1.5px solid #00C8E0}
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+:root{
+  --paper:#F2EFE7; --paper-deep:#EBE7DD; --ink:#0E0B07; --ink-soft:#29221C; --ink-mid:#5A4E40;
+  --bronze:#8A7B62; --signal:#9C2615; --green:#347537;
+  --hair:rgba(14,11,7,.22); --hair-soft:rgba(14,11,7,.10);
+  --serif:'Sentient','PP Editorial New',Georgia,serif;
+  --sans:'Switzer','Söhne','Helvetica Neue',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --gutter:clamp(20px,5vw,72px);
+}
+body{ font-family:var(--sans); background:var(--paper); color:var(--ink); font-size:17px; line-height:1.55; min-height:100vh; }
+a{color:inherit}
+::selection{background:var(--ink);color:var(--paper)}
+
+.rh{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:14px var(--gutter); border-bottom:1px solid var(--hair);
+}
+.rh-l{ font-family:var(--serif); font-style:italic; font-weight:500; font-size:18px; letter-spacing:-.01em; color:var(--ink); display:flex; align-items:center; gap:10px; }
+.rh-l-dot{width:7px;height:7px;background:var(--ink);border-radius:50%;display:inline-block}
+.rh-r{ font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--bronze); }
+.rh-r a{ color:var(--ink); text-decoration:none; transition:color .2s; }
+.rh-r a:hover{ color:var(--signal) }
+
+.page{ max-width:760px; margin:0 auto; padding:clamp(60px,10vw,120px) var(--gutter) clamp(60px,8vw,100px); }
+
+.mark{
+  font-family:var(--mono); font-size:11px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--bronze); margin-bottom:28px;
+  display:flex; align-items:center; gap:14px;
+}
+.mark::before{ content:""; width:36px; height:1px; background:var(--green); }
+.mark b{ color:var(--green); font-family:var(--serif); font-style:italic; font-weight:500; font-size:14px; letter-spacing:-.005em; text-transform:none; }
+
+h1{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(48px,7vw,88px); line-height:.95; letter-spacing:-.035em;
+  color:var(--ink); margin-bottom:24px;
+}
+h1 em{ font-style:italic; color:var(--signal); }
+.lede{
+  font-family:var(--serif); font-size:clamp(20px,2.2vw,26px); line-height:1.4;
+  color:var(--ink-soft); max-width:580px; margin-bottom:48px;
+}
+
+.upload{
+  border:1px solid var(--hair);
+  border-radius:6px;
+  padding:clamp(28px,4vw,40px);
+  background:rgba(255,255,255,.45);
+  margin-bottom:32px;
+}
+.upload-mark{
+  font-family:var(--mono); font-size:11px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--bronze); margin-bottom:18px;
+}
+.upload h3{
+  font-family:var(--serif); font-weight:500;
+  font-size:clamp(24px,2.6vw,32px); letter-spacing:-.02em;
+  color:var(--ink); margin-bottom:22px;
+}
+.steps{ list-style:none; counter-reset:s; }
+.step{
+  display:grid; grid-template-columns:48px 1fr; gap:24px;
+  padding:18px 0; border-top:1px solid var(--hair-soft);
+  align-items:baseline;
+}
+.step:first-child{ border-top:none; padding-top:0; }
+.step-n{
+  font-family:var(--mono); font-size:11px; color:var(--bronze); letter-spacing:.1em;
+}
+.step-c strong{ display:block; font-family:var(--serif); font-weight:500; font-size:18px; color:var(--ink); margin-bottom:2px; letter-spacing:-.01em; }
+.step-c span{ color:var(--ink-mid); font-size:15px; line-height:1.55; }
+.step-c a{ color:var(--signal); text-decoration:underline; text-underline-offset:3px; }
+.step-c a:hover{ color:var(--signal-deep); }
+
+.support{
+  padding:18px 22px;
+  background:var(--paper-deep);
+  border:1px solid var(--hair-soft);
+  border-radius:6px;
+  margin-bottom:32px;
+  font-size:14.5px; color:var(--ink-soft); line-height:1.6;
+}
+.support a{ color:var(--signal); font-weight:500; text-decoration:underline; text-underline-offset:3px; }
+
+.actions{ display:flex; gap:12px; flex-wrap:wrap; }
+.btn{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:14px 22px; border-radius:100px;
+  font-family:var(--sans); font-weight:500; font-size:14.5px;
+  text-decoration:none; transition:transform .2s var(--ease-out), background .2s;
+}
+.btn-ink{ background:var(--ink); color:var(--paper); }
+.btn-ink:hover{ background:var(--signal); transform:translateY(-1px); }
+.btn-ghost{ background:transparent; color:var(--ink); border:1px solid var(--hair); }
+.btn-ghost:hover{ border-color:var(--ink); }
+
+@media(max-width:560px){
+  h1{ font-size:42px }
+  .step{ grid-template-columns:1fr; gap:6px }
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="icon">
-    <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path d="M7 18.5L14.5 26L29 9" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+<header class="rh">
+  <div class="rh-l"><span class="rh-l-dot" aria-hidden="true"></span> StaticSwift</div>
+  <div class="rh-r"><a href="/">← Back to the field guide</a></div>
+</header>
+
+<main class="page">
+  <div class="mark"><b>Payment received</b></div>
+  <h1>Thank you. The site <em>is yours.</em></h1>
+  <p class="lede">Your files will be in your inbox within the hour. If they're slow, check the spam folder &mdash; then ping us on WhatsApp and we'll resend immediately.</p>
+
+  <section class="upload">
+    <div class="upload-mark">Live in three minutes · The upload guide</div>
+    <h3>Get the site live, on your own domain.</h3>
+    <ol class="steps">
+      <li class="step">
+        <div class="step-n">01</div>
+        <div class="step-c">
+          <strong>Create a free Netlify account.</strong>
+          <span>Head to <a href="https://app.netlify.com" target="_blank" rel="noopener">app.netlify.com</a> and sign up &mdash; takes thirty seconds.</span>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-n">02</div>
+        <div class="step-c">
+          <strong>Add new site &rarr; Deploy manually.</strong>
+          <span>From the dashboard top-right. Netlify gives you a drop zone.</span>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-n">03</div>
+        <div class="step-c">
+          <strong>Drag your folder into the drop zone.</strong>
+          <span>The site is live the moment the upload finishes. You'll have a temporary &ldquo;.netlify.app&rdquo; URL right there.</span>
+        </div>
+      </li>
+      <li class="step">
+        <div class="step-n">04</div>
+        <div class="step-c">
+          <strong>Connect your own domain.</strong>
+          <span>Site Settings &rarr; Domain Management &rarr; Add Custom Domain. Or the <a href="/how-to-upload.html">full upload guide</a> walks you through it.</span>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <div class="support">
+    Stuck on any step? Email <a href="mailto:support@staticswift.co.uk">support@staticswift.co.uk</a> or WhatsApp <a href="https://wa.me/447502731799" target="_blank" rel="noopener">+44&nbsp;7502&nbsp;731&nbsp;799</a>. Always a real person. Always free.
   </div>
-  <h1>Payment confirmed.<br>Thank you.</h1>
-  <p class="sub">Your files will be in your inbox within the hour. Check spam if you do not see them.</p>
-  <div class="card">
-    <h3>Get your site live in 3 minutes</h3>
-    <div class="step"><span class="step-num">1</span><span>Go to <a href="https://app.netlify.com" target="_blank" style="color:#00C8E0;">app.netlify.com</a> and create a free account</span></div>
-    <div class="step"><span class="step-num">2</span><span>Click Add New Site, then Deploy Manually</span></div>
-    <div class="step"><span class="step-num">3</span><span>Drag your HTML file into the drop zone — your site is live instantly</span></div>
-    <div class="step"><span class="step-num">4</span><span>To connect your own domain: Site Settings, Domain Management, Add Custom Domain</span></div>
+
+  <div class="actions">
+    <a href="/how-to-upload.html" class="btn btn-ink">Full upload guide &rarr;</a>
+    <a href="/" class="btn btn-ghost">Back to the field guide</a>
   </div>
-  <div class="support">Need help? Email <a href="mailto:support@staticswift.co.uk">support@staticswift.co.uk</a> — always free, always a real person.</div>
-  <div class="btns">
-    <a href="/" class="btn btn-o">Back to Homepage</a>
-    <a href="how-to-upload.html" class="btn btn-p">Full Upload Guide</a>
-  </div>
-</div>
+</main>
+
+<script>
+try { if (typeof gtag === 'function') gtag('event','purchase_confirmation_view',{ source:'payment-confirmed' }); } catch(_){}
+</script>
 </body>
 </html>

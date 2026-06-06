@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>StaticSwift — A field guide to websites for UK trades. £499 + £49/mo.</title>
+<meta name="description" content="One developer, working at night in Manchester, building hand-coded websites for UK trades. £499 setup + £49/month. First new lead in 60 days or full refund and you keep the site.">
+<meta name="author" content="Harry Yule">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="theme-color" content="#F2EFE7">
+<meta name="color-scheme" content="light">
+<link rel="canonical" href="https://staticswift.co.uk/">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://staticswift.co.uk/">
+<meta property="og:site_name" content="StaticSwift">
+<meta property="og:locale" content="en_GB">
+<meta property="og:title" content="StaticSwift — A field guide to websites for UK trades.">
+<meta property="og:description" content="Hand-coded sites for UK trades. £499 + £49/mo. Lead-guaranteed.">
+<meta property="og:image" content="https://staticswift.co.uk/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="StaticSwift — A field guide to websites for UK trades.">
+<meta name="twitter:description" content="One developer, Manchester, hand-coded. £499 + £49/mo. Lead-guaranteed.">
+<meta name="twitter:image" content="https://staticswift.co.uk/og-image.jpg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link rel="dns-prefetch" href="https://www.googletagmanager.com">
+
+<!-- Sentient (editorial serif, italic-led) + Switzer (humanist sans, the right grotesque) — Fontshare.
+     JetBrains Mono — the workshop's mono. Pointedly NOT Geist, NOT Inter, NOT Instrument Serif. -->
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=sentient@400,400i,500,500i,700,700i&f[]=switzer@300,400,500,600,700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
+
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="sitemap" type="application/xml" href="/sitemap-index.xml">
+
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Organization","@id":"https://staticswift.co.uk/#org","name":"StaticSwift","url":"https://staticswift.co.uk/","logo":"https://staticswift.co.uk/logo.png","description":"StaticSwift builds hand-coded, lead-generating websites for UK trades and local services. £499 setup + £49/month, with a 60-day lead guarantee.","email":"hello@staticswift.co.uk","founder":{"@type":"Person","name":"Harry Yule"},"areaServed":{"@type":"Country","name":"United Kingdom"}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"ProfessionalService","@id":"https://staticswift.co.uk/#business","name":"StaticSwift","url":"https://staticswift.co.uk/","telephone":"+447502731799","email":"hello@staticswift.co.uk","priceRange":"£499-£999","description":"Hand-coded websites for UK trades and local services. £499 setup + £49/month, with a 60-day new-lead guarantee.","areaServed":[{"@type":"Country","name":"United Kingdom"}],"hasOfferCatalog":{"@type":"OfferCatalog","name":"Website packages","itemListElement":[{"@type":"Offer","name":"Starter","description":"5-page hand-coded site, Google Business Profile setup, hosting, edits. £499 + £49/month. First lead in 60 days or full refund.","price":"499","priceCurrency":"GBP"},{"@type":"Offer","name":"Pro","description":"10-page hand-coded site for multi-location operators. £999 + £99/month. First lead in 60 days or full refund.","price":"999","priceCurrency":"GBP"}]}}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much does a StaticSwift website cost?","acceptedAnswer":{"@type":"Answer","text":"£499 setup + £49/month for Starter. £999 setup + £99/month for Pro. Monthly covers hosting, edits, and ongoing care. Cancel any time."}},{"@type":"Question","name":"What is the 60-day lead guarantee?","acceptedAnswer":{"@type":"Answer","text":"If your site does not produce at least one new customer enquiry within 60 days of going live, full refund and you keep the site."}}]}
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4BZHQMG0RF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-4BZHQMG0RF');</script>
+
+<!-- TikTok Pixel — pixel ID D8G5KVRC77UAEKHUL26G. Loads ttq global; PageView fires on load.
+     SubmitForm + CompletePayment events fire from form/conversion handlers further down. -->
+<script>
+!function (w, d, t) {
+  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+  ttq.load('D8G5KVRC77UAEKHUL26G');
+  ttq.page();
+}(window, document, 'ttq');
+</script>
+
+<style>
+/* ─────────────────────────────────────────────────────────────
+   STATICSWIFT — FIELD GUIDE EDITION
+   Magazine vertical. Type-led. One signal colour. Hand-set.
+   Fonts: Sentient (display serif, italic-led) + Switzer
+   (humanist sans) + JetBrains Mono. Cream paper, warm ink.
+   Custom cursor + SVG grain + clip-path reveals.
+   ───────────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;scroll-behavior:smooth;text-rendering:optimizeLegibility}
+:root{
+  --paper:#F2EFE7;
+  --paper-deep:#EBE7DD;
+  --ink:#0E0B07;
+  --ink-soft:#29221C;
+  --ink-mid:#5A4E40;
+  --bronze:#8A7B62;
+  --bronze-dim:#BFB4A0;
+  --signal:#9C2615;
+  --signal-deep:#7A1D10;
+  --hair:rgba(14,11,7,.22);
+  --hair-soft:rgba(14,11,7,.10);
+  --hair-faint:rgba(14,11,7,.06);
+
+  --serif:'Sentient','PP Editorial New','GT Sectra Display',Georgia,serif;
+  --sans:'Switzer','Söhne','Suisse Int''l','Helvetica Neue',system-ui,sans-serif;
+  --mono:'JetBrains Mono','IBM Plex Mono',ui-monospace,monospace;
+
+  --ease:cubic-bezier(.16,1,.3,1);
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --container:1320px;
+  --gutter:clamp(20px,5vw,72px);
+}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  font-size:17px;
+  line-height:1.55;
+  font-weight:400;
+  overflow-x:hidden;
+  position:relative;
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,textarea,select{font:inherit;color:inherit}
+img,svg{display:block;max-width:100%;height:auto}
+::selection{background:var(--ink);color:var(--paper)}
+
+/* Hide focus outline but keep keyboard one */
+:focus{outline:none}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+
+/* SVG grain overlay — paper texture, never animated */
+.grain{
+  position:fixed; inset:0; pointer-events:none; z-index:2;
+  opacity:.07; mix-blend-mode:multiply;
+}
+
+/* Custom cursor removed — native OS cursor restored at owner's request.
+   The .cursor-grow class is left on a few elements but is now a no-op. */
+
+/* ─── REVEAL: clip-path wipe from bottom, like ink hitting paper ─── */
+[data-rv]{
+  clip-path:inset(0 0 100% 0);
+  transform:translateY(20px);
+  opacity:0;
+  transition:clip-path 1.1s var(--ease-out), transform 1.1s var(--ease-out), opacity 1.1s var(--ease-out);
+}
+[data-rv].in{
+  clip-path:inset(0 0 0 0);
+  transform:none;
+  opacity:1;
+}
+[data-rv-stagger] > *{
+  opacity:0; transform:translateY(14px);
+  transition:opacity .8s var(--ease), transform .8s var(--ease);
+}
+[data-rv-stagger].in > *{ opacity:1; transform:none; }
+[data-rv-stagger].in > *:nth-child(2){transition-delay:90ms}
+[data-rv-stagger].in > *:nth-child(3){transition-delay:180ms}
+[data-rv-stagger].in > *:nth-child(4){transition-delay:270ms}
+[data-rv-stagger].in > *:nth-child(5){transition-delay:360ms}
+[data-rv-stagger].in > *:nth-child(6){transition-delay:450ms}
+[data-rv-stagger].in > *:nth-child(7){transition-delay:540ms}
+[data-rv-stagger].in > *:nth-child(8){transition-delay:630ms}
+@media(prefers-reduced-motion:reduce){
+  [data-rv],[data-rv] *,[data-rv-stagger] > *{
+    clip-path:none; transform:none; opacity:1; transition:none;
+  }
+}
+
+/* ─── RUNNING HEAD — magazine running header, hairline-bordered ─── */
+.rh{
+  position:sticky; top:0; z-index:30;
+  display:grid; grid-template-columns:1fr auto 1fr;
+  align-items:center; gap:24px;
+  padding:14px var(--gutter);
+  background:var(--paper);
+  border-bottom:1px solid var(--hair);
+  font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.12em; text-transform:uppercase;
+  color:var(--bronze);
+}
+.rh-l{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:18px; letter-spacing:-.01em; text-transform:none;
+  color:var(--ink); display:flex; align-items:center; gap:10px;
+}
+.rh-l-dot{width:7px;height:7px;background:var(--ink);border-radius:50%;display:inline-block}
+.rh-c{text-align:center; line-height:1.4}
+.rh-r{text-align:right}
+.rh-r a{display:inline-flex; align-items:center; gap:6px; color:var(--ink); transition:color .2s}
+.rh-r a:hover{color:var(--signal)}
+@media(max-width:760px){
+  .rh{grid-template-columns:1fr auto; gap:14px}
+  .rh-c{display:none}
+}
+
+/* ─── MASTHEAD — huge wordmark, hairline, mono colophon ─── */
+.mast{
+  padding:clamp(60px, 12vw, 140px) var(--gutter) clamp(40px, 6vw, 72px);
+  position:relative;
+}
+.mast-word{
+  font-family:var(--serif);
+  font-style:italic; font-weight:500;
+  font-size:clamp(64px, 16.5vw, 260px);
+  line-height:.84;
+  letter-spacing:-.045em;
+  color:var(--ink);
+  margin-bottom:clamp(28px, 4vw, 52px);
+  display:block;
+  /* Optical kerning attempt */
+  font-feature-settings:'kern','liga','ss01';
+}
+.mast-rule{
+  height:1px; background:var(--ink); margin-bottom:16px;
+}
+.mast-foot{
+  display:grid; grid-template-columns:1fr 1fr 1fr;
+  gap:24px; align-items:baseline;
+  font-family:var(--mono); font-size:11px;
+  letter-spacing:.1em; text-transform:uppercase;
+  color:var(--bronze);
+}
+.mast-foot > *:nth-child(2){text-align:center}
+.mast-foot > *:nth-child(3){text-align:right}
+.mast-foot em{font-family:var(--serif); font-style:italic; font-size:13px; color:var(--ink); letter-spacing:-.01em; text-transform:none; font-weight:400}
+@media(max-width:760px){
+  .mast-foot{grid-template-columns:1fr; gap:8px}
+  .mast-foot > *{text-align:left !important}
+}
+
+/* ─── TOC — numbered contents index ─── */
+.toc{
+  max-width:1080px;
+  margin:0 auto;
+  padding:clamp(48px, 8vw, 96px) var(--gutter) clamp(60px, 10vw, 120px);
+}
+.toc-eyebrow{
+  font-family:var(--mono); font-size:11px;
+  letter-spacing:.12em; text-transform:uppercase;
+  color:var(--bronze); margin-bottom:32px;
+  display:flex; align-items:center; gap:12px;
+}
+.toc-eyebrow::before{content:''; width:24px; height:1px; background:var(--ink)}
+.toc-row{
+  display:grid; grid-template-columns:54px 1fr auto;
+  align-items:baseline; gap:0;
+  padding:24px 0;
+  border-bottom:1px solid var(--hair-soft);
+  transition:padding-left .5s var(--ease), border-color .3s;
+  position:relative;
+}
+.toc-row:first-child{border-top:1px solid var(--hair-soft)}
+.toc-row:hover{ padding-left:14px; border-color:var(--ink) }
+.toc-row:hover .toc-num{ color:var(--signal) }
+.toc-row:hover .toc-label{ color:var(--ink) }
+.toc-row:hover .toc-arrow{ transform:translateX(6px); color:var(--signal) }
+.toc-num{
+  font-family:var(--mono); font-size:12px;
+  letter-spacing:.06em; color:var(--bronze);
+  transition:color .3s var(--ease);
+  align-self:center;
+}
+.toc-label{
+  font-family:var(--serif); font-style:italic;
+  font-weight:400; font-size:clamp(20px, 2.7vw, 30px);
+  letter-spacing:-.015em; color:var(--ink);
+  transition:color .3s var(--ease);
+}
+.toc-page{
+  font-family:var(--mono); font-size:11px;
+  letter-spacing:.06em; color:var(--bronze);
+  align-self:center; display:flex; align-items:center; gap:14px;
+}
+.toc-arrow{
+  display:inline-block; transition:transform .3s var(--ease), color .3s var(--ease);
+}
+@media(max-width:640px){
+  .toc-row{grid-template-columns:38px 1fr auto; padding:18px 0}
+  .toc-label{font-size:18px}
+}
+
+/* ─── SECTION SHELL ─── */
+.sec{
+  padding:clamp(64px, 10vw, 140px) var(--gutter);
+  position:relative;
+}
+.sec-bordered{
+  border-top:1px solid var(--hair);
+  border-bottom:1px solid var(--hair);
+}
+.sec-mark{
+  font-family:var(--mono); font-size:11px;
+  letter-spacing:.12em; text-transform:uppercase;
+  color:var(--bronze); margin-bottom:28px;
+  display:inline-flex; align-items:center; gap:12px;
+}
+.sec-mark::before{content:''; width:24px; height:1px; background:var(--ink)}
+
+/* ─── HERO STATEMENT — single sentence, the whole viewport ─── */
+.hero-stmt{
+  min-height:clamp(560px, 88vh, 1000px);
+  display:flex; flex-direction:column; justify-content:center;
+  padding:clamp(80px, 12vw, 160px) var(--gutter) clamp(60px, 10vw, 120px);
+  border-bottom:1px solid var(--hair);
+  position:relative;
+}
+.hs-line{
+  font-family:var(--serif);
+  font-style:italic; font-weight:500;
+  font-size:clamp(44px, 10vw, 168px);
+  line-height:.92;
+  letter-spacing:-.035em;
+  color:var(--ink);
+  max-width:18ch;
+}
+.hs-line .quiet{color:var(--ink-mid); font-style:italic}
+.hs-line .loud{color:var(--signal); font-style:italic}
+.hs-foot{
+  margin-top:clamp(40px, 6vw, 80px);
+  display:flex; align-items:center; gap:14px;
+  font-family:var(--mono); font-size:11px;
+  letter-spacing:.12em; text-transform:uppercase;
+  color:var(--bronze);
+}
+.hs-foot::after{content:''; flex:1; max-width:280px; height:1px; background:var(--hair)}
+
+/* ─── PINNED PHONE — 'A glimpse of the work' ─── */
+.pin{
+  position:relative;
+  height:380vh;
+  border-bottom:1px solid var(--hair);
+}
+.pin-inner{
+  position:sticky; top:0;
+  height:100vh;
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:clamp(40px, 6vw, 96px);
+  align-items:center;
+  padding:0 var(--gutter);
+  overflow:hidden;
+}
+.pin-l{ max-width:540px }
+.pp-head{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(34px, 5.2vw, 72px);
+  line-height:1; letter-spacing:-.028em;
+  margin-bottom:24px;
+}
+.pp-body{
+  font-family:var(--serif); font-weight:400;
+  font-size:clamp(17px, 1.4vw, 19px);
+  line-height:1.6; color:var(--ink-soft);
+  margin-bottom:40px; max-width:38ch;
+}
+.pp-anno{
+  list-style:none; display:flex; flex-direction:column; gap:14px;
+  padding-left:0;
+}
+.pp-anno-item{
+  font-family:var(--mono); font-size:12px;
+  line-height:1.5; letter-spacing:.01em;
+  color:var(--ink); opacity:.18;
+  padding-left:22px; position:relative;
+  transition:opacity .55s var(--ease), padding-left .55s var(--ease), color .55s var(--ease);
+}
+.pp-anno-item::before{
+  content:''; position:absolute; left:0; top:9px;
+  width:12px; height:1px; background:var(--bronze-dim);
+  transition:width .55s var(--ease), background .55s var(--ease);
+}
+.pp-anno-item.on{
+  opacity:1; padding-left:34px;
+}
+.pp-anno-item.on::before{ width:24px; background:var(--signal); }
+
+.pin-r{ display:flex; justify-content:center; align-items:center; perspective:1200px }
+
+/* The phone */
+.phone{
+  --phone-w:300px;
+  --phone-h:620px;
+  width:var(--phone-w); height:var(--phone-h);
+  background:#0a0a0a;
+  border-radius:46px;
+  padding:8px;
+  position:relative;
+  box-shadow:
+    inset 0 0 0 1.4px rgba(255,255,255,.08),
+    0 0 0 1.5px #050505,
+    0 60px 100px -40px rgba(14,11,7,.45),
+    0 30px 50px -20px rgba(14,11,7,.18);
+  transform:rotate(-1.2deg);
+  transition:transform 1s var(--ease-out);
+}
+.phone::before{
+  content:''; position:absolute;
+  top:16px; left:50%; transform:translateX(-50%);
+  width:88px; height:24px;
+  background:#000; border-radius:100px; z-index:4;
+}
+.phone::after{
+  content:''; position:absolute;
+  top:14px; right:55px;
+  width:6px; height:6px; background:#1a2a3a;
+  border-radius:50%; z-index:5;
+  box-shadow:0 0 0 1px rgba(0,80,160,.15);
+}
+.phone-side{
+  position:absolute; background:#050505;
+  border-radius:2px;
+}
+.phone-side-1{ right:-3px; top:120px; width:3px; height:30px }
+.phone-side-2{ left:-3px; top:100px; width:3px; height:24px }
+.phone-side-3{ left:-3px; top:140px; width:3px; height:46px }
+.phone-side-4{ left:-3px; top:200px; width:3px; height:46px }
+.phone-screen{
+  width:100%; height:100%;
+  background:var(--paper);
+  border-radius:38px;
+  overflow:hidden;
+  position:relative;
+}
+.phone-stack{
+  position:absolute; left:0; right:0; top:0;
+  width:100%;
+  will-change:transform;
+  transform:translateY(0);
+}
+.phone-page{
+  width:100%; height:var(--phone-h);
+  padding:46px 22px 24px;
+  display:flex; flex-direction:column;
+  position:relative;
+  background:var(--paper);
+}
+.phone-page + .phone-page{ border-top:1px solid var(--hair-soft) }
+
+/* Phone page 1 — hero */
+.pp1-mark{font-family:var(--mono); font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--bronze); display:flex; align-items:center; gap:6px; margin-bottom:18px}
+.pp1-mark::before{content:''; width:5px; height:5px; border-radius:50%; background:#347537}
+.pp1-h{font-family:var(--serif); font-style:italic; font-weight:500; font-size:30px; line-height:1; letter-spacing:-.025em; margin-bottom:10px}
+.pp1-sub{font-family:var(--sans); font-size:11.5px; line-height:1.4; color:var(--ink-soft); margin-bottom:auto}
+.pp1-cta{display:flex; flex-direction:column; gap:8px; margin-top:18px}
+.pp1-call{background:var(--signal); color:var(--paper); padding:14px 16px; border-radius:8px; text-align:center; font-weight:600; font-size:14px; letter-spacing:.01em; font-family:var(--sans); display:flex; align-items:center; justify-content:center; gap:8px}
+.pp1-call-ico{width:14px; height:14px}
+.pp1-book{border:1px solid var(--ink); padding:12px 16px; border-radius:8px; text-align:center; font-weight:500; font-size:12.5px; color:var(--ink); font-family:var(--sans)}
+.pp1-mini{display:flex; justify-content:space-between; font-family:var(--mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze); margin-top:14px; padding-top:12px; border-top:1px solid var(--hair-faint)}
+
+/* Phone page 2 — services */
+.pp2-mark{font-family:var(--mono); font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--bronze); margin-bottom:14px}
+.pp2-h{font-family:var(--serif); font-style:italic; font-weight:500; font-size:22px; line-height:1.05; letter-spacing:-.02em; margin-bottom:18px}
+.pp2-rows{display:flex; flex-direction:column; gap:12px}
+.pp2-row{display:flex; flex-direction:column; gap:4px; padding:14px 0; border-top:1px solid var(--hair-faint)}
+.pp2-row:first-child{border-top:0; padding-top:0}
+.pp2-row-h{display:flex; justify-content:space-between; align-items:baseline}
+.pp2-row-title{font-family:var(--sans); font-weight:600; font-size:13px; color:var(--ink)}
+.pp2-row-price{font-family:var(--mono); font-size:11px; color:var(--signal); font-weight:500}
+.pp2-row-sub{font-family:var(--sans); font-size:11px; color:var(--ink-mid); line-height:1.4}
+
+/* Phone page 3 — reviews */
+.pp3-mark{font-family:var(--mono); font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--bronze); margin-bottom:6px; display:flex; align-items:center; gap:6px}
+.pp3-mark::before{content:''; width:5px; height:5px; border-radius:50%; background:var(--signal)}
+.pp3-h{font-family:var(--serif); font-style:italic; font-weight:500; font-size:22px; line-height:1.05; letter-spacing:-.02em; margin-bottom:20px}
+.pp3-list{display:flex; flex-direction:column; gap:18px}
+.pp3-card{padding:14px 0; border-top:1px solid var(--hair-faint)}
+.pp3-card:first-child{border-top:0; padding-top:0}
+.pp3-stars{color:#D4A24A; font-size:11px; letter-spacing:1.5px; margin-bottom:6px; font-family:var(--mono)}
+.pp3-quote{font-family:var(--serif); font-style:italic; font-size:13.5px; line-height:1.45; color:var(--ink); margin-bottom:8px}
+.pp3-who{font-family:var(--mono); font-size:9.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze)}
+
+/* Phone page 4 — booking */
+.pp4-mark{font-family:var(--mono); font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--bronze); margin-bottom:14px}
+.pp4-h{font-family:var(--serif); font-style:italic; font-weight:500; font-size:22px; line-height:1.05; letter-spacing:-.02em; margin-bottom:16px}
+.pp4-fields{display:flex; flex-direction:column; gap:10px; margin-bottom:14px}
+.pp4-field{background:#fff; border:1px solid var(--hair-soft); border-radius:8px; padding:10px 12px; font-family:var(--sans); font-size:11.5px; color:var(--ink-mid)}
+.pp4-field.filled{color:var(--ink); font-weight:500}
+.pp4-submit{background:var(--ink); color:var(--paper); padding:13px; border-radius:8px; text-align:center; font-family:var(--sans); font-weight:500; font-size:12.5px}
+.pp4-foot{display:flex; justify-content:space-between; margin-top:14px; padding-top:10px; border-top:1px solid var(--hair-faint); font-family:var(--mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze)}
+
+/* Pinned phone — mobile fallback (no pinning, smaller phone, single inline) */
+@media(max-width:880px){
+  .pin{ height:auto; border-bottom:1px solid var(--hair) }
+  .pin-inner{
+    position:relative; top:auto; height:auto;
+    grid-template-columns:1fr; gap:48px;
+    padding:clamp(64px,10vw,120px) var(--gutter);
+  }
+  .pin-r{ order:2 }
+  .pin-l{ order:1; max-width:none }
+  .phone{ --phone-w:280px; --phone-h:560px; transform:rotate(0) }
+  .pp-anno-item{ opacity:1; padding-left:34px }
+  .pp-anno-item::before{ width:24px; background:var(--signal) }
+}
+
+/* ─── THE PITCH — two columns, serif body left + mono pull-quote right ─── */
+.pitch{ padding:clamp(80px,12vw,160px) var(--gutter) clamp(80px,12vw,160px) }
+.pitch-grid{
+  display:grid; grid-template-columns:minmax(0, 1.05fr) minmax(0, .95fr);
+  gap:clamp(48px,8vw,120px);
+  align-items:start;
+  max-width:var(--container); margin:0 auto;
+}
+.pitch-l{ max-width:60ch }
+.pitch-l h2{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(34px, 5.2vw, 72px); line-height:1.02;
+  letter-spacing:-.028em; margin-bottom:32px;
+}
+.pitch-l p{
+  font-family:var(--serif); font-weight:400;
+  font-size:clamp(18px, 1.5vw, 21px); line-height:1.6;
+  color:var(--ink-soft); margin-bottom:20px;
+}
+.pitch-l p:last-child{margin-bottom:0}
+.pitch-l b{font-weight:500; color:var(--ink); background:linear-gradient(transparent 60%, rgba(156,38,21,.16) 60%); padding:0 2px}
+.pitch-r{
+  position:sticky; top:120px;
+  padding-left:clamp(0px, 3vw, 40px);
+  border-left:1px solid var(--hair-soft);
+}
+.pitch-quote{
+  font-family:var(--mono); font-size:13px; line-height:1.7;
+  letter-spacing:.01em; color:var(--ink);
+  text-transform:uppercase;
+}
+.pitch-quote-mark{
+  font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.14em; color:var(--bronze);
+  margin-bottom:20px; display:block;
+}
+.pitch-quote em{font-family:var(--serif); font-style:italic; text-transform:none; color:var(--signal); font-size:15px; letter-spacing:-.01em; font-weight:500}
+@media(max-width:880px){
+  .pitch-grid{grid-template-columns:1fr; gap:48px}
+  .pitch-r{position:static; padding-left:0; border-left:0; border-top:1px solid var(--hair-soft); padding-top:36px}
+}
+
+/* ─── THE WORK — numbered index list with hover thumb ─── */
+.work{ padding:clamp(80px,12vw,160px) var(--gutter); position:relative; overflow:hidden }
+.work-head{ max-width:880px; margin:0 auto clamp(40px,6vw,80px); }
+.work-head h2{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(34px, 5.2vw, 72px); line-height:1.02;
+  letter-spacing:-.028em; margin-bottom:18px;
+}
+.work-head p{
+  font-family:var(--serif); font-size:18px; line-height:1.55; color:var(--ink-soft);
+  max-width:54ch;
+}
+.work-list{
+  list-style:none; padding:0; max-width:var(--container); margin:0 auto;
+}
+.work-row{
+  display:grid;
+  grid-template-columns:60px minmax(0,1fr) 160px 80px 32px;
+  align-items:center;
+  gap:24px;
+  padding:clamp(26px,3.6vw,42px) 0;
+  border-bottom:1px solid var(--hair-soft);
+  position:relative;
+  cursor:pointer;
+  transition:padding-left .5s var(--ease), background .3s;
+}
+.work-row:first-child{border-top:1px solid var(--hair-soft)}
+.work-row:hover{ padding-left:24px }
+.work-row:hover .wr-trade{ color:var(--ink); font-style:italic }
+.work-row:hover .wr-num{ color:var(--signal) }
+.work-row:hover .wr-arrow{ transform:translateX(8px); color:var(--signal) }
+.wr-num{
+  font-family:var(--mono); font-size:13px;
+  letter-spacing:.06em; color:var(--bronze);
+  transition:color .3s var(--ease);
+}
+.wr-trade{
+  font-family:var(--serif); font-weight:500;
+  font-size:clamp(22px, 3vw, 42px); line-height:1.05;
+  letter-spacing:-.02em; color:var(--ink);
+  transition:color .3s var(--ease), font-style .3s;
+}
+.wr-trade em{font-style:italic; color:var(--ink-mid); font-weight:400}
+.wr-city{
+  font-family:var(--mono); font-size:11px;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--bronze);
+  text-align:right;
+}
+.wr-year{
+  font-family:var(--mono); font-size:11px;
+  letter-spacing:.04em; color:var(--bronze);
+  text-align:right;
+}
+.wr-arrow{
+  display:flex; align-items:center; justify-content:center;
+  color:var(--ink); transition:transform .35s var(--ease), color .3s;
+}
+@media(max-width:760px){
+  .work-row{grid-template-columns:30px 1fr 50px 24px; gap:14px; padding:18px 0}
+  .wr-city{display:none}
+  .wr-trade{font-size:18px}
+  .wr-num{font-size:11px}
+  .wr-year{font-size:10px}
+}
+
+/* Floating thumbnail that tracks the cursor */
+.work-thumb{
+  position:fixed; top:0; left:0;
+  width:260px; height:340px;
+  background:var(--ink);
+  border-radius:6px;
+  overflow:hidden;
+  pointer-events:none;
+  opacity:0;
+  transform:translate(-50%, -50%) scale(.9);
+  transition:opacity .3s var(--ease), transform .3s var(--ease);
+  z-index:50;
+  box-shadow:0 30px 60px -20px rgba(14,11,7,.4);
+}
+.work-thumb.show{ opacity:1; transform:translate(-50%, -50%) scale(1) }
+.work-thumb img{ width:100%; height:100%; object-fit:cover; filter:contrast(1.05) saturate(.92) }
+.work-thumb-cap{
+  position:absolute; left:0; right:0; bottom:0;
+  padding:10px 14px;
+  background:linear-gradient(transparent, rgba(0,0,0,.7));
+  color:var(--paper);
+  font-family:var(--mono); font-size:10px;
+  letter-spacing:.12em; text-transform:uppercase;
+}
+@media(hover:none) and (pointer:coarse){ .work-thumb{display:none !important} }
+
+/* ─── HOW IT SHIPS — 4-line ruled table, no boxes ─── */
+.ship{ padding:clamp(80px,12vw,160px) var(--gutter); background:var(--paper-deep) }
+.ship-inner{ max-width:1080px; margin:0 auto }
+.ship-head{ margin-bottom:clamp(40px,6vw,72px); max-width:680px }
+.ship-head h2{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(34px, 5vw, 64px); line-height:1.02;
+  letter-spacing:-.025em; margin-bottom:14px;
+}
+.ship-head p{font-family:var(--serif); font-size:18px; line-height:1.55; color:var(--ink-soft); max-width:48ch}
+.ship-table{
+  border-top:1px solid var(--ink);
+}
+.ship-row{
+  display:grid; grid-template-columns:120px 1fr 1fr;
+  gap:24px; align-items:baseline;
+  padding:clamp(22px,2.6vw,30px) 0;
+  border-bottom:1px solid var(--hair-soft);
+}
+.ship-day{
+  font-family:var(--mono); font-size:11px;
+  letter-spacing:.12em; text-transform:uppercase;
+  color:var(--bronze);
+}
+.ship-what{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(20px, 2.6vw, 32px); line-height:1.1;
+  letter-spacing:-.02em; color:var(--ink);
+}
+.ship-detail{
+  font-family:var(--sans); font-size:15px;
+  line-height:1.5; color:var(--ink-mid);
+}
+@media(max-width:720px){
+  .ship-row{grid-template-columns:1fr; gap:6px; padding:20px 0}
+}
+
+/* ─── THE COST — hand-set menu ─── */
+.cost{ padding:clamp(80px,12vw,160px) var(--gutter) }
+.cost-inner{ max-width:1080px; margin:0 auto }
+.cost-head{ margin-bottom:clamp(48px,7vw,88px); max-width:680px }
+.cost-head h2{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(34px, 5vw, 64px); line-height:1.02;
+  letter-spacing:-.025em; margin-bottom:14px;
+}
+.cost-head h2 em{font-style:italic; color:var(--signal); font-weight:500}
+.cost-head p{font-family:var(--serif); font-size:18px; line-height:1.55; color:var(--ink-soft); max-width:48ch}
+.menu{
+  display:flex; flex-direction:column; gap:clamp(40px,5vw,72px);
+}
+.menu-item{
+  display:grid; grid-template-columns:1fr auto;
+  gap:24px; align-items:start;
+  padding-bottom:clamp(40px,5vw,72px);
+  border-bottom:1px solid var(--hair-soft);
+}
+.menu-item:last-child{border-bottom:0}
+.menu-l{ max-width:60ch }
+.menu-tier{
+  font-family:var(--mono); font-size:11px;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin-bottom:14px;
+}
+.menu-name{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(38px, 5.5vw, 76px); line-height:.95;
+  letter-spacing:-.03em; color:var(--ink); margin-bottom:18px;
+}
+.menu-desc{
+  font-family:var(--serif); font-size:17px; line-height:1.55;
+  color:var(--ink-soft); margin-bottom:24px; max-width:48ch;
+}
+.menu-list{ list-style:none; padding:0; display:flex; flex-direction:column; gap:8px }
+.menu-list li{
+  font-family:var(--mono); font-size:12px;
+  letter-spacing:.04em; color:var(--ink-mid);
+  display:flex; gap:14px;
+}
+.menu-list li::before{
+  content:'──'; color:var(--bronze-dim); flex-shrink:0;
+}
+.menu-r{ text-align:right; min-width:200px }
+.menu-price{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(54px, 7vw, 112px); line-height:.9;
+  letter-spacing:-.04em; color:var(--ink);
+  margin-bottom:6px;
+}
+.menu-mo{
+  font-family:var(--mono); font-size:12px;
+  letter-spacing:.08em; text-transform:uppercase; color:var(--bronze);
+}
+.menu-mo b{color:var(--ink); font-weight:500}
+.menu-cta{
+  margin-top:24px;
+  display:inline-flex; align-items:center; gap:10px;
+  padding:14px 22px;
+  border:1px solid var(--ink);
+  border-radius:0;
+  font-family:var(--sans); font-size:13.5px; font-weight:500;
+  background:transparent; color:var(--ink);
+  letter-spacing:.01em;
+  transition:background .25s var(--ease), color .25s var(--ease), transform .25s var(--ease);
+}
+.menu-cta:hover{ background:var(--ink); color:var(--paper); transform:translateY(-1px) }
+.menu-cta svg{transition:transform .25s var(--ease)}
+.menu-cta:hover svg{transform:translateX(4px)}
+@media(max-width:720px){
+  .menu-item{grid-template-columns:1fr; gap:24px}
+  .menu-r{text-align:left; min-width:0}
+}
+
+/* ─── THE GUARANTEE — full bleed massive statement ─── */
+.guarantee{
+  padding:clamp(120px,18vw,260px) var(--gutter);
+  background:var(--ink);
+  color:var(--paper);
+  position:relative;
+}
+.guarantee-mark{
+  font-family:var(--mono); font-size:11px;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:#9C8B6E; margin-bottom:40px;
+  display:inline-flex; align-items:center; gap:12px;
+}
+.guarantee-mark::before{content:''; width:24px; height:1px; background:#9C8B6E}
+.guarantee-line{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(40px, 8vw, 140px);
+  line-height:.96;
+  letter-spacing:-.035em;
+  color:var(--paper);
+  max-width:18ch;
+}
+.guarantee-line em{color:#D4A24A; font-style:italic}
+.guarantee-sig{
+  margin-top:clamp(60px,8vw,110px);
+  display:flex; align-items:center; gap:20px;
+  font-family:var(--mono); font-size:11px;
+  letter-spacing:.12em; text-transform:uppercase;
+  color:#9C8B6E;
+}
+.guarantee-sig::before{content:''; width:80px; height:1px; background:#9C8B6E}
+.guarantee-sig em{font-family:var(--serif); font-style:italic; font-weight:500; color:var(--paper); font-size:22px; letter-spacing:-.01em; text-transform:none}
+
+/* ─── FOUNDER'S NOTE — narrow column, serif body ─── */
+.note{ padding:clamp(80px,12vw,160px) var(--gutter); background:var(--paper-deep) }
+.note-inner{ max-width:680px; margin:0 auto }
+.note-mark{
+  font-family:var(--mono); font-size:11px;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:var(--bronze); margin-bottom:40px;
+  display:inline-flex; align-items:center; gap:12px;
+}
+.note-mark::before{content:''; width:24px; height:1px; background:var(--ink)}
+.note-h{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(36px, 5.5vw, 64px); line-height:1;
+  letter-spacing:-.025em; margin-bottom:36px;
+  color:var(--ink);
+}
+.note-body p{
+  font-family:var(--serif); font-weight:400;
+  font-size:clamp(18px, 1.5vw, 21px); line-height:1.7;
+  color:var(--ink-soft);
+  margin-bottom:24px;
+  max-width:60ch;
+}
+.note-body p:first-letter{
+  font-style:italic; font-weight:500; font-size:1.4em; color:var(--signal); padding-right:2px;
+}
+.note-sig{
+  margin-top:48px;
+  font-family:var(--serif); font-style:italic;
+  font-size:22px; color:var(--ink);
+  display:flex; align-items:baseline; gap:10px;
+}
+.note-sig::before{content:'~'; color:var(--signal); font-size:24px}
+.note-sig small{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze); font-style:normal}
+
+/* ─── BEGIN (form) ─── */
+.begin{ padding:clamp(80px,12vw,160px) var(--gutter); border-top:1px solid var(--hair) }
+.begin-inner{ max-width:1080px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:clamp(40px,6vw,96px); align-items:start }
+.begin-l h2{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(36px, 5.5vw, 72px); line-height:1;
+  letter-spacing:-.028em; margin-bottom:28px; color:var(--ink);
+}
+.begin-l p{font-family:var(--serif); font-size:18px; line-height:1.6; color:var(--ink-soft); max-width:40ch; margin-bottom:32px}
+.begin-meta{display:flex; flex-direction:column; gap:18px; font-family:var(--mono); font-size:12.5px; color:var(--ink-soft)}
+.begin-meta a{color:var(--ink); border-bottom:1px solid var(--hair); padding-bottom:2px; transition:border-color .2s, color .2s}
+.begin-meta a:hover{border-color:var(--signal); color:var(--signal)}
+.begin-meta-lbl{display:block; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--bronze); margin-bottom:4px; font-family:var(--mono)}
+
+/* form */
+.bf{ display:flex; flex-direction:column; gap:0 }
+.bf-field{ display:flex; flex-direction:column; padding:18px 0; border-bottom:1px solid var(--hair-soft); position:relative }
+.bf-field:first-child{border-top:1px solid var(--ink)}
+.bf-field label{ font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--bronze); margin-bottom:8px }
+.bf-field input, .bf-field select, .bf-field textarea{
+  background:transparent; border:0; padding:0;
+  font-family:var(--serif); font-size:clamp(20px, 2.2vw, 26px);
+  color:var(--ink); outline:none; line-height:1.2;
+  letter-spacing:-.01em; font-weight:400;
+  width:100%;
+}
+.bf-field input::placeholder, .bf-field textarea::placeholder{color:var(--bronze-dim); font-style:italic}
+.bf-field textarea{ min-height:80px; line-height:1.4; resize:vertical }
+.bf-row{ display:grid; grid-template-columns:1fr 1fr; gap:0; padding:0 }
+.bf-row .bf-field{ border-bottom:0 }
+.bf-row .bf-field:first-child{ border-right:1px solid var(--hair-soft); padding-right:24px }
+.bf-row .bf-field:last-child{ padding-left:24px }
+.bf-row-wrap{ border-bottom:1px solid var(--hair-soft); padding:18px 0 }
+.bf-row-wrap:first-child .bf-field:first-child{ border-top:0 }
+.bf-submit{
+  margin-top:28px;
+  display:inline-flex; align-items:center; gap:12px;
+  padding:18px 28px;
+  background:var(--ink); color:var(--paper);
+  font-family:var(--sans); font-size:14px; font-weight:500;
+  letter-spacing:.02em;
+  align-self:flex-start;
+  transition:background .2s var(--ease), transform .2s var(--ease);
+}
+.bf-submit:hover{ background:var(--signal); transform:translateY(-2px) }
+.bf-submit:disabled{ opacity:.5; cursor:wait; transform:none }
+.bf-ok{ display:none; padding:20px 0; border-top:1px solid var(--signal); margin-top:18px; font-family:var(--serif); font-style:italic; font-size:18px; color:var(--signal) }
+.bf-ok.show{ display:block }
+.bf-err{ margin-top:14px; padding:14px 16px; background:rgba(156,38,21,.08); border-left:2px solid var(--signal); color:var(--signal-deep); font-size:13.5px; line-height:1.5; font-family:var(--sans) }
+.bf-err a{color:inherit; text-decoration:underline}
+@media(max-width:880px){
+  .begin-inner{ grid-template-columns:1fr; gap:48px }
+  .bf-row{ grid-template-columns:1fr }
+  .bf-row .bf-field:first-child{ border-right:0; padding-right:0; border-bottom:1px solid var(--hair-soft); padding-bottom:18px; margin-bottom:18px }
+  .bf-row .bf-field:last-child{ padding-left:0 }
+}
+
+/* ─── COLOPHON FOOTER — tiny mono ─── */
+.colophon{
+  padding:clamp(40px,5vw,60px) var(--gutter);
+  border-top:1px solid var(--ink);
+  font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.1em; text-transform:uppercase;
+  color:var(--bronze);
+}
+.col-inner{
+  max-width:var(--container); margin:0 auto;
+  display:grid; grid-template-columns:1fr 1fr 1fr;
+  gap:24px; align-items:start;
+}
+.col-block b{font-family:var(--serif); font-style:italic; color:var(--ink); font-size:14px; letter-spacing:-.01em; text-transform:none; font-weight:500; display:block; margin-bottom:8px}
+.col-block a{color:var(--ink-mid); transition:color .2s; display:block}
+.col-block a:hover{color:var(--signal)}
+@media(max-width:760px){
+  .col-inner{grid-template-columns:1fr; gap:32px}
+}
+
+/* Skip link */
+.skip{position:absolute;left:-9999px;top:8px;background:var(--ink);color:var(--paper);padding:8px 14px;font-family:var(--mono);font-size:12px;z-index:99}
+.skip:focus{left:8px}
+
+</style>
+</head>
+<body>
+
+<a href="#begin" class="skip">Skip to brief</a>
+
+<!-- SVG grain — paper texture, never animated -->
+<svg class="grain" aria-hidden="true">
+  <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.92" numOctaves="2" seed="3"/></filter>
+  <rect width="100%" height="100%" filter="url(#grain)"/>
+</svg>
+
+<!-- Custom cursor (desktop only, hidden on touch) -->
+<!-- Floating work thumbnail (tracks cursor in the work section) -->
+<div class="work-thumb" id="workThumb" aria-hidden="true">
+  <img id="workThumbImg" src="" alt="">
+  <div class="work-thumb-cap" id="workThumbCap"></div>
+</div>
+
+<!-- Running magazine header -->
+<header class="rh" aria-label="Running head">
+  <div class="rh-l"><span class="rh-l-dot"></span>StaticSwift</div>
+  <div class="rh-c">Vol. I · Websites for UK trades · MMXXVI · Manchester</div>
+  <div class="rh-r"><a href="#begin">Begin <span aria-hidden="true">→</span></a></div>
+</header>
+
+<main id="main">
+
+  <!-- MASTHEAD -->
+  <section class="mast" data-rv>
+    <h1 class="mast-word">StaticSwift</h1>
+    <div class="mast-rule"></div>
+    <div class="mast-foot">
+      <span>Issue 01 — <em>The Field Guide</em></span>
+      <span>Hand-coded websites for UK trades</span>
+      <span>Manchester · Year One</span>
+    </div>
+  </section>
+
+  <!-- CONTENTS INDEX removed at owner's request — straight from masthead into the hero. -->
+
+
+  <!-- 01 — HERO STATEMENT -->
+  <section class="hero-stmt" id="pitch" data-rv>
+    <p class="sec-mark">01 — On quiet phones</p>
+    <h2 class="hs-line">
+      Most trade<br>
+      websites are <span class="quiet">quiet.</span><br>
+      We make<br>
+      the <span class="loud">loud</span> kind.
+    </h2>
+    <p class="hs-foot">Continue reading</p>
+  </section>
+
+  <!-- 02 — PINNED PHONE (cinematic moment) -->
+  <section class="pin" id="proof">
+    <div class="pin-inner">
+      <div class="pin-l" data-rv>
+        <p class="sec-mark">02 — A glimpse of the work</p>
+        <h3 class="pp-head">A trade site, top to bottom — <em>scroll to see it move.</em></h3>
+        <p class="pp-body">Built for an electrician in Bristol. Loads in 1.8 seconds. Books jobs in 30 seconds. This is the texture of every site we ship — keep scrolling and the phone scrolls with you.</p>
+        <ul class="pp-anno" id="ppAnno">
+          <li class="pp-anno-item on" data-start="0" data-end="0.27">Phone number lives in the thumb zone. No menu hunt.</li>
+          <li class="pp-anno-item" data-start="0.27" data-end="0.52">Three services. Three rates. No menu maze.</li>
+          <li class="pp-anno-item" data-start="0.52" data-end="0.77">Reviews pulled straight from your Google Business Profile.</li>
+          <li class="pp-anno-item" data-start="0.77" data-end="1.01">Booking in 30 seconds. Pre-filled. One submit.</li>
+        </ul>
+      </div>
+      <div class="pin-r">
+        <div class="phone" aria-hidden="true">
+          <span class="phone-side phone-side-1"></span>
+          <span class="phone-side phone-side-2"></span>
+          <span class="phone-side phone-side-3"></span>
+          <span class="phone-side phone-side-4"></span>
+          <div class="phone-screen">
+            <div class="phone-stack" id="phoneStack">
+
+              <!-- Phone screen 1 — Hero -->
+              <div class="phone-page">
+                <p class="pp1-mark">Harrison Electrical · Bristol</p>
+                <h4 class="pp1-h">Power,<br>fixed<br>properly.</h4>
+                <p class="pp1-sub">NICEIC-registered. Same-week appointments across Bristol &amp; Bath. EV charge points, rewires, fault-finding.</p>
+                <div class="pp1-cta">
+                  <div class="pp1-call">
+                    <svg class="pp1-call-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    07700 900 123
+                  </div>
+                  <div class="pp1-book">Book a callout online</div>
+                </div>
+                <div class="pp1-mini">
+                  <span>NICEIC · 4127</span>
+                  <span>Open 7am – 7pm</span>
+                </div>
+              </div>
+
+              <!-- Phone screen 2 — Services -->
+              <div class="phone-page">
+                <p class="pp2-mark">What we do</p>
+                <h4 class="pp2-h">Three services,<br>plainly priced.</h4>
+                <div class="pp2-rows">
+                  <div class="pp2-row">
+                    <div class="pp2-row-h">
+                      <span class="pp2-row-title">Emergency callout</span>
+                      <span class="pp2-row-price">From £120</span>
+                    </div>
+                    <span class="pp2-row-sub">60-minute response across BS1 — BS9. Sockets, fuses, fault-finding.</span>
+                  </div>
+                  <div class="pp2-row">
+                    <div class="pp2-row-h">
+                      <span class="pp2-row-title">EV charge points</span>
+                      <span class="pp2-row-price">From £899</span>
+                    </div>
+                    <span class="pp2-row-sub">Supplied, fitted, certified. Grant-eligible installs available.</span>
+                  </div>
+                  <div class="pp2-row">
+                    <div class="pp2-row-h">
+                      <span class="pp2-row-title">Full house rewire</span>
+                      <span class="pp2-row-price">Quote on site</span>
+                    </div>
+                    <span class="pp2-row-sub">Visit, schematic, fixed quote within 24 hours. No commitment.</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Phone screen 3 — Reviews -->
+              <div class="phone-page">
+                <p class="pp3-mark">From Google</p>
+                <h4 class="pp3-h">Real reviews,<br>verified.</h4>
+                <div class="pp3-list">
+                  <div class="pp3-card">
+                    <div class="pp3-stars">★ ★ ★ ★ ★</div>
+                    <p class="pp3-quote">"Came out same day. Found the fault in twenty minutes. Honest pricing, no faff. Will use again."</p>
+                    <p class="pp3-who">Mark · Clifton</p>
+                  </div>
+                  <div class="pp3-card">
+                    <div class="pp3-stars">★ ★ ★ ★ ★</div>
+                    <p class="pp3-quote">"Fitted our EV point in one morning. Tidy work, properly explained the certificate."</p>
+                    <p class="pp3-who">Anna · Bedminster</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Phone screen 4 — Booking -->
+              <div class="phone-page">
+                <p class="pp4-mark">Book a callout</p>
+                <h4 class="pp4-h">Send three<br>details, done.</h4>
+                <div class="pp4-fields">
+                  <div class="pp4-field filled">Mark Patterson</div>
+                  <div class="pp4-field filled">07700 900 412</div>
+                  <div class="pp4-field">What's the issue?</div>
+                </div>
+                <div class="pp4-submit">Book my callout →</div>
+                <div class="pp4-foot">
+                  <span>Reply within 30min</span>
+                  <span>Bristol &amp; Bath</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE PITCH -->
+  <section class="pitch sec-bordered">
+    <div class="pitch-grid">
+      <div class="pitch-l" data-rv>
+        <h2>A plumber's website isn't a brochure. It's a system that happens to look like a website.</h2>
+        <p>A van parked on a high street earns calls because of where it sits and what it says down the side. A website is the same. <b>Where it sits in Google. What it says when you find it. How fast it loads on a builder's phone at 7am.</b></p>
+        <p>Most trade websites get the first part backwards and skip the second two entirely. They're pretty. They're slow. They rank for the business name and nothing else. The phone stays quiet.</p>
+        <p>We build the system. Five pages, hand-coded, tuned for the towns you actually work in. Google Business Profile wired in. Reviews surfaced. Call button in the thumb zone. <b>If the phone doesn't ring in 60 days, you get the money back and you keep the site.</b></p>
+      </div>
+      <div class="pitch-r" data-rv>
+        <p class="pitch-quote-mark">What we do, exactly</p>
+        <p class="pitch-quote">
+          Hand-coded websites<br>
+          for UK trades.<br>
+          <em>No templates.</em><br>
+          No page builders.<br>
+          No agency PMs.<br>
+          One person writes<br>
+          each one — at night,<br>
+          mostly, in Manchester,<br>
+          after my dad's tea.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE WORK -->
+  <section class="work" id="work">
+    <div class="work-head" data-rv>
+      <p class="sec-mark">03 — Sites already shipped</p>
+      <h2>Twelve trades. <em>Fourteen sites.</em></h2>
+      <p>Concept builds and live work, labelled honestly. Hover any row to see it. The first ten signed clients get the build at £249 in exchange for a video testimonial — say so in the brief.</p>
+    </div>
+    <ol class="work-list" data-rv-stagger data-rv>
+      <li class="work-row cursor-grow" data-href="/work/harrison-electrical/" data-thumb="https://picsum.photos/seed/harrison-electrical/520/680" data-cap="Concept · Bristol — live demo">
+        <span class="wr-num">№ 01</span>
+        <span class="wr-trade">Harrison Electrical <em>— live concept</em></span>
+        <span class="wr-city">Bristol</span>
+        <span class="wr-year">'26</span>
+        <span class="wr-arrow" aria-hidden="true">→</span>
+      </li>
+      <li class="work-row cursor-grow" data-thumb="https://picsum.photos/seed/burnley-plumbing/520/680" data-cap="Concept · Leeds">
+        <span class="wr-num">№ 02</span>
+        <span class="wr-trade">Burnley &amp; Sons Plumbing <em>— concept</em></span>
+        <span class="wr-city">Leeds</span>
+        <span class="wr-year">'26</span>
+        <span class="wr-arrow" aria-hidden="true">→</span>
+      </li>
+      <li class="work-row cursor-grow" data-thumb="https://picsum.photos/seed/trevethan-roofing/520/680" data-cap="Concept · Cornwall">
+        <span class="wr-num">№ 03</span>
+        <span class="wr-trade">Trevethan Roofing <em>— concept</em></span>
+        <span class="wr-city">Cornwall</span>
+        <span class="wr-year">'25</span>
+        <span class="wr-arrow" aria-hidden="true">→</span>
+      </li>
+      <li class="work-row cursor-grow" data-thumb="https://picsum.photos/seed/cairn-construction/520/680" data-cap="Concept · Edinburgh">
+        <span class="wr-num">№ 04</span>
+        <span class="wr-trade">Cairn Construction <em>— concept</em></span>
+        <span class="wr-city">Edinburgh</span>
+        <span class="wr-year">'25</span>
+        <span class="wr-arrow" aria-hidden="true">→</span>
+      </li>
+      <li class="work-row cursor-grow" data-thumb="https://picsum.photos/seed/hartley-joinery/520/680" data-cap="Concept · Newcastle">
+        <span class="wr-num">№ 05</span>
+        <span class="wr-trade">Hartley Joinery <em>— concept</em></span>
+        <span class="wr-city">Newcastle</span>
+        <span class="wr-year">'25</span>
+        <span class="wr-arrow" aria-hidden="true">→</span>
+      </li>
+      <li class="work-row cursor-grow" data-thumb="https://picsum.photos/seed/kingsland-locks/520/680" data-cap="Concept · London">
+        <span class="wr-num">№ 06</span>
+        <span class="wr-trade">Kingsland Locksmiths <em>— concept</em></span>
+        <span class="wr-city">London E8</span>
+        <span class="wr-year">'25</span>
+        <span class="wr-arrow" aria-hidden="true">→</span>
+      </li>
+    </ol>
+  </section>
+
+  <!-- 04 — HOW IT SHIPS -->
+  <section class="ship" id="ship">
+    <div class="ship-inner">
+      <div class="ship-head" data-rv>
+        <p class="sec-mark">04 — How a site ships</p>
+        <h2>Brief on Monday. Live by the second Friday.</h2>
+        <p>Four lines, fourteen days, no project manager between us. You speak to the developer writing the code.</p>
+      </div>
+      <div class="ship-table" data-rv-stagger data-rv>
+        <div class="ship-row">
+          <div class="ship-day">Day 01</div>
+          <div class="ship-what">The call</div>
+          <div class="ship-detail">30 minutes. What you do. Who's calling now. What's stopping more.</div>
+        </div>
+        <div class="ship-row">
+          <div class="ship-day">Day 02 — 09</div>
+          <div class="ship-what">The build</div>
+          <div class="ship-detail">Hand-coded. Real HTML, no page builder. Copy written together over one back-and-forth.</div>
+        </div>
+        <div class="ship-row">
+          <div class="ship-day">Day 10</div>
+          <div class="ship-what">The preview</div>
+          <div class="ship-detail">Private link. You review on your phone and your laptop. One round of revisions included.</div>
+        </div>
+        <div class="ship-row">
+          <div class="ship-day">Day 14</div>
+          <div class="ship-what">Live</div>
+          <div class="ship-detail">Domain pointed. Google Business Profile linked. Review widget on. 60-day clock begins.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 — THE COST -->
+  <section class="cost" id="cost">
+    <div class="cost-inner">
+      <div class="cost-head" data-rv>
+        <p class="sec-mark">05 — What it costs</p>
+        <h2>Two plans. Both come with the <em>60-day lead guarantee</em>.</h2>
+        <p>Set up once. Pay monthly for hosting, edits, and the care that keeps the site working. Cancel any time with 30 days' notice.</p>
+      </div>
+      <div class="menu" data-rv-stagger data-rv>
+
+        <div class="menu-item">
+          <div class="menu-l">
+            <div class="menu-tier">For most operators</div>
+            <h3 class="menu-name">Starter</h3>
+            <p class="menu-desc">For sole traders and one-van outfits ready to stop hiding from Google.</p>
+            <ul class="menu-list">
+              <li>Five hand-coded pages</li>
+              <li>Google Business Profile setup</li>
+              <li>Town-level pages for your service area</li>
+              <li>Live reviews widget</li>
+              <li>Hosting, edits, lifetime updates</li>
+              <li>One round of revisions before launch</li>
+              <li>60-day lead guarantee</li>
+            </ul>
+            <a href="#begin" class="menu-cta cursor-grow">
+              Begin a Starter brief
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+          <div class="menu-r">
+            <div class="menu-price">£499</div>
+            <div class="menu-mo">+ <b>£49</b> / month</div>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-l">
+            <div class="menu-tier">For crews &amp; multi-area operators</div>
+            <h3 class="menu-name">Pro</h3>
+            <p class="menu-desc">For operators with crews, multiple service lines, or several towns to rank in.</p>
+            <ul class="menu-list">
+              <li>Ten hand-coded pages</li>
+              <li>Up to three service-area landing pages</li>
+              <li>Service-line landing pages</li>
+              <li>Everything in Starter, plus:</li>
+              <li>Monthly local-SEO &amp; ranking report</li>
+              <li>Quarterly content updates included</li>
+              <li>Priority email &amp; WhatsApp support</li>
+            </ul>
+            <a href="#begin" class="menu-cta cursor-grow">
+              Begin a Pro brief
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+          <div class="menu-r">
+            <div class="menu-price">£999</div>
+            <div class="menu-mo">+ <b>£99</b> / month</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 — THE GUARANTEE -->
+  <section class="guarantee" id="guarantee" data-rv>
+    <p class="guarantee-mark">06 — The guarantee</p>
+    <h2 class="guarantee-line">
+      If the phone doesn't ring in <em>60 days</em>, your money comes back. And you keep the site.
+    </h2>
+    <div class="guarantee-sig">
+      <em>Harry Yule</em>
+      <span>Founder · StaticSwift · MMXXVI</span>
+    </div>
+  </section>
+
+  <!-- 07 — A NOTE FROM HARRY -->
+  <section class="note" id="note">
+    <div class="note-inner" data-rv>
+      <p class="note-mark">07 — A note from Harry</p>
+      <h2 class="note-h">A note —</h2>
+      <div class="note-body">
+        <p>I'm one developer, working at night in a small flat in Manchester, mostly after my dad's tea. I started StaticSwift because I watched a mate of his — a roofer — lose three good months and £1,800 to a half-finished WordPress site that an agency took the money for and walked away from. It made me angry enough to do something about it.</p>
+        <p>When you hire me, you get my number. When the phone rings I answer it. There's no junior, no project manager, no "we'll loop in our team." The work is mine. The promises are mine. The refund, if it comes to that, is also mine.</p>
+        <p>I built the 60-day lead guarantee because I believe the work earns it. If it doesn't, you shouldn't pay for it, and you certainly shouldn't have to argue with me to get the money back. So I made it automatic.</p>
+      </div>
+      <div class="note-sig">
+        Harry Yule
+        <small>Manchester · MMXXVI</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 — BEGIN (form) -->
+  <section class="begin" id="begin">
+    <div class="begin-inner">
+      <div class="begin-l" data-rv>
+        <p class="sec-mark">08 — Begin</p>
+        <h2>Send a brief. Hear back inside 24 hours.</h2>
+        <p>A line or six. I read every one myself. Reply from a real address, never an auto-responder. If StaticSwift isn't the right fit, I'll tell you that too.</p>
+        <div class="begin-meta">
+          <div>
+            <span class="begin-meta-lbl">Email</span>
+            <a href="mailto:hello@staticswift.co.uk">hello@staticswift.co.uk</a>
+          </div>
+          <div>
+            <span class="begin-meta-lbl">WhatsApp</span>
+            <a href="https://wa.me/447502731799" target="_blank" rel="noopener">+44 7502 731 799</a>
+          </div>
+          <div>
+            <span class="begin-meta-lbl">Based</span>
+            <span>Manchester · serving all of the UK</span>
+          </div>
+        </div>
+      </div>
+
+      <form id="qf" class="bf" novalidate onsubmit="sqContact(event)" data-rv>
+        <div class="bf-row-wrap">
+          <div class="bf-row">
+            <div class="bf-field">
+              <label for="f-biz">Business</label>
+              <input type="text" id="f-biz" name="business_name" required autocomplete="organization" placeholder="Acme Plumbing">
+            </div>
+            <div class="bf-field">
+              <label for="f-name">Your name</label>
+              <input type="text" id="f-name" name="name" required autocomplete="name" placeholder="Jane">
+            </div>
+          </div>
+        </div>
+        <div class="bf-row-wrap">
+          <div class="bf-row">
+            <div class="bf-field">
+              <label for="f-email">Email</label>
+              <input type="email" id="f-email" name="delivery_email" required autocomplete="email" placeholder="you@business.co.uk">
+            </div>
+            <div class="bf-field">
+              <label for="f-wa">Phone</label>
+              <input type="tel" id="f-wa" name="whatsapp" autocomplete="tel" placeholder="07…">
+            </div>
+          </div>
+        </div>
+        <div class="bf-row-wrap">
+          <div class="bf-row">
+            <div class="bf-field">
+              <label for="f-type">Trade</label>
+              <select id="f-type" name="business_type" required>
+                <option value="" disabled selected>Pick one</option>
+                <option>Electrician</option>
+                <option>Plumber</option>
+                <option>Roofer</option>
+                <option>Builder</option>
+                <option>Joiner / Carpenter</option>
+                <option>Painter / Decorator</option>
+                <option>Locksmith</option>
+                <option>Mechanic</option>
+                <option>Gardener / Landscaper</option>
+                <option>Cleaner / Cleaning company</option>
+                <option>Tiler / Plasterer</option>
+                <option>Other trade</option>
+                <option>Local service business</option>
+              </select>
+            </div>
+            <div class="bf-field">
+              <label for="f-pkg">Package</label>
+              <select id="f-pkg" name="package">
+                <option value="" disabled selected>Pick a plan</option>
+                <option value="starter">Starter — £499 + £49/mo</option>
+                <option value="advanced">Pro — £999 + £99/mo</option>
+                <option value="unsure">Not sure yet</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="bf-field">
+          <label for="f-brief">What do you need?</label>
+          <textarea id="f-brief" name="brief" required placeholder="A few sentences. What you do, what towns you serve, what you'd like the site to do for you."></textarea>
+        </div>
+        <input type="hidden" name="current_website" id="f-site" value="">
+        <button type="submit" class="bf-submit cursor-grow" id="qfSubmit">
+          Send my brief
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <div id="qf-ok" class="bf-ok" role="status">Got it. Reply within 24 hours from <b>hello@staticswift.co.uk</b>.</div>
+      </form>
+    </div>
+  </section>
+
+  <!-- COLOPHON -->
+  <footer class="colophon">
+    <div class="col-inner">
+      <div class="col-block">
+        <b>StaticSwift</b>
+        Established MMXXV<br>
+        Manchester, England<br>
+        Hand-coded · sole-trader
+      </div>
+      <div class="col-block">
+        <b>Reach</b>
+        <a href="mailto:hello@staticswift.co.uk">hello@staticswift.co.uk</a>
+        <a href="https://wa.me/447502731799" target="_blank" rel="noopener">WhatsApp · 07502 731 799</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/privacy.html">Privacy</a>
+      </div>
+      <div class="col-block">
+        <b>Set in</b>
+        Sentient · display serif<br>
+        Switzer · humanist sans<br>
+        JetBrains Mono · meta
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+/* ──────────────────────────────────────────────────────────────
+   STATICSWIFT — Field Guide Edition
+   No frameworks. No libraries. Vanilla, fast, intentional.
+   ────────────────────────────────────────────────────────────── */
+
+/* Custom cursor removed at owner's request — native OS cursor is used everywhere. */
+
+/* ─── REVEAL ON SCROLL ─────────────────────────────────────── */
+(function reveal(){
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('[data-rv], [data-rv-stagger]').forEach(el => el.classList.add('in'));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('[data-rv], [data-rv-stagger]').forEach(el => io.observe(el));
+})();
+
+/* ─── PINNED PHONE — scroll-driven screen translate + annotations ─── */
+(function phonePin(){
+  const sec = document.querySelector('.pin');
+  const stack = document.getElementById('phoneStack');
+  const annoItems = document.querySelectorAll('#ppAnno .pp-anno-item');
+  if (!sec || !stack) return;
+
+  // Skip pin behaviour on mobile (CSS already disables sticky)
+  function isPinned(){
+    return matchMedia('(min-width: 881px)').matches;
+  }
+
+  let ticking = false;
+  function update(){
+    ticking = false;
+    if (!isPinned()) {
+      stack.style.transform = 'translateY(0)';
+      annoItems.forEach(i => i.classList.add('on'));
+      return;
+    }
+    const rect = sec.getBoundingClientRect();
+    const total = sec.offsetHeight - window.innerHeight;
+    if (total <= 0) return;
+    const passed = Math.min(Math.max(-rect.top, 0), total);
+    const progress = passed / total;
+    // Translate the screen stack — 4 pages, each = phone height (620px).
+    // We want to slide through pages 0 → 3 across the scroll progress 0 → 1.
+    const phoneInner = stack.firstElementChild?.offsetHeight || 620;
+    const N = stack.children.length;
+    const offset = -(N - 1) * progress * phoneInner;
+    stack.style.transform = `translateY(${offset}px)`;
+    annoItems.forEach(it => {
+      const s = parseFloat(it.dataset.start);
+      const e = parseFloat(it.dataset.end);
+      it.classList.toggle('on', progress >= s && progress < e);
+    });
+  }
+
+  function onScroll(){
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+
+/* ─── WORK LIST — floating thumbnail follows cursor ─── */
+(function workThumb(){
+  const thumb = document.getElementById('workThumb');
+  const img = document.getElementById('workThumbImg');
+  const cap = document.getElementById('workThumbCap');
+  const rows = document.querySelectorAll('.work-row');
+  if (!thumb || !rows.length) return;
+  if (!matchMedia('(hover:hover) and (pointer:fine)').matches) return;
+
+  let active = false;
+  let tx = 0, ty = 0, x = 0, y = 0;
+
+  function tick(){
+    if (active) {
+      x += (tx - x) * 0.18;
+      y += (ty - y) * 0.18;
+      thumb.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) scale(1)`;
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
+
+  rows.forEach(row => {
+    row.addEventListener('mouseenter', () => {
+      const src = row.dataset.thumb;
+      const c = row.dataset.cap || '';
+      if (src) { img.src = src; cap.textContent = c; }
+      thumb.classList.add('show');
+      active = true;
+    });
+    row.addEventListener('mouseleave', () => {
+      thumb.classList.remove('show');
+      active = false;
+    });
+    row.addEventListener('mousemove', (e) => {
+      tx = e.clientX + 80;
+      ty = e.clientY;
+      if (!x && !y) { x = tx; y = ty; }
+    }, { passive: true });
+    // Clickable rows — navigate when data-href is set
+    if (row.dataset.href) {
+      row.style.cursor = 'pointer';
+      row.addEventListener('click', () => { window.location.href = row.dataset.href; });
+    }
+  });
+})();
+
+/* ─── HERO FORM (bottom contact form is the only form on this layout) ─── */
+window.sqContact = async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = document.getElementById('qfSubmit');
+  const oldErr = form.querySelector('.bf-err'); if (oldErr) oldErr.remove();
+  const data = Object.fromEntries(new FormData(form));
+  data.source = 'index-contact';
+  data.stage = 'new-lead';
+  data.createdAt = new Date().toISOString();
+  if (!btn.dataset.orig) btn.dataset.orig = btn.innerHTML;
+  btn.disabled = true; btn.innerHTML = 'Sending…';
+  const leadValue = data.package === 'advanced' ? 999 : 499;
+  if (typeof gtag === 'function') {
+    gtag('event','form_submit',{ form_location:'contact', business_type:data.business_type||'', package:data.package||'' });
+    gtag('event','generate_lead',{ currency:'GBP', value:leadValue, form_location:'contact' });
+  }
+  // TikTok pixel — SubmitForm is the standard lead event TikTok optimises against.
+  // Fires synchronously before the network round-trip so we never lose the conversion
+  // signal if the user closes the tab during the in-flight handle-intake POST.
+  if (typeof ttq !== 'undefined') {
+    try {
+      ttq.track('SubmitForm', {
+        contents: [{ content_id: data.package || 'unsure', content_type: 'product', content_name: 'StaticSwift website brief' }],
+        value: leadValue,
+        currency: 'GBP',
+        description: data.business_type || 'trade-website-brief'
+      });
+      // Also fire the higher-intent Lead event — TikTok treats this as harder signal.
+      ttq.track('Lead', { value: leadValue, currency: 'GBP' });
+    } catch(_) {}
+  }
+  try {
+    fetch('/.netlify/functions/track-event', {
+      method:'POST', headers:{'Content-Type':'application/json'}, keepalive:true,
+      body: JSON.stringify({ type:'event', evt:'form_submit', path:'/', meta:{ form:'contact', pkg:data.package } }),
+    }).catch(()=>{});
+  } catch(_){}
+  try {
+    const r = await fetch('/.netlify/functions/handle-intake', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(data),
+    });
+    if (r.ok) {
+      form.style.display = 'none';
+      document.getElementById('qf-ok').classList.add('show');
+      return;
+    }
+    throw new Error('HTTP ' + r.status);
+  } catch (err) {
+    btn.disabled = false; btn.innerHTML = btn.dataset.orig;
+    const box = document.createElement('div');
+    box.className = 'bf-err'; box.setAttribute('role','alert');
+    box.innerHTML = '<strong>Couldn\'t send.</strong> Try again, or email <a href="mailto:hello@staticswift.co.uk">hello@staticswift.co.uk</a>.';
+    btn.parentNode.insertBefore(box, btn.nextSibling);
+  }
+};
+
+/* ─── PAGEVIEW TRACKER ─── */
+(function tracker(){
+  var ENDPOINT = '/.netlify/functions/track-event';
+  try {
+    var body = JSON.stringify({ type:'pageview', path:location.pathname, ref:document.referrer || '', ua:navigator.userAgent || '' });
+    fetch(ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json'}, body:body, keepalive:true }).catch(function(){});
+  } catch(_){}
+  window.ssTrack = function(evt, meta) {
+    try {
+      fetch(ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json'}, keepalive:true,
+        body: JSON.stringify({ type:'event', evt:evt, path:location.pathname, meta:meta||{} })
+      }).catch(function(){});
+    } catch(_){}
+  };
+})();
+</script>
+</body>
+</html>

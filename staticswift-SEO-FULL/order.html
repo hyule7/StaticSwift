@@ -1,15 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-gb">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Start Your Project — StaticSwift</title>
-<meta name="description" content="Tell us about your business and we'll build your website within 24 hours. From £149, no monthly fees.">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>Free preview in 24 hours — StaticSwift</title>
+<meta name="description" content="Tell us about your business in 60 seconds. We'll build a real preview of your site within 24 hours. No payment until you approve. £499 + £49/month. First lead in 60 days or full refund.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fff;--bg2:#f9f8f6;--bg3:#f2f0ec;--ink:#0a0a0a;--muted:#6a6a6a;--dim:#9a9a9a;--gold:#b08a3e;--gold-light:rgba(176,138,62,.08);--gold-border:rgba(176,138,62,.2);--border:rgba(0,0,0,.07);--border2:rgba(0,0,0,.12);--green:#16a34a;--red:#dc2626}
+:root{
+  --bg:#fff;--bg2:#f9f8f6;--bg3:#f2f0ec;
+  --ink:#0a0a0a;--muted:#6a6a6a;--dim:#9a9a9a;
+  --gold:#b08a3e;--gold-light:rgba(176,138,62,.08);--gold-border:rgba(176,138,62,.2);
+  --border:rgba(0,0,0,.07);--border2:rgba(0,0,0,.12);
+  --green:#16a34a;--red:#dc2626;
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
 body{background:var(--bg);color:var(--ink);font-family:'Outfit',sans-serif;line-height:1.6}
@@ -17,361 +24,513 @@ h1,h2,h3{font-family:'Instrument Serif',serif;font-weight:400}
 a{color:var(--gold);text-decoration:none}
 ::selection{background:var(--gold);color:#fff}
 
-.page-header{background:var(--ink);padding:20px 48px;display:flex;align-items:center;justify-content:space-between}
+.page-header{background:var(--ink);padding:18px 48px;display:flex;align-items:center;justify-content:space-between}
 .page-logo{font-family:'Instrument Serif',serif;font-size:18px;color:#fff;display:flex;align-items:center;gap:8px}
-.page-logo svg{display:block}
-.page-back{font-size:13px;color:rgba(255,255,255,.4);transition:color .2s}
+.page-back{font-size:13px;color:rgba(255,255,255,.45);transition:color .2s}
 .page-back:hover{color:#fff}
 
-.order-wrap{max-width:680px;margin:0 auto;padding:48px 32px 80px}
-.order-wrap h1{font-size:clamp(32px,4vw,48px);letter-spacing:-.04em;margin-bottom:8px;text-align:center}
-.order-wrap h1 em{font-style:italic;color:var(--gold)}
-.order-sub{text-align:center;color:var(--muted);font-size:15px;margin-bottom:40px;line-height:1.6}
+/* Hero ribbon */
+.hero{padding:48px 24px 12px;text-align:center;max-width:720px;margin:0 auto}
+.tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:var(--gold-light);border:1px solid var(--gold-border);padding:6px 14px;border-radius:100px;margin-bottom:16px}
+.hero h1{font-size:clamp(34px,5vw,52px);letter-spacing:-.035em;line-height:1.05;margin-bottom:14px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero p{color:var(--muted);font-size:16px;max-width:540px;margin:0 auto;line-height:1.55}
+.hero p b{color:var(--ink);font-weight:600}
 
-.progress{display:flex;gap:4px;margin-bottom:36px}
-.progress-step{flex:1;height:3px;background:var(--border);border-radius:2px;transition:background .4s}
-.progress-step.active{background:var(--gold)}
+/* Trust strip */
+.trust{max-width:720px;margin:24px auto 0;padding:0 24px;display:flex;justify-content:center;gap:22px;flex-wrap:wrap}
+.trust span{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+.trust span::before{content:"";width:5px;height:5px;background:var(--green);border-radius:50%;display:inline-block}
 
-.form-step{display:none}.form-step.active{display:block}
-.step-title{font-family:'Instrument Serif',serif;font-size:24px;margin-bottom:28px;color:var(--ink)}
+/* Form card */
+.order-wrap{max-width:620px;margin:36px auto 80px;padding:0 24px}
+.card{background:var(--bg);border:1px solid var(--border);border-radius:18px;padding:36px;box-shadow:0 1px 0 rgba(0,0,0,.02),0 24px 60px -30px rgba(0,0,0,.08)}
+@media(max-width:600px){.card{padding:24px 20px;border-radius:14px}}
 
-.fg{margin-bottom:20px}
-.fg label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.fg{margin-bottom:18px}
+.fg label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}
 .fg label .req{color:var(--gold)}
-.fg input,.fg select,.fg textarea{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:14px;color:var(--ink);font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold-border);box-shadow:0 0 0 3px var(--gold-light)}
+.fg input,.fg select,.fg textarea{
+  width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:11px;
+  padding:14px 16px;font-size:15px;color:var(--ink);font-family:'Outfit',sans-serif;
+  outline:none;transition:border-color .15s,box-shadow .15s;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-light)}
 .fg textarea{min-height:90px;resize:vertical}
-.fg select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a9a9a' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center}
-.fg select option{background:var(--bg2)}
-.fg .hint{font-size:11px;color:var(--dim);margin-top:4px}
-.fg .err{display:none;font-size:11px;color:var(--red);margin-top:4px}
-.fg .counter{font-size:11px;color:var(--dim);text-align:right;margin-top:3px}
+.fg select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a9a9a' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px}
+.fg .hint{font-size:12px;color:var(--dim);margin-top:5px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:560px){.row2{grid-template-columns:1fr}}
 
-.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:5px}
-.check-opt{display:flex;align-items:center;gap:9px;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .2s;user-select:none}
+/* Optional details accordion */
+.details{margin-top:8px;border-top:1px dashed var(--border2);padding-top:18px}
+.details summary{
+  cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;
+  font-size:13px;font-weight:600;color:var(--ink);padding:6px 0;
+}
+.details summary::-webkit-details-marker{display:none}
+.details summary::after{content:"+";font-size:20px;font-weight:300;color:var(--gold);transition:transform .2s}
+.details[open] summary::after{transform:rotate(45deg)}
+.details summary span{color:var(--muted);font-weight:400;font-size:12px;margin-left:10px}
+.details-body{padding-top:14px}
+
+.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:5px}
+.check-opt{display:flex;align-items:center;gap:9px;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .15s;user-select:none}
 .check-opt:hover{border-color:var(--gold-border);color:var(--ink)}
 .check-opt input{accent-color:var(--gold);cursor:pointer}
+.check-opt:has(input:checked){background:var(--gold-light);border-color:var(--gold-border);color:var(--ink)}
 
-.radio-group{display:flex;flex-direction:column;gap:8px}
-.radio-opt{display:flex;align-items:flex-start;gap:12px;padding:16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:border-color .2s}
-.radio-opt:hover{border-color:var(--gold-border)}
-.radio-opt input{margin-top:3px;accent-color:var(--gold);cursor:pointer}
-.radio-opt strong{font-size:15px;font-weight:600;color:var(--ink);display:block}
-.radio-opt span{font-size:12px;color:var(--muted);display:block;margin-top:3px;line-height:1.4}
+/* Submit */
+.submit-row{margin-top:24px}
+.btn-submit{
+  width:100%;background:var(--ink);color:#fff;padding:18px;
+  border-radius:100px;font-size:16px;font-weight:600;border:none;cursor:pointer;
+  transition:transform .15s,box-shadow .25s,opacity .15s;
+  font-family:'Outfit',sans-serif;letter-spacing:-.005em;
+}
+.btn-submit:hover{transform:translateY(-1px);box-shadow:0 14px 34px -10px rgba(176,138,62,.45)}
+.btn-submit:disabled{opacity:.55;cursor:wait;transform:none}
+.submit-note{font-size:12px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.5}
+.submit-note b{color:var(--ink);font-weight:600}
 
-.form-nav{display:flex;justify-content:space-between;align-items:center;margin-top:32px;gap:12px}
-.btn-next{background:var(--ink);color:#fff;padding:14px 32px;border-radius:100px;font-size:15px;font-weight:600;border:none;cursor:pointer;transition:all .3s;font-family:'Outfit',sans-serif}
-.btn-next:hover{opacity:.85;transform:translateY(-1px)}
-.btn-back{background:none;border:1px solid var(--border);color:var(--muted);padding:14px 28px;border-radius:100px;font-size:14px;cursor:pointer;transition:all .3s;font-family:'Outfit',sans-serif}
-.btn-back:hover{border-color:var(--ink);color:var(--ink)}
-.btn-submit{width:100%;background:var(--ink);color:#fff;padding:18px;border-radius:100px;font-size:17px;font-weight:600;border:none;cursor:pointer;transition:all .3s;font-family:'Instrument Serif',serif}
-.btn-submit:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(0,0,0,.15)}
-.btn-submit:disabled{opacity:.5;cursor:wait;transform:none}
+.terms{display:flex;align-items:flex-start;gap:9px;font-size:12px;color:var(--muted);margin-top:16px;cursor:pointer;line-height:1.5}
+.terms input{accent-color:var(--gold);margin-top:2px;flex-shrink:0}
+.terms a{color:var(--gold)}
 
-.ok-msg{display:none;background:rgba(22,163,74,.06);border:1px solid rgba(22,163,74,.2);border-radius:12px;padding:24px;text-align:center;color:var(--green);font-size:16px;font-weight:500;margin-top:20px}
+/* Success state */
+.ok-msg{display:none;text-align:center;padding:24px 0}
+.ok-msg.show{display:block}
+.ok-msg .check{width:64px;height:64px;border-radius:50%;background:rgba(22,163,74,.1);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 16px}
+.ok-msg h2{font-size:30px;margin-bottom:8px}
+.ok-msg p{color:var(--muted);font-size:15px;max-width:380px;margin:0 auto 8px}
 
-.warn-box{background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:12px 14px;font-size:12px;color:#92400e;margin-top:8px}
+/* Error */
+.err-box{display:none;background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.2);color:var(--red);border-radius:10px;padding:12px 14px;font-size:13px;margin-top:12px}
+.err-box.show{display:block}
+
+/* What happens next */
+.next{max-width:620px;margin:0 auto 60px;padding:0 24px}
+.next h3{font-size:22px;margin-bottom:18px;text-align:center;color:var(--ink)}
+.next h3 em{font-style:italic;color:var(--gold)}
+.steps{display:grid;gap:14px}
+.step{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px}
+.step-n{width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--gold);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Instrument Serif',serif}
+.step-c strong{display:block;font-size:14px;color:var(--ink);margin-bottom:2px}
+.step-c span{font-size:13px;color:var(--muted);line-height:1.5}
 
 @media(max-width:640px){
-  .order-wrap{padding:32px 20px 60px}
-  .row2,.check-grid{grid-template-columns:1fr}
-  .page-header{padding:16px 20px}
+  .page-header{padding:14px 18px}
+  .hero{padding:32px 20px 8px}
+  .trust{gap:14px}
 }
 </style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-4BZHQMG0RF"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-4BZHQMG0RF');</script>
+
+<!-- TikTok Pixel — mirrors index.html so /order.html attributes correctly -->
+<script>
+!function (w, d, t) {
+  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+  ttq.load('D8G5KVRC77UAEKHUL26G');
+  ttq.page();
+}(window, document, 'ttq');
+</script>
 </head>
 <body>
 <div class="page-header">
-  <a href="/" class="page-logo"><svg viewBox="0 0 28 28" fill="none" width="22" height="22"><polygon points="14,1 27,7.5 27,20.5 14,27 1,20.5 1,7.5" fill="none" stroke="#b08a3e" stroke-width="1.2" opacity=".7"/><polygon points="14,6 22,10 22,18 14,22 6,18 6,10" fill="#b08a3e" opacity=".12"/><polygon points="14,10 18,12 18,16 14,18 10,16 10,12" fill="#b08a3e" opacity=".45"/></svg><span>StaticSwift</span></a>
+  <a href="/" class="page-logo">
+    <svg viewBox="0 0 28 28" fill="none" width="22" height="22">
+      <polygon points="14,1 27,7.5 27,20.5 14,27 1,20.5 1,7.5" fill="none" stroke="#b08a3e" stroke-width="1.2" opacity=".7"/>
+      <polygon points="14,6 22,10 22,18 14,22 6,18 6,10" fill="#b08a3e" opacity=".12"/>
+      <polygon points="14,10 18,12 18,16 14,18 10,16 10,12" fill="#b08a3e" opacity=".45"/>
+    </svg>
+    <span>StaticSwift</span>
+  </a>
   <a href="/" class="page-back">← Back to site</a>
 </div>
 
+<div class="hero">
+  <div class="tag">Free preview · No card needed</div>
+  <h1>Your real site, <em>built and shown to you</em> in 24 hours.</h1>
+  <p>Tell us about your business in 60 seconds. We'll build a real, working preview of your new site and send it tonight or tomorrow. You only pay if you keep it — <b>£499 + £49/month</b>. If you don't get a new customer enquiry within 60 days, <b>full refund and you keep the site</b>.</p>
+</div>
+
+<div class="trust">
+  <span>247 UK businesses shipped</span>
+  <span>5★ on Google</span>
+  <span>60-day lead guarantee</span>
+</div>
+
 <div class="order-wrap">
-  <h1>Tell us about your <em>business.</em></h1>
-  <p class="order-sub">We'll use this to build your website. Takes about 3 minutes. The more detail you give, the better the result.</p>
+  <div class="card">
+    <form id="order-form" novalidate>
+      <!-- honeypot — drop bot submissions -->
+      <input type="text" name="bot-field" style="position:absolute;left:-9999px;opacity:0" tabindex="-1" autocomplete="off">
 
-  <div class="progress"><div class="progress-step active"></div><div class="progress-step"></div><div class="progress-step"></div><div class="progress-step"></div></div>
+      <!-- Required: the 6 fields needed to start work -->
+      <div class="row2">
+        <div class="fg">
+          <label>Your name <span class="req">*</span></label>
+          <input type="text" name="name" id="f-name" maxlength="60" required placeholder="e.g. John Smith" autocomplete="name">
+        </div>
+        <div class="fg">
+          <label>Business name <span class="req">*</span></label>
+          <input type="text" name="business_name" id="f-bizname" maxlength="60" required placeholder="e.g. Smith Plumbing" autocomplete="organization">
+        </div>
+      </div>
 
-  <form id="order-form" novalidate>
-    <input type="text" name="bot-field" style="position:absolute;left:-9999px;opacity:0" tabindex="-1" autocomplete="off">
+      <div class="row2">
+        <div class="fg">
+          <label>Business type <span class="req">*</span></label>
+          <select name="business_type" id="f-biztype" required>
+            <option value="" disabled selected>Choose one…</option>
+            <option value="accountant">Accountant</option>
+            <option value="architect">Architect</option>
+            <option value="bakery">Bakery</option>
+            <option value="barber">Barber / Hair Salon</option>
+            <option value="beauty-salon">Beauty / Nail Bar</option>
+            <option value="builder">Builder / Roofer</option>
+            <option value="butcher">Butcher</option>
+            <option value="cafe">Cafe / Restaurant</option>
+            <option value="cake-maker">Cake Maker</option>
+            <option value="detailer">Car Detailer</option>
+            <option value="carpenter">Carpenter</option>
+            <option value="carpet-cleaner">Carpet Cleaner</option>
+            <option value="caterer">Caterer</option>
+            <option value="childminder">Childminder</option>
+            <option value="cleaner">Cleaner</option>
+            <option value="cleaning-company">Cleaning Company</option>
+            <option value="coach">Coach</option>
+            <option value="dentist">Dentist</option>
+            <option value="dj">DJ / Entertainer</option>
+            <option value="dog-groomer">Dog Groomer</option>
+            <option value="dog-walker">Dog Walker</option>
+            <option value="driving-instructor">Driving Instructor</option>
+            <option value="dry-cleaner">Dry Cleaner</option>
+            <option value="electrician">Electrician</option>
+            <option value="estate-agent">Estate Agent</option>
+            <option value="event-planner">Event Planner</option>
+            <option value="financial-advisor">Financial Advisor</option>
+            <option value="florist">Florist</option>
+            <option value="food-truck">Food Truck</option>
+            <option value="gardener">Gardener / Landscaper</option>
+            <option value="graphic-designer">Graphic Designer</option>
+            <option value="gym">Gym</option>
+            <option value="hairdresser">Hairdresser</option>
+            <option value="handyman">Handyman</option>
+            <option value="jeweller">Jeweller</option>
+            <option value="joiner">Joiner</option>
+            <option value="landscaper">Landscaper</option>
+            <option value="locksmith">Locksmith</option>
+            <option value="massage">Massage Therapist</option>
+            <option value="mechanic">Mechanic</option>
+            <option value="mobile-hairdresser">Mobile Hairdresser</option>
+            <option value="mortgage-broker">Mortgage Broker</option>
+            <option value="nail-salon">Nail Salon</option>
+            <option value="nursery">Nursery / Pre-school</option>
+            <option value="nutritionist">Nutritionist</option>
+            <option value="optician">Optician</option>
+            <option value="osteopath">Osteopath</option>
+            <option value="painter-decorator">Painter &amp; Decorator</option>
+            <option value="personal-trainer">Personal Trainer</option>
+            <option value="pest-control">Pest Control</option>
+            <option value="photographer">Photographer</option>
+            <option value="physiotherapist">Physiotherapist</option>
+            <option value="pilates-instructor">Pilates Instructor</option>
+            <option value="plasterer">Plasterer</option>
+            <option value="plumber">Plumber</option>
+            <option value="printer">Printer</option>
+            <option value="pub">Pub / Bar</option>
+            <option value="mover">Removals / Mover</option>
+            <option value="restaurant">Restaurant</option>
+            <option value="retail">Retail / Shop</option>
+            <option value="roofer">Roofer</option>
+            <option value="scaffolder">Scaffolder</option>
+            <option value="solicitor">Solicitor</option>
+            <option value="tailor">Tailor</option>
+            <option value="tattoo-studio">Tattoo Studio</option>
+            <option value="taxi">Taxi</option>
+            <option value="therapist">Therapist</option>
+            <option value="tiler">Tiler</option>
+            <option value="tree-surgeon">Tree Surgeon</option>
+            <option value="tutor">Tutor</option>
+            <option value="vet">Vet</option>
+            <option value="videographer">Videographer</option>
+            <option value="wedding-planner">Wedding Planner</option>
+            <option value="window-cleaner">Window Cleaner</option>
+            <option value="yoga-instructor">Yoga Instructor</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Town or city <span class="req">*</span></label>
+          <input type="text" name="location" id="f-location" maxlength="60" required placeholder="e.g. Manchester" autocomplete="address-level2">
+        </div>
+      </div>
 
-    <!-- STEP 1 -->
-    <div class="form-step active" id="s1">
-      <div class="step-title">About You &amp; Your Business</div>
       <div class="row2">
-        <div class="fg"><label>Your Name <span class="req">*</span></label><input type="text" name="name" id="f-name" maxlength="60" required placeholder="e.g. John Smith"></div>
-        <div class="fg"><label>Business Name <span class="req">*</span></label><input type="text" name="business_name" id="f-bizname" maxlength="60" required placeholder="e.g. Smith Plumbing"></div>
-      </div>
-      <div class="row2">
-        <div class="fg"><label>Business Type <span class="req">*</span></label><select name="business_type" id="f-biztype" required><option value="accountant">Accountant</option><option value="architect">Architect</option><option value="bakery">Bakery</option><option value="barber">Barber / Hair Salon</option><option value="beauty-salon">Beauty / Nail Bar</option><option value="blacksmith">Blacksmith</option><option value="builder">Builder / Roofer</option><option value="butcher">Butcher</option><option value="cafe">Cafe / Restaurant</option><option value="cake-maker">Cake Maker</option><option value="detailer">Car Detailer</option><option value="carpenter">Carpenter</option><option value="carpet-cleaner">Carpet Cleaner</option><option value="caterer">Caterer</option><option value="childminder">Childminder</option><option value="chiropractor">Chiropractor</option><option value="cleaner">Cleaner</option><option value="cleaning-company">Cleaning Company</option><option value="coach">Coach</option><option value="consultant">Consultant</option><option value="counsellor">Counsellor</option><option value="dentist">Dentist</option><option value="dj">DJ / Entertainer</option><option value="dog-groomer">Dog Groomer</option><option value="dog-walker">Dog Walker</option><option value="driving-instructor">Driving Instructor</option><option value="dry-cleaner">Dry Cleaner</option><option value="electrician">Electrician</option><option value="estate-agent">Estate Agent</option><option value="event-planner">Event Planner</option><option value="farrier">Farrier</option><option value="financial-advisor">Financial Advisor</option><option value="florist">Florist</option><option value="food-truck">Food Truck</option><option value="gardener">Gardener / Landscaper</option><option value="glazier">Glazier</option><option value="graphic-designer">Graphic Designer</option><option value="gym">Gym</option><option value="hairdresser">Hairdresser</option><option value="handyman">Handyman</option><option value="jeweller">Jeweller</option><option value="joiner">Joiner</option><option value="landscaper">Landscaper</option><option value="laundrette">Laundrette</option><option value="locksmith">Locksmith</option><option value="massage">Massage Therapist</option><option value="mechanic">Mechanic</option><option value="mobile-hairdresser">Mobile Hairdresser</option><option value="mortgage-broker">Mortgage Broker</option><option value="music-teacher">Music Teacher</option><option value="nail-salon">Nail Salon</option><option value="nursery">Nursery / Pre-school</option><option value="nutritionist">Nutritionist</option><option value="optician">Optician</option><option value="osteopath">Osteopath</option><option value="painter-decorator">Painter &amp; Decorator</option><option value="personal-trainer">Personal Trainer</option><option value="pest-control">Pest Control</option><option value="photographer">Photographer</option><option value="physio">Physiotherapist</option><option value="physiotherapist">Physiotherapist</option><option value="pilates-instructor">Pilates Instructor</option><option value="plasterer">Plasterer</option><option value="plumber">Plumber</option><option value="podiatrist">Podiatrist</option><option value="printer">Printer</option><option value="pub">Pub / Bar</option><option value="removals">Removals</option><option value="mover">Removals / Mover</option><option value="restaurant">Restaurant</option><option value="retail">Retail / Shop</option><option value="roofer">Roofer</option><option value="scaffolder">Scaffolder</option><option value="seamstress">Seamstress / Tailor</option><option value="shoe-repair">Shoe Repair</option><option value="skip-hire">Skip Hire</option><option value="solicitor">Solicitor</option><option value="tailor">Tailor</option><option value="tattoo-studio">Tattoo Studio</option><option value="taxi">Taxi</option><option value="therapist">Therapist</option><option value="tiler">Tiler</option><option value="tree-surgeon">Tree Surgeon</option><option value="tutor">Tutor</option><option value="upholsterer">Upholsterer</option><option value="vet">Vet</option><option value="videographer">Videographer</option><option value="web-designer">Web Designer</option><option value="wedding-planner">Wedding Planner</option><option value="window-cleaner">Window Cleaner</option><option value="yoga-instructor">Yoga Instructor</option><option value="yoga-studio">Yoga Studio</option><option value="other" selected>Other</option></select></div>
-        <div class="fg"><label>Town / City <span class="req">*</span></label><input type="text" name="location" id="f-location" maxlength="60" required placeholder="e.g. Manchester"></div>
-      </div>
-      <div class="fg"><label>What does your business do? <span class="req">*</span></label><textarea name="business_description" id="f-bizdesc" maxlength="220" data-max="220" required placeholder="e.g. We offer emergency plumbing and boiler servicing across Manchester. Available 7 days a week."></textarea><div class="counter" id="cc-bizdesc">0 / 220</div></div>
-      <div class="fg"><label>What makes you stand out?</label><textarea name="usp" maxlength="160" data-max="160" placeholder="e.g. 15 years experience, same-day service, fully insured, 5-star Google rating"></textarea><div class="counter" id="cc-usp">0 / 160</div></div>
-      <div class="row2">
-        <div class="fg"><label>How long trading?</label><select name="trading_years"><option value="">Select...</option><option>New / just starting</option><option>Less than 1 year</option><option>1-3 years</option><option>3-5 years</option><option>5-10 years</option><option>10+ years</option></select></div>
-        <div class="fg"><label>Who are your customers?</label><select name="target_customers"><option value="">Select...</option><option>Local homeowners / families</option><option>Local businesses (B2B)</option><option>Both homeowners and businesses</option><option>Young people / students</option><option>Professionals / corporate</option><option>Nationwide / online</option><option>Other</option></select></div>
-      </div>
-      <div class="fg"><label>What should the website do?</label>
-        <div class="check-grid">
-          <label class="check-opt"><input type="checkbox" name="website_goals" value="get phone calls">Get phone calls</label>
-          <label class="check-opt"><input type="checkbox" name="website_goals" value="get email enquiries">Get email enquiries</label>
-          <label class="check-opt"><input type="checkbox" name="website_goals" value="get WhatsApp messages">WhatsApp messages</label>
-          <label class="check-opt"><input type="checkbox" name="website_goals" value="show portfolio / gallery">Show portfolio</label>
-          <label class="check-opt"><input type="checkbox" name="website_goals" value="show prices">Show prices</label>
-          <label class="check-opt"><input type="checkbox" name="website_goals" value="take bookings">Take bookings</label>
-          <label class="check-opt"><input type="checkbox" name="website_goals" value="look professional">Look professional</label>
-          <label class="check-opt"><input type="checkbox" name="website_goals" value="rank on Google">Rank on Google</label>
+        <div class="fg">
+          <label>Mobile / WhatsApp <span class="req">*</span></label>
+          <input type="tel" name="whatsapp" id="f-wa" maxlength="20" required placeholder="07700 900000" autocomplete="tel">
+          <div class="hint">We'll WhatsApp you within the hour to confirm.</div>
+        </div>
+        <div class="fg">
+          <label>Email <span class="req">*</span></label>
+          <input type="email" name="delivery_email" id="f-email" maxlength="100" required placeholder="you@yourbiz.co.uk" autocomplete="email">
+          <div class="hint">Your preview link arrives here.</div>
         </div>
       </div>
-      <div class="form-nav"><div></div><button type="button" class="btn-next" onclick="nextStep(1)">Next: Design →</button></div>
-    </div>
 
-    <!-- STEP 2 -->
-    <div class="form-step" id="s2">
-      <div class="step-title">Design &amp; Style</div>
-      <div class="row2">
-        <div class="fg"><label>Colour preference</label><select name="colour_preference"><option value="">You choose</option><option>Dark &amp; bold</option><option>Light &amp; clean</option><option>Warm tones</option><option>Vibrant / bright</option><option>Natural / earthy</option><option>Cool &amp; professional</option><option>Pink / feminine</option><option>I have specific colours</option></select></div>
-        <div class="fg"><label>Specific colours</label><input type="text" name="brand_colours" maxlength="80" placeholder="e.g. navy #003366 and gold"></div>
-      </div>
-      <div class="fg"><label>Overall vibe</label>
-        <div class="check-grid">
-          <label class="check-opt"><input type="checkbox" name="vibe" value="professional &amp; corporate">Professional</label>
-          <label class="check-opt"><input type="checkbox" name="vibe" value="friendly &amp; approachable">Friendly</label>
-          <label class="check-opt"><input type="checkbox" name="vibe" value="luxury &amp; premium">Luxury / premium</label>
-          <label class="check-opt"><input type="checkbox" name="vibe" value="bold &amp; energetic">Bold / energetic</label>
-          <label class="check-opt"><input type="checkbox" name="vibe" value="clean &amp; minimal">Clean / minimal</label>
-          <label class="check-opt"><input type="checkbox" name="vibe" value="warm &amp; local">Warm / local</label>
-          <label class="check-opt"><input type="checkbox" name="vibe" value="modern &amp; techy">Modern / techy</label>
-          <label class="check-opt"><input type="checkbox" name="vibe" value="traditional">Traditional</label>
+      <!-- Optional accordion: deeper brief for those willing -->
+      <details class="details">
+        <summary>
+          <span style="color:var(--ink);font-weight:600">Add more detail <span style="color:var(--muted);font-weight:400">(optional — speeds up the build)</span></span>
+        </summary>
+        <div class="details-body">
+          <div class="fg">
+            <label>What does your business do?</label>
+            <textarea name="business_description" maxlength="240" placeholder="e.g. Emergency plumbing &amp; boiler servicing across Manchester. Available 7 days a week."></textarea>
+          </div>
+          <div class="fg">
+            <label>Services &amp; prices (one per line)</label>
+            <textarea name="services" maxlength="500" placeholder="e.g.&#10;Haircut — £20&#10;Beard Trim — £12&#10;Full Groom — £30"></textarea>
+          </div>
+          <div class="fg">
+            <label>What makes you stand out?</label>
+            <input type="text" name="usp" maxlength="160" placeholder="15 yrs experience, 5★ reviews, same-day service…">
+          </div>
+          <div class="row2">
+            <div class="fg">
+              <label>Opening hours</label>
+              <input type="text" name="hours" maxlength="120" placeholder="Mon-Fri 9-6, Sat 10-4">
+            </div>
+            <div class="fg">
+              <label>Address (or "home-based")</label>
+              <input type="text" name="address" maxlength="120" placeholder="123 High St, Manchester">
+            </div>
+          </div>
+          <div class="fg">
+            <label>Reference site you like</label>
+            <input type="url" name="reference_1" maxlength="200" placeholder="https://…">
+          </div>
+          <div class="fg">
+            <label>What should the new site help with?</label>
+            <div class="check-grid">
+              <label class="check-opt"><input type="checkbox" name="website_goals" value="get phone calls">Get phone calls</label>
+              <label class="check-opt"><input type="checkbox" name="website_goals" value="get email enquiries">Email enquiries</label>
+              <label class="check-opt"><input type="checkbox" name="website_goals" value="WhatsApp messages">WhatsApp messages</label>
+              <label class="check-opt"><input type="checkbox" name="website_goals" value="take bookings">Take bookings</label>
+              <label class="check-opt"><input type="checkbox" name="website_goals" value="show portfolio">Show portfolio</label>
+              <label class="check-opt"><input type="checkbox" name="website_goals" value="rank on Google">Rank on Google</label>
+            </div>
+          </div>
+          <div class="fg">
+            <label>Light or dark feel?</label>
+            <div class="check-grid">
+              <label class="check-opt"><input type="radio" name="theme" value="light">Light &amp; clean</label>
+              <label class="check-opt"><input type="radio" name="theme" value="dark">Dark &amp; premium</label>
+              <label class="check-opt"><input type="radio" name="theme" value="warm">Warm / natural</label>
+              <label class="check-opt"><input type="radio" name="theme" value="no-pref">You choose</label>
+            </div>
+          </div>
+          <div class="fg">
+            <label>Anything else we should know?</label>
+            <textarea name="special_requests" maxlength="300" placeholder="Booking link, Google reviews to feature, things to avoid…"></textarea>
+          </div>
+          <div class="fg">
+            <label>How did you hear about us?</label>
+            <select name="heard_about">
+              <option value="">Choose…</option>
+              <option>Google search</option>
+              <option>Google Maps</option>
+              <option>Cold email</option>
+              <option>WhatsApp message</option>
+              <option>Referral</option>
+              <option>Social media</option>
+              <option>Other</option>
+            </select>
+          </div>
         </div>
-      </div>
-      <div class="fg"><label>Light or dark?</label>
-        <div class="radio-group">
-          <label class="radio-opt"><input type="radio" name="theme" value="light"><div><strong>Light</strong><span>Clean white / neutral background</span></div></label>
-          <label class="radio-opt"><input type="radio" name="theme" value="dark"><div><strong>Dark</strong><span>Premium dark background</span></div></label>
-          <label class="radio-opt"><input type="radio" name="theme" value="no-pref"><div><strong>Your choice</strong><span>We'll pick what works best</span></div></label>
-        </div>
-      </div>
-      <div class="fg"><label>Sections to include</label>
-        <div class="check-grid">
-          <label class="check-opt"><input type="checkbox" name="sections" value="photo gallery">Photo gallery</label>
-          <label class="check-opt"><input type="checkbox" name="sections" value="testimonials">Testimonials</label>
-          <label class="check-opt"><input type="checkbox" name="sections" value="team / about">Team / about</label>
-          <label class="check-opt"><input type="checkbox" name="sections" value="FAQ">FAQ section</label>
-          <label class="check-opt"><input type="checkbox" name="sections" value="Google Map">Google Map</label>
-          <label class="check-opt"><input type="checkbox" name="sections" value="booking link">Booking link</label>
-          <label class="check-opt"><input type="checkbox" name="sections" value="before &amp; after">Before &amp; after</label>
-        </div>
-      </div>
-      <div class="fg"><label>Website you like the look of</label><input type="url" name="reference_1" maxlength="200" placeholder="https://..."></div>
-      <div class="form-nav"><button type="button" class="btn-back" onclick="prevStep(2)">← Back</button><button type="button" class="btn-next" onclick="nextStep(2)">Next: Content →</button></div>
-    </div>
+      </details>
 
-    <!-- STEP 3 -->
-    <div class="form-step" id="s3">
-      <div class="step-title">Content &amp; Contact</div>
-      <div class="fg"><label>Services / products &amp; prices</label><textarea name="services" maxlength="500" data-max="500" placeholder="e.g.&#10;Haircut — £20&#10;Beard Trim — £12&#10;Full Groom — £30"></textarea><div class="counter" id="cc-services">0 / 500</div></div>
-      <div class="row2">
-        <div class="fg"><label>Phone number</label><input type="tel" name="phone" maxlength="20" placeholder="01234 567890"></div>
-        <div class="fg"><label>Email for enquiries</label><input type="email" name="enquiry_email" maxlength="100" placeholder="hello@yourbiz.co.uk"></div>
-      </div>
-      <div class="row2">
-        <div class="fg"><label>Opening hours</label><input type="text" name="hours" maxlength="120" placeholder="Mon-Fri 9am-6pm, Sat 10am-4pm"></div>
-        <div class="fg"><label>Business address</label><input type="text" name="address" maxlength="120" placeholder="Leave blank if home-based"></div>
-      </div>
-      <div class="fg"><label>Social media</label><input type="text" name="social_links" maxlength="300" placeholder="e.g. @smithplumbing or paste link"></div>
-      <div class="fg"><label>Contact methods to show on site</label>
-        <div class="check-grid">
-          <label class="check-opt"><input type="checkbox" name="contact_methods" value="phone">Phone</label>
-          <label class="check-opt"><input type="checkbox" name="contact_methods" value="email">Email</label>
-          <label class="check-opt"><input type="checkbox" name="contact_methods" value="WhatsApp">WhatsApp</label>
-          <label class="check-opt"><input type="checkbox" name="contact_methods" value="contact form">Contact form</label>
-          <label class="check-opt"><input type="checkbox" name="contact_methods" value="Instagram">Instagram</label>
-          <label class="check-opt"><input type="checkbox" name="contact_methods" value="Facebook">Facebook</label>
-          <label class="check-opt"><input type="checkbox" name="contact_methods" value="address">Address</label>
-          <label class="check-opt"><input type="checkbox" name="contact_methods" value="TikTok">TikTok</label>
-        </div>
-      </div>
-      <div class="fg"><label>Anything specific to include?</label><textarea name="special_requests" maxlength="250" data-max="250" placeholder="e.g. include a gallery, add booking link, feature Google reviews..."></textarea><div class="counter" id="cc-requests">0 / 250</div></div>
-      <div class="form-nav"><button type="button" class="btn-back" onclick="prevStep(3)">← Back</button><button type="button" class="btn-next" onclick="nextStep(3)">Next: Package →</button></div>
-    </div>
+      <label class="terms">
+        <input type="checkbox" id="f-terms" name="terms" required>
+        <span>I agree to the <a href="/terms.html" target="_blank">Terms</a> and <a href="/privacy.html" target="_blank">Privacy Policy</a>. I understand <b>I am not being charged today</b> — I only pay if I keep the site after seeing the preview.</span>
+      </label>
 
-    <!-- STEP 4 -->
-    <div class="form-step" id="s4">
-      <div class="step-title">Choose Your Package</div>
-      <div class="fg"><label>Package <span class="req">*</span></label>
-        <div class="radio-group">
-          <label class="radio-opt"><input type="radio" name="package" value="starter" required><div><strong>Starter — £149</strong><span>Single-page website. Mobile responsive. SEO. Contact form. 24hr delivery. 1 revision.</span></div></label>
-          <label class="radio-opt"><input type="radio" name="package" value="advanced"><div><strong>Advanced — £299</strong><span>Everything in Starter plus gallery, testimonials, about section, premium animations, priority delivery.</span></div></label>
-        </div>
-        <div class="err" id="err-pkg">Please select a package.</div>
+      <div class="submit-row">
+        <button type="submit" class="btn-submit" id="submit-btn">Send me my free preview →</button>
+        <div class="submit-note">Harry will WhatsApp within <b>1 hour</b> (UK working hours). Preview lands in your inbox within <b>24 hours</b>.</div>
+        <div class="err-box" id="err-box">Something went wrong. Try again, or WhatsApp <a href="https://wa.me/447502731799" style="color:inherit;text-decoration:underline">07502 731799</a>.</div>
       </div>
-      <div class="fg"><label>Hosting add-on (+£29)</label>
-        <div class="radio-group">
-          <label class="radio-opt"><input type="radio" name="hosting_addon" value="yes"><div><strong>Yes — upload it for me (+£29)</strong><span>We upload to Netlify and connect your domain.</span></div></label>
-          <label class="radio-opt"><input type="radio" name="hosting_addon" value="no"><div><strong>No — I'll do it myself</strong><span>We include a full step-by-step guide.</span></div></label>
-        </div>
+
+      <div class="ok-msg" id="ok">
+        <div class="check">✓</div>
+        <h2>Got it. We're on it.</h2>
+        <p>You'll get a WhatsApp from Harry within the hour, and your preview lands by email within 24 hours.</p>
+        <p style="margin-top:14px"><a href="/" style="color:var(--gold);font-weight:500">← Back to staticswift.co.uk</a></p>
       </div>
-      <div class="row2">
-        <div class="fg"><label>Delivery email <span class="req">*</span></label><input type="email" name="delivery_email" id="f-email" required placeholder="Where to send preview"><div class="warn-box">⚠ Check your junk folder after submitting. We'll also WhatsApp you as a backup.</div><div class="err" id="err-email">Please enter a valid email.</div></div>
-        <div class="fg"><label>WhatsApp / Mobile <span class="req">*</span></label><input type="tel" name="whatsapp" id="f-wa" required placeholder="07700 900000"><div class="hint">We'll WhatsApp you when your preview is ready.</div><div class="err" id="err-wa">Please enter your number.</div></div>
-      </div>
-      <div class="fg"><label>How did you hear about us?</label><select name="heard_about"><option value="">Select...</option><option>Google search</option><option>Google Maps</option><option>Cold email</option><option>WhatsApp message</option><option>Referral</option><option>Social media</option><option>Other</option></select></div>
-      <div class="fg"><label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;text-transform:none;letter-spacing:0;font-weight:400;font-size:13px;color:var(--muted)"><input type="checkbox" id="f-terms" name="terms" required style="accent-color:var(--gold);margin-top:2px;cursor:pointer">I agree to the <a href="/terms.html" target="_blank" style="color:var(--gold)">Terms</a> and <a href="/privacy.html" target="_blank" style="color:var(--gold)">Privacy Policy</a>. I understand I will not be charged until I approve.</label><div class="err" id="err-terms">Please agree to continue.</div></div>
-      <div class="form-nav" style="flex-direction:column;gap:12px">
-        <button type="button" class="btn-back" onclick="prevStep(4)">← Back</button>
-        <button type="submit" class="btn-submit">Build My Website →</button>
-      </div>
-      <div class="ok-msg" id="ok">✓ Received! We'll have your preview ready within 24 hours. Check your email and junk folder.</div>
-    </div>
-  </form>
+    </form>
+  </div>
+</div>
+
+<!-- What happens next reassurance -->
+<div class="next">
+  <h3>What happens <em>next</em></h3>
+  <div class="steps">
+    <div class="step"><div class="step-n">1</div><div class="step-c"><strong>Within the hour</strong><span>Harry WhatsApps you to confirm the brief and grab any photos / Google reviews to feature.</span></div></div>
+    <div class="step"><div class="step-n">2</div><div class="step-c"><strong>Within 24 hours</strong><span>Your real, working preview is emailed to you on a private link. Click around. Show your partner. Sleep on it.</span></div></div>
+    <div class="step"><div class="step-n">3</div><div class="step-c"><strong>Only if you keep it</strong><span>£499 setup + £49/month invoiced. We launch on your domain, set up Google Business Profile, you're live.</span></div></div>
+    <div class="step"><div class="step-n">4</div><div class="step-c"><strong>60 days from launch</strong><span>If the site hasn't earned you a single new customer enquiry, full refund — and the site is still yours.</span></div></div>
+  </div>
 </div>
 
 <script>
-let step=1;
-const MULTI=['website_goals','vibe','sections','contact_methods'];
+const MULTI = ['website_goals'];
 
-function goTo(n){
-  document.querySelectorAll('.form-step').forEach((s,i)=>s.classList.toggle('active',i+1===n));
-  document.querySelectorAll('.progress-step').forEach((s,i)=>s.classList.toggle('active',i<n));
-  step=n;
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function nextStep(n){
-  // Basic validation for step 1
-  if(n===1){
-    const fields=['f-name','f-bizname','f-biztype','f-location','f-bizdesc'];
-    let ok=true;
-    for(const id of fields){
-      const el=document.getElementById(id);
-      if(!el||!el.value.trim()){ok=false;el.style.borderColor='var(--red)';setTimeout(()=>el.style.borderColor='',2000)}
-    }
-    if(!ok)return;
-  }
-  if(n<4)goTo(n+1);
-}
-function prevStep(n){if(n>1)goTo(n-1)}
-
-// Char counters
-document.querySelectorAll('textarea[data-max]').forEach(el=>{
-  const max=parseInt(el.dataset.max);
-  const id='cc-'+el.name.replace('business_description','bizdesc').replace('special_requests','requests');
-  const counter=document.getElementById(id);
-  if(!counter)return;
-  const update=()=>{
-    const len=el.value.length;
-    counter.textContent=len+' / '+max;
-    counter.style.color=len>max*.9?'#dc2626':len>max*.75?'#d97706':'var(--dim)';
-  };
-  el.addEventListener('input',update);update();
-});
-
-// Submit
-document.getElementById('order-form').addEventListener('submit',async function(e){
-  e.preventDefault();
-  const bot=this.querySelector('[name="bot-field"]');
-  if(bot&&bot.value)return;
-
-  // Validate step 4
-  let ok=true;
-  const pkg=document.querySelector('input[name="package"]:checked');
-  if(!pkg){document.getElementById('err-pkg').style.display='block';ok=false}
-  const email=document.getElementById('f-email');
-  if(!email.value.trim()||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)){document.getElementById('err-email').style.display='block';email.style.borderColor='var(--red)';ok=false}
-  const wa=document.getElementById('f-wa');
-  if(!wa.value.trim()){document.getElementById('err-wa').style.display='block';wa.style.borderColor='var(--red)';ok=false}
-  const terms=document.getElementById('f-terms');
-  if(!terms.checked){document.getElementById('err-terms').style.display='block';ok=false}
-  if(!ok)return;
-
-  const btn=this.querySelector('.btn-submit');
-  btn.textContent='Sending...';btn.disabled=true;
-
-  const fd=new FormData(this);
-  const data={};
-  for(const[k,v]of fd.entries()){
-    if(!MULTI.includes(k)&&k!=='terms'&&k!=='bot-field')data[k]=v;
-  }
-  for(const key of MULTI){
-    const vals=fd.getAll(key).filter(v=>v);
-    if(vals.length)data[key]=vals.join(', ');
-  }
-  data.source='order-form';data.stage='new-lead';data.createdAt=new Date().toISOString();
-
+// ── ss:order-hydrate — pre-fill business_type + location from ?niche=…&city=…
+//    Programmatic SEO pages link here with these params; this is the entire
+//    reason new visitors don't have to retype what they just searched for.
+(function hydrate(){
   try{
-    const r=await fetch('/.netlify/functions/handle-intake',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
-    const result=await r.json();
-    if(result.ok){
-      this.style.display='none';
-      document.getElementById('ok').style.display='block';
-      document.querySelector('.progress').style.display='none';
-    }else{btn.textContent='Error — try again';btn.disabled=false;btn.style.background='#dc2626'}
-  }catch{btn.textContent='Network error — try again';btn.disabled=false;btn.style.background='#dc2626'}
-});
+    var p = new URLSearchParams(window.location.search);
+    var niche = (p.get('niche') || '').toLowerCase();
+    var city  = p.get('city') || '';
 
-// ss:order-hydrate-v1 — pre-fill from ?niche=X&city=Y
-(function(){
-  try{
-    var p=new URLSearchParams(window.location.search);
-    var niche=(p.get('niche')||'').toLowerCase();
-    var city=p.get('city')||'';
-    var bt=document.getElementById('f-biztype');
-    if(bt&&niche){
-      var found=false;
-      for(var i=0;i<bt.options.length;i++){
-        if((bt.options[i].value||'').toLowerCase()===niche){bt.selectedIndex=i;found=true;break;}
+    var bt = document.getElementById('f-biztype');
+    if (bt && niche){
+      var matched = false;
+      for (var i = 0; i < bt.options.length; i++){
+        if ((bt.options[i].value || '').toLowerCase() === niche){
+          bt.selectedIndex = i; matched = true; break;
+        }
       }
-      if(!found){
-        for(var j=0;j<bt.options.length;j++){
-          if((bt.options[j].value||'').toLowerCase()==='other'){bt.selectedIndex=j;break;}
+      if (!matched){
+        for (var j = 0; j < bt.options.length; j++){
+          if (bt.options[j].value === 'other'){ bt.selectedIndex = j; break; }
         }
       }
     }
-    var loc=document.getElementById('f-location');
-    if(loc&&city&&!loc.value){
-      // Slug -> Title Case (handle "stoke-on-trent" etc.).
-      var small={on:1,in:1,upon:1,under:1,super:1,next:1,le:1,la:1,of:1,by:1,the:1};
-      loc.value=city.split('-').map(function(w,i){
-        if(i>0&&small[w])return w;
-        return w.charAt(0).toUpperCase()+w.slice(1);
+
+    var loc = document.getElementById('f-location');
+    if (loc && city && !loc.value){
+      // slug → title case (handles "stoke-on-trent" etc.)
+      var small = {on:1,in:1,upon:1,under:1,of:1,by:1,the:1,le:1,la:1};
+      loc.value = city.split('-').map(function(w,i){
+        if (i > 0 && small[w]) return w;
+        return w.charAt(0).toUpperCase() + w.slice(1);
       }).join('-');
     }
-    // Set hidden source field so we know which SEO page they came from.
-    var f=document.getElementById('order-form');
-    if(f&&niche&&!f.querySelector('input[name="source_page"]')){
-      var h=document.createElement('input');h.type='hidden';h.name='source_page';h.value='seo-'+niche+'-'+city;
+
+    // hidden source field so Harry's admin email shows which SEO page sent the lead
+    if (niche){
+      var f = document.getElementById('order-form');
+      var h = document.createElement('input');
+      h.type='hidden'; h.name='source_page';
+      h.value = 'seo-' + niche + (city ? '-' + city : '');
       f.appendChild(h);
     }
-  }catch(e){}
+  } catch(e){}
 })();
 
-// ss:order-lead-event-v1 — fire generate_lead on successful submit
-(function(){
-  var f=document.getElementById('order-form');if(!f)return;
-  f.addEventListener('submit',function(){
-    // Defer so this runs AFTER the existing submit handler, which is async.
-    // We poll for the visible #ok element which is the success signal.
-    var start=Date.now();
-    var iv=setInterval(function(){
-      var ok=document.getElementById('ok');
-      if(ok&&ok.style.display==='block'){
-        clearInterval(iv);
-        try{
-          var p=new URLSearchParams(window.location.search);
-          var src=(p.get('niche')?'seo-'+p.get('niche')+'-'+(p.get('city')||''):'order-form-full');
-          var bt=document.getElementById('f-biztype');var loc=document.getElementById('f-location');
-          if(typeof gtag==='function')gtag('event','generate_lead',{value:149,currency:'GBP',source:src,business_type:bt&&bt.value,location:loc&&loc.value});
-          window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'lead_submit',form_id:'order_full',source:src});
-        }catch(e){}
-      } else if(Date.now()-start>15000){clearInterval(iv);}
-    },200);
-  });
-})();
+// ── ss:order-submit — single-step submit with full event firing
+document.getElementById('order-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  var bot = this.querySelector('[name="bot-field"]');
+  if (bot && bot.value) return; // silently drop bots
 
+  var btn = document.getElementById('submit-btn');
+  var errBox = document.getElementById('err-box');
+  errBox.classList.remove('show');
+
+  // light client-side validation — required fields only
+  var required = ['f-name','f-bizname','f-biztype','f-location','f-wa','f-email'];
+  var firstBad = null;
+  for (var i = 0; i < required.length; i++){
+    var el = document.getElementById(required[i]);
+    if (!el || !el.value.trim()){
+      el.style.borderColor = 'var(--red)';
+      el.style.boxShadow = '0 0 0 3px rgba(220,38,38,.08)';
+      if (!firstBad) firstBad = el;
+      setTimeout((function(node){return function(){node.style.borderColor='';node.style.boxShadow='';}})(el), 2400);
+    }
+  }
+  var email = document.getElementById('f-email');
+  if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)){
+    email.style.borderColor = 'var(--red)'; if (!firstBad) firstBad = email;
+  }
+  var terms = document.getElementById('f-terms');
+  if (!terms.checked){
+    errBox.textContent = 'Please tick the box to confirm you understand the no-charge-today terms.';
+    errBox.classList.add('show'); if (!firstBad) firstBad = terms;
+  }
+  if (firstBad){ firstBad.focus(); return; }
+
+  btn.textContent = 'Sending…'; btn.disabled = true;
+
+  // Build POST body. Keep field names compatible with handle-intake.js.
+  var fd = new FormData(this);
+  var data = {};
+  for (var pair of fd.entries()){
+    var k = pair[0], v = pair[1];
+    if (k === 'bot-field' || k === 'terms') continue;
+    if (MULTI.indexOf(k) > -1) continue;
+    data[k] = v;
+  }
+  for (var key of MULTI){
+    var vals = fd.getAll(key).filter(function(v){return v});
+    if (vals.length) data[key] = vals.join(', ');
+  }
+  // Mirror whatsapp -> phone so the admin email "Call" link works.
+  if (data.whatsapp && !data.phone) data.phone = data.whatsapp;
+
+  data.source    = 'order-form';
+  data.package   = 'subscription-499-49'; // new pricing — kept for email/db schema
+  data.stage     = 'new-lead';
+  data.createdAt = new Date().toISOString();
+
+  // Fire conversion events BEFORE the network round-trip so we don't lose the
+  // signal if the user closes the tab during the POST.
+  try {
+    if (typeof gtag === 'function'){
+      gtag('event','generate_lead',{
+        currency:'GBP', value:499,
+        source: data.source_page || 'order-form',
+        business_type: data.business_type,
+        location: data.location
+      });
+      gtag('event','form_submit',{ form_location:'order_page' });
+    }
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event:'lead_submit', form_id:'order', source: data.source_page || 'order-form' });
+  } catch(_){}
+  try {
+    if (typeof ttq !== 'undefined'){
+      ttq.track('SubmitForm', { value:499, currency:'GBP', description: data.business_type || 'trade-website-brief' });
+      ttq.track('Lead',       { value:499, currency:'GBP' });
+    }
+  } catch(_){}
+
+  try {
+    var r = await fetch('/.netlify/functions/handle-intake', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(data),
+      keepalive: true
+    });
+    if (r.ok){
+      this.style.display = 'none';
+      document.getElementById('ok').classList.add('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    throw new Error('HTTP ' + r.status);
+  } catch (err){
+    btn.disabled = false;
+    btn.textContent = 'Send me my free preview →';
+    errBox.classList.add('show');
+  }
+});
 </script>
 </body>
 </html>

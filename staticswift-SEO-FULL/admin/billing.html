@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<!-- ss:admin-billing-v1 — monthly subscription dashboard. Reads /get-clients,
+     filters where stage === 'live', computes MRR / due-this-month / overdue
+     from each client.monthlyInvoices[] log written by cron-monthly-invoices.
+     Triggers manual single-client invoice via POST /cron-monthly-invoices. -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Billing — StaticSwift Admin</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#F2EFE7">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=sentient@400,500,500i&f[]=switzer@400,500,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+:root{
+  --paper:#F2EFE7; --paper-deep:#EBE7DD; --ink:#0E0B07; --ink-soft:#29221C; --ink-mid:#5A4E40;
+  --bronze:#8A7B62; --bronze-dim:#BFB4A0; --signal:#9C2615; --signal-deep:#7A1D10; --green:#347537;
+  --hair:rgba(14,11,7,.22); --hair-soft:rgba(14,11,7,.10);
+  --serif:'Sentient','PP Editorial New',Georgia,serif;
+  --sans:'Switzer','Söhne','Helvetica Neue',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --gutter:clamp(16px,3vw,40px);
+}
+body{ font-family:var(--sans); background:var(--paper); color:var(--ink); font-size:14px; line-height:1.5; min-height:100vh; }
+a{color:inherit; text-decoration:none}
+::selection{background:var(--ink);color:var(--paper)}
+:focus{outline:none} :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+button{font:inherit; color:inherit; background:none; border:0; cursor:pointer}
+
+/* Top bar */
+.bar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px var(--gutter); border-bottom:1px solid var(--hair);
+  position:sticky; top:0; background:var(--paper); z-index:10;
+}
+.bar-l{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:17px; letter-spacing:-.01em; color:var(--ink);
+  display:flex; align-items:center; gap:10px;
+}
+.bar-l-dot{width:7px;height:7px;background:var(--ink);border-radius:50%;display:inline-block}
+.bar-l b{ color:var(--bronze); font-weight:400; font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; margin-left:8px }
+.bar-r{ display:flex; gap:14px; align-items:center; }
+.bar-r a{
+  font-family:var(--mono); font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--ink-mid); transition:color .15s;
+}
+.bar-r a:hover{ color:var(--signal) }
+.bar-r .pill{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:6px 10px; border:1px solid var(--hair); border-radius:100px;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--ink-mid);
+}
+.bar-r .pill::before{ content:""; width:6px; height:6px; border-radius:50%; background:var(--green); }
+
+/* Login */
+#login{
+  display:flex; align-items:center; justify-content:center;
+  min-height:calc(100vh - 60px); padding:40px var(--gutter);
+}
+.login-card{ max-width:380px; width:100%; }
+.login-card h1{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:44px; line-height:1; letter-spacing:-.03em; margin-bottom:8px;
+}
+.login-card p{ color:var(--ink-mid); font-size:14.5px; margin-bottom:24px; }
+.login-card input{
+  width:100%; padding:14px 16px;
+  background:var(--paper-deep); border:1px solid var(--hair-soft); border-radius:8px;
+  font-family:var(--mono); font-size:14px; color:var(--ink);
+  margin-bottom:14px; transition:border-color .15s;
+}
+.login-card input:focus{ border-color:var(--ink) }
+.login-card button{
+  width:100%; padding:14px;
+  background:var(--ink); color:var(--paper);
+  border-radius:100px; font-weight:500; font-size:14.5px;
+  transition:background .15s;
+}
+.login-card button:hover{ background:var(--signal) }
+.login-card .err{
+  display:none; color:var(--signal); font-size:13px; margin-top:10px; font-family:var(--mono);
+}
+.login-card .err.show{ display:block }
+
+/* Page */
+.page{ max-width:1320px; margin:0 auto; padding:32px var(--gutter) 80px; }
+.page-mark{
+  font-family:var(--mono); font-size:11px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--bronze); margin-bottom:14px;
+  display:flex; align-items:center; gap:12px;
+}
+.page-mark::before{ content:""; width:24px; height:1px; background:var(--ink); }
+.page h1{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(40px,5vw,68px); line-height:.95; letter-spacing:-.028em;
+  color:var(--ink); margin-bottom:36px;
+}
+.page h1 em{ font-style:italic; color:var(--signal) }
+
+/* Top stat row */
+.kpis{
+  display:grid; grid-template-columns:repeat(4, 1fr);
+  border-top:1px solid var(--ink);
+  margin-bottom:40px;
+}
+.kpi{
+  padding:28px 24px 22px 0; border-right:1px solid var(--hair-soft);
+}
+.kpi:last-child{ border-right:none }
+.kpi-l{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--bronze); margin-bottom:10px;
+}
+.kpi-n{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(44px,5vw,68px); line-height:.92; letter-spacing:-.02em;
+  color:var(--ink);
+}
+.kpi-n.alert{ color:var(--signal) }
+.kpi-n.ok{ color:var(--green) }
+.kpi-sub{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.04em;
+  color:var(--ink-mid); margin-top:8px;
+}
+@media(max-width:880px){
+  .kpis{ grid-template-columns:repeat(2, 1fr); }
+  .kpi{ border-right:none; border-bottom:1px solid var(--hair-soft); padding:20px 14px 16px 0 }
+}
+
+/* Section title */
+.sect-h{
+  display:flex; align-items:baseline; gap:16px; flex-wrap:wrap;
+  margin:48px 0 16px;
+}
+.sect-h h2{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(26px,3vw,36px); letter-spacing:-.02em; color:var(--ink);
+}
+.sect-h h2 em{ color:var(--signal) }
+.sect-h-meta{
+  font-family:var(--mono); font-size:11px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--bronze);
+}
+.run-all{
+  margin-left:auto;
+  display:inline-flex; align-items:center; gap:10px;
+  padding:10px 16px;
+  border:1px solid var(--ink); border-radius:100px;
+  font-family:var(--sans); font-size:13px; font-weight:500;
+  background:var(--paper); color:var(--ink);
+  transition:background .15s, color .15s;
+}
+.run-all:hover{ background:var(--ink); color:var(--paper) }
+.run-all.muted{ border-color:var(--hair); color:var(--ink-mid) }
+
+/* Table */
+.tbl{
+  width:100%; border-collapse:collapse;
+  font-size:14px; color:var(--ink);
+}
+.tbl thead th{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--bronze); font-weight:400;
+  text-align:left; padding:14px 12px;
+  border-top:1px solid var(--ink); border-bottom:1px solid var(--hair-soft);
+}
+.tbl thead th.r{ text-align:right }
+.tbl tbody td{
+  padding:14px 12px; border-bottom:1px solid var(--hair-soft);
+  vertical-align:top;
+}
+.tbl tbody tr:hover{ background:var(--paper-deep) }
+.tbl tbody td.biz{
+  font-family:var(--serif); font-weight:500; font-size:16px; letter-spacing:-.005em;
+}
+.tbl tbody td.biz small{
+  display:block; margin-top:3px;
+  font-family:var(--sans); font-weight:400; font-size:12px;
+  color:var(--ink-mid);
+}
+.tbl tbody td.mono{ font-family:var(--mono); font-size:13px; color:var(--ink-soft) }
+.tbl tbody td.r{ text-align:right; font-family:var(--mono); font-size:13px }
+.tbl tbody td .tag{
+  display:inline-block; padding:3px 8px; border-radius:100px;
+  font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+}
+.tag-paid{ background:rgba(52,117,55,.12); color:var(--green) }
+.tag-due{ background:rgba(156,38,21,.10); color:var(--signal) }
+.tag-pending{ background:var(--paper-deep); color:var(--ink-mid) }
+.tag-none{ background:transparent; color:var(--bronze); border:1px dashed var(--hair-soft) }
+
+.act-btn{
+  font-family:var(--sans); font-size:12px; font-weight:500;
+  padding:7px 14px; border-radius:100px; border:1px solid var(--ink);
+  background:var(--paper); color:var(--ink);
+  transition:background .15s, color .15s;
+  white-space:nowrap;
+}
+.act-btn:hover{ background:var(--ink); color:var(--paper) }
+.act-btn.alt{ border-color:var(--hair); color:var(--ink-mid) }
+.act-btn.alt:hover{ background:var(--ink-soft); color:var(--paper); border-color:var(--ink-soft) }
+.act-btn:disabled{ opacity:.5; cursor:wait }
+
+.empty{
+  padding:48px 24px; text-align:center;
+  font-family:var(--serif); font-style:italic; font-size:20px;
+  color:var(--bronze); border-bottom:1px solid var(--hair-soft);
+}
+
+/* Toast */
+.toast{
+  position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(120%);
+  background:var(--ink); color:var(--paper);
+  padding:14px 22px; border-radius:100px;
+  font-size:14px; font-family:var(--sans); font-weight:500;
+  box-shadow:0 16px 40px -16px rgba(0,0,0,.4);
+  transition:transform .35s var(--ease-out);
+  z-index:50;
+}
+.toast.show{ transform:translateX(-50%) translateY(0) }
+.toast.err{ background:var(--signal) }
+
+@media(max-width:760px){
+  .tbl thead th.hide-sm, .tbl tbody td.hide-sm{ display:none }
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-l">
+    <span class="bar-l-dot" aria-hidden="true"></span>
+    StaticSwift <b>Admin</b>
+  </div>
+  <nav class="bar-r">
+    <a href="/admin/index.html">Pipeline</a>
+    <a href="/admin/billing.html" style="color:var(--signal)">Billing</a>
+    <span class="pill" id="cycle-pill">Cycle —</span>
+  </nav>
+</header>
+
+<!-- Login -->
+<section id="login">
+  <div class="login-card">
+    <h1>Billing.</h1>
+    <p>Admin password to continue.</p>
+    <input type="password" id="pw" placeholder="Password" autocomplete="current-password">
+    <button id="login-btn" type="button">Sign in</button>
+    <div class="err" id="login-err">Incorrect password — try again.</div>
+  </div>
+</section>
+
+<!-- App -->
+<main id="app" class="page" hidden>
+  <div class="page-mark">Subscriptions · Monthly £49 care &amp; hosting</div>
+  <h1>Billing &mdash; <em>this cycle.</em></h1>
+
+  <!-- KPI strip -->
+  <div class="kpis" aria-label="Billing key metrics">
+    <div class="kpi">
+      <div class="kpi-l">Live subscribers</div>
+      <div class="kpi-n" id="kpi-live">—</div>
+      <div class="kpi-sub" id="kpi-live-sub">&nbsp;</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-l">MRR</div>
+      <div class="kpi-n ok" id="kpi-mrr">—</div>
+      <div class="kpi-sub">Per month, ex-setup</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-l">Due this month</div>
+      <div class="kpi-n" id="kpi-due">—</div>
+      <div class="kpi-sub" id="kpi-due-sub">&nbsp;</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-l">Overdue</div>
+      <div class="kpi-n alert" id="kpi-overdue">—</div>
+      <div class="kpi-sub" id="kpi-overdue-sub">Past payment terms</div>
+    </div>
+  </div>
+
+  <!-- DUE / OVERDUE -->
+  <div class="sect-h">
+    <h2>Outstanding <em>now.</em></h2>
+    <span class="sect-h-meta" id="outstanding-meta">—</span>
+    <button class="run-all" id="run-all-btn" type="button">Send all due invoices →</button>
+  </div>
+  <table class="tbl" id="tbl-out">
+    <thead><tr>
+      <th>Business</th>
+      <th class="hide-sm">Stage</th>
+      <th>Latest invoice</th>
+      <th class="hide-sm">Issued</th>
+      <th class="r">Amount</th>
+      <th class="r">Action</th>
+    </tr></thead>
+    <tbody id="tbl-out-body"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
+  </table>
+
+  <!-- ALL LIVE SUBSCRIBERS -->
+  <div class="sect-h">
+    <h2>All live <em>subscribers.</em></h2>
+    <span class="sect-h-meta" id="all-meta">—</span>
+  </div>
+  <table class="tbl" id="tbl-all">
+    <thead><tr>
+      <th>Business</th>
+      <th class="hide-sm">Live since</th>
+      <th>Last invoice</th>
+      <th class="hide-sm">Last paid</th>
+      <th class="r">Total billed</th>
+      <th class="r">Action</th>
+    </tr></thead>
+    <tbody id="tbl-all-body"><tr><td colspan="6" class="empty">Loading…</td></tr></tbody>
+  </table>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* StaticSwift admin billing — same auth pattern as the rest of /admin/
+   (x-admin-password header). Stores the password in sessionStorage so a
+   tab refresh keeps the dashboard usable but a closed window resets it. */
+const MONTHLY = 49; // keep in sync with cron-monthly-invoices.MONTHLY_AMOUNT
+const $ = (q, root=document) => root.querySelector(q);
+
+function getPw(){ return sessionStorage.getItem('ss_admin_pw') || ''; }
+function setPw(v){ sessionStorage.setItem('ss_admin_pw', v); }
+function clearPw(){ sessionStorage.removeItem('ss_admin_pw'); }
+
+function gbp(n){ return '£' + Number(n||0).toLocaleString('en-GB',{ minimumFractionDigits:0, maximumFractionDigits:0 }); }
+function gbp2(n){ return '£' + Number(n||0).toFixed(2); }
+function fmtDate(iso){
+  if (!iso) return '—';
+  try { return new Date(iso).toLocaleDateString('en-GB',{ day:'numeric', month:'short', year:'numeric' }); }
+  catch(_){ return '—' }
+}
+function cycleKey(d){ return d.getUTCFullYear() + '-' + String(d.getUTCMonth()+1).padStart(2,'0'); }
+function thisCycle(){ return cycleKey(new Date()); }
+
+function toast(msg, isErr){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.toggle('err', !!isErr);
+  t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=> t.classList.remove('show'), 3200);
+}
+
+async function api(path, opts){
+  opts = opts || {};
+  const headers = Object.assign({ 'x-admin-password': getPw() }, opts.headers || {});
+  if (opts.body && typeof opts.body !== 'string'){
+    headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(opts.body);
+  }
+  const r = await fetch(path, Object.assign({}, opts, { headers }));
+  if (r.status === 401){
+    clearPw();
+    showLogin();
+    throw new Error('Unauthorized');
+  }
+  return r;
+}
+
+/* ─── LOGIN ─── */
+function showLogin(){
+  $('#login').style.display = 'flex';
+  $('#app').setAttribute('hidden','');
+  setTimeout(()=> $('#pw').focus(), 30);
+}
+function showApp(){
+  $('#login').style.display = 'none';
+  $('#app').removeAttribute('hidden');
+  $('#cycle-pill').textContent = 'Cycle ' + thisCycle();
+  loadDashboard();
+}
+
+$('#login-btn').addEventListener('click', tryLogin);
+$('#pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+async function tryLogin(){
+  const pw = $('#pw').value.trim();
+  if (!pw) return;
+  setPw(pw);
+  try {
+    const r = await fetch('/.netlify/functions/get-clients', { headers: { 'x-admin-password': pw } });
+    if (r.status === 401){
+      clearPw();
+      $('#login-err').classList.add('show');
+      return;
+    }
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    showApp();
+  } catch (err){
+    $('#login-err').textContent = 'Network or server error — try again.';
+    $('#login-err').classList.add('show');
+  }
+}
+
+/* ─── DASHBOARD LOAD ─── */
+let allClients = [];
+
+async function loadDashboard(){
+  try {
+    const r = await api('/.netlify/functions/get-clients');
+    const list = await r.json();
+    allClients = Array.isArray(list) ? list : [];
+    render();
+  } catch (err){
+    if (err.message !== 'Unauthorized'){
+      toast('Could not load clients: ' + err.message, true);
+    }
+  }
+}
+
+function render(){
+  const cycle = thisCycle();
+  const live = allClients.filter(c => c && c.stage === 'live');
+
+  // For each live subscriber, compute their "outstanding" status:
+  // - none = no invoice for this cycle yet → SHOULD send one
+  // - pending = invoice sent this cycle, not yet paid
+  // - paid = invoice sent and paid
+  const decorated = live.map(c => {
+    const log = Array.isArray(c.monthlyInvoices) ? c.monthlyInvoices : [];
+    const sorted = log.slice().sort((a,b) => new Date(b.issuedAt) - new Date(a.issuedAt));
+    const latest = sorted[0] || null;
+    const thisCycleInv = log.find(e => e.cycleKey === cycle) || null;
+    let status;
+    if (!thisCycleInv) status = 'none';
+    else if (thisCycleInv.paidAt) status = 'paid';
+    else status = 'pending';
+
+    // overdue if any unpaid invoice has dueAt < now
+    const now = Date.now();
+    const overdue = log.find(e => !e.paidAt && e.dueAt && new Date(e.dueAt).getTime() < now) || null;
+    const totalBilled = log.reduce((sum,e) => sum + Number(e.amount||0), 0);
+
+    return { client:c, latest, thisCycleInv, status, overdue, totalBilled };
+  });
+
+  // KPIs
+  $('#kpi-live').textContent = live.length;
+  $('#kpi-live-sub').textContent = live.length ? 'Across the UK' : 'No live subs yet';
+  $('#kpi-mrr').textContent = gbp(live.length * MONTHLY);
+
+  const dueThisCycle = decorated.filter(d => d.status === 'none' || d.status === 'pending');
+  $('#kpi-due').textContent = dueThisCycle.length;
+  $('#kpi-due-sub').textContent = dueThisCycle.length ? gbp(dueThisCycle.length * MONTHLY) + ' to invoice' : 'All sent for ' + cycle;
+
+  const overdues = decorated.filter(d => d.overdue);
+  $('#kpi-overdue').textContent = overdues.length;
+  $('#kpi-overdue-sub').textContent = overdues.length ? 'Past ' + new Date().toLocaleString('en-GB',{month:'short'}) + ' terms' : 'Nothing overdue';
+
+  // OUTSTANDING table — invoice this cycle if not yet sent; chase if overdue
+  const outstanding = decorated.filter(d => d.status !== 'paid');
+  outstanding.sort((a,b) => (b.overdue?1:0) - (a.overdue?1:0));
+  $('#outstanding-meta').textContent = outstanding.length + ' clients · ' + cycle;
+  $('#run-all-btn').classList.toggle('muted', outstanding.filter(d => d.status === 'none').length === 0);
+
+  const outBody = $('#tbl-out-body');
+  if (!outstanding.length){
+    outBody.innerHTML = '<tr><td colspan="6" class="empty">All invoiced and paid for ' + cycle + '. Nothing to do.</td></tr>';
+  } else {
+    outBody.innerHTML = outstanding.map(d => {
+      const c = d.client;
+      const biz = (c.business_name || c.name || c.clientId || '—');
+      const loc = c.location || '';
+      let tag, amount, actionLabel;
+      if (d.status === 'none'){
+        tag = '<span class="tag tag-none">Not invoiced</span>'; amount = gbp2(MONTHLY); actionLabel = 'Send invoice';
+      } else if (d.overdue){
+        tag = '<span class="tag tag-due">' + (d.overdue.invoiceNumber||'—') + ' · overdue</span>';
+        amount = gbp2(d.overdue.amount || MONTHLY); actionLabel = 'Mark paid';
+      } else {
+        tag = '<span class="tag tag-pending">' + (d.thisCycleInv.invoiceNumber||'—') + ' · pending</span>';
+        amount = gbp2(d.thisCycleInv.amount || MONTHLY); actionLabel = 'Mark paid';
+      }
+      return '<tr>'
+        + '<td class="biz">' + escape(biz) + (loc ? '<small>' + escape(loc) + '</small>' : '') + '</td>'
+        + '<td class="hide-sm mono">' + escape(c.stage||'live') + '</td>'
+        + '<td>' + tag + '</td>'
+        + '<td class="hide-sm mono">' + fmtDate(d.thisCycleInv ? d.thisCycleInv.issuedAt : null) + '</td>'
+        + '<td class="r">' + amount + '</td>'
+        + '<td class="r">'
+          + '<button class="act-btn" type="button" data-action="' + (d.status==='none'?'send':'mark-paid') + '" data-client="' + escape(c.clientId) + '">' + actionLabel + '</button>'
+        + '</td>'
+        + '</tr>';
+    }).join('');
+  }
+
+  // ALL LIVE table
+  $('#all-meta').textContent = live.length + ' live · ' + gbp(live.length * MONTHLY) + ' MRR';
+  const allBody = $('#tbl-all-body');
+  if (!live.length){
+    allBody.innerHTML = '<tr><td colspan="6" class="empty">No live subscribers yet. First order soon.</td></tr>';
+  } else {
+    allBody.innerHTML = decorated
+      .slice()
+      .sort((a,b) => new Date(b.client.liveAt || b.client.createdAt) - new Date(a.client.liveAt || a.client.createdAt))
+      .map(d => {
+        const c = d.client;
+        const biz = c.business_name || c.name || c.clientId || '—';
+        const since = fmtDate(c.liveAt || c.createdAt);
+        const lastPaid = (() => {
+          const paid = (Array.isArray(c.monthlyInvoices)?c.monthlyInvoices:[]).filter(e => e.paidAt).sort((a,b)=>new Date(b.paidAt)-new Date(a.paidAt))[0];
+          return paid ? fmtDate(paid.paidAt) : '—';
+        })();
+        let lastTag;
+        if (!d.latest) lastTag = '<span class="tag tag-none">None yet</span>';
+        else if (d.latest.paidAt) lastTag = '<span class="tag tag-paid">' + (d.latest.invoiceNumber||'—') + ' · paid</span>';
+        else lastTag = '<span class="tag tag-pending">' + (d.latest.invoiceNumber||'—') + ' · sent</span>';
+
+        return '<tr>'
+          + '<td class="biz">' + escape(biz) + (c.location?'<small>'+escape(c.location)+'</small>':'') + '</td>'
+          + '<td class="hide-sm mono">' + since + '</td>'
+          + '<td>' + lastTag + '</td>'
+          + '<td class="hide-sm mono">' + lastPaid + '</td>'
+          + '<td class="r">' + gbp2(d.totalBilled) + '</td>'
+          + '<td class="r"><button class="act-btn alt" type="button" data-action="send" data-client="' + escape(c.clientId) + '">Send invoice now</button></td>'
+          + '</tr>';
+      }).join('');
+  }
+
+  // Wire row buttons
+  document.querySelectorAll('.act-btn[data-action]').forEach(btn => {
+    btn.addEventListener('click', onRowAction);
+  });
+}
+
+function escape(s){ return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function onRowAction(e){
+  const btn = e.currentTarget;
+  const action = btn.dataset.action;
+  const clientId = btn.dataset.client;
+  if (!clientId) return;
+
+  const orig = btn.textContent;
+  btn.disabled = true; btn.textContent = '…';
+
+  try {
+    if (action === 'send'){
+      const r = await api('/.netlify/functions/cron-monthly-invoices', {
+        method:'POST', body:{ clientId }
+      });
+      const j = await r.json();
+      if (j.ok){
+        toast('Invoice sent.');
+        loadDashboard();
+        return;
+      }
+      throw new Error(j.error || 'send failed');
+    }
+    if (action === 'mark-paid'){
+      // Mark the latest unpaid invoice for this client as paid in their monthlyInvoices log.
+      const c = allClients.find(x => x.clientId === clientId);
+      const log = Array.isArray(c && c.monthlyInvoices) ? c.monthlyInvoices.slice() : [];
+      const idx = log.findIndex(x => !x.paidAt);
+      if (idx === -1){ toast('No unpaid invoice on file.', true); btn.disabled=false; btn.textContent=orig; return; }
+      log[idx] = Object.assign({}, log[idx], { paidAt: new Date().toISOString() });
+      const r = await api('/.netlify/functions/update-client', {
+        method:'POST', body:{ clientId, updates: { monthlyInvoices: log } }
+      });
+      if (r.ok){ toast('Marked paid.'); loadDashboard(); return; }
+      throw new Error('Could not update client');
+    }
+  } catch (err){
+    toast(err.message || 'Action failed', true);
+    btn.disabled = false; btn.textContent = orig;
+  }
+}
+
+$('#run-all-btn').addEventListener('click', async () => {
+  if (!confirm('Send a monthly invoice to every live subscriber who hasn\\u2019t had one this cycle?')) return;
+  const btn = $('#run-all-btn');
+  const orig = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Sending…';
+  try {
+    const r = await api('/.netlify/functions/cron-monthly-invoices', { method:'POST', body:{} });
+    const j = await r.json();
+    if (j.ok){
+      const ok = (j.results||[]).filter(x => x.ok).length;
+      toast(ok + ' invoice' + (ok===1?'':'s') + ' sent.');
+      loadDashboard();
+    } else {
+      throw new Error(j.error || 'send failed');
+    }
+  } catch (err){
+    toast(err.message || 'Send-all failed', true);
+  } finally {
+    btn.disabled = false; btn.textContent = orig;
+  }
+});
+
+/* Boot */
+if (getPw()) showApp(); else showLogin();
+</script>
+</body>
+</html>

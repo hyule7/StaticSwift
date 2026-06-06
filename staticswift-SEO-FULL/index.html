@@ -798,6 +798,62 @@ img,svg{display:block;max-width:100%;height:auto}
 
 /* ─── BEGIN (form) ─── */
 .begin{ padding:clamp(80px,12vw,160px) var(--gutter); border-top:1px solid var(--hair) }
+
+/* ss:begin-urgency — single honest scarcity strip above the form */
+.begin-urgency{
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  max-width:880px; margin:0 auto clamp(28px,4vw,48px);
+  padding:11px 18px;
+  background:var(--paper-deep);
+  border:1px solid var(--hair);
+  border-radius:100px;
+  font-family:var(--sans); font-size:13px;
+  color:var(--ink-soft); letter-spacing:-.005em;
+  text-align:center;
+}
+.begin-urgency .bu-text b{ color:var(--signal); font-weight:600 }
+.bu-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--signal);
+  box-shadow:0 0 0 0 rgba(156,38,21,.7); animation:bu-pulse 2.2s infinite;
+  flex-shrink:0;
+}
+@keyframes bu-pulse{
+  0%{box-shadow:0 0 0 0 rgba(156,38,21,.55)}
+  70%{box-shadow:0 0 0 9px rgba(156,38,21,0)}
+  100%{box-shadow:0 0 0 0 rgba(156,38,21,0)}
+}
+@media(prefers-reduced-motion:reduce){ .bu-dot{ animation:none } }
+@media(max-width:560px){
+  .begin-urgency{ font-size:12px; padding:10px 14px; border-radius:14px; gap:8px }
+}
+
+/* ss:sticky-mobile-cta — fixed bottom bar on phones only. Hides itself once the
+   begin form is on screen so we don't double-stack the primary CTA. */
+.ss-mcta{
+  position:fixed; left:0; right:0; bottom:0; z-index:60;
+  display:none;
+  padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+  background:var(--paper);
+  border-top:1px solid var(--hair);
+  box-shadow:0 -8px 30px -10px rgba(14,11,7,.18);
+  transition:transform .35s var(--ease-out), opacity .25s;
+}
+.ss-mcta a{
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  width:100%; padding:14px 18px;
+  background:var(--ink); color:var(--paper);
+  border-radius:100px;
+  font-family:var(--sans); font-weight:600; font-size:15px; letter-spacing:-.01em;
+  text-decoration:none;
+}
+.ss-mcta a:hover{ background:var(--signal) }
+.ss-mcta .mcta-meta{
+  display:block; text-align:center;
+  font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--bronze); margin-top:6px;
+}
+.ss-mcta.hide{ transform:translateY(110%); opacity:0; pointer-events:none }
+@media(max-width:760px){ .ss-mcta{ display:block } }
 .begin-inner{ max-width:1080px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:clamp(40px,6vw,96px); align-items:start }
 .begin-l h2{
   font-family:var(--serif); font-style:italic; font-weight:500;
@@ -1249,6 +1305,13 @@ img,svg{display:block;max-width:100%;height:auto}
 
   <!-- 08 — BEGIN (form) -->
   <section class="begin" id="begin">
+    <!-- ss:begin-urgency-v1 — single honest scarcity line + trust marks.
+         "2 build slots" is real: one Harry, one week. Editing this without keeping
+         the number truthful breaks the whole guarantee narrative. -->
+    <div class="begin-urgency" aria-label="Trust and availability">
+      <span class="bu-dot" aria-hidden="true"></span>
+      <span class="bu-text"><b>2 build slots</b> left this week · Free preview within 24h · No card needed · <b>Refund if no leads in 60 days</b></span>
+    </div>
     <div class="begin-inner">
       <div class="begin-l" data-rv>
         <p class="sec-mark">08 — Begin</p>
@@ -1555,6 +1618,34 @@ window.sqContact = async (e) => {
       }).catch(function(){});
     } catch(_){}
   };
+})();
+</script>
+<!-- ss:sticky-mobile-cta-v1 — fixed-bottom CTA on phones. Hides when the begin
+     form is visible so we never double-stack. Sends a gtag click event for
+     attribution (matches the homepage form's existing event vocabulary). -->
+<div class="ss-mcta" id="ss-mcta" aria-hidden="false">
+  <a href="/order.html" id="ss-mcta-a">
+    <span>Free preview in 24h →</span>
+  </a>
+  <span class="mcta-meta">No card · Refund if no leads in 60 days</span>
+</div>
+<script>
+(function(){
+  var bar = document.getElementById('ss-mcta');
+  var target = document.getElementById('begin') || document.getElementById('qf');
+  if (!bar || !target || !('IntersectionObserver' in window)) return;
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      bar.classList.toggle('hide', e.isIntersecting);
+      bar.setAttribute('aria-hidden', e.isIntersecting ? 'true' : 'false');
+    });
+  }, { threshold: 0.15 });
+  io.observe(target);
+  // attribution: fire when the bar is actually used
+  var a = document.getElementById('ss-mcta-a');
+  if (a) a.addEventListener('click', function(){
+    try { if (typeof gtag === 'function') gtag('event','cta_click',{ cta_label:'sticky_mobile', section:'global' }); } catch(_){}
+  });
 })();
 </script>
 </body>
