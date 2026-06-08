@@ -18,7 +18,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/admin/admin.css?v=12">
 <!-- Field-guide theme overlay — loaded LAST so it overrides admin.css surfaces. -->
-<link rel="stylesheet" href="/admin/admin-theme.css?v=1">
+<link rel="stylesheet" href="/admin/admin-theme.css?v=2">
 </head>
 <body>
 
@@ -60,14 +60,14 @@
     <button class="nav-tab" data-page="new-order" onclick="showPage('new-order',this)">
       <span class="ico">+</span><span>New Order</span>
     </button>
+    <!-- Revenue tab now contains the consolidated Billing dashboard:
+         one-time revenue stats + Monthly Subscriptions KPIs/tables/invoice
+         actions, all collapsible. The standalone /admin/billing.html
+         remains as a "deep link / print view" but the SPA tab is the
+         daily driver. -->
     <button class="nav-tab" data-page="revenue" onclick="showPage('revenue',this)">
-      <span class="ico">£</span><span>Revenue</span>
+      <span class="ico">£</span><span>Revenue &amp; Billing</span>
     </button>
-    <!-- ss:admin-xref — standalone Billing dashboard (MRR, due-this-cycle,
-         overdue, manual invoice sends). Hard-nav: lives at its own URL. -->
-    <a class="nav-tab" href="/admin/billing.html" style="text-decoration:none">
-      <span class="ico">⊞</span><span>Billing</span>
-    </a>
 
     <div class="sidebar-section">Communication</div>
     <button class="nav-tab" data-page="inbox" onclick="showPage('inbox',this);loadInbox()">

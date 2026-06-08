@@ -1700,40 +1700,230 @@ function clearNewOrder() {
 }
 
 // ==========================================
-// REVENUE
+// REVENUE + BILLING (consolidated)
 // ==========================================
+// Pricing constants — single source of truth for fallback amounts.
+const REV_BASE_STARTER = 499;
+const REV_BASE_PRO     = 999;
+const REV_MONTHLY      = 49;
+const REV_BUNDLE_DISC  = 100;
+function isProPackage(pkg){ return pkg === 'advanced' || pkg === 'pro'; }
+function isManagedSubscriber(c){ return c && (c.subscription === 'managed' || c.stage === 'live'); }
+function thisCycleKey(){ const d = new Date(); return d.getUTCFullYear() + '-' + String(d.getUTCMonth()+1).padStart(2,'0'); }
+
 function renderRevenue() {
+  // ── Section: collapsed-state persistence ─────────────────────────
+  // <details> remembers itself across SPA tab switches via sessionStorage.
+  document.querySelectorAll('#page-revenue .rev-section').forEach(d => {
+    if (d._wired) return;
+    const k = 'ss_rev_open_' + d.id;
+    const stored = sessionStorage.getItem(k);
+    if (stored === '0') d.removeAttribute('open');
+    else if (stored === '1') d.setAttribute('open','');
+    d.addEventListener('toggle', () => sessionStorage.setItem(k, d.open ? '1' : '0'));
+    d._wired = true;
+  });
+
+  // ── One-time build revenue (legacy view with updated price defaults) ──
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
   const weekStart = todayStart - 6 * 86400000;
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
   const paid = allClients.filter(c => c.paid && c.paidAt);
-  const sum = (from, to) => paid.filter(c => { const t = new Date(c.paidAt).getTime(); return t >= from && (!to || t < to); }).reduce((s,c) => s + (c.amount||149), 0);
+  const sum = (from, to) => paid
+    .filter(c => { const t = new Date(c.paidAt).getTime(); return t >= from && (!to || t < to); })
+    .reduce((s,c) => s + (c.amount || (isProPackage(c.package) ? REV_BASE_PRO : REV_BASE_STARTER)), 0);
 
-  document.getElementById('rev-today').textContent = '£' + sum(todayStart);
-  document.getElementById('rev-week').textContent = '£' + sum(weekStart);
-  document.getElementById('rev-month').textContent = '£' + sum(monthStart);
-  document.getElementById('rev-alltime').textContent = '£' + sum(0);
-  document.getElementById('rev-starter').textContent = allClients.filter(c => c.package !== 'advanced').length;
-  document.getElementById('rev-advanced').textContent = allClients.filter(c => c.package === 'advanced').length;
+  document.getElementById('rev-today').textContent    = '£' + sum(todayStart).toLocaleString('en-GB');
+  document.getElementById('rev-week').textContent     = '£' + sum(weekStart).toLocaleString('en-GB');
+  document.getElementById('rev-month').textContent    = '£' + sum(monthStart).toLocaleString('en-GB');
+  document.getElementById('rev-alltime').textContent  = '£' + sum(0).toLocaleString('en-GB');
+  document.getElementById('rev-starter').textContent  = allClients.filter(c => !isProPackage(c.package)).length;
+  document.getElementById('rev-advanced').textContent = allClients.filter(c =>  isProPackage(c.package)).length;
+  document.getElementById('rev-onetime-meta').textContent = paid.length + ' paid · ' + allClients.length + ' total';
 
+  // ── All build orders table (collapsed by default) ─────────────────
   const tbody = document.getElementById('revenue-tbody');
   if (!allClients.length) {
     tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted)">No clients yet.</td></tr>';
-    return;
+  } else {
+    tbody.innerHTML = allClients.map(c => {
+      const fallback = isProPackage(c.package) ? REV_BASE_PRO : REV_BASE_STARTER;
+      const amount = c.amount || fallback;
+      const statusColor = c.paid ? 'var(--green)' : c.stage === 'invoice-sent' ? 'var(--signal)' : 'var(--ink-mid)';
+      const statusLabel = c.paid ? 'Paid' : c.stage === 'invoice-sent' ? 'Invoice Sent' : STAGE_LABELS[c.stage] || c.stage;
+      return `<tr class="sub-tbl-row">
+        <td><strong>${escapeHTML(c.business_name || '—')}</strong><br><span style="font-size:12px;color:var(--ink-mid)">${escapeHTML(c.delivery_email || '')}</span></td>
+        <td style="color:var(--ink-mid)">${isProPackage(c.package) ? 'Pro' : 'Starter'}</td>
+        <td style="font-family:var(--mono);font-weight:600">£${amount.toLocaleString('en-GB')}</td>
+        <td style="font-family:var(--mono);font-size:12px;color:var(--ink-mid)">${c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-GB') : '—'}</td>
+        <td><span style="font-size:12px;font-weight:600;color:${statusColor}">${statusLabel}</span></td>
+      </tr>`;
+    }).join('');
   }
-  tbody.innerHTML = allClients.map(c => {
-    const amount = c.amount || (c.package === 'advanced' ? 299 : 149);
-    const statusColor = c.paid ? 'var(--green)' : c.stage === 'invoice-sent' ? 'var(--amber)' : 'var(--muted)';
-    const statusLabel = c.paid ? 'Paid' : c.stage === 'invoice-sent' ? 'Invoice Sent' : STAGE_LABELS[c.stage] || c.stage;
-    return `<tr>
-      <td style="padding:12px 16px"><strong>${escapeHTML(c.business_name || '—')}</strong><br><span style="font-size:12px;color:var(--muted)">${escapeHTML(c.delivery_email || '')}</span></td>
-      <td style="padding:12px 16px;color:var(--muted)">${c.package === 'advanced' ? 'Advanced' : 'Starter'}</td>
-      <td style="padding:12px 16px;font-family:'DM Mono',monospace;font-weight:700;color:var(--cyan)">£${amount}</td>
-      <td style="padding:12px 16px;font-family:'DM Mono',monospace;font-size:12px;color:var(--muted)">${c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-GB') : '—'}</td>
-      <td style="padding:12px 16px"><span style="font-size:12px;font-weight:700;color:${statusColor}">${statusLabel}</span></td>
-    </tr>`;
-  }).join('');
+  document.getElementById('rev-revtable-meta').textContent = allClients.length + ' rows';
+
+  // ── Monthly Subscriptions section ────────────────────────────────
+  renderRevenueSubscriptions();
+}
+
+/* Mirrors /admin/billing.html logic but inline into the SPA so Harry doesn't
+   need to flip between pages. Per-row Send-invoice / Mark-paid call the same
+   /cron-monthly-invoices + /update-client endpoints. */
+function renderRevenueSubscriptions() {
+  const cycle = thisCycleKey();
+  const live = allClients.filter(isManagedSubscriber);
+  const decorated = live.map(c => {
+    const log = Array.isArray(c.monthlyInvoices) ? c.monthlyInvoices : [];
+    const sorted = log.slice().sort((a,b) => new Date(b.issuedAt) - new Date(a.issuedAt));
+    const latest = sorted[0] || null;
+    const thisCycleInv = log.find(e => e.cycleKey === cycle) || null;
+    const status = !thisCycleInv ? 'none' : (thisCycleInv.paidAt ? 'paid' : 'pending');
+    const overdue = log.find(e => !e.paidAt && e.dueAt && new Date(e.dueAt).getTime() < Date.now()) || null;
+    const totalBilled = log.reduce((s,e) => s + Number(e.amount||0), 0);
+    return { c, latest, thisCycleInv, status, overdue, totalBilled };
+  });
+
+  // KPIs
+  document.getElementById('sub-kpi-live').textContent = live.length;
+  document.getElementById('sub-kpi-mrr').textContent  = '£' + (live.length * REV_MONTHLY).toLocaleString('en-GB');
+  const dueThis = decorated.filter(d => d.status !== 'paid');
+  document.getElementById('sub-kpi-due').textContent  = dueThis.length;
+  document.getElementById('sub-kpi-due-sub').textContent = dueThis.length ? '£' + (dueThis.length * REV_MONTHLY) + ' to invoice' : 'All sent for ' + cycle;
+  const overdues = decorated.filter(d => d.overdue);
+  document.getElementById('sub-kpi-overdue').textContent = overdues.length;
+  document.getElementById('rev-subs-meta').textContent = live.length + ' live · ' + cycle;
+  document.getElementById('rev-cycle-pill').textContent = 'Cycle ' + cycle;
+
+  // Outstanding-now table
+  const outBody = document.getElementById('sub-out-tbody');
+  const outstanding = decorated.filter(d => d.status !== 'paid');
+  outstanding.sort((a,b) => (b.overdue?1:0) - (a.overdue?1:0));
+  document.getElementById('rev-out-meta').textContent = outstanding.length + ' clients · ' + cycle;
+  if (!outstanding.length){
+    outBody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted)">All invoiced and paid for ' + cycle + '. Nothing to do.</td></tr>';
+  } else {
+    outBody.innerHTML = outstanding.map(d => {
+      const c = d.c;
+      const biz = escapeHTML(c.business_name || c.name || c.clientId || '—');
+      const loc = c.location ? '<br><span style="font-size:11px;color:var(--ink-mid)">' + escapeHTML(c.location) + '</span>' : '';
+      let tag, amount, action;
+      if (d.status === 'none'){
+        tag = '<span class="sub-tag sub-tag-none">Not invoiced</span>'; amount = '£' + REV_MONTHLY.toFixed(2);
+        action = '<button class="sub-row-act" type="button" onclick="subSendInvoice(\'' + escapeHTML(c.clientId) + '\', this)">Send invoice</button>';
+      } else if (d.overdue){
+        tag = '<span class="sub-tag sub-tag-due">' + escapeHTML(d.overdue.invoiceNumber || '—') + ' · overdue</span>';
+        amount = '£' + Number(d.overdue.amount || REV_MONTHLY).toFixed(2);
+        action = '<button class="sub-row-act" type="button" onclick="subMarkPaid(\'' + escapeHTML(c.clientId) + '\', this)">Mark paid</button>';
+      } else {
+        tag = '<span class="sub-tag sub-tag-pending">' + escapeHTML(d.thisCycleInv.invoiceNumber || '—') + ' · pending</span>';
+        amount = '£' + Number(d.thisCycleInv.amount || REV_MONTHLY).toFixed(2);
+        action = '<button class="sub-row-act" type="button" onclick="subMarkPaid(\'' + escapeHTML(c.clientId) + '\', this)">Mark paid</button>';
+      }
+      return '<tr class="sub-tbl-row"><td><strong>' + biz + '</strong>' + loc + '</td><td>' + tag + '</td><td style="font-family:var(--mono);font-size:12px;color:var(--ink-mid)">' + (d.thisCycleInv ? new Date(d.thisCycleInv.issuedAt).toLocaleDateString('en-GB') : '—') + '</td><td style="text-align:right;font-family:var(--mono)">' + amount + '</td><td style="text-align:right">' + action + '</td></tr>';
+    }).join('');
+  }
+
+  // All-subscribers table
+  const allBody = document.getElementById('sub-all-tbody');
+  document.getElementById('rev-allsubs-meta').textContent = live.length + ' live · £' + (live.length * REV_MONTHLY) + ' MRR';
+  if (!live.length){
+    allBody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted)">No live subscribers yet. First Managed Plan signup will show here.</td></tr>';
+  } else {
+    const ordered = decorated.slice().sort((a,b) => new Date(b.c.liveAt || b.c.createdAt) - new Date(a.c.liveAt || a.c.createdAt));
+    allBody.innerHTML = ordered.map(d => {
+      const c = d.c;
+      const biz = escapeHTML(c.business_name || c.name || c.clientId || '—');
+      const since = c.liveAt || c.createdAt ? new Date(c.liveAt || c.createdAt).toLocaleDateString('en-GB') : '—';
+      const lastPaid = (() => {
+        const log = Array.isArray(c.monthlyInvoices) ? c.monthlyInvoices : [];
+        const paid = log.filter(e => e.paidAt).sort((a,b) => new Date(b.paidAt) - new Date(a.paidAt))[0];
+        return paid ? new Date(paid.paidAt).toLocaleDateString('en-GB') : '—';
+      })();
+      let lastTag;
+      if (!d.latest) lastTag = '<span class="sub-tag sub-tag-none">None yet</span>';
+      else if (d.latest.paidAt) lastTag = '<span class="sub-tag sub-tag-paid">' + escapeHTML(d.latest.invoiceNumber || '—') + ' · paid</span>';
+      else lastTag = '<span class="sub-tag sub-tag-pending">' + escapeHTML(d.latest.invoiceNumber || '—') + ' · sent</span>';
+      return '<tr class="sub-tbl-row">'
+        + '<td><strong>' + biz + '</strong>' + (c.location ? '<br><span style="font-size:11px;color:var(--ink-mid)">' + escapeHTML(c.location) + '</span>' : '') + '</td>'
+        + '<td style="font-family:var(--mono);font-size:12px;color:var(--ink-mid)">' + since + '</td>'
+        + '<td>' + lastTag + '</td>'
+        + '<td style="font-family:var(--mono);font-size:12px;color:var(--ink-mid)">' + lastPaid + '</td>'
+        + '<td style="text-align:right;font-family:var(--mono)">£' + d.totalBilled.toFixed(2) + '</td>'
+        + '<td style="text-align:right"><button class="sub-row-act alt" type="button" onclick="subSendInvoice(\'' + escapeHTML(c.clientId) + '\', this)">Send invoice</button></td>'
+        + '</tr>';
+    }).join('');
+  }
+}
+
+/* ── Action handlers — match billing.html behaviour exactly so the two
+      surfaces stay in sync. Both end-points re-use the admin password
+      already established for this SPA session. */
+async function subApi(path, opts){
+  opts = opts || {};
+  // Reuse the SPA's global admin password (the same one fetchClients() uses).
+  const headers = Object.assign({ 'x-admin-password': (typeof ADMIN_PW === 'string' ? ADMIN_PW : '') }, opts.headers || {});
+  if (opts.body && typeof opts.body !== 'string'){
+    headers['Content-Type'] = 'application/json';
+    opts.body = JSON.stringify(opts.body);
+  }
+  return fetch(path, Object.assign({}, opts, { headers }));
+}
+async function subSendInvoice(clientId, btn){
+  const orig = btn.textContent; btn.disabled = true; btn.textContent = '…';
+  try {
+    const r = await subApi('/.netlify/functions/cron-monthly-invoices', { method:'POST', body:{ clientId } });
+    const j = await r.json();
+    if (j.ok){ showToast('Invoice sent.'); await fetchClients(); renderRevenue(); return; }
+    throw new Error(j.error || 'send failed');
+  } catch (err){
+    btn.disabled = false; btn.textContent = orig;
+    showToast(err.message || 'Send failed', true);
+  }
+}
+async function subMarkPaid(clientId, btn){
+  const c = allClients.find(x => x.clientId === clientId);
+  if (!c) return;
+  const log = Array.isArray(c.monthlyInvoices) ? c.monthlyInvoices.slice() : [];
+  const idx = log.findIndex(x => !x.paidAt);
+  if (idx === -1){ showToast('No unpaid invoice on file.', true); return; }
+  log[idx] = Object.assign({}, log[idx], { paidAt: new Date().toISOString() });
+  const orig = btn.textContent; btn.disabled = true; btn.textContent = '…';
+  try {
+    const r = await subApi('/.netlify/functions/update-client', { method:'POST', body:{ clientId, updates:{ monthlyInvoices: log } } });
+    if (r.ok){ showToast('Marked paid.'); await fetchClients(); renderRevenue(); return; }
+    throw new Error('Update failed');
+  } catch (err){
+    btn.disabled = false; btn.textContent = orig;
+    showToast(err.message || 'Mark-paid failed', true);
+  }
+}
+async function subSendAllDue(){
+  if (!confirm('Send a monthly invoice to every live subscriber who hasn\'t had one this cycle?')) return;
+  try {
+    const r = await subApi('/.netlify/functions/cron-monthly-invoices', { method:'POST', body:{} });
+    const j = await r.json();
+    if (j.ok){
+      const ok = (j.results||[]).filter(x => x.ok).length;
+      showToast(ok + ' invoice' + (ok===1?'':'s') + ' sent.');
+      await fetchClients(); renderRevenue();
+    } else { throw new Error(j.error || 'send failed'); }
+  } catch (err){ showToast(err.message || 'Send-all failed', true); }
+}
+
+/* Lightweight toast — reuses existing admin styles where possible */
+function showToast(msg, isErr){
+  let t = document.getElementById('ss-admin-toast');
+  if (!t){
+    t = document.createElement('div'); t.id = 'ss-admin-toast';
+    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120%);background:var(--ink);color:var(--paper);padding:14px 22px;border-radius:100px;font:500 14px/1.4 var(--sans, system-ui);box-shadow:0 16px 40px -16px rgba(0,0,0,.4);transition:transform .35s cubic-bezier(.22,1,.36,1),background .2s;z-index:9999';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.background = isErr ? 'var(--signal)' : 'var(--ink)';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => { t.style.transform = 'translateX(-50%) translateY(120%)'; }, 3200);
 }
 
 // ==========================================
