@@ -199,6 +199,79 @@ img,svg{display:block;max-width:100%;height:auto}
 .mob-body{ font-family:var(--serif); font-size:18px; line-height:1.55; color:var(--ink-soft) }
 .mob-body b{color:var(--ink); font-weight:500}
 
+/* ─── Subscriber panel — appears only when client.subscription === 'managed'.
+   Editorial card: chapter mark, live status dot, 4-column status row
+   (next invoice, last performance report, edit credits, support), direct
+   WhatsApp action. Field-guide grammar shared with the rest of the page. */
+.sub{
+  display:none;
+  margin-top:clamp(48px,7vw,80px);
+  border:1px solid var(--hair); background:var(--paper-deep);
+  padding:clamp(28px,4vw,44px); position:relative;
+}
+.sub.show{ display:block; }
+.sub::before, .sub::after{ content:""; position:absolute; width:14px; height:14px; pointer-events:none; }
+.sub::before{ top:-1px; left:-1px; border-top:1px solid var(--ink); border-left:1px solid var(--ink); }
+.sub::after { bottom:-1px; right:-1px; border-bottom:1px solid var(--ink); border-right:1px solid var(--ink); }
+.sub-mark{
+  font-family:var(--mono); font-size:11px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--bronze);
+  display:flex; align-items:center; gap:12px; margin-bottom:18px;
+}
+.sub-mark .live-dot{ width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 0 4px rgba(52,117,55,.15); }
+.sub-mark b{ color:var(--green); font-weight:400; font-family:var(--serif); font-style:italic; font-size:13px; letter-spacing:-.005em; text-transform:none; }
+.sub-h{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(28px,3.6vw,42px); line-height:1; letter-spacing:-.022em;
+  color:var(--ink); margin-bottom:14px;
+}
+.sub-h em{ color:var(--signal); }
+.sub-sub{
+  font-family:var(--serif); font-size:17px; line-height:1.45; color:var(--ink-soft);
+  margin-bottom:28px; max-width:54ch;
+}
+.sub-sub b{ color:var(--ink); font-weight:500; }
+.sub-grid{
+  display:grid; grid-template-columns:repeat(4, 1fr);
+  border-top:1px solid var(--ink);
+  margin-bottom:24px;
+}
+.sub-cell{ padding:22px 18px 18px 0; border-right:1px solid var(--hair-soft); }
+.sub-cell:last-child{ border-right:none }
+.sub-cell-l{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--bronze); margin-bottom:10px;
+}
+.sub-cell-v{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(22px,2.4vw,30px); line-height:.95; letter-spacing:-.018em;
+  color:var(--ink); margin-bottom:6px;
+}
+.sub-cell-v.alert{ color:var(--signal) } .sub-cell-v.ok{ color:var(--green) }
+.sub-cell-sub{ font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; color:var(--ink-mid); }
+@media(max-width:880px){
+  .sub-grid{ grid-template-columns:repeat(2, 1fr); }
+  .sub-cell{ border-right:none; border-bottom:1px solid var(--hair-soft); padding:18px 14px 14px 0 }
+  .sub-cell:nth-child(2){ border-right:none }
+}
+.sub-actions{
+  display:flex; gap:12px; flex-wrap:wrap; align-items:center;
+  padding-top:24px; border-top:1px solid var(--hair-soft);
+}
+.sub-btn{
+  display:inline-flex; align-items:center; gap:10px;
+  padding:13px 22px; border-radius:100px;
+  font-family:var(--sans); font-weight:500; font-size:14px;
+  text-decoration:none; transition:transform .2s var(--ease), background .2s;
+}
+.sub-btn-ink{ background:var(--ink); color:var(--paper); }
+.sub-btn-ink:hover{ background:var(--signal); transform:translateY(-1px); }
+.sub-btn-wa{ background:#1F8B47; color:#fff; }
+.sub-btn-wa:hover{ background:#196F39; transform:translateY(-1px); }
+.sub-btn-ghost{ background:transparent; color:var(--ink); border:1px solid var(--hair); }
+.sub-btn-ghost:hover{ border-color:var(--ink); }
+.sub-foot{ margin-left:auto; font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; color:var(--bronze); }
+
 /* Actions header */
 .acts-head{
   margin-top:clamp(60px,8vw,96px); margin-bottom:28px;
@@ -414,6 +487,50 @@ img,svg{display:block;max-width:100%;height:auto}
     <div class="mob-body"><b>Half your customers will arrive on a phone.</b> Open the link above on yours and scroll the whole way through. Pay attention to the call button position, how fast it loads, and whether the photos load without judder.</div>
   </div>
 
+  <!-- Subscriber panel — populated by JS only when client.subscription === 'managed'.
+       Stays hidden for non-subscriber clients (free preview, one-off £499 buyers). -->
+  <section class="sub" id="sub-panel" data-rv aria-label="Managed Plan dashboard">
+    <div class="sub-mark"><span class="live-dot" aria-hidden="true"></span> Managed Plan &middot; <b>Live</b></div>
+    <h2 class="sub-h">Site&rsquo;s live. <em>I&rsquo;m on it.</em></h2>
+    <p class="sub-sub"><b>£49 a month</b> covers hosting, monitoring, one edit per month, the monthly performance email, and priority WhatsApp to me. Cancel any time &mdash; the site stays with you.</p>
+
+    <div class="sub-grid">
+      <div class="sub-cell">
+        <div class="sub-cell-l">Next invoice</div>
+        <div class="sub-cell-v" id="sub-next">&mdash;</div>
+        <div class="sub-cell-sub" id="sub-next-sub">&pound;49 &middot; auto-emailed</div>
+      </div>
+      <div class="sub-cell">
+        <div class="sub-cell-l">Last invoice</div>
+        <div class="sub-cell-v" id="sub-last">&mdash;</div>
+        <div class="sub-cell-sub" id="sub-last-sub">&nbsp;</div>
+      </div>
+      <div class="sub-cell">
+        <div class="sub-cell-l">Edit credits</div>
+        <div class="sub-cell-v" id="sub-credits">&mdash;</div>
+        <div class="sub-cell-sub" id="sub-credits-sub">Resets the 1st</div>
+      </div>
+      <div class="sub-cell">
+        <div class="sub-cell-l">Performance report</div>
+        <div class="sub-cell-v" id="sub-report">&mdash;</div>
+        <div class="sub-cell-sub" id="sub-report-sub">Monthly, auto-sent</div>
+      </div>
+    </div>
+
+    <div class="sub-actions">
+      <a id="sub-wa" class="sub-btn sub-btn-wa" href="https://wa.me/447502731799?text=Hi%20Harry%2C%20support%20request%20from%20my%20StaticSwift%20site" target="_blank" rel="noopener">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp Harry
+      </a>
+      <a id="sub-live" class="sub-btn sub-btn-ink" href="#" target="_blank" rel="noopener" style="display:none">
+        Open the live site
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </a>
+      <a class="sub-btn sub-btn-ghost" href="mailto:hello@staticswift.co.uk?subject=Edit%20request%20for%20my%20StaticSwift%20site">Use an edit credit</a>
+      <span class="sub-foot" id="sub-overdue">&nbsp;</span>
+    </div>
+  </section>
+
   <div class="acts-head" data-rv>
     <span class="acts-head-mark">Decision</span>
     <h2>How does it look?</h2>
@@ -532,6 +649,7 @@ async function init() {
     document.getElementById('preview-iframe').src = portalData.previewUrl;
     document.getElementById('loading').style.display = 'none';
     document.getElementById('portal').style.display = 'block';
+    renderSubscriberPanel(portalData);
     requestAnimationFrame(() => {
       if (typeof window.rerunReveal === 'function') window.rerunReveal();
       if (typeof window.rebindCursor === 'function') window.rebindCursor();
@@ -545,6 +663,79 @@ function showError(msg) {
   document.getElementById('loading').style.display = 'none';
   document.getElementById('error-msg').textContent = msg;
   document.getElementById('error').style.display = 'flex';
+}
+
+/* ss:portal-subscriber-v1 — paints the Managed-Plan dashboard if and only if
+   the client is on the £49/mo subscription. Cells stay generic and read-only;
+   actions (WhatsApp, Open site, Edit credit email) are pre-baked above. */
+function renderSubscriberPanel(d){
+  if (!d || d.subscription !== 'managed') return;
+  const panel = document.getElementById('sub-panel');
+  if (!panel) return;
+
+  const fmtDate = (iso) => {
+    if (!iso) return '—';
+    try { return new Date(iso).toLocaleDateString('en-GB',{ day:'numeric', month:'short' }); }
+    catch(_){ return '—' }
+  };
+  const fmtMonth = (iso) => {
+    if (!iso) return '—';
+    try { return new Date(iso).toLocaleDateString('en-GB',{ month:'short', year:'numeric' }); }
+    catch(_){ return '—' }
+  };
+
+  // Next invoice cell
+  const next = document.getElementById('sub-next');
+  next.textContent = fmtDate(d.nextInvoiceDate);
+  // Overdue alert in cell colour
+  if (d.overdueInvoice){
+    next.classList.add('alert');
+    document.getElementById('sub-next-sub').innerHTML = 'Overdue · ' + (d.overdueInvoice.invoiceNumber || '');
+    document.getElementById('sub-overdue').textContent = 'Invoice ' + (d.overdueInvoice.invoiceNumber || '') + ' is past due — please settle when you can.';
+    document.getElementById('sub-overdue').style.color = 'var(--signal)';
+  }
+
+  // Last invoice
+  const last = document.getElementById('sub-last');
+  if (d.lastInvoice){
+    last.textContent = d.lastInvoice.invoiceNumber || '—';
+    const lastSub = document.getElementById('sub-last-sub');
+    if (d.lastInvoice.paidAt){
+      last.classList.add('ok');
+      lastSub.textContent = 'Paid · ' + fmtDate(d.lastInvoice.paidAt);
+    } else {
+      lastSub.textContent = 'Issued · ' + fmtDate(d.lastInvoice.issuedAt);
+    }
+  } else {
+    last.textContent = 'None yet';
+    document.getElementById('sub-last-sub').textContent = 'First runs ' + (d.nextInvoiceDate ? fmtDate(d.nextInvoiceDate) : 'soon');
+  }
+
+  // Edit credits
+  const credits = document.getElementById('sub-credits');
+  if (d.editCredits){
+    credits.textContent = d.editCredits.remaining + ' / ' + d.editCredits.total;
+    if (d.editCredits.remaining === 0) credits.classList.add('alert');
+  }
+
+  // Performance report
+  const report = document.getElementById('sub-report');
+  if (d.lastPerformanceReportAt){
+    report.textContent = fmtMonth(d.lastPerformanceReportAt);
+    document.getElementById('sub-report-sub').textContent = 'Sent ' + fmtDate(d.lastPerformanceReportAt);
+  } else {
+    report.textContent = 'Soon';
+    document.getElementById('sub-report-sub').textContent = 'First report next cycle';
+  }
+
+  // Live-site button if the URL is known
+  if (d.liveUrl){
+    const live = document.getElementById('sub-live');
+    live.href = d.liveUrl;
+    live.style.display = 'inline-flex';
+  }
+
+  panel.classList.add('show');
 }
 
 function selectAction(type) {

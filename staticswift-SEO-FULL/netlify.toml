@@ -102,3 +102,12 @@
 # manual-trigger contract (admin password + optional dryRun / clientId).
 [functions."cron-monthly-invoices"]
   schedule = "0 9 1 * *"
+
+# Scheduled function — pulls newly-incorporated UK trade companies from the
+# Companies House Public Data API daily at 07:00 UTC and seeds them into
+# db.cronProspects (source='companies-house', score=0). daily-followup then
+# queues cold-1 drafts the next morning at 06:30 UTC. Free 500-prospect-per-day
+# pipeline if you set the API key in the function. See the COMPANIES_HOUSE_API_KEY
+# constant at the top of the function file.
+[functions."discover-companies-house"]
+  schedule = "0 7 * * *"

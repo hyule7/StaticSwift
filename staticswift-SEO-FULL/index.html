@@ -615,6 +615,110 @@ img,svg{display:block;max-width:100%;height:auto}
 }
 @media(hover:none) and (pointer:coarse){ .work-thumb{display:none !important} }
 
+/* ss:showcase-v2 — three live demo sites as cards. Each card is an anchor;
+   the iframe inside is purely visual (pointer-events off) and sandboxed for
+   isolation. On hover the card lifts and the iframe wash lightens. No stock
+   photos — the thumbnail is the real site. */
+.show-grid{
+  max-width:1320px; margin:0 auto;
+  padding:0 var(--gutter);
+  display:grid; grid-template-columns:repeat(3, 1fr);
+  gap:clamp(16px,2vw,32px);
+}
+@media(max-width:980px){ .show-grid{ grid-template-columns:1fr 1fr; gap:18px } }
+@media(max-width:640px){ .show-grid{ grid-template-columns:1fr } }
+
+.show-card{
+  display:block;
+  background:var(--paper-deep);
+  border:1px solid var(--hair-soft);
+  text-decoration:none; color:inherit;
+  position:relative; overflow:hidden;
+  transition:transform .35s var(--ease-out), border-color .25s, box-shadow .35s var(--ease-out);
+}
+.show-card:hover{
+  transform:translateY(-4px);
+  border-color:var(--ink);
+  box-shadow:0 24px 50px -28px rgba(14,11,7,.28);
+}
+.show-card:hover .show-frame::after{ opacity:0; }
+.show-card:hover .show-arrow{ color:var(--signal); transform:translate(2px,-2px); }
+.show-card:hover .show-trade{ color:var(--signal); }
+
+/* The iframe wrapper — a fixed 4:3-ish aspect "browser window".
+   The iframe is rendered at desktop width then scale(.36) so the full
+   site composition is visible — exactly what a real preview should be. */
+.show-frame{
+  position:relative;
+  width:100%;
+  aspect-ratio: 5/4;
+  background:var(--paper);
+  border-bottom:1px solid var(--hair-soft);
+  overflow:hidden;
+}
+.show-frame iframe{
+  position:absolute; top:0; left:0;
+  width: 277.78%;         /* 1 / .36 */
+  height: 277.78%;
+  border:0;
+  transform-origin: top left;
+  transform: scale(.36);
+  pointer-events:none;    /* card is the click target, never the iframe */
+  background:var(--paper);
+}
+/* Subtle paper wash over the iframe at rest so it reads as a "thumbnail"
+   not a live page. Disappears on hover so the real design is clear. */
+.show-frame::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(180deg, rgba(242,239,231,.04) 0%, rgba(242,239,231,.18) 100%);
+  pointer-events:none;
+  transition:opacity .3s var(--ease-out);
+}
+/* Browser-bar detail along the top of the frame — Mac window dots in paper-deep.
+   Makes the iframe read as "a real site in a real browser" not a generic embed. */
+.show-frame::before{
+  content:"";
+  position:absolute; top:0; left:0; right:0;
+  height:22px; background:var(--paper); border-bottom:1px solid var(--hair-soft);
+  z-index:1;
+}
+.show-frame .dot-row{ /* injected by CSS pseudo? — use real markup below if needed */ }
+
+.show-meta{
+  display:grid; grid-template-columns:auto 1fr auto auto;
+  align-items:baseline; gap:14px;
+  padding:18px 22px;
+}
+.show-num{
+  font-family:var(--mono); font-size:11px; color:var(--bronze); letter-spacing:.06em;
+}
+.show-titles{ min-width:0 }
+.show-trade{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:21px; letter-spacing:-.015em; color:var(--ink);
+  line-height:1.1;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+  transition:color .2s;
+}
+.show-sub{
+  font-family:var(--sans); font-size:12.5px; color:var(--ink-mid); margin-top:2px;
+}
+.show-tag{
+  font-family:var(--mono); font-size:10px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--green);
+  border:1px solid rgba(52,117,55,.35); border-radius:100px;
+  padding:3px 10px;
+}
+.show-arrow{
+  font-family:var(--mono); font-size:18px; color:var(--ink);
+  line-height:1; transition:transform .25s var(--ease-out), color .2s;
+}
+@media(max-width:520px){
+  .show-meta{ grid-template-columns:auto 1fr auto; padding:14px 16px; gap:10px }
+  .show-tag{ display:none }
+  .show-trade{ font-size:18px }
+}
+
 /* ─── HOW IT SHIPS — 4-line ruled table, no boxes ─── */
 .ship{ padding:clamp(80px,12vw,160px) var(--gutter); background:var(--paper-deep) }
 .ship-inner{ max-width:1080px; margin:0 auto }
@@ -866,6 +970,81 @@ img,svg{display:block;max-width:100%;height:auto}
 .begin-meta a:hover{border-color:var(--signal); color:var(--signal)}
 .begin-meta-lbl{display:block; font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--bronze); margin-bottom:4px; font-family:var(--mono)}
 
+/* ss:begin-cta — CTA panel that replaced the old inline brief form.
+   Editorial card with chapter mark, italic display headline, three numbered
+   promise lines (the three things every visitor wants confirmed before they
+   click), one large ink-on-paper primary button to /order.html, and a
+   no-charge reassurance foot. */
+.begin-cta{
+  background:var(--paper-deep);
+  border:1px solid var(--hair-soft);
+  padding:clamp(32px,4.5vw,52px);
+  position:relative;
+}
+.begin-cta::before, .begin-cta::after{
+  content:""; position:absolute;
+  width:14px; height:14px;
+  pointer-events:none;
+}
+.begin-cta::before{ top:-1px; left:-1px; border-top:1px solid var(--ink); border-left:1px solid var(--ink); }
+.begin-cta::after{  bottom:-1px; right:-1px; border-bottom:1px solid var(--ink); border-right:1px solid var(--ink); }
+.bc-mark{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--bronze);
+  display:flex; align-items:center; gap:12px;
+  margin-bottom:28px;
+}
+.bc-mark span:first-child{ width:24px; height:1px; background:var(--ink); display:inline-block; }
+.bc-mark b{ color:var(--ink); font-weight:400; }
+.bc-h{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(48px,7vw,88px); line-height:.92; letter-spacing:-.035em;
+  color:var(--ink); margin-bottom:20px;
+}
+.bc-h em{ font-style:italic; color:var(--signal); }
+.bc-sub{
+  font-family:var(--serif); font-size:clamp(17px,1.6vw,21px);
+  line-height:1.45; color:var(--ink-soft); max-width:38ch;
+  margin-bottom:32px;
+}
+.bc-sub b{ color:var(--ink); font-weight:500; }
+.bc-promises{
+  list-style:none; margin-bottom:32px;
+  border-top:1px solid var(--hair-soft);
+}
+.bc-promises li{
+  display:grid; grid-template-columns:38px 1fr; gap:14px;
+  align-items:baseline;
+  padding:16px 0; border-bottom:1px solid var(--hair-soft);
+  font-family:var(--serif); font-size:16.5px; line-height:1.45; color:var(--ink-soft);
+}
+.bc-promises li b{ color:var(--ink); font-weight:500; }
+.bc-bullet{
+  font-family:var(--mono); font-size:10.5px; color:var(--bronze);
+  letter-spacing:.06em;
+}
+.bc-btn{
+  display:inline-flex; align-items:center; gap:14px;
+  padding:20px 32px;
+  background:var(--ink); color:var(--paper);
+  border-radius:100px;
+  font-family:var(--sans); font-weight:500; font-size:16px; letter-spacing:-.005em;
+  text-decoration:none;
+  transition:background .25s var(--ease), transform .25s var(--ease-out);
+}
+.bc-btn:hover{ background:var(--signal); transform:translateY(-2px); }
+.bc-btn svg{ flex-shrink:0; transition:transform .25s var(--ease-out); }
+.bc-btn:hover svg{ transform:translateX(3px); }
+.bc-foot{
+  margin-top:16px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.04em;
+  color:var(--bronze);
+}
+@media(max-width:760px){
+  .bc-h{ font-size:48px }
+  .bc-promises li{ padding:14px 0 }
+}
+
 /* form */
 .bf{ display:flex; flex-direction:column; gap:0 }
 .bf-field{ display:flex; flex-direction:column; padding:18px 0; border-bottom:1px solid var(--hair-soft); position:relative }
@@ -937,7 +1116,7 @@ img,svg{display:block;max-width:100%;height:auto}
 </head>
 <body>
 
-<a href="#begin" class="skip">Skip to brief</a>
+<a href="/order.html" class="skip">Skip to brief</a>
 
 <!-- SVG grain — paper texture, never animated -->
 <svg class="grain" aria-hidden="true">
@@ -947,16 +1126,14 @@ img,svg{display:block;max-width:100%;height:auto}
 
 <!-- Custom cursor (desktop only, hidden on touch) -->
 <!-- Floating work thumbnail (tracks cursor in the work section) -->
-<div class="work-thumb" id="workThumb" aria-hidden="true">
-  <img id="workThumbImg" src="" alt="">
-  <div class="work-thumb-cap" id="workThumbCap"></div>
-</div>
+<!-- ss:work-thumb removed — replaced by inline iframe previews in the showcase grid. -->
+
 
 <!-- Running magazine header -->
 <header class="rh" aria-label="Running head">
   <div class="rh-l"><span class="rh-l-dot"></span>StaticSwift</div>
   <div class="rh-c">Vol. I · Websites for UK trades · MMXXVI · Manchester</div>
-  <div class="rh-r"><a href="#begin">Begin <span aria-hidden="true">→</span></a></div>
+  <div class="rh-r"><a href="/order.html">Begin <span aria-hidden="true">→</span></a></div>
 </header>
 
 <main id="main">
@@ -1128,56 +1305,65 @@ img,svg{display:block;max-width:100%;height:auto}
   </section>
 
   <!-- THE WORK -->
+  <!-- ss:work-v2 — three real demo sites, each card is a scaled live iframe of
+       the actual site (sandboxed, pointer-events disabled on the iframe so the
+       parent card is the click target). No stock photos. No random Picsum. The
+       thumbnail IS the site. -->
   <section class="work" id="work">
     <div class="work-head" data-rv>
-      <p class="sec-mark">03 — Sites already shipped</p>
-      <h2>Twelve trades. <em>Fourteen sites.</em></h2>
-      <p>Concept builds and live work, labelled honestly. Hover any row to see it. The first ten signed clients get the build at £249 in exchange for a video testimonial — say so in the brief.</p>
+      <p class="sec-mark">03 — Sites built</p>
+      <h2>Three trades. <em>Three sites.</em></h2>
+      <p>Each card below is a live, hand-coded site &mdash; not a screenshot, not a mockup. Click any one to open the real thing in a new tab and click around.</p>
     </div>
-    <ol class="work-list" data-rv-stagger data-rv>
-      <li class="work-row cursor-grow" data-href="/work/harrison-electrical/" data-thumb="https://picsum.photos/seed/harrison-electrical/520/680" data-cap="Concept · Bristol — live demo">
-        <span class="wr-num">№ 01</span>
-        <span class="wr-trade">Harrison Electrical <em>— live concept</em></span>
-        <span class="wr-city">Bristol</span>
-        <span class="wr-year">'26</span>
-        <span class="wr-arrow" aria-hidden="true">→</span>
-      </li>
-      <li class="work-row cursor-grow" data-thumb="https://picsum.photos/seed/burnley-plumbing/520/680" data-cap="Concept · Leeds">
-        <span class="wr-num">№ 02</span>
-        <span class="wr-trade">Burnley &amp; Sons Plumbing <em>— concept</em></span>
-        <span class="wr-city">Leeds</span>
-        <span class="wr-year">'26</span>
-        <span class="wr-arrow" aria-hidden="true">→</span>
-      </li>
-      <li class="work-row cursor-grow" data-thumb="https://picsum.photos/seed/trevethan-roofing/520/680" data-cap="Concept · Cornwall">
-        <span class="wr-num">№ 03</span>
-        <span class="wr-trade">Trevethan Roofing <em>— concept</em></span>
-        <span class="wr-city">Cornwall</span>
-        <span class="wr-year">'25</span>
-        <span class="wr-arrow" aria-hidden="true">→</span>
-      </li>
-      <li class="work-row cursor-grow" data-thumb="https://picsum.photos/seed/cairn-construction/520/680" data-cap="Concept · Edinburgh">
-        <span class="wr-num">№ 04</span>
-        <span class="wr-trade">Cairn Construction <em>— concept</em></span>
-        <span class="wr-city">Edinburgh</span>
-        <span class="wr-year">'25</span>
-        <span class="wr-arrow" aria-hidden="true">→</span>
-      </li>
-      <li class="work-row cursor-grow" data-thumb="https://picsum.photos/seed/hartley-joinery/520/680" data-cap="Concept · Newcastle">
-        <span class="wr-num">№ 05</span>
-        <span class="wr-trade">Hartley Joinery <em>— concept</em></span>
-        <span class="wr-city">Newcastle</span>
-        <span class="wr-year">'25</span>
-        <span class="wr-arrow" aria-hidden="true">→</span>
-      </li>
-      <li class="work-row cursor-grow" data-thumb="https://picsum.photos/seed/kingsland-locks/520/680" data-cap="Concept · London">
-        <span class="wr-num">№ 06</span>
-        <span class="wr-trade">Kingsland Locksmiths <em>— concept</em></span>
-        <span class="wr-city">London E8</span>
-        <span class="wr-year">'25</span>
-        <span class="wr-arrow" aria-hidden="true">→</span>
-      </li>
-    </ol>
+
+    <div class="show-grid" data-rv-stagger data-rv>
+
+      <a class="show-card" href="/work/harrison-electrical/" target="_blank" rel="noopener" aria-label="Open Harrison Electrical — Bristol — in a new tab">
+        <div class="show-frame" aria-hidden="true">
+          <iframe src="/work/harrison-electrical/" loading="lazy" title="Harrison Electrical, Bristol" tabindex="-1" sandbox="allow-same-origin"></iframe>
+        </div>
+        <div class="show-meta">
+          <div class="show-num">№ 01</div>
+          <div class="show-titles">
+            <div class="show-trade">Harrison Electrical</div>
+            <div class="show-sub">NICEIC electrician &middot; Bristol</div>
+          </div>
+          <div class="show-tag">Live</div>
+          <span class="show-arrow" aria-hidden="true">↗</span>
+        </div>
+      </a>
+
+      <a class="show-card" href="/example-aurora-photography/" target="_blank" rel="noopener" aria-label="Open Aurora Photography — Edinburgh — in a new tab">
+        <div class="show-frame" aria-hidden="true">
+          <iframe src="/example-aurora-photography/" loading="lazy" title="Aurora Photography, Edinburgh" tabindex="-1" sandbox="allow-same-origin"></iframe>
+        </div>
+        <div class="show-meta">
+          <div class="show-num">№ 02</div>
+          <div class="show-titles">
+            <div class="show-trade">Aurora Photography</div>
+            <div class="show-sub">Wedding &amp; portrait &middot; Edinburgh</div>
+          </div>
+          <div class="show-tag">Live</div>
+          <span class="show-arrow" aria-hidden="true">↗</span>
+        </div>
+      </a>
+
+      <a class="show-card" href="/example-fade-and-blade/" target="_blank" rel="noopener" aria-label="Open Fade &amp; Blade — Manchester — in a new tab">
+        <div class="show-frame" aria-hidden="true">
+          <iframe src="/example-fade-and-blade/" loading="lazy" title="Fade &amp; Blade, Manchester" tabindex="-1" sandbox="allow-same-origin"></iframe>
+        </div>
+        <div class="show-meta">
+          <div class="show-num">№ 03</div>
+          <div class="show-titles">
+            <div class="show-trade">Fade &amp; Blade</div>
+            <div class="show-sub">Master barber &middot; Northern Quarter, Manchester</div>
+          </div>
+          <div class="show-tag">Live</div>
+          <span class="show-arrow" aria-hidden="true">↗</span>
+        </div>
+      </a>
+
+    </div>
   </section>
 
   <!-- 04 — HOW IT SHIPS -->
@@ -1237,14 +1423,14 @@ img,svg{display:block;max-width:100%;height:auto}
               <li>One round of revisions before launch</li>
               <li>60-day lead guarantee</li>
             </ul>
-            <a href="#begin" class="menu-cta cursor-grow">
+            <a href="/order.html?package=starter" class="menu-cta cursor-grow">
               Begin a Starter brief
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </a>
           </div>
           <div class="menu-r">
             <div class="menu-price">£499</div>
-            <div class="menu-mo">+ <b>£49</b> / month</div>
+            <div class="menu-mo">Optional <b>£49</b> / month</div>
           </div>
         </div>
 
@@ -1262,14 +1448,14 @@ img,svg{display:block;max-width:100%;height:auto}
               <li>Quarterly content updates included</li>
               <li>Priority email &amp; WhatsApp support</li>
             </ul>
-            <a href="#begin" class="menu-cta cursor-grow">
+            <a href="/order.html?package=pro" class="menu-cta cursor-grow">
               Begin a Pro brief
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </a>
           </div>
           <div class="menu-r">
             <div class="menu-price">£999</div>
-            <div class="menu-mo">+ <b>£99</b> / month</div>
+            <div class="menu-mo">Optional <b>£99</b> / month</div>
           </div>
         </div>
 
@@ -1336,74 +1522,27 @@ img,svg{display:block;max-width:100%;height:auto}
         </div>
       </div>
 
-      <form id="qf" class="bf" novalidate onsubmit="sqContact(event)" data-rv>
-        <div class="bf-row-wrap">
-          <div class="bf-row">
-            <div class="bf-field">
-              <label for="f-biz">Business</label>
-              <input type="text" id="f-biz" name="business_name" required autocomplete="organization" placeholder="Acme Plumbing">
-            </div>
-            <div class="bf-field">
-              <label for="f-name">Your name</label>
-              <input type="text" id="f-name" name="name" required autocomplete="name" placeholder="Jane">
-            </div>
-          </div>
-        </div>
-        <div class="bf-row-wrap">
-          <div class="bf-row">
-            <div class="bf-field">
-              <label for="f-email">Email</label>
-              <input type="email" id="f-email" name="delivery_email" required autocomplete="email" placeholder="you@business.co.uk">
-            </div>
-            <div class="bf-field">
-              <label for="f-wa">Phone</label>
-              <input type="tel" id="f-wa" name="whatsapp" autocomplete="tel" placeholder="07…">
-            </div>
-          </div>
-        </div>
-        <div class="bf-row-wrap">
-          <div class="bf-row">
-            <div class="bf-field">
-              <label for="f-type">Trade</label>
-              <select id="f-type" name="business_type" required>
-                <option value="" disabled selected>Pick one</option>
-                <option>Electrician</option>
-                <option>Plumber</option>
-                <option>Roofer</option>
-                <option>Builder</option>
-                <option>Joiner / Carpenter</option>
-                <option>Painter / Decorator</option>
-                <option>Locksmith</option>
-                <option>Mechanic</option>
-                <option>Gardener / Landscaper</option>
-                <option>Cleaner / Cleaning company</option>
-                <option>Tiler / Plasterer</option>
-                <option>Other trade</option>
-                <option>Local service business</option>
-              </select>
-            </div>
-            <div class="bf-field">
-              <label for="f-pkg">Package</label>
-              <select id="f-pkg" name="package">
-                <option value="" disabled selected>Pick a plan</option>
-                <option value="starter">Starter — £499 · Optional £49/mo managed</option>
-                <option value="advanced">Pro — £999 · Optional £99/mo managed</option>
-                <option value="unsure">Not sure yet</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div class="bf-field">
-          <label for="f-brief">What do you need?</label>
-          <textarea id="f-brief" name="brief" required placeholder="A few sentences. What you do, what towns you serve, what you'd like the site to do for you."></textarea>
-        </div>
-        <input type="hidden" name="current_website" id="f-site" value="">
-        <button type="submit" class="bf-submit cursor-grow" id="qfSubmit">
-          Send my brief
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-        </button>
-        <div id="qf-ok" class="bf-ok" role="status">Got it. Reply within 24 hours from <b>hello@staticswift.co.uk</b>.</div>
-      </form>
+      <!-- ss:begin-cta-v2 — replaced inline brief form (#qf) with a CTA panel
+           routing to /order.html. The full intake form lives there now, with
+           Launchpad Pack extras, optional accordion, and proper GA/TikTok
+           events. Keeping conversion in one place + one URL = cleaner funnel
+           and one source of truth. Server-side `sqContact()` JS handler is
+           left as dead code so no other script throws if it pings the global. -->
+      <aside class="begin-cta" data-rv aria-label="Start a brief">
+        <div class="bc-mark"><span aria-hidden="true"></span><b>The fastest move on the page</b></div>
+        <h2 class="bc-h">Begin a <em>brief.</em></h2>
+        <p class="bc-sub">Sixty seconds. Six fields. WhatsApp from Harry within the hour. <b>Real, working preview</b> in your inbox within 24 hours.</p>
+        <ul class="bc-promises" data-rv-stagger>
+          <li><span class="bc-bullet" aria-hidden="true">01</span><span><b>£499 once</b> &mdash; only if you keep it.</span></li>
+          <li><span class="bc-bullet" aria-hidden="true">02</span><span>Optional <b>£49/mo</b> if you want me to manage it. Cancel any time.</span></li>
+          <li><span class="bc-bullet" aria-hidden="true">03</span><span>Refund if no leads in <b>60 days</b> &mdash; the site stays with you.</span></li>
+        </ul>
+        <a href="/order.html" class="bc-btn cursor-grow" id="bc-btn-primary">
+          <span>Start the brief</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <p class="bc-foot">No card today. No charge until you approve the preview.</p>
+      </aside>
     </div>
   </section>
 
@@ -1503,51 +1642,9 @@ img,svg{display:block;max-width:100%;height:auto}
 })();
 
 /* ─── WORK LIST — floating thumbnail follows cursor ─── */
-(function workThumb(){
-  const thumb = document.getElementById('workThumb');
-  const img = document.getElementById('workThumbImg');
-  const cap = document.getElementById('workThumbCap');
-  const rows = document.querySelectorAll('.work-row');
-  if (!thumb || !rows.length) return;
-  if (!matchMedia('(hover:hover) and (pointer:fine)').matches) return;
-
-  let active = false;
-  let tx = 0, ty = 0, x = 0, y = 0;
-
-  function tick(){
-    if (active) {
-      x += (tx - x) * 0.18;
-      y += (ty - y) * 0.18;
-      thumb.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) scale(1)`;
-    }
-    requestAnimationFrame(tick);
-  }
-  tick();
-
-  rows.forEach(row => {
-    row.addEventListener('mouseenter', () => {
-      const src = row.dataset.thumb;
-      const c = row.dataset.cap || '';
-      if (src) { img.src = src; cap.textContent = c; }
-      thumb.classList.add('show');
-      active = true;
-    });
-    row.addEventListener('mouseleave', () => {
-      thumb.classList.remove('show');
-      active = false;
-    });
-    row.addEventListener('mousemove', (e) => {
-      tx = e.clientX + 80;
-      ty = e.clientY;
-      if (!x && !y) { x = tx; y = ty; }
-    }, { passive: true });
-    // Clickable rows — navigate when data-href is set
-    if (row.dataset.href) {
-      row.style.cursor = 'pointer';
-      row.addEventListener('click', () => { window.location.href = row.dataset.href; });
-    }
-  });
-})();
+// ss:workThumb removed — showcase now renders 3 real-site cards with inline
+// scaled iframes (see .show-grid). No floating thumb tracker, no Picsum stock,
+// no hover-mousemove handler. Cards are plain anchors with `target="_blank"`.
 
 /* ─── HERO FORM (bottom contact form is the only form on this layout) ─── */
 window.sqContact = async (e) => {

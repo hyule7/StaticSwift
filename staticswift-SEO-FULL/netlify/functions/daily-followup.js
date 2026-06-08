@@ -163,6 +163,8 @@ async function runSequence({ dryRun = false } = {}) {
     if (!db.cronLog) db.cronLog = [];
     db.cronLog.unshift({ ran: 'daily-followup', at: new Date().toISOString(), ...result });
     if (db.cronLog.length > 200) db.cronLog = db.cronLog.slice(0, 200);
+    // ss:outreach-dashboard — surfaced by get-outreach-status.js + admin/outreach.html
+    db.lastDailyFollowup = new Date().toISOString();
     await writeDB(db);
   }
   return result;

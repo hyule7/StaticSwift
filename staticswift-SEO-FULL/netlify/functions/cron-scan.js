@@ -105,6 +105,8 @@ const handler = async (event) => {
     }
     db.scanLog.unshift({ ranAt: new Date().toISOString(), scanned: results.length, added });
     if (db.scanLog.length > 100) db.scanLog.length = 100;
+    // ss:outreach-dashboard — surfaced by get-outreach-status.js + admin/outreach.html
+    db.lastCronScan = new Date().toISOString();
     await writeDB(db);
     return { statusCode: 200, body: JSON.stringify({ ok: true, scanned: results.length, prospectsAdded: added, queueRemaining: db.scanQueue.length }) };
   } catch (err) {
