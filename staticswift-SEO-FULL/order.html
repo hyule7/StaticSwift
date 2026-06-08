@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
 <title>Free preview in 24 hours — StaticSwift</title>
-<meta name="description" content="Tell us about your business in 60 seconds. We'll build a real preview of your site within 24 hours. No payment until you approve. £499 + £49/month. First lead in 60 days or full refund.">
+<meta name="description" content="Tell us about your business in 60 seconds. We'll build a real preview of your site within 24 hours. No payment until you approve. £499 once + optional £49/month managed plan. First lead in 60 days or full refund.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -97,6 +97,85 @@ a{color:var(--gold);text-decoration:none}
 .terms input{accent-color:var(--gold);margin-top:2px;flex-shrink:0}
 .terms a{color:var(--gold)}
 
+/* ─── Launchpad Pack — checkout extras ─────────────────────────
+   Editorial price-list. Each row toggles an extra; total updates
+   live; if all four selected, bundle discount applies and is
+   shown as a saving badge. Fields submit as `addons` (multi). */
+.launchpad{
+  margin:24px 0 8px; padding:24px;
+  background:linear-gradient(180deg, var(--bg2) 0%, rgba(176,138,62,.04) 100%);
+  border:1px solid var(--gold-border); border-radius:14px;
+}
+.lp-mark{
+  font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--gold); margin-bottom:10px;
+  display:flex; align-items:center; gap:10px;
+}
+.lp-mark::before{ content:""; width:18px; height:1px; background:var(--gold); display:inline-block; }
+.lp-h{
+  font-family:'Instrument Serif',serif; font-size:24px; letter-spacing:-.02em;
+  color:var(--ink); margin-bottom:4px; line-height:1.15;
+}
+.lp-h em{ font-style:italic; color:var(--gold) }
+.lp-sub{ font-size:13.5px; color:var(--muted); margin-bottom:18px; line-height:1.5; }
+
+.lp-list{ list-style:none; border-top:1px solid var(--border); }
+.lp-row{
+  display:grid; grid-template-columns:1fr auto auto; gap:18px;
+  align-items:center; padding:14px 0;
+  border-bottom:1px solid var(--border);
+  cursor:pointer; transition:background .15s;
+}
+.lp-row:hover{ background:rgba(176,138,62,.05); border-radius:6px; padding-left:8px; padding-right:8px; }
+.lp-row input{ display:none; }
+.lp-name{ font-size:14.5px; font-weight:600; color:var(--ink); }
+.lp-name small{
+  display:block; margin-top:2px;
+  font-size:12px; font-weight:400; color:var(--muted); line-height:1.45;
+}
+.lp-price{
+  font-family:ui-monospace,Menlo,monospace; font-size:14px; color:var(--ink);
+  font-weight:500; min-width:48px; text-align:right;
+}
+.lp-tick{
+  width:22px; height:22px; border:1.5px solid var(--gold-border); border-radius:6px;
+  display:flex; align-items:center; justify-content:center;
+  transition:background .15s, border-color .15s;
+}
+.lp-row input:checked ~ .lp-tick{ background:var(--gold); border-color:var(--gold); }
+.lp-row input:checked ~ .lp-tick::after{
+  content:""; width:5px; height:9px;
+  border:solid #fff; border-width:0 1.8px 1.8px 0; transform:rotate(45deg) translate(-1px,-1px);
+}
+
+.lp-total{
+  display:flex; align-items:baseline; justify-content:space-between;
+  padding:16px 0 4px;
+}
+.lp-total-l{ font-size:13px; font-weight:500; color:var(--muted); letter-spacing:.04em; text-transform:uppercase; }
+.lp-total-r{
+  font-family:'Instrument Serif',serif; font-style:italic;
+  font-size:30px; letter-spacing:-.015em; color:var(--ink);
+}
+.lp-save{
+  display:inline-block; margin-left:10px;
+  padding:3px 9px; border-radius:100px;
+  background:var(--gold); color:#fff;
+  font-family:'Outfit',sans-serif; font-style:normal;
+  font-size:11px; font-weight:600; letter-spacing:.04em;
+  vertical-align:middle; opacity:0; transition:opacity .25s;
+}
+.lp-save.show{ opacity:1; }
+.lp-note{
+  display:none; margin-top:6px;
+  font-size:11.5px; color:var(--gold); font-weight:500;
+}
+.lp-row.bundle{
+  background:rgba(176,138,62,.06); padding:14px 12px; margin-top:6px;
+  border-radius:8px; border-bottom:none;
+}
+.lp-row.bundle .lp-name{ color:var(--gold) }
+
 /* Success state */
 .ok-msg{display:none;text-align:center;padding:24px 0}
 .ok-msg.show{display:block}
@@ -152,7 +231,7 @@ a{color:var(--gold);text-decoration:none}
 <div class="hero">
   <div class="tag">Free preview · No card needed</div>
   <h1>Your real site, <em>built and shown to you</em> in 24 hours.</h1>
-  <p>Tell us about your business in 60 seconds. We'll build a real, working preview of your new site and send it tonight or tomorrow. You only pay if you keep it — <b>£499 + £49/month</b>. If you don't get a new customer enquiry within 60 days, <b>full refund and you keep the site</b>.</p>
+  <p>Tell us about your business in 60 seconds. We'll build a real, working preview of your new site and send it tonight or tomorrow. You only pay if you keep it — <b>£499 once + optional £49/month managed plan</b>. If you don't get a new customer enquiry within 60 days, <b>full refund and you keep the site</b>.</p>
 </div>
 
 <div class="trust">
@@ -353,6 +432,68 @@ a{color:var(--gold);text-decoration:none}
         </div>
       </details>
 
+      <!-- LAUNCHPAD PACK — Optional checkout extras. Not added to bill today;
+           Harry confirms during the WhatsApp follow-up, then invoices. -->
+      <section class="launchpad" aria-label="Launchpad Pack extras">
+        <div class="lp-mark">Launchpad Pack · Optional extras</div>
+        <h3 class="lp-h">Want me to <em>launch the lot</em> for you?</h3>
+        <p class="lp-sub">Tick anything you want me to handle. Everything below is optional &mdash; you can buy just the £499 build and walk away. Pick all four and I'll bundle it.</p>
+
+        <ul class="lp-list">
+          <li>
+            <label class="lp-row" for="lp-domain">
+              <div class="lp-name">Domain registration &amp; connection
+                <small>I register your .co.uk (or pick the best available), point it at your site, set up email forwarding. You never touch a DNS panel.</small>
+              </div>
+              <div class="lp-price">£79</div>
+              <input type="checkbox" id="lp-domain" name="addons" value="domain-79" data-price="79">
+              <span class="lp-tick" aria-hidden="true"></span>
+            </label>
+          </li>
+          <li>
+            <label class="lp-row" for="lp-gbp">
+              <div class="lp-name">Google Business Profile setup
+                <small>Full profile build, photos uploaded, services listed, opening hours set, first three Google posts written. The single biggest local-SEO lever you'll pull.</small>
+              </div>
+              <div class="lp-price">£149</div>
+              <input type="checkbox" id="lp-gbp" name="addons" value="gbp-149" data-price="149">
+              <span class="lp-tick" aria-hidden="true"></span>
+            </label>
+          </li>
+          <li>
+            <label class="lp-row" for="lp-pages">
+              <div class="lp-name">Three extra service pages
+                <small>Hand-coded landing pages targeting your top three keywords (e.g. "emergency plumber Bristol", "boiler service BS1"). Each ranks independently.</small>
+              </div>
+              <div class="lp-price">£199</div>
+              <input type="checkbox" id="lp-pages" name="addons" value="extra-pages-199" data-price="199">
+              <span class="lp-tick" aria-hidden="true"></span>
+            </label>
+          </li>
+          <li>
+            <label class="lp-row" for="lp-logo">
+              <div class="lp-name">Logo refresh
+                <small>If you don't have a logo &mdash; or yours is a stretched JPEG &mdash; I'll design a clean wordmark and deliver SVG + PNG. One round of revisions.</small>
+              </div>
+              <div class="lp-price">£99</div>
+              <input type="checkbox" id="lp-logo" name="addons" value="logo-99" data-price="99">
+              <span class="lp-tick" aria-hidden="true"></span>
+            </label>
+          </li>
+        </ul>
+
+        <div class="lp-total">
+          <div class="lp-total-l">
+            Build + extras
+            <div class="lp-note" id="lp-note">All four ticked &mdash; bundle applied.</div>
+          </div>
+          <div class="lp-total-r">
+            <span id="lp-total">£499</span>
+            <span class="lp-save" id="lp-save">Save £77</span>
+          </div>
+        </div>
+      </section>
+
       <label class="terms">
         <input type="checkbox" id="f-terms" name="terms" required>
         <span>I agree to the <a href="/terms.html" target="_blank">Terms</a> and <a href="/privacy.html" target="_blank">Privacy Policy</a>. I understand <b>I am not being charged today</b> — I only pay if I keep the site after seeing the preview.</span>
@@ -380,13 +521,41 @@ a{color:var(--gold);text-decoration:none}
   <div class="steps">
     <div class="step"><div class="step-n">1</div><div class="step-c"><strong>Within the hour</strong><span>Harry WhatsApps you to confirm the brief and grab any photos / Google reviews to feature.</span></div></div>
     <div class="step"><div class="step-n">2</div><div class="step-c"><strong>Within 24 hours</strong><span>Your real, working preview is emailed to you on a private link. Click around. Show your partner. Sleep on it.</span></div></div>
-    <div class="step"><div class="step-n">3</div><div class="step-c"><strong>Only if you keep it</strong><span>£499 setup + £49/month invoiced. We launch on your domain, set up Google Business Profile, you're live.</span></div></div>
+    <div class="step"><div class="step-n">3</div><div class="step-c"><strong>Only if you keep it</strong><span>£499 setup. Optional £49/month managed plan invoiced. We launch on your domain, set up Google Business Profile, you're live.</span></div></div>
     <div class="step"><div class="step-n">4</div><div class="step-c"><strong>60 days from launch</strong><span>If the site hasn't earned you a single new customer enquiry, full refund — and the site is still yours.</span></div></div>
   </div>
 </div>
 
 <script>
-const MULTI = ['website_goals'];
+const MULTI = ['website_goals', 'addons'];
+const SETUP_PRICE = 499;
+const BUNDLE_DISCOUNT = 77; // all-four bundle saves £77 (526 → 449)
+
+// ── ss:order-launchpad — live total + bundle discount + form integration.
+// Updates the headline price as boxes are ticked. When all four extras are
+// selected, applies the bundle discount and reveals the "Save £77" pill so
+// the saving is visible mid-decision, not just in fine print.
+(function launchpad(){
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('input[name="addons"]'));
+  if (!boxes.length) return;
+  var totalEl = document.getElementById('lp-total');
+  var saveEl  = document.getElementById('lp-save');
+  var noteEl  = document.getElementById('lp-note');
+  function recalc(){
+    var sum = SETUP_PRICE;
+    var checked = 0;
+    boxes.forEach(function(b){
+      if (b.checked){ sum += parseInt(b.dataset.price || '0', 10); checked++; }
+    });
+    var allFour = checked === boxes.length;
+    if (allFour) sum -= BUNDLE_DISCOUNT;
+    totalEl.textContent = '£' + sum.toLocaleString('en-GB');
+    saveEl.classList.toggle('show', allFour);
+    noteEl.style.display = allFour ? 'block' : 'none';
+  }
+  boxes.forEach(function(b){ b.addEventListener('change', recalc); });
+  recalc();
+})();
 
 // ── ss:order-hydrate — pre-fill business_type + location from ?niche=…&city=…
 //    Programmatic SEO pages link here with these params; this is the entire

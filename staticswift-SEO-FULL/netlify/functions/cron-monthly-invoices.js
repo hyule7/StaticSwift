@@ -30,12 +30,28 @@
 const { getClients, updateClient, incrementInvoiceCounter } = require('./_db');
 const { createTransporter } = require('./_mailer');
 
-const MONTHLY_AMOUNT = parseInt(process.env.MONTHLY_AMOUNT || '49', 10);
-const PAYMENT_DAYS   = parseInt(process.env.PAYMENT_DAYS   || '14', 10);
-const BANK_NAME      = process.env.PAY_BANK_NAME    || 'Revolut Ltd';
-const BANK_SORT      = process.env.PAY_BANK_SORT    || '04-00-75';
-const BANK_ACCT      = process.env.PAY_BANK_ACCT    || '00000000';
-const BANK_REF_PREFIX= process.env.PAY_BANK_REF_PFX || 'SS-';
+/* ─────────────────────────────────────────────────────────────────
+ * ‼  EDIT THE FOUR VALUES BELOW ONCE.  ‼
+ * Hard-coded so Harry never has to touch Netlify env vars.
+ * Filled with the placeholder values from the original setup —
+ * REPLACE these with your real Revolut/bank-of-choice details
+ * before the first cron run, or the first batch of invoices will
+ * go out with "00000000" as the account number.
+ * ─────────────────────────────────────────────────────────────── */
+const STATICSWIFT_BANK = {
+  name:      'Revolut Ltd',     // bank name as it appears on the invoice
+  sortCode:  '04-00-75',        // UK sort code, e.g. "12-34-56"
+  account:   '00000000',        // account number, 8 digits
+  refPrefix: 'SS-',             // invoice ref prefix, e.g. "SS-0042"
+};
+
+const MONTHLY_AMOUNT = 49;       // £ amount on the monthly invoice
+const PAYMENT_DAYS   = 14;       // days from issue date to due date
+
+const BANK_NAME       = STATICSWIFT_BANK.name;
+const BANK_SORT       = STATICSWIFT_BANK.sortCode;
+const BANK_ACCT       = STATICSWIFT_BANK.account;
+const BANK_REF_PREFIX = STATICSWIFT_BANK.refPrefix;
 
 function fmtGBP(n){ return '£' + Number(n).toFixed(2); }
 function fmtDate(d){
