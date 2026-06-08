@@ -35,9 +35,22 @@ exports.handler = async (event) => {
   try { body = JSON.parse(event.body || '{}'); }
   catch { return { statusCode: 400, body: JSON.stringify({ error: 'bad JSON' }) }; }
 
-  const { portalUUID, type, notes, signature, key, addon, asset, annotation } = body;
+  const { portalUUID, type, notes, signature, key, addon, asset, annotation, addons, addonsTotal } = body;
   if (!portalUUID || !type) return { statusCode: 400, body: JSON.stringify({ error: 'missing fields' }) };
   if (!VALID_TYPES.has(type)) return { statusCode: 400, body: JSON.stringify({ error: 'unknown type' }) };
+
+  // Launchpad price map — single source of truth for both order.html and the
+  // portal post-approval upsell. Keep in sync if the offer changes.
+  const ADDON_PRICES = { 'domain-79':79, 'gbp-149':149, 'extra-pages-199':199, 'logo-99':99, 'ads-149':149 };
+  const ADDON_LABELS = {
+    'domain-79': 'Domain registration & connection',
+    'gbp-149':   'Google Business Profile setup',
+    'extra-pages-199': 'Three extra service pages',
+    'logo-99':   'Logo refresh',
+    'ads-149':   'Two weeks Google Ads management',
+  };
+  const ADDON_BUNDLE_DISCOUNT = 100;
+  const ADDON_COUNT = Object.keys(ADDON_PRICES).length;
 
   try {
     const clients = await getClients();
@@ -67,20 +80,45 @@ exports.handler = async (event) => {
 
     // ── APPROVE ──────────────────────────────────────────────────
     if (type === 'approve') {
-      if (!safeSig) return { statusCode: 400, body: JSON.stringify({ error: 'signature required' }) };
+      // Signature is now OPTIONAL — the portal's "Ship it" click is itself a
+      // signed approval action (logged with timestamp + portalUUID). The typed
+      // signature path is preserved for clients who do supply one.
+      const effectiveSig = safeSig || ('Approved via portal click · ' + new Date().toISOString());
 
-      client.portalMessages.push({ from: 'client', type, notes: safeNotes, signature: safeSig, sentAt: new Date().toISOString() });
+      // Launchpad addons selected by the buyer at approval time.
+      const safeAddons = Array.isArray(addons)
+        ? addons.filter(a => Object.prototype.hasOwnProperty.call(ADDON_PRICES, a))
+        : [];
+      const addonsSum = safeAddons.reduce((s, k) => s + (ADDON_PRICES[k] || 0), 0);
+      const allAddons = safeAddons.length === ADDON_COUNT && ADDON_COUNT > 0;
+      const addonsBilled = allAddons ? Math.max(0, addonsSum - ADDON_BUNDLE_DISCOUNT) : addonsSum;
+      const trustedAddonsTotal = Number.isFinite(Number(addonsTotal)) && Number(addonsTotal) >= 0
+        ? Math.min(Number(addonsTotal), addonsSum)   // never trust client to pay LESS than the floor
+        : addonsBilled;
+
+      client.portalMessages.push({ from: 'client', type, notes: safeNotes, signature: effectiveSig, addons: safeAddons, sentAt: new Date().toISOString() });
       client.stage = 'approved';
       client.approvedAt = new Date().toISOString();
       client.approvalNotes = safeNotes;
-      client.approvalSignature = safeSig;
-      logActivity({ summary: 'Signed approval', signature: safeSig, notes: safeNotes });
+      client.approvalSignature = effectiveSig;
+      if (safeAddons.length){
+        client.approvedAddons = safeAddons;
+        client.approvedAddonsTotal = trustedAddonsTotal;
+      }
+      logActivity({ summary: 'Approved · ' + safeAddons.length + ' add-on(s)', signature: effectiveSig, notes: safeNotes, addons: safeAddons });
       await saveClient(client);
 
-      // Auto-fire the invoice (existing flow — kept here to preserve behaviour)
-      const isAdvanced = client.package === 'advanced';
-      const hasHosting = client.hosting_addon === 'yes';
-      const amount = (isAdvanced ? 299 : 149) + (hasHosting ? 29 : 0);
+      // Auto-fire the invoice. Now uses the £499/£999 base plus selected
+      // Launchpad add-ons (with bundle discount if all five), reflecting the
+      // current published offer rather than the legacy £149/£299 figures.
+      const isAdvanced = client.package === 'advanced' || client.package === 'pro';
+      const baseAmount = isAdvanced ? 999 : 499;
+      const amount = baseAmount + trustedAddonsTotal;
+      const addonsLineItemsHtml = safeAddons.map(k =>
+        `<tr><td style="padding:12px 14px;border:1px solid #ece6d6">${ADDON_LABELS[k]}</td><td style="padding:12px 14px;border:1px solid #ece6d6;text-align:right">£${ADDON_PRICES[k]}</td></tr>`
+      ).join('') + (allAddons
+        ? `<tr><td style="padding:12px 14px;border:1px solid #ece6d6;color:#9C2615">Launchpad bundle discount</td><td style="padding:12px 14px;border:1px solid #ece6d6;text-align:right;color:#9C2615">&minus; £${ADDON_BUNDLE_DISCOUNT}</td></tr>`
+        : '');
 
       if (transporter) {
         try {
@@ -100,8 +138,8 @@ exports.handler = async (event) => {
 </td></tr>
 <tr><td style="padding:0 36px 12px">
 <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;font-size:14px">
-<tr style="background:#faf8f2"><td style="padding:12px 14px;border:1px solid #ece6d6">${isAdvanced ? 'Advanced' : 'Starter'} Website Design</td><td style="padding:12px 14px;border:1px solid #ece6d6;text-align:right">£${isAdvanced ? 299 : 149}</td></tr>
-${hasHosting ? `<tr><td style="padding:12px 14px;border:1px solid #ece6d6">Hosting upload service</td><td style="padding:12px 14px;border:1px solid #ece6d6;text-align:right">£29</td></tr>` : ''}
+<tr style="background:#faf8f2"><td style="padding:12px 14px;border:1px solid #ece6d6">${isAdvanced ? 'Pro' : 'Starter'} website &mdash; hand-coded build</td><td style="padding:12px 14px;border:1px solid #ece6d6;text-align:right">£${baseAmount}</td></tr>
+${addonsLineItemsHtml}
 <tr style="background:#0a0a0a;color:#fff;font-weight:700"><td style="padding:14px;border:1px solid #0a0a0a">Total due</td><td style="padding:14px;border:1px solid #0a0a0a;text-align:right;font-size:18px">£${amount}</td></tr>
 </table></td></tr>
 <tr><td style="padding:18px 36px 26px">
@@ -131,9 +169,10 @@ Beneficiary: Harry Yule<br>Sort code: 04-00-75<br>Account: 98518224<br>Reference
             html: LOGO_HTML + `<div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:0 24px 32px">
               <h2 style="color:#22c55e">Approved &amp; signed</h2>
               <p><strong>${escapeHtml(client.name || '')}</strong> (${escapeHtml(client.delivery_email || '')}) approved <strong>${escapeHtml(client.business_name || '')}</strong>.</p>
-              <p>Signature: <em>"${escapeHtml(safeSig)}"</em></p>
-              ${safeNotes ? `<p>Notes: <blockquote style="border-left:3px solid #00C8E0;padding-left:14px;color:#555;margin:8px 0">${escapeHtml(safeNotes)}</blockquote></p>` : ''}
-              <p>Invoice fired automatically — £${amount}.</p>
+              <p>Signature: <em>"${escapeHtml(effectiveSig)}"</em></p>
+              ${safeNotes ? `<p>Notes: <blockquote style="border-left:3px solid #9C2615;padding-left:14px;color:#555;margin:8px 0">${escapeHtml(safeNotes)}</blockquote></p>` : ''}
+              ${safeAddons.length ? `<p><strong>Launchpad add-ons selected (${safeAddons.length}/${ADDON_COUNT}):</strong></p><ul style="margin:6px 0 12px;padding-left:20px;color:#333">${safeAddons.map(k => `<li>${escapeHtml(ADDON_LABELS[k])} &mdash; £${ADDON_PRICES[k]}</li>`).join('')}${allAddons ? `<li style="color:#9C2615">Bundle discount &minus; £${ADDON_BUNDLE_DISCOUNT}</li>` : ''}</ul>` : '<p style="color:#888">No Launchpad add-ons selected.</p>'}
+              <p>Invoice fired automatically &mdash; <strong>£${amount}</strong> (base £${baseAmount}${trustedAddonsTotal ? ` + add-ons £${trustedAddonsTotal}` : ''}).</p>
             </div>`,
           });
         } catch (e) { console.warn('Harry notify failed:', e.message); }

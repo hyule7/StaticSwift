@@ -387,6 +387,100 @@ img,svg{display:block;max-width:100%;height:auto}
 .submit-btn:active:not(:disabled){ transform:scale(.98) }
 .submit-btn:disabled{ opacity:.5; cursor:wait; transform:none }
 
+/* ─── Portal Launchpad upsell — sits inside #approve-box, between the
+   "notes" textarea and the Confirm button. Same field-guide grammar as
+   order.html's Launchpad but unchecked by default (post-commitment
+   expansion, not pre-commitment anchoring). */
+.portal-lp{
+  margin:32px 0 28px;
+  padding-top:24px; border-top:1px solid var(--hair);
+}
+.plp-mark{
+  font-family:var(--mono); font-size:11px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--bronze);
+  display:inline-flex; align-items:center; gap:12px;
+  margin-bottom:10px;
+}
+.plp-mark::before{ content:""; width:18px; height:1px; background:var(--signal); display:inline-block; }
+.plp-mark b{ color:var(--signal); }
+.plp-h{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(22px,2.6vw,30px); line-height:1.05; letter-spacing:-.015em;
+  color:var(--ink); margin-bottom:6px;
+}
+.plp-h em{ font-style:italic; color:var(--signal); }
+.plp-sub{
+  font-family:var(--serif); font-size:15px; line-height:1.5;
+  color:var(--ink-soft); margin-bottom:20px; max-width:54ch;
+}
+.plp-sub b{ color:var(--ink); font-weight:500; }
+.plp-list{ list-style:none; border-top:1px solid var(--hair); margin:0; padding:0; }
+.plp-row{
+  display:grid; grid-template-columns:28px 1fr auto 22px; gap:14px;
+  align-items:center;
+  padding:14px 0; border-bottom:1px solid var(--hair-soft);
+  cursor:pointer;
+  transition:padding-left .25s var(--ease-out), background .2s;
+}
+.plp-row:hover{ padding-left:8px; padding-right:8px; background:var(--paper-deep); }
+.plp-row input{ display:none; }
+.plp-num{ font-family:var(--mono); font-size:10.5px; color:var(--bronze); letter-spacing:.06em; }
+.plp-name{
+  font-family:var(--serif); font-weight:500;
+  font-size:17px; letter-spacing:-.008em; color:var(--ink); line-height:1.2;
+}
+.plp-name small{
+  display:block; margin-top:3px;
+  font-family:var(--sans); font-weight:400; font-size:12.5px; color:var(--ink-mid); line-height:1.4;
+}
+.plp-price{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:18px; letter-spacing:-.005em; color:var(--ink);
+  min-width:48px; text-align:right;
+}
+.plp-tick{
+  width:20px; height:20px;
+  border:1px solid var(--ink); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  transition:background .15s, color .15s; color:transparent;
+}
+.plp-row input:checked ~ .plp-tick{ background:var(--ink); color:var(--paper); }
+.plp-tick::after{ content:""; width:4px; height:8px; border:solid currentColor; border-width:0 1.4px 1.4px 0; transform:rotate(45deg) translate(0,-1px); }
+.plp-foot{
+  display:flex; justify-content:space-between; align-items:baseline;
+  padding-top:18px; margin-top:6px;
+  border-top:1px solid var(--ink);
+}
+.plp-foot-l{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--bronze);
+}
+.plp-foot-r{ display:inline-flex; align-items:baseline; gap:12px; }
+.plp-was{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:18px; color:var(--bronze);
+  text-decoration:line-through; text-decoration-thickness:1px; text-decoration-color:var(--bronze-dim);
+  opacity:0; transition:opacity .25s var(--ease-out);
+}
+.plp-was.show{ opacity:1; }
+#plp-total{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(24px,3vw,34px); letter-spacing:-.018em; color:var(--ink);
+}
+.plp-save{
+  display:inline-block; padding:4px 11px; border-radius:100px;
+  background:var(--signal); color:var(--paper);
+  font-family:var(--sans); font-size:10.5px; font-weight:600; letter-spacing:.04em;
+  opacity:0; transform:scale(.92);
+  transition:opacity .3s, transform .3s var(--ease-out);
+}
+.plp-save.show{ opacity:1; transform:scale(1); }
+@media(max-width:560px){
+  .plp-row{ grid-template-columns:22px 1fr auto 20px; gap:10px; padding:12px 0 }
+  .plp-name{ font-size:15.5px } .plp-name small{ font-size:11.5px }
+  .plp-price{ font-size:16px }
+}
+
 /* Success state — editorial blockquote */
 .success{
   display:none;
@@ -559,6 +653,86 @@ img,svg{display:block;max-width:100%;height:auto}
     <h3>Anything to add before I invoice?</h3>
     <p class="fb-sub">Optional. Leave it blank and confirm if there's nothing to flag.</p>
     <textarea id="approve-notes" placeholder="CC accounts@ on the invoice, or — leave blank."></textarea>
+
+    <!-- ss:portal-launchpad-bump-v1 — second-bite Launchpad at the highest-yield
+         psychological moment: AFTER the buyer has clicked "Ship it". Same five
+         rows as order.html, unchecked by default here (post-commitment expansion,
+         not pre-commitment anchoring), with a £100 bundle if they want all five.
+         Selections POST to /portal-response as `addons[]` so Harry's existing
+         email pipeline picks them up. -->
+    <section class="portal-lp" aria-label="Add at launch">
+      <div class="plp-mark">Before we ship &middot; <b>Add at launch</b></div>
+      <h4 class="plp-h">Want me to <em>do these too?</em></h4>
+      <p class="plp-sub">Optional add-ons. I'll invoice them with the build. <b>All five together saves £100.</b></p>
+
+      <ul class="plp-list">
+        <li>
+          <label class="plp-row" for="plp-domain">
+            <span class="plp-num">01</span>
+            <span class="plp-name">Domain registration &amp; connection
+              <small>I register your .co.uk and point it at the site.</small>
+            </span>
+            <span class="plp-price">£79</span>
+            <input type="checkbox" id="plp-domain" name="addons" value="domain-79" data-price="79">
+            <span class="plp-tick" aria-hidden="true"></span>
+          </label>
+        </li>
+        <li>
+          <label class="plp-row" for="plp-gbp">
+            <span class="plp-num">02</span>
+            <span class="plp-name">Google Business Profile setup
+              <small>Full profile, photos, services, first three posts written.</small>
+            </span>
+            <span class="plp-price">£149</span>
+            <input type="checkbox" id="plp-gbp" name="addons" value="gbp-149" data-price="149">
+            <span class="plp-tick" aria-hidden="true"></span>
+          </label>
+        </li>
+        <li>
+          <label class="plp-row" for="plp-pages">
+            <span class="plp-num">03</span>
+            <span class="plp-name">Three extra service pages
+              <small>Hand-coded landing pages for your top three keywords.</small>
+            </span>
+            <span class="plp-price">£199</span>
+            <input type="checkbox" id="plp-pages" name="addons" value="extra-pages-199" data-price="199">
+            <span class="plp-tick" aria-hidden="true"></span>
+          </label>
+        </li>
+        <li>
+          <label class="plp-row" for="plp-logo">
+            <span class="plp-num">04</span>
+            <span class="plp-name">Logo refresh
+              <small>Clean wordmark, SVG + PNG, one round of revisions.</small>
+            </span>
+            <span class="plp-price">£99</span>
+            <input type="checkbox" id="plp-logo" name="addons" value="logo-99" data-price="99">
+            <span class="plp-tick" aria-hidden="true"></span>
+          </label>
+        </li>
+        <li>
+          <label class="plp-row" for="plp-ads">
+            <span class="plp-num">05</span>
+            <span class="plp-name">Two weeks of Google Ads management
+              <small>£5/day Search Ads, exact-match on your trade + town, fourteen days.</small>
+            </span>
+            <span class="plp-price">£149</span>
+            <input type="checkbox" id="plp-ads" name="addons" value="ads-149" data-price="149">
+            <span class="plp-tick" aria-hidden="true"></span>
+          </label>
+        </li>
+      </ul>
+
+      <div class="plp-foot">
+        <span class="plp-foot-l">Extras total</span>
+        <span class="plp-foot-r">
+          <span class="plp-was" id="plp-was">£675</span>
+          <span id="plp-total">£0</span>
+          <span class="plp-save" id="plp-save">Save £100</span>
+        </span>
+      </div>
+    </section>
+
     <div class="feedback-foot">
       <span class="feedback-hint">Invoice arrives within the hour</span>
       <button class="submit-btn cursor-grow" type="button" onclick="submitResponse('approve', event)">
@@ -753,6 +927,45 @@ function selectAction(type) {
   setTimeout(() => document.getElementById(target).scrollIntoView({behavior:'smooth', block:'start'}), 60);
 }
 
+/* ss:portal-launchpad-bump-v1 — live total + bundle math for the post-approval
+   upsell. £100 bundle discount when all five rows are ticked (matches order.html
+   anchoring so the buyer's expectation is consistent across the two surfaces). */
+const PORTAL_BUNDLE_DISCOUNT = 100;
+(function portalLaunchpad(){
+  const boxes = Array.prototype.slice.call(document.querySelectorAll('input[name="addons"]'));
+  if (!boxes.length) return;
+  const totalEl = document.getElementById('plp-total');
+  const wasEl   = document.getElementById('plp-was');
+  const saveEl  = document.getElementById('plp-save');
+  function recalc(){
+    let sum = 0, checked = 0;
+    boxes.forEach(b => { if (b.checked){ sum += parseInt(b.dataset.price || '0', 10); checked++; } });
+    const allFive = checked === boxes.length;
+    const preDiscount = sum;
+    if (allFive) sum -= PORTAL_BUNDLE_DISCOUNT;
+    if (totalEl) totalEl.textContent = '£' + sum.toLocaleString('en-GB');
+    if (wasEl){
+      if (allFive){ wasEl.textContent = '£' + preDiscount.toLocaleString('en-GB'); wasEl.classList.add('show'); }
+      else wasEl.classList.remove('show');
+    }
+    if (saveEl) saveEl.classList.toggle('show', allFive);
+  }
+  boxes.forEach(b => b.addEventListener('change', recalc));
+  recalc();
+})();
+
+/* ss:portal-collect-addons — reads the post-approval Launchpad selections so
+   submitResponse() can include them in the POST to portal-response. Returns
+   { addons: [...values], addonsTotal: <int £> }. */
+function collectPortalAddons(){
+  const boxes = Array.prototype.slice.call(document.querySelectorAll('input[name="addons"]'));
+  const picked = boxes.filter(b => b.checked);
+  const values = picked.map(b => b.value);
+  let total = picked.reduce((s,b) => s + parseInt(b.dataset.price || '0', 10), 0);
+  if (picked.length === boxes.length && boxes.length > 0) total -= PORTAL_BUNDLE_DISCOUNT;
+  return { addons: values, addonsTotal: total };
+}
+
 async function submitResponse(type, evt) {
   const notes = type === 'approve'
     ? document.getElementById('approve-notes').value
@@ -760,11 +973,15 @@ async function submitResponse(type, evt) {
   const btn = (evt && evt.currentTarget) || (evt && evt.target) || null;
   let origHtml = '';
   if (btn) { origHtml = btn.innerHTML; btn.disabled = true; btn.innerHTML = 'Sending…'; }
+
+  // Approve path can include Launchpad extras; changes path stays clean.
+  const extras = (type === 'approve') ? collectPortalAddons() : { addons: [], addonsTotal: 0 };
+
   try {
     const r = await fetch('/.netlify/functions/portal-response', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ portalUUID, type, notes })
+      body: JSON.stringify({ portalUUID, type, notes, addons: extras.addons, addonsTotal: extras.addonsTotal })
     });
     const d = await r.json();
     if (d.ok) {

@@ -403,6 +403,17 @@ img,svg{display:block;max-width:100%;height:auto}
   transition:opacity .3s var(--ease-out), transform .35s var(--ease-out);
 }
 .lp-save.show{ opacity:1; transform:scale(1) translateY(0); }
+/* Anchor "was" price — strikethrough sits to the left of the live total. */
+.lp-was{
+  display:inline-block; margin-right:14px; vertical-align:baseline;
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(20px,2.4vw,28px); color:var(--bronze);
+  text-decoration:line-through;
+  text-decoration-thickness:1px; text-decoration-color:var(--bronze-dim);
+  opacity:0; transition:opacity .25s var(--ease-out);
+  pointer-events:none;
+}
+.lp-was.show{ opacity:1; }
 .lp-note{
   display:none; margin-top:6px;
   font-family:var(--mono); font-size:10.5px; letter-spacing:.06em;
@@ -794,13 +805,17 @@ img,svg{display:block;max-width:100%;height:auto}
         </div>
       </details>
 
-      <!-- ──── Launchpad Pack ──── -->
+      <!-- ──── Launchpad Pack ──── (CFO-rebuilt: default-ticked, anchored)
+           Five rows, all pre-checked at load. Total at the top shows the
+           full launch price; "Save £100" appears the moment a buyer hasn't
+           unticked anything. Removing a row reveals the £100 you stop saving,
+           making the decoy effect work in the right direction. -->
       <section class="launchpad" aria-label="Launchpad Pack extras">
         <div class="lp-head">
-          <span class="lp-mark"><b>Launchpad</b> &middot; Optional</span>
+          <span class="lp-mark"><b>Launchpad</b> &middot; Untick anything you don&rsquo;t want</span>
         </div>
-        <h3 class="lp-h">Want me to <em>launch the lot</em> for you?</h3>
-        <p class="lp-sub">Tick anything you want me to handle. Optional &mdash; you can take the £499 build and walk away. Tick all four and I&rsquo;ll bundle.</p>
+        <h3 class="lp-h">Let me <em>launch the lot</em> for you.</h3>
+        <p class="lp-sub">Five things every new trade site needs to actually start ringing the phone. All five are pre-selected at the bundle price &mdash; <b>untick what you&rsquo;d rather do yourself.</b></p>
 
         <ul class="lp-list">
           <li>
@@ -811,7 +826,7 @@ img,svg{display:block;max-width:100%;height:auto}
                 <small>I register your .co.uk, point it at the site, set up email forwarding. You never touch a DNS panel.</small>
               </span>
               <span class="lp-price">£79</span>
-              <input type="checkbox" id="lp-domain" name="addons" value="domain-79" data-price="79">
+              <input type="checkbox" id="lp-domain" name="addons" value="domain-79" data-price="79" checked>
               <span class="lp-tick" aria-hidden="true"></span>
             </label>
           </li>
@@ -823,7 +838,7 @@ img,svg{display:block;max-width:100%;height:auto}
                 <small>Profile built, photos uploaded, services listed, first three Google posts written. The single biggest local-SEO lever.</small>
               </span>
               <span class="lp-price">£149</span>
-              <input type="checkbox" id="lp-gbp" name="addons" value="gbp-149" data-price="149">
+              <input type="checkbox" id="lp-gbp" name="addons" value="gbp-149" data-price="149" checked>
               <span class="lp-tick" aria-hidden="true"></span>
             </label>
           </li>
@@ -835,7 +850,7 @@ img,svg{display:block;max-width:100%;height:auto}
                 <small>Hand-coded landing pages targeting your top three keywords. Each ranks independently.</small>
               </span>
               <span class="lp-price">£199</span>
-              <input type="checkbox" id="lp-pages" name="addons" value="extra-pages-199" data-price="199">
+              <input type="checkbox" id="lp-pages" name="addons" value="extra-pages-199" data-price="199" checked>
               <span class="lp-tick" aria-hidden="true"></span>
             </label>
           </li>
@@ -847,7 +862,19 @@ img,svg{display:block;max-width:100%;height:auto}
                 <small>Clean wordmark, SVG + PNG, one round of revisions. For when your current logo is a stretched JPEG.</small>
               </span>
               <span class="lp-price">£99</span>
-              <input type="checkbox" id="lp-logo" name="addons" value="logo-99" data-price="99">
+              <input type="checkbox" id="lp-logo" name="addons" value="logo-99" data-price="99" checked>
+              <span class="lp-tick" aria-hidden="true"></span>
+            </label>
+          </li>
+          <li>
+            <label class="lp-row" for="lp-ads">
+              <span class="lp-num">05</span>
+              <span class="lp-name">
+                Two weeks of <em>Google Ads</em> management
+                <small>I set up a £5/day Search Ads campaign targeting your exact trade and town. Run it for fourteen days, report back. Gets the phone ringing while we wait for SEO to compound.</small>
+              </span>
+              <span class="lp-price">£149</span>
+              <input type="checkbox" id="lp-ads" name="addons" value="ads-149" data-price="149" checked>
               <span class="lp-tick" aria-hidden="true"></span>
             </label>
           </li>
@@ -855,12 +882,13 @@ img,svg{display:block;max-width:100%;height:auto}
 
         <div class="lp-foot">
           <div class="lp-foot-l">
-            Build + extras
-            <div class="lp-note" id="lp-note">All four ticked &mdash; bundle applied.</div>
+            Build + everything ticked
+            <div class="lp-note" id="lp-note">All five &mdash; bundle applied.</div>
           </div>
           <div class="lp-foot-r">
-            <span id="lp-total">£499</span>
-            <span class="lp-save" id="lp-save">Save £77</span>
+            <span class="lp-was" id="lp-was">£1,174</span>
+            <span id="lp-total">£1,074</span>
+            <span class="lp-save" id="lp-save">Save £100</span>
           </div>
         </div>
       </section>
@@ -1006,27 +1034,41 @@ document.getElementById('yr').textContent = new Date().getFullYear();
   } catch(e){}
 })();
 
-/* ─── ss:order-launchpad — live total + bundle discount ─── */
+/* ─── ss:order-launchpad — live total + bundle discount ───
+   All five rows pre-ticked on load. When all five remain ticked, the £100
+   bundle discount applies and the "Save £100" pill + £1,174 strikethrough
+   show. Unticking any row drops the discount and hides both the strike and
+   the pill, exposing the £100 the buyer just walked away from. */
 const MULTI = ['website_goals', 'addons'];
 const SETUP_PRICE = 499;
-const BUNDLE_DISCOUNT = 77;
+const BUNDLE_DISCOUNT = 100; // £100 off when all five Launchpad rows are kept
 (function launchpad(){
   var boxes = Array.prototype.slice.call(document.querySelectorAll('input[name="addons"]'));
   if (!boxes.length) return;
   var totalEl = document.getElementById('lp-total');
   var saveEl  = document.getElementById('lp-save');
   var noteEl  = document.getElementById('lp-note');
+  var wasEl   = document.getElementById('lp-was');
   function recalc(){
     var sum = SETUP_PRICE;
     var checked = 0;
     boxes.forEach(function(b){
       if (b.checked){ sum += parseInt(b.dataset.price || '0', 10); checked++; }
     });
-    var allFour = checked === boxes.length;
-    if (allFour) sum -= BUNDLE_DISCOUNT;
+    var allFive = checked === boxes.length;
+    var preDiscount = sum;
+    if (allFive) sum -= BUNDLE_DISCOUNT;
     totalEl.textContent = '£' + sum.toLocaleString('en-GB');
-    saveEl.classList.toggle('show', allFour);
-    noteEl.classList.toggle('show', allFour);
+    if (wasEl){
+      if (allFive){
+        wasEl.textContent = '£' + preDiscount.toLocaleString('en-GB');
+        wasEl.classList.add('show');
+      } else {
+        wasEl.classList.remove('show');
+      }
+    }
+    saveEl.classList.toggle('show', allFive);
+    noteEl.classList.toggle('show', allFive);
   }
   boxes.forEach(function(b){ b.addEventListener('change', recalc); });
   recalc();

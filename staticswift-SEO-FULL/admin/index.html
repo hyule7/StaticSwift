@@ -63,6 +63,11 @@
     <button class="nav-tab" data-page="revenue" onclick="showPage('revenue',this)">
       <span class="ico">£</span><span>Revenue</span>
     </button>
+    <!-- ss:admin-xref — standalone Billing dashboard (MRR, due-this-cycle,
+         overdue, manual invoice sends). Hard-nav: lives at its own URL. -->
+    <a class="nav-tab" href="/admin/billing.html" style="text-decoration:none">
+      <span class="ico">⊞</span><span>Billing</span>
+    </a>
 
     <div class="sidebar-section">Communication</div>
     <button class="nav-tab" data-page="inbox" onclick="showPage('inbox',this);loadInbox()">
@@ -76,6 +81,11 @@
     <button class="nav-tab" data-page="outreach" onclick="showPage('outreach',this)">
       <span class="ico">⚡</span><span>Outreach</span>
     </button>
+    <!-- ss:admin-xref — standalone Outreach health (cron status, prospects
+         discovered, Companies House feed, draft queue). -->
+    <a class="nav-tab" href="/admin/outreach.html" style="text-decoration:none">
+      <span class="ico">⊟</span><span>Outreach health</span>
+    </a>
     <button class="nav-tab" data-page="backlinks" onclick="showPage('backlinks',this)">
       <span class="ico">⛓</span><span>Backlinks</span>
     </button>
@@ -267,32 +277,127 @@
       </div>
     </div>
 
-    <!-- REVENUE -->
+    <!-- REVENUE — now also holds the Monthly Subscriptions billing dashboard.
+         Sections are <details> elements so Harry can collapse anything he
+         doesn't need to look at right now. State is remembered per-tab via
+         sessionStorage so the page reopens the way he left it. -->
     <div class="page" id="page-revenue">
       <div class="page-header">
-        <h1 class="page-title">Revenue</h1>
-        <button class="btn-ghost" onclick="exportData()">Export Excel</button>
+        <h1 class="page-title">Revenue &amp; Billing</h1>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <span class="rev-cycle-pill" id="rev-cycle-pill">Cycle —</span>
+          <button class="btn-ghost" onclick="exportData()">Export Excel</button>
+          <a class="btn-ghost" href="/admin/billing.html" target="_blank" style="text-decoration:none">Open in new tab ↗</a>
+        </div>
       </div>
-      <div class="rev-grid">
-        <div class="r-card"><div class="lbl">Today</div><div class="val" id="rev-today">£0</div></div>
-        <div class="r-card"><div class="lbl">This Week</div><div class="val" id="rev-week">£0</div></div>
-        <div class="r-card"><div class="lbl">This Month</div><div class="val" id="rev-month">£0</div></div>
-        <div class="r-card"><div class="lbl">All Time</div><div class="val" id="rev-alltime">£0</div></div>
-        <div class="r-card"><div class="lbl">Starter Sites</div><div class="val" id="rev-starter">0</div></div>
-        <div class="r-card"><div class="lbl">Advanced Sites</div><div class="val" id="rev-advanced">0</div></div>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
-        <table style="width:100%;border-collapse:collapse;font-size:13px">
-          <thead><tr style="border-bottom:1px solid var(--border)">
-            <th style="padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace">Business</th>
-            <th style="padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace">Package</th>
-            <th style="padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace">Amount</th>
-            <th style="padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace">Date</th>
-            <th style="padding:12px 16px;text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-family:'DM Mono',monospace">Status</th>
-          </tr></thead>
-          <tbody id="revenue-tbody"><tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted)">Loading...</td></tr></tbody>
-        </table>
-      </div>
+
+      <!-- ── Section: one-time build revenue (the legacy view) ────────── -->
+      <details class="rev-section" id="rev-section-onetime" open>
+        <summary>
+          <span class="rs-caret" aria-hidden="true">▸</span>
+          <span class="rs-title">One-time build revenue</span>
+          <span class="rs-meta" id="rev-onetime-meta">—</span>
+        </summary>
+        <div class="rs-body">
+          <div class="rev-grid">
+            <div class="r-card"><div class="lbl">Today</div><div class="val" id="rev-today">£0</div></div>
+            <div class="r-card"><div class="lbl">This Week</div><div class="val" id="rev-week">£0</div></div>
+            <div class="r-card"><div class="lbl">This Month</div><div class="val" id="rev-month">£0</div></div>
+            <div class="r-card"><div class="lbl">All Time</div><div class="val" id="rev-alltime">£0</div></div>
+            <div class="r-card"><div class="lbl">Starter Sites</div><div class="val" id="rev-starter">0</div></div>
+            <div class="r-card"><div class="lbl">Pro Sites</div><div class="val" id="rev-advanced">0</div></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- ── Section: Monthly Subscriptions (the new billing dashboard) ── -->
+      <details class="rev-section" id="rev-section-subs" open>
+        <summary>
+          <span class="rs-caret" aria-hidden="true">▸</span>
+          <span class="rs-title">Monthly Subscriptions</span>
+          <span class="rs-meta" id="rev-subs-meta">—</span>
+        </summary>
+        <div class="rs-body">
+          <div class="rev-grid">
+            <div class="r-card"><div class="lbl">Live subscribers</div><div class="val" id="sub-kpi-live">0</div></div>
+            <div class="r-card"><div class="lbl">MRR</div><div class="val" id="sub-kpi-mrr" style="color:var(--green)">£0</div></div>
+            <div class="r-card"><div class="lbl">Due this cycle</div><div class="val" id="sub-kpi-due">0</div><div class="lbl" id="sub-kpi-due-sub" style="margin-top:6px;font-size:10.5px">&nbsp;</div></div>
+            <div class="r-card"><div class="lbl">Overdue</div><div class="val" id="sub-kpi-overdue">0</div></div>
+          </div>
+        </div>
+      </details>
+
+      <!-- ── Section: Outstanding invoices this cycle ───────────────────── -->
+      <details class="rev-section" id="rev-section-out" open>
+        <summary>
+          <span class="rs-caret" aria-hidden="true">▸</span>
+          <span class="rs-title">Outstanding this cycle</span>
+          <span class="rs-meta" id="rev-out-meta">—</span>
+          <button class="rs-action" type="button" onclick="event.preventDefault();event.stopPropagation();subSendAllDue()">Send all due →</button>
+        </summary>
+        <div class="rs-body">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+            <table style="width:100%;border-collapse:collapse;font-size:13px">
+              <thead><tr style="border-bottom:1px solid var(--border)">
+                <th class="sub-th">Business</th>
+                <th class="sub-th">Status</th>
+                <th class="sub-th">Latest invoice</th>
+                <th class="sub-th" style="text-align:right">Amount</th>
+                <th class="sub-th" style="text-align:right">Action</th>
+              </tr></thead>
+              <tbody id="sub-out-tbody"><tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted)">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+
+      <!-- ── Section: All live subscribers (collapsed by default — heavy) ── -->
+      <details class="rev-section" id="rev-section-allsubs">
+        <summary>
+          <span class="rs-caret" aria-hidden="true">▸</span>
+          <span class="rs-title">All live subscribers</span>
+          <span class="rs-meta" id="rev-allsubs-meta">—</span>
+        </summary>
+        <div class="rs-body">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+            <table style="width:100%;border-collapse:collapse;font-size:13px">
+              <thead><tr style="border-bottom:1px solid var(--border)">
+                <th class="sub-th">Business</th>
+                <th class="sub-th">Live since</th>
+                <th class="sub-th">Last invoice</th>
+                <th class="sub-th">Last paid</th>
+                <th class="sub-th" style="text-align:right">Total billed</th>
+                <th class="sub-th" style="text-align:right">Action</th>
+              </tr></thead>
+              <tbody id="sub-all-tbody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted)">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+
+      <!-- ── Section: All build revenue (collapsed by default) ───────────── -->
+      <details class="rev-section" id="rev-section-revtable">
+        <summary>
+          <span class="rs-caret" aria-hidden="true">▸</span>
+          <span class="rs-title">All build orders</span>
+          <span class="rs-meta" id="rev-revtable-meta">—</span>
+        </summary>
+        <div class="rs-body">
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden">
+            <table style="width:100%;border-collapse:collapse;font-size:13px">
+              <thead><tr style="border-bottom:1px solid var(--border)">
+                <th class="sub-th">Business</th>
+                <th class="sub-th">Package</th>
+                <th class="sub-th">Amount</th>
+                <th class="sub-th">Date</th>
+                <th class="sub-th">Status</th>
+              </tr></thead>
+              <tbody id="revenue-tbody"><tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted)">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </details>
+
     </div>
 
     <!-- PROMPTS -->
@@ -508,6 +613,9 @@
           <button class="btn-ghost" onclick="document.getElementById('csv-upload-input').click()">⬆ Import CSV</button>
           <input type="file" id="csv-upload-input" accept=".csv" style="display:none" onchange="importProspectsCSV(this)">
           <button class="btn-ghost" onclick="exportProspectsCSV()">⬇ Export CSV</button>
+          <!-- ss:admin-xref — autonomous outreach health/KPIs/last-run/Companies
+               House feed live in the standalone Outreach dashboard. -->
+          <a class="btn-ghost" href="/admin/outreach.html" style="text-decoration:none">Autonomous outreach health →</a>
         </div>
       </div>
 

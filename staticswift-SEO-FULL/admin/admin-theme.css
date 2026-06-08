@@ -772,3 +772,93 @@ a:not(.nav-tab):not(.qa-btn):not(.login-btn):not(.sidebar-logout):not(.refresh-b
   transition:color .2s, border-color .2s;
 }
 a:hover{color:var(--signal) !important; border-bottom-color:var(--signal) !important}
+
+/* ─── 21. Revenue page — collapsible billing sections ───────────────
+   Wraps the existing rev-grid + new billing tables in <details>
+   elements so Harry can fold sections he isn't using. State is
+   remembered per-tab in sessionStorage. */
+.rev-section{
+  margin-bottom:18px;
+  background:var(--paper);
+  border:1px solid var(--hair-soft);
+  border-radius:14px;
+  overflow:hidden;
+  transition:border-color .25s;
+}
+.rev-section[open]{ border-color:var(--hair); }
+.rev-section summary{
+  list-style:none; cursor:pointer; user-select:none;
+  display:flex; align-items:center; gap:14px;
+  padding:16px 20px;
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:20px; letter-spacing:-.012em; color:var(--ink);
+  transition:background .2s;
+}
+.rev-section summary:hover{ background:var(--paper-deep); }
+.rev-section summary::-webkit-details-marker{ display:none; }
+.rs-caret{
+  display:inline-block; width:14px; text-align:center;
+  font-family:var(--mono); font-size:13px; color:var(--bronze);
+  transition:transform .25s var(--ease-out);
+}
+.rev-section[open] .rs-caret{ transform:rotate(90deg); color:var(--ink); }
+.rs-title{ flex:0 0 auto; }
+.rs-meta{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--bronze); font-style:normal;
+  font-weight:400; margin-left:auto;
+}
+.rs-action{
+  font-family:var(--sans); font-style:normal; font-weight:500;
+  font-size:12.5px; letter-spacing:-.005em;
+  padding:8px 14px; border-radius:100px;
+  background:var(--ink); color:var(--paper); border:0; cursor:pointer;
+  margin-left:14px;
+  transition:background .2s, transform .15s var(--ease-out);
+}
+.rs-action:hover{ background:var(--signal); transform:translateY(-1px); }
+.rs-body{
+  padding:0 20px 20px;
+  border-top:1px solid var(--hair-soft);
+  padding-top:20px;
+}
+
+/* Unified table-header style across all billing tables in the SPA */
+.sub-th{
+  padding:12px 16px; text-align:left;
+  font-size:11px; font-weight:700; color:var(--bronze);
+  text-transform:uppercase; letter-spacing:.08em;
+  font-family:var(--mono);
+}
+.sub-tbl-row td{
+  padding:12px 16px; border-top:1px solid var(--hair-soft); vertical-align:top;
+}
+.sub-tbl-row:hover{ background:var(--paper-deep); }
+
+.sub-tag{
+  display:inline-block; padding:3px 8px; border-radius:100px;
+  font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+}
+.sub-tag-paid    { background:rgba(52,117,55,.12); color:var(--green); }
+.sub-tag-due     { background:rgba(156,38,21,.10); color:var(--signal); }
+.sub-tag-pending { background:var(--paper-deep);   color:var(--ink-mid); }
+.sub-tag-none    { background:transparent; color:var(--bronze); border:1px dashed var(--hair-soft); }
+
+.sub-row-act{
+  font-family:var(--sans); font-size:12px; font-weight:500;
+  padding:6px 12px; border-radius:100px; border:1px solid var(--ink);
+  background:var(--paper); color:var(--ink); cursor:pointer;
+  transition:background .15s, color .15s;
+}
+.sub-row-act:hover{ background:var(--ink); color:var(--paper); }
+.sub-row-act.alt{ border-color:var(--hair); color:var(--ink-mid); }
+.sub-row-act.alt:hover{ background:var(--ink-soft); color:var(--paper); border-color:var(--ink-soft); }
+.sub-row-act:disabled{ opacity:.5; cursor:wait; }
+
+.rev-cycle-pill{
+  display:inline-flex; align-items:center; gap:6px; padding:5px 10px;
+  border:1px solid var(--hair); border-radius:100px;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.1em;
+  text-transform:uppercase; color:var(--ink-mid);
+}
+.rev-cycle-pill::before{ content:""; width:6px; height:6px; border-radius:50%; background:var(--green); }
