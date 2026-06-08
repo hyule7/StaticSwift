@@ -3,210 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-<title>Free preview in 24 hours — StaticSwift</title>
-<meta name="description" content="Tell us about your business in 60 seconds. We'll build a real preview of your site within 24 hours. No payment until you approve. £499 once + optional £49/month managed plan. First lead in 60 days or full refund.">
+<title>Brief — StaticSwift Field Guide, Chapter 04</title>
+<meta name="description" content="Tell us about your business in 60 seconds. Real, working preview in your inbox within 24 hours. £499 setup. Optional £49/month managed plan. First lead in 60 days or full refund.">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#F2EFE7">
+<meta name="color-scheme" content="light">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#fff;--bg2:#f9f8f6;--bg3:#f2f0ec;
-  --ink:#0a0a0a;--muted:#6a6a6a;--dim:#9a9a9a;
-  --gold:#b08a3e;--gold-light:rgba(176,138,62,.08);--gold-border:rgba(176,138,62,.2);
-  --border:rgba(0,0,0,.07);--border2:rgba(0,0,0,.12);
-  --green:#16a34a;--red:#dc2626;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
-body{background:var(--bg);color:var(--ink);font-family:'Outfit',sans-serif;line-height:1.6}
-h1,h2,h3{font-family:'Instrument Serif',serif;font-weight:400}
-a{color:var(--gold);text-decoration:none}
-::selection{background:var(--gold);color:#fff}
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=sentient@400,400i,500,500i,700,700i&f[]=switzer@300,400,500,600,700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
 
-.page-header{background:var(--ink);padding:18px 48px;display:flex;align-items:center;justify-content:space-between}
-.page-logo{font-family:'Instrument Serif',serif;font-size:18px;color:#fff;display:flex;align-items:center;gap:8px}
-.page-back{font-size:13px;color:rgba(255,255,255,.45);transition:color .2s}
-.page-back:hover{color:#fff}
-
-/* Hero ribbon */
-.hero{padding:48px 24px 12px;text-align:center;max-width:720px;margin:0 auto}
-.tag{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);background:var(--gold-light);border:1px solid var(--gold-border);padding:6px 14px;border-radius:100px;margin-bottom:16px}
-.hero h1{font-size:clamp(34px,5vw,52px);letter-spacing:-.035em;line-height:1.05;margin-bottom:14px}
-.hero h1 em{font-style:italic;color:var(--gold)}
-.hero p{color:var(--muted);font-size:16px;max-width:540px;margin:0 auto;line-height:1.55}
-.hero p b{color:var(--ink);font-weight:600}
-
-/* Trust strip */
-.trust{max-width:720px;margin:24px auto 0;padding:0 24px;display:flex;justify-content:center;gap:22px;flex-wrap:wrap}
-.trust span{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
-.trust span::before{content:"";width:5px;height:5px;background:var(--green);border-radius:50%;display:inline-block}
-
-/* Form card */
-.order-wrap{max-width:620px;margin:36px auto 80px;padding:0 24px}
-.card{background:var(--bg);border:1px solid var(--border);border-radius:18px;padding:36px;box-shadow:0 1px 0 rgba(0,0,0,.02),0 24px 60px -30px rgba(0,0,0,.08)}
-@media(max-width:600px){.card{padding:24px 20px;border-radius:14px}}
-
-.fg{margin-bottom:18px}
-.fg label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}
-.fg label .req{color:var(--gold)}
-.fg input,.fg select,.fg textarea{
-  width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:11px;
-  padding:14px 16px;font-size:15px;color:var(--ink);font-family:'Outfit',sans-serif;
-  outline:none;transition:border-color .15s,box-shadow .15s;
-}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-light)}
-.fg textarea{min-height:90px;resize:vertical}
-.fg select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a9a9a' fill='none' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px}
-.fg .hint{font-size:12px;color:var(--dim);margin-top:5px}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:560px){.row2{grid-template-columns:1fr}}
-
-/* Optional details accordion */
-.details{margin-top:8px;border-top:1px dashed var(--border2);padding-top:18px}
-.details summary{
-  cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;
-  font-size:13px;font-weight:600;color:var(--ink);padding:6px 0;
-}
-.details summary::-webkit-details-marker{display:none}
-.details summary::after{content:"+";font-size:20px;font-weight:300;color:var(--gold);transition:transform .2s}
-.details[open] summary::after{transform:rotate(45deg)}
-.details summary span{color:var(--muted);font-weight:400;font-size:12px;margin-left:10px}
-.details-body{padding-top:14px}
-
-.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:5px}
-.check-opt{display:flex;align-items:center;gap:9px;padding:10px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;color:var(--muted);transition:all .15s;user-select:none}
-.check-opt:hover{border-color:var(--gold-border);color:var(--ink)}
-.check-opt input{accent-color:var(--gold);cursor:pointer}
-.check-opt:has(input:checked){background:var(--gold-light);border-color:var(--gold-border);color:var(--ink)}
-
-/* Submit */
-.submit-row{margin-top:24px}
-.btn-submit{
-  width:100%;background:var(--ink);color:#fff;padding:18px;
-  border-radius:100px;font-size:16px;font-weight:600;border:none;cursor:pointer;
-  transition:transform .15s,box-shadow .25s,opacity .15s;
-  font-family:'Outfit',sans-serif;letter-spacing:-.005em;
-}
-.btn-submit:hover{transform:translateY(-1px);box-shadow:0 14px 34px -10px rgba(176,138,62,.45)}
-.btn-submit:disabled{opacity:.55;cursor:wait;transform:none}
-.submit-note{font-size:12px;color:var(--muted);text-align:center;margin-top:14px;line-height:1.5}
-.submit-note b{color:var(--ink);font-weight:600}
-
-.terms{display:flex;align-items:flex-start;gap:9px;font-size:12px;color:var(--muted);margin-top:16px;cursor:pointer;line-height:1.5}
-.terms input{accent-color:var(--gold);margin-top:2px;flex-shrink:0}
-.terms a{color:var(--gold)}
-
-/* ─── Launchpad Pack — checkout extras ─────────────────────────
-   Editorial price-list. Each row toggles an extra; total updates
-   live; if all four selected, bundle discount applies and is
-   shown as a saving badge. Fields submit as `addons` (multi). */
-.launchpad{
-  margin:24px 0 8px; padding:24px;
-  background:linear-gradient(180deg, var(--bg2) 0%, rgba(176,138,62,.04) 100%);
-  border:1px solid var(--gold-border); border-radius:14px;
-}
-.lp-mark{
-  font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--gold); margin-bottom:10px;
-  display:flex; align-items:center; gap:10px;
-}
-.lp-mark::before{ content:""; width:18px; height:1px; background:var(--gold); display:inline-block; }
-.lp-h{
-  font-family:'Instrument Serif',serif; font-size:24px; letter-spacing:-.02em;
-  color:var(--ink); margin-bottom:4px; line-height:1.15;
-}
-.lp-h em{ font-style:italic; color:var(--gold) }
-.lp-sub{ font-size:13.5px; color:var(--muted); margin-bottom:18px; line-height:1.5; }
-
-.lp-list{ list-style:none; border-top:1px solid var(--border); }
-.lp-row{
-  display:grid; grid-template-columns:1fr auto auto; gap:18px;
-  align-items:center; padding:14px 0;
-  border-bottom:1px solid var(--border);
-  cursor:pointer; transition:background .15s;
-}
-.lp-row:hover{ background:rgba(176,138,62,.05); border-radius:6px; padding-left:8px; padding-right:8px; }
-.lp-row input{ display:none; }
-.lp-name{ font-size:14.5px; font-weight:600; color:var(--ink); }
-.lp-name small{
-  display:block; margin-top:2px;
-  font-size:12px; font-weight:400; color:var(--muted); line-height:1.45;
-}
-.lp-price{
-  font-family:ui-monospace,Menlo,monospace; font-size:14px; color:var(--ink);
-  font-weight:500; min-width:48px; text-align:right;
-}
-.lp-tick{
-  width:22px; height:22px; border:1.5px solid var(--gold-border); border-radius:6px;
-  display:flex; align-items:center; justify-content:center;
-  transition:background .15s, border-color .15s;
-}
-.lp-row input:checked ~ .lp-tick{ background:var(--gold); border-color:var(--gold); }
-.lp-row input:checked ~ .lp-tick::after{
-  content:""; width:5px; height:9px;
-  border:solid #fff; border-width:0 1.8px 1.8px 0; transform:rotate(45deg) translate(-1px,-1px);
-}
-
-.lp-total{
-  display:flex; align-items:baseline; justify-content:space-between;
-  padding:16px 0 4px;
-}
-.lp-total-l{ font-size:13px; font-weight:500; color:var(--muted); letter-spacing:.04em; text-transform:uppercase; }
-.lp-total-r{
-  font-family:'Instrument Serif',serif; font-style:italic;
-  font-size:30px; letter-spacing:-.015em; color:var(--ink);
-}
-.lp-save{
-  display:inline-block; margin-left:10px;
-  padding:3px 9px; border-radius:100px;
-  background:var(--gold); color:#fff;
-  font-family:'Outfit',sans-serif; font-style:normal;
-  font-size:11px; font-weight:600; letter-spacing:.04em;
-  vertical-align:middle; opacity:0; transition:opacity .25s;
-}
-.lp-save.show{ opacity:1; }
-.lp-note{
-  display:none; margin-top:6px;
-  font-size:11.5px; color:var(--gold); font-weight:500;
-}
-.lp-row.bundle{
-  background:rgba(176,138,62,.06); padding:14px 12px; margin-top:6px;
-  border-radius:8px; border-bottom:none;
-}
-.lp-row.bundle .lp-name{ color:var(--gold) }
-
-/* Success state */
-.ok-msg{display:none;text-align:center;padding:24px 0}
-.ok-msg.show{display:block}
-.ok-msg .check{width:64px;height:64px;border-radius:50%;background:rgba(22,163,74,.1);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 16px}
-.ok-msg h2{font-size:30px;margin-bottom:8px}
-.ok-msg p{color:var(--muted);font-size:15px;max-width:380px;margin:0 auto 8px}
-
-/* Error */
-.err-box{display:none;background:rgba(220,38,38,.06);border:1px solid rgba(220,38,38,.2);color:var(--red);border-radius:10px;padding:12px 14px;font-size:13px;margin-top:12px}
-.err-box.show{display:block}
-
-/* What happens next */
-.next{max-width:620px;margin:0 auto 60px;padding:0 24px}
-.next h3{font-size:22px;margin-bottom:18px;text-align:center;color:var(--ink)}
-.next h3 em{font-style:italic;color:var(--gold)}
-.steps{display:grid;gap:14px}
-.step{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:12px}
-.step-n{width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--gold);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Instrument Serif',serif}
-.step-c strong{display:block;font-size:14px;color:var(--ink);margin-bottom:2px}
-.step-c span{font-size:13px;color:var(--muted);line-height:1.5}
-
-@media(max-width:640px){
-  .page-header{padding:14px 18px}
-  .hero{padding:32px 20px 8px}
-  .trust{gap:14px}
-}
-</style>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-4BZHQMG0RF"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-4BZHQMG0RF');</script>
-
-<!-- TikTok Pixel — mirrors index.html so /order.html attributes correctly -->
 <script>
 !function (w, d, t) {
   w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
@@ -214,55 +25,601 @@ a{color:var(--gold);text-decoration:none}
   ttq.page();
 }(window, document, 'ttq');
 </script>
+
+<style>
+/* ─────────────────────────────────────────────────────────────
+   STATICSWIFT — Brief / Chapter 04
+   Full field-guide grammar. Cinematic editorial brief sheet.
+   Inputs are hairline-underlined (typewriter form), not boxed.
+   Registration corners on the form card. Chapter-mark masthead.
+   ───────────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;scroll-behavior:smooth;text-rendering:optimizeLegibility}
+:root{
+  --paper:#F2EFE7;
+  --paper-deep:#EBE7DD;
+  --paper-darker:#E3DDCF;
+  --ink:#0E0B07;
+  --ink-soft:#29221C;
+  --ink-mid:#5A4E40;
+  --bronze:#8A7B62;
+  --bronze-dim:#BFB4A0;
+  --signal:#9C2615;
+  --signal-deep:#7A1D10;
+  --green:#347537;
+  --red:#9C2615;
+  --hair:rgba(14,11,7,.22);
+  --hair-soft:rgba(14,11,7,.10);
+  --hair-faint:rgba(14,11,7,.06);
+
+  --serif:'Sentient','PP Editorial New','GT Sectra Display',Georgia,serif;
+  --sans:'Switzer','Söhne','Suisse Int''l','Helvetica Neue',system-ui,sans-serif;
+  --mono:'JetBrains Mono','IBM Plex Mono',ui-monospace,monospace;
+
+  --ease:cubic-bezier(.16,1,.3,1);
+  --ease-out:cubic-bezier(.22,1,.36,1);
+  --container:1320px;
+  --gutter:clamp(20px,5vw,72px);
+}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  font-size:17px; line-height:1.55; font-weight:400;
+  overflow-x:hidden; position:relative;
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,textarea,select{font:inherit;color:inherit}
+img,svg{display:block;max-width:100%;height:auto}
+::selection{background:var(--ink);color:var(--paper)}
+:focus{outline:none} :focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+
+/* Grain layer — barely-there paper texture, never animated */
+.grain{
+  position:fixed; inset:0; pointer-events:none; z-index:2;
+  opacity:.05; mix-blend-mode:multiply;
+}
+
+/* ─── Reveal: clip-path wipe from bottom + soft translate.
+       One-shot (unobserve after fire). */
+[data-rv]{
+  clip-path:inset(0 0 100% 0);
+  transform:translateY(18px);
+  opacity:0;
+  transition:clip-path 1.05s var(--ease-out), transform 1.05s var(--ease-out), opacity 1.05s var(--ease-out);
+}
+[data-rv].in{ clip-path:inset(0 0 0 0); transform:none; opacity:1; }
+[data-rv-stagger] > *{
+  opacity:0; transform:translateY(12px);
+  transition:opacity .8s var(--ease), transform .8s var(--ease);
+}
+[data-rv-stagger].in > *{ opacity:1; transform:none; }
+[data-rv-stagger].in > *:nth-child(2){transition-delay:80ms}
+[data-rv-stagger].in > *:nth-child(3){transition-delay:160ms}
+[data-rv-stagger].in > *:nth-child(4){transition-delay:240ms}
+[data-rv-stagger].in > *:nth-child(5){transition-delay:320ms}
+[data-rv-stagger].in > *:nth-child(6){transition-delay:400ms}
+@media(prefers-reduced-motion:reduce){
+  [data-rv],[data-rv-stagger] > *{
+    clip-path:none; transform:none; opacity:1; transition:none;
+  }
+}
+
+/* ─── Running head — same grammar as the homepage cover */
+.rh{
+  position:sticky; top:0; z-index:30;
+  display:grid; grid-template-columns:1fr auto 1fr;
+  align-items:center; gap:24px;
+  padding:14px var(--gutter);
+  background:var(--paper); border-bottom:1px solid var(--hair);
+  font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--bronze);
+}
+.rh-l{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:18px; letter-spacing:-.01em; text-transform:none;
+  color:var(--ink); display:flex; align-items:center; gap:10px;
+}
+.rh-l-dot{width:7px;height:7px;background:var(--ink);border-radius:50%;display:inline-block}
+.rh-c{text-align:center; line-height:1.4}
+.rh-r{text-align:right}
+.rh-r a{display:inline-flex; align-items:center; gap:6px; color:var(--ink); transition:color .2s}
+.rh-r a:hover{color:var(--signal)}
+@media(max-width:760px){
+  .rh{grid-template-columns:1fr auto; gap:14px}
+  .rh-c{display:none}
+}
+
+/* ─── Masthead — magazine cover, chapter mark, dramatic display */
+.mast{
+  padding:clamp(60px,11vw,128px) var(--gutter) clamp(32px,4vw,56px);
+  border-bottom:1px solid var(--hair);
+  position:relative;
+}
+.mast-inner{ max-width:var(--container); margin:0 auto; position:relative; }
+.mast-mark{
+  font-family:var(--mono); font-size:11px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--bronze);
+  display:flex; align-items:center; gap:14px;
+  margin-bottom:28px;
+}
+.mast-mark::before{ content:""; width:36px; height:1px; background:var(--ink); display:inline-block; }
+.mast-mark b{ font-family:var(--serif); font-style:italic; font-weight:500; font-size:14px; letter-spacing:-.005em; text-transform:none; color:var(--signal); }
+.mast h1{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(52px,11vw,168px); line-height:.88; letter-spacing:-.04em;
+  color:var(--ink); margin-bottom:28px;
+}
+.mast h1 em{ font-style:italic; color:var(--signal) }
+.mast-lede{
+  max-width:640px;
+  font-family:var(--serif); font-size:clamp(19px,2vw,24px);
+  line-height:1.42; color:var(--ink-soft); font-weight:400;
+}
+.mast-lede b{ color:var(--ink); font-weight:500; }
+.mast-lede em{ font-style:italic; color:var(--signal); }
+
+/* Volume strip — editorial credit line under the masthead */
+.vol{
+  display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap;
+  margin-top:44px; padding-top:24px;
+  border-top:1px solid var(--hair-soft);
+  font-family:var(--mono); font-size:11px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--bronze);
+}
+.vol span{ display:inline-flex; align-items:baseline; gap:8px; }
+.vol span b{ color:var(--ink); font-family:var(--serif); font-style:italic; font-weight:500; font-size:14px; letter-spacing:-.005em; text-transform:none; }
+
+/* ─── Brief sheet — the form, as a printed brief card.
+       Registration corners at four corners. Paper-deep recess. */
+.sheet-wrap{
+  padding:clamp(48px,6vw,80px) var(--gutter) clamp(32px,4vw,56px);
+}
+.sheet{
+  max-width:760px; margin:0 auto;
+  background:var(--paper-deep);
+  position:relative;
+  padding:clamp(36px,5vw,64px);
+  border:1px solid var(--hair-soft);
+}
+/* Registration corners — printer's crop-marks, decorative editorial cue */
+.sheet::before, .sheet::after,
+.sheet > .reg-tl, .sheet > .reg-tr, .sheet > .reg-bl, .sheet > .reg-br{
+  position:absolute; width:14px; height:14px; pointer-events:none;
+}
+.reg-tl{ top:-1px; left:-1px; border-top:1px solid var(--ink); border-left:1px solid var(--ink); }
+.reg-tr{ top:-1px; right:-1px; border-top:1px solid var(--ink); border-right:1px solid var(--ink); }
+.reg-bl{ bottom:-1px; left:-1px; border-bottom:1px solid var(--ink); border-left:1px solid var(--ink); }
+.reg-br{ bottom:-1px; right:-1px; border-bottom:1px solid var(--ink); border-right:1px solid var(--ink); }
+
+.sheet-mark{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--bronze);
+  display:flex; justify-content:space-between; align-items:baseline;
+  gap:18px; flex-wrap:wrap;
+  padding-bottom:18px; margin-bottom:32px;
+  border-bottom:1px solid var(--hair);
+}
+.sheet-mark .sh-r{ color:var(--ink-mid); }
+
+/* Form groups — typewriter style. No boxes. Hairline underline only. */
+.row2{ display:grid; grid-template-columns:1fr 1fr; gap:28px; margin-bottom:18px; }
+@media(max-width:600px){ .row2{ grid-template-columns:1fr; gap:18px } }
+.fg{ margin-bottom:18px; }
+.fg label{
+  display:block;
+  font-family:var(--mono); font-size:10.5px;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--bronze);
+  margin-bottom:6px;
+}
+.fg label .req{ color:var(--signal); margin-left:4px; }
+.fg input, .fg select, .fg textarea{
+  width:100%;
+  background:transparent;
+  border:0;
+  border-bottom:1px solid var(--ink);
+  padding:8px 0 10px;
+  font-family:var(--serif);
+  font-size:19px; letter-spacing:-.005em;
+  color:var(--ink);
+  outline:none;
+  transition:border-color .2s var(--ease-out);
+}
+.fg input::placeholder, .fg textarea::placeholder{ color:var(--bronze-dim); font-style:italic; }
+.fg input:focus, .fg select:focus, .fg textarea:focus{ border-bottom-color:var(--signal); }
+.fg textarea{
+  min-height:96px; resize:vertical;
+  font-size:17px; line-height:1.5;
+  padding-top:10px;
+}
+.fg select{
+  appearance:none; cursor:pointer;
+  padding-right:32px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238A7B62' fill='none' stroke-width='1.4'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 4px center;
+}
+.fg select option{ background:var(--paper); color:var(--ink); font-family:var(--sans); font-size:14px; }
+.fg .hint{
+  margin-top:6px;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.04em; color:var(--bronze);
+}
+
+/* ─── Optional accordion — editorial divider, not "details" widget feel */
+.details{
+  margin-top:24px;
+  border-top:1px solid var(--hair);
+  border-bottom:1px solid var(--hair);
+  padding:18px 0;
+}
+.details summary{
+  cursor:pointer; list-style:none;
+  display:grid; grid-template-columns:auto 1fr auto; gap:18px;
+  align-items:baseline;
+}
+.details summary::-webkit-details-marker{ display:none; }
+.details-mark{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--bronze);
+}
+.details-h{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:22px; letter-spacing:-.015em; color:var(--ink);
+}
+.details-toggle{
+  width:30px; height:30px; border:1px solid var(--hair);
+  border-radius:50%;
+  display:inline-flex; align-items:center; justify-content:center;
+  font-family:var(--mono); font-size:18px; color:var(--ink);
+  transition:transform .35s var(--ease-out), background .2s, color .2s;
+}
+.details[open] .details-toggle{ transform:rotate(45deg); background:var(--ink); color:var(--paper); border-color:var(--ink); }
+.details-sub{
+  margin-top:6px; padding-left:0;
+  font-family:var(--serif); font-size:15px; line-height:1.45; color:var(--ink-mid);
+}
+.details-body{
+  padding-top:28px; margin-top:6px;
+  border-top:1px dashed var(--hair-soft);
+}
+
+/* Check grid — editorial pill toggles */
+.check-grid{
+  display:grid; grid-template-columns:1fr 1fr; gap:8px;
+  margin-top:8px;
+}
+.check-opt{
+  display:flex; align-items:center; gap:10px;
+  padding:11px 14px;
+  background:var(--paper); border:1px solid var(--hair-soft); border-radius:100px;
+  cursor:pointer;
+  font-family:var(--sans); font-size:13px; color:var(--ink-mid);
+  transition:all .18s var(--ease-out); user-select:none;
+}
+.check-opt:hover{ border-color:var(--ink); color:var(--ink); }
+.check-opt input{ accent-color:var(--ink); cursor:pointer; }
+.check-opt:has(input:checked){ background:var(--ink); border-color:var(--ink); color:var(--paper); }
+
+/* ─── Launchpad Pack — editorial price-list. */
+.launchpad{
+  margin-top:36px; padding-top:28px;
+  border-top:1px solid var(--ink);
+}
+.lp-head{
+  display:flex; justify-content:space-between; align-items:baseline;
+  gap:16px; margin-bottom:6px;
+}
+.lp-mark{
+  font-family:var(--mono); font-size:11px; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--bronze);
+  display:inline-flex; align-items:center; gap:12px;
+}
+.lp-mark::before{ content:""; width:18px; height:1px; background:var(--signal); }
+.lp-mark b{ color:var(--signal); }
+.lp-h{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(26px,3vw,38px); line-height:1; letter-spacing:-.02em;
+  color:var(--ink); margin-bottom:8px;
+}
+.lp-h em{ font-style:italic; color:var(--signal); }
+.lp-sub{
+  font-family:var(--serif); font-size:16px; line-height:1.5; color:var(--ink-soft);
+  max-width:560px; margin-bottom:24px;
+}
+
+.lp-list{ list-style:none; border-top:1px solid var(--hair); }
+.lp-row{
+  display:grid; grid-template-columns:32px 1fr auto 28px; gap:16px;
+  align-items:center;
+  padding:18px 0; border-bottom:1px solid var(--hair-soft);
+  cursor:pointer;
+  transition:padding-left .35s var(--ease-out), background .2s;
+  position:relative;
+}
+.lp-row:hover{ padding-left:14px; padding-right:14px; background:var(--paper); }
+.lp-row input{ display:none; }
+.lp-num{
+  font-family:var(--mono); font-size:11px; color:var(--bronze); letter-spacing:.06em;
+}
+.lp-name{
+  font-family:var(--serif); font-weight:500;
+  font-size:21px; letter-spacing:-.012em; color:var(--ink);
+  line-height:1.15;
+}
+.lp-name em{ font-style:italic; color:var(--ink-soft); font-weight:400; }
+.lp-name small{
+  display:block; margin-top:4px;
+  font-family:var(--sans); font-weight:400; font-size:13px;
+  color:var(--ink-mid); line-height:1.45;
+  max-width:48ch;
+}
+.lp-price{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:24px; letter-spacing:-.01em; color:var(--ink);
+  min-width:64px; text-align:right;
+}
+.lp-tick{
+  width:24px; height:24px;
+  border:1px solid var(--ink); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  transition:background .18s, color .18s;
+  color:transparent;
+}
+.lp-row input:checked ~ .lp-tick{
+  background:var(--ink); color:var(--paper);
+}
+.lp-tick::after{
+  content:""; width:5px; height:9px;
+  border:solid currentColor; border-width:0 1.5px 1.5px 0;
+  transform:rotate(45deg) translate(0,-1px);
+}
+@media(max-width:560px){
+  .lp-row{ grid-template-columns:22px 1fr auto 24px; gap:12px; padding:16px 0; }
+  .lp-name{ font-size:18px } .lp-price{ font-size:20px } .lp-name small{ font-size:12.5px }
+}
+
+.lp-foot{
+  display:grid; grid-template-columns:1fr auto; gap:16px; align-items:end;
+  padding:24px 0 4px;
+  border-top:1px solid var(--ink);
+}
+.lp-foot-l{
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--bronze);
+}
+.lp-foot-r{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(36px,5vw,52px); line-height:.95; letter-spacing:-.025em;
+  color:var(--ink); text-align:right;
+}
+.lp-save{
+  display:inline-block; vertical-align:middle; margin-left:12px;
+  padding:5px 12px; border-radius:100px;
+  background:var(--signal); color:var(--paper);
+  font-family:var(--sans); font-style:normal;
+  font-size:11px; font-weight:600; letter-spacing:.04em;
+  opacity:0; transform:scale(.92) translateY(2px);
+  transition:opacity .3s var(--ease-out), transform .35s var(--ease-out);
+}
+.lp-save.show{ opacity:1; transform:scale(1) translateY(0); }
+.lp-note{
+  display:none; margin-top:6px;
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.06em;
+  color:var(--signal);
+}
+.lp-note.show{ display:block; }
+
+/* ─── Terms + submit ─── */
+.terms{
+  display:grid; grid-template-columns:auto 1fr; gap:12px;
+  font-family:var(--serif); font-size:14.5px; color:var(--ink-soft);
+  margin-top:28px; line-height:1.55;
+  cursor:pointer; align-items:start;
+}
+.terms input{ accent-color:var(--ink); margin-top:4px; flex-shrink:0; }
+.terms b{ color:var(--ink); font-weight:500; }
+.terms a{ color:var(--signal); text-decoration:underline; text-underline-offset:3px; }
+
+.submit-row{ margin-top:28px; }
+.btn-submit{
+  width:100%;
+  display:inline-flex; align-items:center; justify-content:center; gap:14px;
+  padding:22px 28px;
+  background:var(--ink); color:var(--paper);
+  border-radius:100px;
+  font-family:var(--sans); font-weight:500; font-size:16px; letter-spacing:-.005em;
+  cursor:pointer; border:0;
+  transition:transform .2s var(--ease-out), background .2s;
+}
+.btn-submit:hover:not(:disabled){ background:var(--signal); transform:translateY(-2px); }
+.btn-submit:disabled{ opacity:.55; cursor:wait; transform:none; }
+.btn-submit svg{ width:16px; height:16px; }
+
+.submit-note{
+  text-align:center; margin-top:16px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.06em; color:var(--bronze);
+}
+.submit-note b{ color:var(--ink); font-family:var(--serif); font-style:italic; font-weight:500; font-size:13px; letter-spacing:-.005em; }
+
+.err-box{
+  display:none; margin-top:14px;
+  padding:14px 16px;
+  background:transparent; border:1px solid var(--signal); border-radius:6px;
+  font-family:var(--sans); font-size:13px; color:var(--signal); line-height:1.5;
+}
+.err-box.show{ display:block; }
+.err-box a{ color:var(--signal); text-decoration:underline; text-underline-offset:3px; font-weight:500; }
+
+/* Success state */
+.ok-msg{ display:none; text-align:center; padding:36px 0 12px; }
+.ok-msg.show{ display:block; }
+.ok-mark{
+  font-family:var(--mono); font-size:11px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--signal);
+  display:inline-flex; align-items:center; gap:12px; margin-bottom:24px;
+}
+.ok-mark::before{ content:""; width:24px; height:1px; background:var(--signal); display:inline-block; }
+.ok-msg h2{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(40px,6vw,68px); line-height:.96; letter-spacing:-.028em;
+  margin-bottom:16px;
+}
+.ok-msg h2 em{ color:var(--signal); }
+.ok-msg p{
+  font-family:var(--serif); font-size:18px; line-height:1.55;
+  color:var(--ink-soft); max-width:42ch; margin:0 auto 24px;
+}
+.ok-msg .back-link{
+  display:inline-block; margin-top:8px;
+  font-family:var(--mono); font-size:11px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--ink);
+  border-bottom:1px solid var(--ink); padding-bottom:3px;
+  transition:color .2s;
+}
+.ok-msg .back-link:hover{ color:var(--signal); border-color:var(--signal); }
+
+/* ─── What happens next — editorial chapter footer ─── */
+.next{
+  padding:clamp(48px,7vw,96px) var(--gutter) clamp(56px,8vw,120px);
+  border-top:1px solid var(--ink);
+}
+.next-inner{ max-width:var(--container); margin:0 auto; }
+.next-mark{
+  font-family:var(--mono); font-size:11px; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--bronze);
+  display:flex; align-items:center; gap:14px; margin-bottom:20px;
+}
+.next-mark::before{ content:""; width:36px; height:1px; background:var(--ink); display:inline-block; }
+.next h3{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:clamp(40px,6vw,72px); line-height:.95; letter-spacing:-.028em;
+  margin-bottom:48px; max-width:18ch;
+}
+.next h3 em{ color:var(--signal) }
+
+.steps{
+  display:grid; grid-template-columns:repeat(4, 1fr);
+  border-top:1px solid var(--ink);
+}
+.step{
+  padding:28px 24px 32px 0;
+  border-right:1px solid var(--hair-soft);
+}
+.step:last-child{ border-right:none; }
+.step-n{
+  font-family:var(--mono); font-size:11px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--bronze); margin-bottom:14px;
+}
+.step-h{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:22px; letter-spacing:-.015em; color:var(--ink); line-height:1.1;
+  margin-bottom:10px;
+}
+.step-h em{ color:var(--signal); }
+.step-c{
+  font-family:var(--serif); font-size:15.5px; line-height:1.5; color:var(--ink-soft);
+}
+
+@media(max-width:880px){ .steps{ grid-template-columns:repeat(2, 1fr) } .step{ border-right:none; border-bottom:1px solid var(--hair-soft); padding:24px 16px } .step:nth-child(2){ border-right:none } }
+@media(max-width:520px){ .steps{ grid-template-columns:1fr } }
+
+/* ─── Colophon footer ─── */
+.colo{ padding:clamp(40px,5vw,64px) var(--gutter); border-top:1px solid var(--hair); }
+.colo-inner{
+  max-width:var(--container); margin:0 auto;
+  display:grid; grid-template-columns:1.4fr 1fr 1fr;
+  gap:40px; align-items:start;
+}
+.colo-l{
+  font-family:var(--serif); font-style:italic; font-weight:500;
+  font-size:26px; letter-spacing:-.015em; color:var(--ink);
+}
+.colo-l-sub{
+  display:block; margin-top:8px;
+  font-family:var(--mono); font-style:normal; font-size:10.5px;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--bronze);
+}
+.colo-c, .colo-r{ font-size:13.5px; line-height:1.7; color:var(--ink-soft); }
+.colo-c b, .colo-r b{
+  display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--bronze); font-weight:400; margin-bottom:10px;
+}
+.colo-c a:hover, .colo-r a:hover{ color:var(--signal) }
+@media(max-width:760px){ .colo-inner{ grid-template-columns:1fr; gap:24px } }
+.colo-rule{
+  max-width:var(--container); margin:24px auto 0; padding-top:18px;
+  border-top:1px solid var(--hair);
+  font-family:var(--mono); font-size:10.5px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--bronze);
+  display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap;
+}
+</style>
 </head>
 <body>
-<div class="page-header">
-  <a href="/" class="page-logo">
-    <svg viewBox="0 0 28 28" fill="none" width="22" height="22">
-      <polygon points="14,1 27,7.5 27,20.5 14,27 1,20.5 1,7.5" fill="none" stroke="#b08a3e" stroke-width="1.2" opacity=".7"/>
-      <polygon points="14,6 22,10 22,18 14,22 6,18 6,10" fill="#b08a3e" opacity=".12"/>
-      <polygon points="14,10 18,12 18,16 14,18 10,16 10,12" fill="#b08a3e" opacity=".45"/>
-    </svg>
-    <span>StaticSwift</span>
-  </a>
-  <a href="/" class="page-back">← Back to site</a>
-</div>
 
-<div class="hero">
-  <div class="tag">Free preview · No card needed</div>
-  <h1>Your real site, <em>built and shown to you</em> in 24 hours.</h1>
-  <p>Tell us about your business in 60 seconds. We'll build a real, working preview of your new site and send it tonight or tomorrow. You only pay if you keep it — <b>£499 once + optional £49/month managed plan</b>. If you don't get a new customer enquiry within 60 days, <b>full refund and you keep the site</b>.</p>
-</div>
+<svg class="grain" aria-hidden="true">
+  <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.92" numOctaves="2" seed="5"/></filter>
+  <rect width="100%" height="100%" filter="url(#grain)"/>
+</svg>
 
-<div class="trust">
-  <span>247 UK businesses shipped</span>
-  <span>5★ on Google</span>
-  <span>60-day lead guarantee</span>
-</div>
+<header class="rh" role="banner">
+  <div class="rh-l"><span class="rh-l-dot" aria-hidden="true"></span> StaticSwift</div>
+  <div class="rh-c">The Field Guide · Vol. II<br>Chapter 04 — The Brief</div>
+  <div class="rh-r"><a href="/">← Back to the cover</a></div>
+</header>
 
-<div class="order-wrap">
-  <div class="card">
+<!-- ──── MASTHEAD ──── -->
+<section class="mast">
+  <div class="mast-inner">
+    <div class="mast-mark" data-rv>
+      Chapter 04 · Free preview &nbsp;&middot;&nbsp; <b>No card today</b>
+    </div>
+    <h1 data-rv>Tell me about<br>your <em>business.</em></h1>
+    <p class="mast-lede" data-rv>
+      Sixty seconds, six fields. I&rsquo;ll have a <b>real, working preview</b> in your inbox within 24 hours. £499 to build &mdash; only if you keep it. <em>Refund</em> if no leads in sixty days.
+    </p>
+    <div class="vol" data-rv>
+      <span>Reading time <b>~ 90 seconds</b></span>
+      <span>Preview arrives <b>within 24h</b></span>
+      <span>Price <b>£499 once</b></span>
+      <span>Risk <b>On the studio</b></span>
+    </div>
+  </div>
+</section>
+
+<!-- ──── BRIEF SHEET ──── -->
+<section class="sheet-wrap">
+  <div class="sheet" data-rv>
+    <span class="reg-tl" aria-hidden="true"></span>
+    <span class="reg-tr" aria-hidden="true"></span>
+    <span class="reg-bl" aria-hidden="true"></span>
+    <span class="reg-br" aria-hidden="true"></span>
+
+    <div class="sheet-mark">
+      <span>Form № 01 · The Brief</span>
+      <span class="sh-r">For office use · <span id="form-stamp">—</span></span>
+    </div>
+
     <form id="order-form" novalidate>
-      <!-- honeypot — drop bot submissions -->
       <input type="text" name="bot-field" style="position:absolute;left:-9999px;opacity:0" tabindex="-1" autocomplete="off">
 
-      <!-- Required: the 6 fields needed to start work -->
       <div class="row2">
         <div class="fg">
           <label>Your name <span class="req">*</span></label>
-          <input type="text" name="name" id="f-name" maxlength="60" required placeholder="e.g. John Smith" autocomplete="name">
+          <input type="text" name="name" id="f-name" maxlength="60" required placeholder="John Smith" autocomplete="name">
         </div>
         <div class="fg">
           <label>Business name <span class="req">*</span></label>
-          <input type="text" name="business_name" id="f-bizname" maxlength="60" required placeholder="e.g. Smith Plumbing" autocomplete="organization">
+          <input type="text" name="business_name" id="f-bizname" maxlength="60" required placeholder="Smith Plumbing" autocomplete="organization">
         </div>
       </div>
 
       <div class="row2">
         <div class="fg">
-          <label>Business type <span class="req">*</span></label>
+          <label>Trade <span class="req">*</span></label>
           <select name="business_type" id="f-biztype" required>
-            <option value="" disabled selected>Choose one…</option>
+            <option value="" disabled selected>Pick one&hellip;</option>
             <option value="accountant">Accountant</option>
             <option value="architect">Architect</option>
             <option value="bakery">Bakery</option>
@@ -343,7 +700,7 @@ a{color:var(--gold);text-decoration:none}
         </div>
         <div class="fg">
           <label>Town or city <span class="req">*</span></label>
-          <input type="text" name="location" id="f-location" maxlength="60" required placeholder="e.g. Manchester" autocomplete="address-level2">
+          <input type="text" name="location" id="f-location" maxlength="60" required placeholder="Manchester" autocomplete="address-level2">
         </div>
       </div>
 
@@ -351,7 +708,7 @@ a{color:var(--gold);text-decoration:none}
         <div class="fg">
           <label>Mobile / WhatsApp <span class="req">*</span></label>
           <input type="tel" name="whatsapp" id="f-wa" maxlength="20" required placeholder="07700 900000" autocomplete="tel">
-          <div class="hint">We'll WhatsApp you within the hour to confirm.</div>
+          <div class="hint">A WhatsApp from Harry within the hour.</div>
         </div>
         <div class="fg">
           <label>Email <span class="req">*</span></label>
@@ -360,19 +717,24 @@ a{color:var(--gold);text-decoration:none}
         </div>
       </div>
 
-      <!-- Optional accordion: deeper brief for those willing -->
+      <!-- ──── Optional deeper brief ──── -->
       <details class="details">
         <summary>
-          <span style="color:var(--ink);font-weight:600">Add more detail <span style="color:var(--muted);font-weight:400">(optional — speeds up the build)</span></span>
+          <span class="details-mark">Optional</span>
+          <span>
+            <span class="details-h">Tell me more, if you have a minute.</span>
+            <span class="details-sub">Helps the preview land closer to what you want first time.</span>
+          </span>
+          <span class="details-toggle" aria-hidden="true">+</span>
         </summary>
         <div class="details-body">
           <div class="fg">
             <label>What does your business do?</label>
-            <textarea name="business_description" maxlength="240" placeholder="e.g. Emergency plumbing &amp; boiler servicing across Manchester. Available 7 days a week."></textarea>
+            <textarea name="business_description" maxlength="240" placeholder="Emergency plumbing &amp; boiler servicing across Manchester. Available 7 days a week."></textarea>
           </div>
           <div class="fg">
-            <label>Services &amp; prices (one per line)</label>
-            <textarea name="services" maxlength="500" placeholder="e.g.&#10;Haircut — £20&#10;Beard Trim — £12&#10;Full Groom — £30"></textarea>
+            <label>Services &amp; prices</label>
+            <textarea name="services" maxlength="500" placeholder="Haircut — £20&#10;Beard Trim — £12&#10;Full Groom — £30"></textarea>
           </div>
           <div class="fg">
             <label>What makes you stand out?</label>
@@ -384,12 +746,12 @@ a{color:var(--gold);text-decoration:none}
               <input type="text" name="hours" maxlength="120" placeholder="Mon-Fri 9-6, Sat 10-4">
             </div>
             <div class="fg">
-              <label>Address (or "home-based")</label>
-              <input type="text" name="address" maxlength="120" placeholder="123 High St, Manchester">
+              <label>Address</label>
+              <input type="text" name="address" maxlength="120" placeholder="Or 'home-based'">
             </div>
           </div>
           <div class="fg">
-            <label>Reference site you like</label>
+            <label>A reference site you like</label>
             <input type="url" name="reference_1" maxlength="200" placeholder="https://…">
           </div>
           <div class="fg">
@@ -413,13 +775,13 @@ a{color:var(--gold);text-decoration:none}
             </div>
           </div>
           <div class="fg">
-            <label>Anything else we should know?</label>
+            <label>Anything else?</label>
             <textarea name="special_requests" maxlength="300" placeholder="Booking link, Google reviews to feature, things to avoid…"></textarea>
           </div>
           <div class="fg">
             <label>How did you hear about us?</label>
             <select name="heard_about">
-              <option value="">Choose…</option>
+              <option value="">Choose&hellip;</option>
               <option>Google search</option>
               <option>Google Maps</option>
               <option>Cold email</option>
@@ -432,62 +794,71 @@ a{color:var(--gold);text-decoration:none}
         </div>
       </details>
 
-      <!-- LAUNCHPAD PACK — Optional checkout extras. Not added to bill today;
-           Harry confirms during the WhatsApp follow-up, then invoices. -->
+      <!-- ──── Launchpad Pack ──── -->
       <section class="launchpad" aria-label="Launchpad Pack extras">
-        <div class="lp-mark">Launchpad Pack · Optional extras</div>
+        <div class="lp-head">
+          <span class="lp-mark"><b>Launchpad</b> &middot; Optional</span>
+        </div>
         <h3 class="lp-h">Want me to <em>launch the lot</em> for you?</h3>
-        <p class="lp-sub">Tick anything you want me to handle. Everything below is optional &mdash; you can buy just the £499 build and walk away. Pick all four and I'll bundle it.</p>
+        <p class="lp-sub">Tick anything you want me to handle. Optional &mdash; you can take the £499 build and walk away. Tick all four and I&rsquo;ll bundle.</p>
 
         <ul class="lp-list">
           <li>
             <label class="lp-row" for="lp-domain">
-              <div class="lp-name">Domain registration &amp; connection
-                <small>I register your .co.uk (or pick the best available), point it at your site, set up email forwarding. You never touch a DNS panel.</small>
-              </div>
-              <div class="lp-price">£79</div>
+              <span class="lp-num">01</span>
+              <span class="lp-name">
+                Domain registration <em>&amp; connection</em>
+                <small>I register your .co.uk, point it at the site, set up email forwarding. You never touch a DNS panel.</small>
+              </span>
+              <span class="lp-price">£79</span>
               <input type="checkbox" id="lp-domain" name="addons" value="domain-79" data-price="79">
               <span class="lp-tick" aria-hidden="true"></span>
             </label>
           </li>
           <li>
             <label class="lp-row" for="lp-gbp">
-              <div class="lp-name">Google Business Profile setup
-                <small>Full profile build, photos uploaded, services listed, opening hours set, first three Google posts written. The single biggest local-SEO lever you'll pull.</small>
-              </div>
-              <div class="lp-price">£149</div>
+              <span class="lp-num">02</span>
+              <span class="lp-name">
+                Google Business Profile <em>setup</em>
+                <small>Profile built, photos uploaded, services listed, first three Google posts written. The single biggest local-SEO lever.</small>
+              </span>
+              <span class="lp-price">£149</span>
               <input type="checkbox" id="lp-gbp" name="addons" value="gbp-149" data-price="149">
               <span class="lp-tick" aria-hidden="true"></span>
             </label>
           </li>
           <li>
             <label class="lp-row" for="lp-pages">
-              <div class="lp-name">Three extra service pages
-                <small>Hand-coded landing pages targeting your top three keywords (e.g. "emergency plumber Bristol", "boiler service BS1"). Each ranks independently.</small>
-              </div>
-              <div class="lp-price">£199</div>
+              <span class="lp-num">03</span>
+              <span class="lp-name">
+                Three extra <em>service pages</em>
+                <small>Hand-coded landing pages targeting your top three keywords. Each ranks independently.</small>
+              </span>
+              <span class="lp-price">£199</span>
               <input type="checkbox" id="lp-pages" name="addons" value="extra-pages-199" data-price="199">
               <span class="lp-tick" aria-hidden="true"></span>
             </label>
           </li>
           <li>
             <label class="lp-row" for="lp-logo">
-              <div class="lp-name">Logo refresh
-                <small>If you don't have a logo &mdash; or yours is a stretched JPEG &mdash; I'll design a clean wordmark and deliver SVG + PNG. One round of revisions.</small>
-              </div>
-              <div class="lp-price">£99</div>
+              <span class="lp-num">04</span>
+              <span class="lp-name">
+                Logo <em>refresh</em>
+                <small>Clean wordmark, SVG + PNG, one round of revisions. For when your current logo is a stretched JPEG.</small>
+              </span>
+              <span class="lp-price">£99</span>
               <input type="checkbox" id="lp-logo" name="addons" value="logo-99" data-price="99">
               <span class="lp-tick" aria-hidden="true"></span>
             </label>
           </li>
         </ul>
 
-        <div class="lp-total">
-          <div class="lp-total-l">
+        <div class="lp-foot">
+          <div class="lp-foot-l">
             Build + extras
             <div class="lp-note" id="lp-note">All four ticked &mdash; bundle applied.</div>
           </div>
-          <div class="lp-total-r">
+          <div class="lp-foot-r">
             <span id="lp-total">£499</span>
             <span class="lp-save" id="lp-save">Save £77</span>
           </div>
@@ -496,45 +867,149 @@ a{color:var(--gold);text-decoration:none}
 
       <label class="terms">
         <input type="checkbox" id="f-terms" name="terms" required>
-        <span>I agree to the <a href="/terms.html" target="_blank">Terms</a> and <a href="/privacy.html" target="_blank">Privacy Policy</a>. I understand <b>I am not being charged today</b> — I only pay if I keep the site after seeing the preview.</span>
+        <span>I agree to the <a href="/terms.html" target="_blank">Terms</a> and <a href="/privacy.html" target="_blank">Privacy Policy</a>. I understand <b>I am not being charged today</b> &mdash; I only pay if I keep the site after seeing the preview.</span>
       </label>
 
       <div class="submit-row">
-        <button type="submit" class="btn-submit" id="submit-btn">Send me my free preview →</button>
+        <button type="submit" class="btn-submit" id="submit-btn">
+          Send me my free preview
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
         <div class="submit-note">Harry will WhatsApp within <b>1 hour</b> (UK working hours). Preview lands in your inbox within <b>24 hours</b>.</div>
-        <div class="err-box" id="err-box">Something went wrong. Try again, or WhatsApp <a href="https://wa.me/447502731799" style="color:inherit;text-decoration:underline">07502 731799</a>.</div>
+        <div class="err-box" id="err-box">Something went wrong &mdash; try again, or WhatsApp <a href="https://wa.me/447502731799">07502 731 799</a>.</div>
       </div>
 
       <div class="ok-msg" id="ok">
-        <div class="check">✓</div>
-        <h2>Got it. We're on it.</h2>
-        <p>You'll get a WhatsApp from Harry within the hour, and your preview lands by email within 24 hours.</p>
-        <p style="margin-top:14px"><a href="/" style="color:var(--gold);font-weight:500">← Back to staticswift.co.uk</a></p>
+        <div class="ok-mark">Brief received</div>
+        <h2>Got it. <em>We&rsquo;re on it.</em></h2>
+        <p>WhatsApp from Harry within the hour. Preview lands by email within 24 hours. Nothing else needed from you.</p>
+        <a href="/" class="back-link">← Back to the cover</a>
       </div>
     </form>
   </div>
-</div>
+</section>
 
-<!-- What happens next reassurance -->
-<div class="next">
-  <h3>What happens <em>next</em></h3>
-  <div class="steps">
-    <div class="step"><div class="step-n">1</div><div class="step-c"><strong>Within the hour</strong><span>Harry WhatsApps you to confirm the brief and grab any photos / Google reviews to feature.</span></div></div>
-    <div class="step"><div class="step-n">2</div><div class="step-c"><strong>Within 24 hours</strong><span>Your real, working preview is emailed to you on a private link. Click around. Show your partner. Sleep on it.</span></div></div>
-    <div class="step"><div class="step-n">3</div><div class="step-c"><strong>Only if you keep it</strong><span>£499 setup. Optional £49/month managed plan invoiced. We launch on your domain, set up Google Business Profile, you're live.</span></div></div>
-    <div class="step"><div class="step-n">4</div><div class="step-c"><strong>60 days from launch</strong><span>If the site hasn't earned you a single new customer enquiry, full refund — and the site is still yours.</span></div></div>
+<!-- ──── WHAT HAPPENS NEXT ──── -->
+<section class="next">
+  <div class="next-inner">
+    <div class="next-mark" data-rv>From here &middot; A short timeline</div>
+    <h3 data-rv>What happens <em>next.</em></h3>
+    <div class="steps" data-rv data-rv-stagger>
+      <div class="step">
+        <div class="step-n">01 · This hour</div>
+        <div class="step-h">A <em>WhatsApp</em> from Harry.</div>
+        <div class="step-c">To confirm the brief and grab any photos or Google reviews to feature on the preview.</div>
+      </div>
+      <div class="step">
+        <div class="step-n">02 · By tomorrow</div>
+        <div class="step-h">Your real, <em>working</em> preview.</div>
+        <div class="step-c">A private link, by email. Not a mockup. Click around. Show your partner. Sleep on it.</div>
+      </div>
+      <div class="step">
+        <div class="step-n">03 · Only if you keep it</div>
+        <div class="step-h">£499 setup, <em>then live.</em></div>
+        <div class="step-c">Invoiced and launched on your domain. Google Business Profile set up. You&rsquo;re online.</div>
+      </div>
+      <div class="step">
+        <div class="step-n">04 · After 60 days</div>
+        <div class="step-h">No leads? <em>Full refund.</em></div>
+        <div class="step-c">Site stays with you. No arguments, no fine print, no chase. The risk is on the studio.</div>
+      </div>
+    </div>
   </div>
-</div>
+</section>
+
+<!-- ──── Colophon ──── -->
+<footer class="colo">
+  <div class="colo-inner">
+    <div class="colo-l">
+      StaticSwift
+      <span class="colo-l-sub">Hand-coded sites · Manchester · UK-wide</span>
+    </div>
+    <div class="colo-c">
+      <b>Field Guide</b>
+      <div><a href="/">Cover — Vol. II</a></div>
+      <div><a href="/niches">Ch. 02 — By trade</a></div>
+      <div><a href="/locations">Ch. 03 — By town</a></div>
+      <div><a href="/about/">Colophon — Who runs it</a></div>
+    </div>
+    <div class="colo-r">
+      <b>Begin</b>
+      <div><a href="mailto:hello@staticswift.co.uk">hello@staticswift.co.uk</a></div>
+      <div><a href="https://wa.me/447502731799" target="_blank" rel="noopener">+44 7502 731 799</a></div>
+    </div>
+  </div>
+  <div class="colo-rule">
+    <span>© <span id="yr"></span> StaticSwift · A studio of one</span>
+    <span><a href="/terms.html">Terms</a> · <a href="/privacy.html">Privacy</a></span>
+  </div>
+</footer>
 
 <script>
+/* ─── Reveal observer ─── */
+(function(){
+  if (!('IntersectionObserver' in window)) {
+    document.querySelectorAll('[data-rv]').forEach(function(el){ el.classList.add('in'); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { rootMargin:'0px 0px -6% 0px', threshold:0.10 });
+  document.querySelectorAll('[data-rv]').forEach(function(el){ io.observe(el); });
+})();
+
+/* Form sheet stamp (today's date — small editorial detail) */
+(function(){
+  var d = new Date();
+  var m = d.toLocaleString('en-GB',{ month:'short' }).toUpperCase();
+  document.getElementById('form-stamp').textContent = String(d.getDate()).padStart(2,'0') + ' ' + m + ' ' + d.getFullYear();
+})();
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* ─── ss:order-hydrate — pre-fill from ?niche=…&city=… ─── */
+(function hydrate(){
+  try{
+    var p = new URLSearchParams(window.location.search);
+    var niche = (p.get('niche') || '').toLowerCase();
+    var city  = p.get('city') || '';
+    var bt = document.getElementById('f-biztype');
+    if (bt && niche){
+      var matched = false;
+      for (var i = 0; i < bt.options.length; i++){
+        if ((bt.options[i].value || '').toLowerCase() === niche){
+          bt.selectedIndex = i; matched = true; break;
+        }
+      }
+      if (!matched){
+        for (var j = 0; j < bt.options.length; j++){
+          if (bt.options[j].value === 'other'){ bt.selectedIndex = j; break; }
+        }
+      }
+    }
+    var loc = document.getElementById('f-location');
+    if (loc && city && !loc.value){
+      var small = {on:1,in:1,upon:1,under:1,of:1,by:1,the:1,le:1,la:1};
+      loc.value = city.split('-').map(function(w,i){
+        if (i > 0 && small[w]) return w;
+        return w.charAt(0).toUpperCase() + w.slice(1);
+      }).join('-');
+    }
+    if (niche){
+      var f = document.getElementById('order-form');
+      var h = document.createElement('input');
+      h.type='hidden'; h.name='source_page';
+      h.value = 'seo-' + niche + (city ? '-' + city : '');
+      f.appendChild(h);
+    }
+  } catch(e){}
+})();
+
+/* ─── ss:order-launchpad — live total + bundle discount ─── */
 const MULTI = ['website_goals', 'addons'];
 const SETUP_PRICE = 499;
-const BUNDLE_DISCOUNT = 77; // all-four bundle saves £77 (526 → 449)
-
-// ── ss:order-launchpad — live total + bundle discount + form integration.
-// Updates the headline price as boxes are ticked. When all four extras are
-// selected, applies the bundle discount and reveals the "Save £77" pill so
-// the saving is visible mid-decision, not just in fine print.
+const BUNDLE_DISCOUNT = 77;
 (function launchpad(){
   var boxes = Array.prototype.slice.call(document.querySelectorAll('input[name="addons"]'));
   if (!boxes.length) return;
@@ -551,58 +1026,13 @@ const BUNDLE_DISCOUNT = 77; // all-four bundle saves £77 (526 → 449)
     if (allFour) sum -= BUNDLE_DISCOUNT;
     totalEl.textContent = '£' + sum.toLocaleString('en-GB');
     saveEl.classList.toggle('show', allFour);
-    noteEl.style.display = allFour ? 'block' : 'none';
+    noteEl.classList.toggle('show', allFour);
   }
   boxes.forEach(function(b){ b.addEventListener('change', recalc); });
   recalc();
 })();
 
-// ── ss:order-hydrate — pre-fill business_type + location from ?niche=…&city=…
-//    Programmatic SEO pages link here with these params; this is the entire
-//    reason new visitors don't have to retype what they just searched for.
-(function hydrate(){
-  try{
-    var p = new URLSearchParams(window.location.search);
-    var niche = (p.get('niche') || '').toLowerCase();
-    var city  = p.get('city') || '';
-
-    var bt = document.getElementById('f-biztype');
-    if (bt && niche){
-      var matched = false;
-      for (var i = 0; i < bt.options.length; i++){
-        if ((bt.options[i].value || '').toLowerCase() === niche){
-          bt.selectedIndex = i; matched = true; break;
-        }
-      }
-      if (!matched){
-        for (var j = 0; j < bt.options.length; j++){
-          if (bt.options[j].value === 'other'){ bt.selectedIndex = j; break; }
-        }
-      }
-    }
-
-    var loc = document.getElementById('f-location');
-    if (loc && city && !loc.value){
-      // slug → title case (handles "stoke-on-trent" etc.)
-      var small = {on:1,in:1,upon:1,under:1,of:1,by:1,the:1,le:1,la:1};
-      loc.value = city.split('-').map(function(w,i){
-        if (i > 0 && small[w]) return w;
-        return w.charAt(0).toUpperCase() + w.slice(1);
-      }).join('-');
-    }
-
-    // hidden source field so Harry's admin email shows which SEO page sent the lead
-    if (niche){
-      var f = document.getElementById('order-form');
-      var h = document.createElement('input');
-      h.type='hidden'; h.name='source_page';
-      h.value = 'seo-' + niche + (city ? '-' + city : '');
-      f.appendChild(h);
-    }
-  } catch(e){}
-})();
-
-// ── ss:order-submit — single-step submit with full event firing
+/* ─── ss:order-submit ─── */
 document.getElementById('order-form').addEventListener('submit', async function(e){
   e.preventDefault();
   var bot = this.querySelector('[name="bot-field"]');
@@ -612,21 +1042,19 @@ document.getElementById('order-form').addEventListener('submit', async function(
   var errBox = document.getElementById('err-box');
   errBox.classList.remove('show');
 
-  // light client-side validation — required fields only
   var required = ['f-name','f-bizname','f-biztype','f-location','f-wa','f-email'];
   var firstBad = null;
   for (var i = 0; i < required.length; i++){
     var el = document.getElementById(required[i]);
     if (!el || !el.value.trim()){
-      el.style.borderColor = 'var(--red)';
-      el.style.boxShadow = '0 0 0 3px rgba(220,38,38,.08)';
+      el.style.borderBottomColor = 'var(--signal)';
       if (!firstBad) firstBad = el;
-      setTimeout((function(node){return function(){node.style.borderColor='';node.style.boxShadow='';}})(el), 2400);
+      setTimeout((function(node){return function(){node.style.borderBottomColor='';}})(el), 2400);
     }
   }
   var email = document.getElementById('f-email');
   if (email.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)){
-    email.style.borderColor = 'var(--red)'; if (!firstBad) firstBad = email;
+    email.style.borderBottomColor = 'var(--signal)'; if (!firstBad) firstBad = email;
   }
   var terms = document.getElementById('f-terms');
   if (!terms.checked){
@@ -635,9 +1063,8 @@ document.getElementById('order-form').addEventListener('submit', async function(
   }
   if (firstBad){ firstBad.focus(); return; }
 
-  btn.textContent = 'Sending…'; btn.disabled = true;
+  btn.innerHTML = 'Sending&hellip;'; btn.disabled = true;
 
-  // Build POST body. Keep field names compatible with handle-intake.js.
   var fd = new FormData(this);
   var data = {};
   for (var pair of fd.entries()){
@@ -650,42 +1077,31 @@ document.getElementById('order-form').addEventListener('submit', async function(
     var vals = fd.getAll(key).filter(function(v){return v});
     if (vals.length) data[key] = vals.join(', ');
   }
-  // Mirror whatsapp -> phone so the admin email "Call" link works.
   if (data.whatsapp && !data.phone) data.phone = data.whatsapp;
-
   data.source    = 'order-form';
-  data.package   = 'subscription-499-49'; // new pricing — kept for email/db schema
+  data.package   = 'subscription-499-49';
   data.stage     = 'new-lead';
   data.createdAt = new Date().toISOString();
 
-  // Fire conversion events BEFORE the network round-trip so we don't lose the
-  // signal if the user closes the tab during the POST.
   try {
     if (typeof gtag === 'function'){
-      gtag('event','generate_lead',{
-        currency:'GBP', value:499,
-        source: data.source_page || 'order-form',
-        business_type: data.business_type,
-        location: data.location
-      });
+      gtag('event','generate_lead',{ currency:'GBP', value:499, source:data.source_page||'order-form', business_type:data.business_type, location:data.location });
       gtag('event','form_submit',{ form_location:'order_page' });
     }
     window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({ event:'lead_submit', form_id:'order', source: data.source_page || 'order-form' });
+    window.dataLayer.push({ event:'lead_submit', form_id:'order', source:data.source_page||'order-form' });
   } catch(_){}
   try {
     if (typeof ttq !== 'undefined'){
-      ttq.track('SubmitForm', { value:499, currency:'GBP', description: data.business_type || 'trade-website-brief' });
+      ttq.track('SubmitForm', { value:499, currency:'GBP', description:data.business_type||'trade-website-brief' });
       ttq.track('Lead',       { value:499, currency:'GBP' });
     }
   } catch(_){}
 
   try {
     var r = await fetch('/.netlify/functions/handle-intake', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(data),
-      keepalive: true
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(data), keepalive: true
     });
     if (r.ok){
       this.style.display = 'none';
@@ -696,7 +1112,7 @@ document.getElementById('order-form').addEventListener('submit', async function(
     throw new Error('HTTP ' + r.status);
   } catch (err){
     btn.disabled = false;
-    btn.textContent = 'Send me my free preview →';
+    btn.innerHTML = 'Send me my free preview <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
     errBox.classList.add('show');
   }
 });
