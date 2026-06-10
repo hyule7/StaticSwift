@@ -21,7 +21,7 @@ exports.handler = async (event) => {
       data = JSON.parse(event.body || '{}');
     }
     const respond = (code, body) => isFormPost
-      ? { statusCode: 303, headers: { Location: code === 200 ? '/thanks.html' : '/thanks.html?status=error' }, body: '' }
+      ? { statusCode: 303, headers: { Location: code === 200 ? '/thank-you.html' : '/thank-you.html?status=error' }, body: '' }
       : { statusCode: code, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify(body) };
     if (data['bot-field']) return respond(200, { ok: true });
 
@@ -31,7 +31,7 @@ exports.handler = async (event) => {
       clientId,
       stage: 'new-lead',
       createdAt: new Date().toISOString(),
-      source: 'intake-form',
+      source: data.source || 'intake-form',
       emailLog: [],
     };
 
@@ -118,7 +118,7 @@ exports.handler = async (event) => {
     console.error('[handle-intake] error:', err.message);
     const ctype2 = (event.headers['content-type'] || event.headers['Content-Type'] || '').toLowerCase();
     if (ctype2.includes('application/x-www-form-urlencoded')) {
-      return { statusCode: 303, headers: { Location: '/thanks.html?status=error' }, body: '' };
+      return { statusCode: 303, headers: { Location: '/thank-you.html?status=error' }, body: '' };
     }
     return {
       statusCode: 500,

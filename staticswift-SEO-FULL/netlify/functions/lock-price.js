@@ -46,7 +46,7 @@ exports.handler = async (event) => {
 
   const email = String(body.email || '').trim().toLowerCase();
   if (!isEmail(email)) {
-    if (isFormPost) return { statusCode: 303, headers: { Location: '/thanks.html?status=error' }, body: '' };
+    if (isFormPost) return { statusCode: 303, headers: { Location: '/thank-you.html?status=error' }, body: '' };
     return { statusCode: 400, body: JSON.stringify({ error: 'email required' }) };
   }
 
@@ -113,10 +113,10 @@ exports.handler = async (event) => {
         + '<tr><td style="padding:0 32px 8px">'
         +   '<div style="font-family:Menlo,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#9C2615">24-hour price lock</div>'
         +   '<h1 style="font-family:Georgia,serif;font-style:italic;font-weight:500;font-size:32px;line-height:.95;letter-spacing:-.025em;margin:14px 0 12px">Saved. £100 held for 24 hours.</h1>'
-        +   '<p style="font-family:Georgia,serif;font-size:16px;color:#29221C">When you\'re ready, click the button below. The Launchpad bundle will stay at <b>£871</b> instead of £971 (a £100 saving) for the next 24 hours.</p>'
+        +   '<p style="font-family:Georgia,serif;font-size:16px;color:#29221C">When you\'re ready, click the button below. The Launchpad bundle will stay at <b>£1,074</b> instead of £1,174 (a £100 saving) for the next 24 hours.</p>'
         + '</td></tr>'
         + '<tr><td style="padding:8px 32px 28px">'
-        +   '<a href="' + magicLink + '" style="display:inline-block;background:#0E0B07;color:#F2EFE7;padding:16px 28px;border-radius:100px;text-decoration:none;font-family:Helvetica,Arial,sans-serif;font-weight:500;font-size:15px">Send my brief — £871 held →</a>'
+        +   '<a href="' + magicLink + '" style="display:inline-block;background:#0E0B07;color:#F2EFE7;padding:16px 28px;border-radius:100px;text-decoration:none;font-family:Helvetica,Arial,sans-serif;font-weight:500;font-size:15px">Send my brief — £1,074 held →</a>'
         +   '<p style="font-family:Menlo,monospace;font-size:10.5px;letter-spacing:.04em;color:#8A7B62;margin-top:18px">Saving expires ' + new Date(expiresAt).toLocaleString('en-GB',{ timeZone:'Europe/London' }) + ' UK time.</p>'
         + '</td></tr>'
         + '<tr><td style="padding:0 32px 30px;font-size:12px;color:#5A4E40;border-top:1px solid rgba(14,11,7,.10);padding-top:18px">Reply to this email if you have any questions &mdash; you\'re replying directly to me, Harry. StaticSwift, Manchester.</td></tr>'

@@ -155,9 +155,15 @@ h1{
 var params = new URLSearchParams(window.location.search);
 var name  = params.get('name');
 var email = params.get('email');
-if (name)  document.getElementById('hdr').innerHTML  = 'Got it, ' + name + '. We&rsquo;re on it.';
+if (name)  document.getElementById('hdr').textContent = 'Got it, ' + name + '. We’re on it.';
 if (email) document.getElementById('email-display').textContent = email;
-try { if (typeof gtag === 'function') gtag('event','lead_thank_you',{ source:'order-thank-you' }); } catch(_){}
+if (params.get('status') === 'error') {
+  document.getElementById('hdr').textContent = 'That didn’t send. Reach Harry directly.';
+  document.querySelector('.lede').innerHTML = 'Something went wrong saving your brief. WhatsApp <b>07502 731 799</b> or email <b>hello@staticswift.co.uk</b> and Harry will pick it up by hand. Your details were not lost on our side if you resend them now.';
+  try { if (typeof gtag === 'function') gtag('event','lead_submit_error',{ source:'nojs-fallback' }); } catch(_){}
+} else {
+  try { if (typeof gtag === 'function') gtag('event','lead_thank_you',{ source:'order-thank-you' }); } catch(_){}
+}
 </script>
 </body>
 </html>
