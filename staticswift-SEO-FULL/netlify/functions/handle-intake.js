@@ -8,8 +8,22 @@ exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
 
   try {
-    const data = JSON.parse(event.body || '{}');
-    if (data['bot-field']) return { statusCode: 200, body: JSON.stringify({ ok: true }) };
+    // Accept both JSON (fetch path) and form-encoded (non-JS fallback path).
+    // The fallback exists so a JS failure can never silently eat a lead again.
+    const ctype = (event.headers['content-type'] || event.headers['Content-Type'] || '').toLowerCase();
+    const isFormPost = ctype.includes('application/x-www-form-urlencoded');
+    let data;
+    if (isFormPost) {
+      data = Object.fromEntries(new URLSearchParams(event.body || ''));
+      data.source = data.source || 'nojs-fallback';
+      data.stage = data.stage || 'new-lead';
+    } else {
+      data = JSON.parse(event.body || '{}');
+    }
+    const respond = (code, body) => isFormPost
+      ? { statusCode: 303, headers: { Location: code === 200 ? '/thanks.html' : '/thanks.html?status=error' }, body: '' }
+      : { statusCode: code, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }, body: JSON.stringify(body) };
+    if (data['bot-field']) return respond(200, { ok: true });
 
     const clientId = 'client_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     const client = {
@@ -32,8 +46,15 @@ exports.handler = async (event) => {
       const waNum = waRaw.startsWith('0') ? '44' + waRaw.slice(1) : waRaw;
       const waLink = waNum ? `https://wa.me/${waNum}` : null;
       const callLink = (data.whatsapp || data.phone) ? `tel:${(data.whatsapp || data.phone).replace(/\s/g, '')}` : null;
-      const pkg = data.package === 'advanced' ? 'Advanced — £299' : 'Starter — £149';
-      const hosting = data.hosting_addon === 'yes' ? ' + Hosting £29' : '';
+      // Package labels trace to data/facts.json. Unknown/legacy values fall
+      // back to the raw value so nothing is mislabelled in the notification.
+      const pkgLabels = {
+        'subscription-499-49': 'Starter — £499 once, optional £49/mo',
+        'starter': 'Starter — £499',
+        'pro': 'Pro — £999',
+      };
+      const pkg = pkgLabels[data.package] || (data.package ? String(data.package) : 'Starter — £499');
+      const hosting = '';
 
       const rows = [
         ['Name', data.name],
@@ -92,13 +113,13 @@ exports.handler = async (event) => {
       console.warn('[handle-intake] admin notify failed (non-fatal):', notifyErr.message);
     }
 
-    return {
-      statusCode: 200,
-      headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ ok: true, clientId })
-    };
+    return respond(200, { ok: true, clientId });
   } catch (err) {
     console.error('[handle-intake] error:', err.message);
+    const ctype2 = (event.headers['content-type'] || event.headers['Content-Type'] || '').toLowerCase();
+    if (ctype2.includes('application/x-www-form-urlencoded')) {
+      return { statusCode: 303, headers: { Location: '/thanks.html?status=error' }, body: '' };
+    }
     return {
       statusCode: 500,
       headers: { 'Content-Type': 'application/json' },

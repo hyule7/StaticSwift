@@ -1,0 +1,44 @@
+{
+  "pricing": {
+    "starter": { "build": 499, "monthly_optional": 49, "pages": 5 },
+    "pro": { "build": 999, "monthly_optional": 99, "pages": 10 },
+    "addons": {
+      "domain": 79,
+      "gbp_setup": 149,
+      "extra_service_pages": 199,
+      "logo_refresh": 99,
+      "google_ads_two_weeks": 149
+    },
+    "launchpad_bundle": {
+      "computed_from": "starter.build + sum(addons)",
+      "pre_discount": 1174,
+      "discount": 100,
+      "total": 1074
+    },
+    "retired": {
+      "note": "Old pricing that must never appear anywhere: Starter £149, Advanced £299, Hosting add-on £29, bundle £871, package value 'advanced'.",
+      "banned_figures": [149, 299, 29, 871],
+      "banned_figures_exceptions": "149 is also the current gbp_setup and google_ads_two_weeks add-on price; only the phrases 'Starter — £149' and '£149 one-time' are banned."
+    }
+  },
+  "delivery": {
+    "preview_hours": 24,
+    "build_days": 14,
+    "revisions_included": 1,
+    "truth": "PREVIEW within 24 hours. Site live within 14 days. Never claim the finished site is delivered in 24 hours."
+  },
+  "guarantee": { "days": 60, "terms": "full refund, client keeps the site" },
+  "contact": {
+    "whatsapp": "+447502731799",
+    "whatsapp_display": "07502 731 799",
+    "email": "hello@staticswift.co.uk",
+    "reply_promise": "WhatsApp within 1 hour, UK working hours"
+  },
+  "positioning": {
+    "audience": "UK trades",
+    "founder": "Harry Yule",
+    "location": "Manchester",
+    "established_roman": "MMXXVI",
+    "model": "£499 one-time build, optional £49/mo managed plan. The £49/mo is OPTIONAL; never claim 'no monthly fees' and never imply the monthly fee is required."
+  }
+}

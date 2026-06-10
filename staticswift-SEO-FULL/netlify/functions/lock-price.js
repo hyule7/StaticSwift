@@ -32,12 +32,23 @@ function uid(){
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
+  // Accept JSON (fetch path) and form-encoded (non-JS fallback path).
+  const ctype = (event.headers['content-type'] || event.headers['Content-Type'] || '').toLowerCase();
+  const isFormPost = ctype.includes('application/x-www-form-urlencoded');
   let body;
-  try { body = JSON.parse(event.body || '{}'); }
-  catch { return { statusCode: 400, body: JSON.stringify({ error: 'bad JSON' }) }; }
+  if (isFormPost) {
+    body = Object.fromEntries(new URLSearchParams(event.body || ''));
+    body.source = body.source || 'exit_intent_nojs';
+  } else {
+    try { body = JSON.parse(event.body || '{}'); }
+    catch { return { statusCode: 400, body: JSON.stringify({ error: 'bad JSON' }) }; }
+  }
 
   const email = String(body.email || '').trim().toLowerCase();
-  if (!isEmail(email)) return { statusCode: 400, body: JSON.stringify({ error: 'email required' }) };
+  if (!isEmail(email)) {
+    if (isFormPost) return { statusCode: 303, headers: { Location: '/thanks.html?status=error' }, body: '' };
+    return { statusCode: 400, body: JSON.stringify({ error: 'email required' }) };
+  }
 
   // Capture every attribution param the cash-trap script sent up.
   const attribution = {
@@ -127,6 +138,9 @@ exports.handler = async (event) => {
     // Surface as success anyway — the lock is in the DB, the customer can email later
   }
 
+  if (isFormPost) {
+    return { statusCode: 303, headers: { Location: '/order.html?priceLock=24h&token=' + encodeURIComponent(token) }, body: '' };
+  }
   return {
     statusCode: 200,
     headers: { 'Content-Type': 'application/json' },

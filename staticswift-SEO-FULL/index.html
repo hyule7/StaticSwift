@@ -1363,9 +1363,9 @@ img,svg{display:block;max-width:100%;height:auto}
           No page builders.<br>
           No agency PMs.<br>
           One person writes<br>
-          each one — at night,<br>
+          each one, at night,<br>
           mostly, in Manchester,<br>
-          after my dad's tea.
+          by one pair of hands.
         </p>
       </div>
     </div>
@@ -1618,7 +1618,7 @@ img,svg{display:block;max-width:100%;height:auto}
     <div class="col-inner">
       <div class="col-block">
         <b>StaticSwift</b>
-        Established MMXXV<br>
+        Established MMXXVI<br>
         Manchester, England<br>
         Hand-coded · sole-trader
       </div>
@@ -1905,9 +1905,9 @@ window.sqContact = async (e) => {
     <button class="ss-trap-close" type="button" onclick="ssTrapClose('dismiss')" aria-label="Close">×</button>
     <div class="ss-trap-mark">Hold on · 24-hour saving</div>
     <h2 id="ss-trap-h">Lock your <em>£100 saving</em> for 24 hours.</h2>
-    <p>Send your email and I'll keep the Launchpad bundle at <b>£871</b> (saving £100) when you come back. No card, no commitment — just the price held.</p>
-    <form class="ss-trap-form" id="ss-trap-form">
-      <input type="email" required placeholder="you@yourbiz.co.uk" autocomplete="email" id="ss-trap-email">
+    <p>Send your email and I'll keep the Launchpad bundle at <b>£1,074</b> (saving £100) when you come back. No card, no commitment — just the price held.</p>
+    <form class="ss-trap-form" id="ss-trap-form" method="post" action="/.netlify/functions/lock-price">
+      <input type="email" name="email" required placeholder="you@yourbiz.co.uk" autocomplete="email" id="ss-trap-email">
       <button type="submit">Hold my price →</button>
     </form>
     <div class="ss-trap-foot">No marketing emails. 24-hour cookie remembers you. <a onclick="ssTrapClose('dismiss')">Not now</a></div>

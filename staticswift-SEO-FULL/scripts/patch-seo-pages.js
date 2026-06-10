@@ -217,7 +217,7 @@ function buildFormHtml({ niche, citySlug, cityLabel }) {
   const options = buildOptionsHtml(niche);
   // Single-line(ish) HTML block. Sentinel comment first so we can detect it cheaply.
   return `${SENTINEL}
-<form class="ss-form" id="ss-seo-form" data-source="${source}" novalidate>
+<form class="ss-form" id="ss-seo-form" method="post" action="/.netlify/functions/handle-intake" data-source="${source}" novalidate>
 <div class="ss-form-h">Free preview in <em>24 hours.</em></div>
 <div class="ss-form-sub">Tell us where to send it. No payment until you love it.</div>
 <div class="ss-row">
@@ -254,7 +254,7 @@ function buildFormHtml({ niche, citySlug, cityLabel }) {
         f.querySelector('.ss-form-sub').style.display='none';
         f.querySelector('.ss-foot').style.display='none';
         ok.style.display='block';
-        try{if(typeof gtag==='function')gtag('event','generate_lead',{value:149,currency:'GBP',source:src,business_type:data.business_type,location:data.location});}catch(e){}
+        try{if(typeof gtag==='function')gtag('event','generate_lead',{value:499,currency:'GBP',source:src,business_type:data.business_type,location:data.location});}catch(e){}
         try{window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'lead_submit',form_id:'seo_hero',source:src});}catch(e){}
       }else{er.style.display='block';btn.disabled=false;btn.innerHTML=orig;}
     }catch(err){er.style.display='block';btn.disabled=false;btn.innerHTML=orig;}
@@ -432,7 +432,7 @@ function patchOrderHtml(html) {
           var p=new URLSearchParams(window.location.search);
           var src=(p.get('niche')?'seo-'+p.get('niche')+'-'+(p.get('city')||''):'order-form-full');
           var bt=document.getElementById('f-biztype');var loc=document.getElementById('f-location');
-          if(typeof gtag==='function')gtag('event','generate_lead',{value:149,currency:'GBP',source:src,business_type:bt&&bt.value,location:loc&&loc.value});
+          if(typeof gtag==='function')gtag('event','generate_lead',{value:499,currency:'GBP',source:src,business_type:bt&&bt.value,location:loc&&loc.value});
           window.dataLayer=window.dataLayer||[];window.dataLayer.push({event:'lead_submit',form_id:'order_full',source:src});
         }catch(e){}
       } else if(Date.now()-start>15000){clearInterval(iv);}

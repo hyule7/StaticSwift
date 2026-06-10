@@ -612,7 +612,7 @@ img,svg{display:block;max-width:100%;height:auto}
       <span class="sh-r">For office use · <span id="form-stamp">—</span></span>
     </div>
 
-    <form id="order-form" novalidate>
+    <form id="order-form" method="post" action="/.netlify/functions/handle-intake" novalidate>
       <input type="text" name="bot-field" style="position:absolute;left:-9999px;opacity:0" tabindex="-1" autocomplete="off">
 
       <div class="row2">
