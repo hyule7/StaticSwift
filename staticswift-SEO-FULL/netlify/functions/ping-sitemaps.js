@@ -18,7 +18,6 @@ const SITEMAPS = [
 // Priority pages to submit to Indexing API immediately (homepage + key niche+city combos)
 const PRIORITY_URLS = [
   'https://staticswift.co.uk/',
-  'https://staticswift.co.uk/example.html',
   'https://staticswift.co.uk/barber-website-design-manchester/',
   'https://staticswift.co.uk/plumber-website-design-manchester/',
   'https://staticswift.co.uk/barber-website-design-london/',
@@ -38,6 +37,27 @@ function pingUrl(url) {
     const req = https.get(url, res => resolve({ url, status: res.statusCode }));
     req.on('error', err => resolve({ url, error: err.message }));
     req.setTimeout(8000, () => { req.destroy(); resolve({ url, error: 'timeout' }); });
+  });
+}
+
+// IndexNow: instant notification to Bing (and partners). Key file lives at
+// /<key>.txt in the site root.
+const INDEXNOW_KEY = 'f641e329497d9f0b62f4dfd36b94b46c';
+function pingIndexNow(urls) {
+  return new Promise((resolve) => {
+    const body = JSON.stringify({
+      host: 'staticswift.co.uk',
+      key: INDEXNOW_KEY,
+      keyLocation: `https://staticswift.co.uk/${INDEXNOW_KEY}.txt`,
+      urlList: urls,
+    });
+    const req = https.request({
+      hostname: 'api.indexnow.org', path: '/indexnow', method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(body) },
+    }, res => resolve({ indexnow: res.statusCode }));
+    req.on('error', err => resolve({ indexnow: 'error: ' + err.message }));
+    req.setTimeout(8000, () => { req.destroy(); resolve({ indexnow: 'timeout' }); });
+    req.end(body);
   });
 }
 
@@ -90,10 +110,11 @@ exports.handler = async (event) => {
       pingUrl(`https://www.bing.com/ping?sitemap=${encodeURIComponent(s)}`)
     );
 
-    const [googleResults, bingResults, indexingResults] = await Promise.all([
+    const [googleResults, bingResults, indexingResults, indexNowResult] = await Promise.all([
       Promise.all(googlePings),
       Promise.all(bingPings),
       submitToIndexingAPI(PRIORITY_URLS),
+      pingIndexNow(PRIORITY_URLS),
     ]);
 
     const result = {
@@ -102,6 +123,7 @@ exports.handler = async (event) => {
       google: googleResults,
       bing: bingResults,
       indexingApi: indexingResults,
+      indexNow: indexNowResult,
       sitemapsPinged: SITEMAPS.length,
       priorityUrlsSubmitted: PRIORITY_URLS.length,
     };

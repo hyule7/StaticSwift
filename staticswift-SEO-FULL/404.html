@@ -1,56 +1,47 @@
 <!DOCTYPE html>
 <html lang="en-gb">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-4BZHQMG0RF"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-4BZHQMG0RF');
-</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Page Not Found — StaticSwift</title>
+<title>Page not found — StaticSwift</title>
 <meta name="robots" content="noindex">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#F2EFE7">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4BZHQMG0RF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-4BZHQMG0RF');</script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#07090f;color:#f0f2f8;font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
-.num{font-family:'Syne',sans-serif;font-size:clamp(80px,20vw,160px);font-weight:800;color:#00C8E0;line-height:1;letter-spacing:-0.04em;margin-bottom:16px}
-h1{font-family:'Syne',sans-serif;font-size:clamp(20px,4vw,32px);font-weight:800;margin-bottom:16px}
-p{color:#8890a8;font-size:16px;margin-bottom:36px}
-.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.btn{display:inline-block;padding:13px 24px;border-radius:8px;font-weight:700;text-decoration:none;font-size:15px;transition:opacity .2s}
-.btn-p{background:#00C8E0;color:#07090f}
-.btn-o{background:transparent;color:#00C8E0;border:1.5px solid #00C8E0}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--paper:#F2EFE7;--ink:#0E0B07;--ink-soft:#29221C;--ink-mid:#5A4E40;--bronze:#8A7B62;--signal:#9C2615;--hair:rgba(14,11,7,.22)}
+body{background:var(--paper);color:var(--ink);font-family:Georgia,'Times New Roman',serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{max-width:600px}
+.mark{font-family:'Courier New',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--bronze);margin-bottom:22px;display:flex;align-items:center;gap:12px}
+.mark::before{content:"";width:36px;height:1px;background:var(--ink)}
+h1{font-style:italic;font-weight:500;font-size:clamp(38px,8vw,72px);line-height:.95;letter-spacing:-.03em;margin-bottom:22px}
+h1 em{color:var(--signal)}
+p{color:var(--ink-mid);font-size:17px;line-height:1.6;margin-bottom:14px;max-width:480px}
+.btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.btn{display:inline-block;padding:14px 26px;font-size:15px;text-decoration:none;border-radius:100px;border:1px solid var(--ink);color:var(--ink);font-family:Helvetica,Arial,sans-serif}
+.btn-p{background:var(--ink);color:var(--paper)}
+.btn-wa{background:#1F8B47;border-color:#1F8B47;color:#fff}
+.foot{margin-top:34px;font-family:'Courier New',monospace;font-size:11px;letter-spacing:.06em;color:var(--bronze)}
 </style>
 </head>
 <body>
-<div>
-  <div class="num">404</div>
-  <h1>This page does not exist<br>but your new website can.</h1>
-  <p>The page you were looking for has moved or never existed.</p>
+<div class="card">
+  <div class="mark">StaticSwift · Lost page</div>
+  <h1>This page doesn't exist. <em>Your website should.</em></h1>
+  <p>The page you wanted has moved or never existed. The studio is still here: hand-coded sites for UK trades, £499 once, free working preview within 24 hours, no card.</p>
   <div class="btns">
-    <a href="/" class="btn btn-p">Go to Homepage</a>
-    <a href="/order.html" class="btn btn-o">Get a Website — £499</a>
+    <a class="btn btn-p" href="/order.html">Start a brief — £499</a>
+    <a class="btn btn-wa" href="https://wa.me/447502731799">WhatsApp Harry</a>
+    <a class="btn" href="/">Homepage</a>
   </div>
+  <div class="foot">First lead in 60 days or your money back, and you keep the site.</div>
 </div>
 <script data-ss-tracker>
 (function(){var E='/.netlify/functions/track-event';
 var p=location.pathname;
-var q=new URLSearchParams(location.search),src={};
-['utm_source','utm_medium','utm_campaign','ttclid','fbclid','gclid','ref','aff'].forEach(function(k){var v=q.get(k);if(v)src[k]=v;});
 var sid='';try{sid=sessionStorage.getItem('ss_sid')||'';if(!sid){sid=Math.random().toString(36).slice(2,10)+Date.now().toString(36);sessionStorage.setItem('ss_sid',sid);}}catch(_){}
-function send(o){try{var b=JSON.stringify(o);if(navigator.sendBeacon){navigator.sendBeacon(E,new Blob([b],{type:'application/json'}));}else{fetch(E,{method:'POST',headers:{'Content-Type':'application/json'},body:b,keepalive:true}).catch(function(){});}}catch(_){}}
-send({type:'pageview',path:p,ref:document.referrer||'',sid:sid,lang:navigator.language||'',vp:innerWidth+'x'+innerHeight,src:src});
-var t0=Date.now(),sent=false;
-function dur(){if(sent)return;sent=true;send({type:'duration',path:p,sid:sid,dur:Date.now()-t0});}
-addEventListener('pagehide',dur);
-document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')dur();});
-window.ssTrack=function(evt,meta){send({type:'event',evt:evt,path:p,sid:sid,meta:meta||{}});};
-document.addEventListener('submit',function(e){var f=e.target;if(f&&f.tagName==='FORM')window.ssTrack('form_submit',{form:f.id||''});},true);
-document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;if(!a)return;var h=a.getAttribute('href')||'';if(h.indexOf('wa.me')>-1||h.indexOf('whatsapp')>-1)window.ssTrack('whatsapp_click',{});else if(h.indexOf('tel:')===0)window.ssTrack('tel_click',{});},true);
+try{navigator.sendBeacon(E,new Blob([JSON.stringify({type:'pageview',path:p,ref:document.referrer||'',sid:sid,evt:'404'})],{type:'application/json'}));}catch(_){}
 })();
 </script>
 </body>
