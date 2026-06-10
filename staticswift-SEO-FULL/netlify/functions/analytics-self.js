@@ -8,8 +8,8 @@ const { getNamedStore } = require('./_blobs');
 
 exports.handler = async (event) => {
   const auth = event.headers['x-admin-password'];
-  const validPw = process.env.ADMIN_PASSWORD || 'Harry2001!';
-  if (auth !== validPw) {
+  const validPw = process.env.ADMIN_PASSWORD;
+  if (!validPw || auth !== validPw) {
     return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
   }
 
@@ -53,7 +53,7 @@ exports.handler = async (event) => {
     const todayEvents = pageviews.filter(e => new Date(e.t).toISOString().startsWith(todayStr));
 
     // Average duration (from timing events)
-    const durations = events.filter(e => e.type === 'timing' && e.dur > 0).map(e => e.dur);
+    const durations = events.filter(e => (e.type === 'timing' || e.type === 'duration') && e.dur > 0).map(e => e.dur);
     const avgDuration = durations.length
       ? Math.round(durations.reduce((s, x) => s + x, 0) / durations.length / 1000)
       : 0;
@@ -186,26 +186,28 @@ exports.handler = async (event) => {
 
     // Conversion funnel: count of unique sessions that hit each major step
     const sessionSteps = {};
-    events.filter(e => e.type === 'step' || e.type === 'pageview' || (e.type === 'step' && (e.evt || '').startsWith('conversion:'))).forEach(e => {
+    events.filter(e => e.type === 'step' || e.type === 'pageview' || e.type === 'event').forEach(e => {
       if (!sessionSteps[e.sid]) sessionSteps[e.sid] = new Set();
       if (e.type === 'pageview') sessionSteps[e.sid].add('Visited');
       else if (e.evt) sessionSteps[e.sid].add(e.evt);
     });
+    // Stages are strictly ordered and counted per unique session. Every key
+    // here is an event the shared data-ss-tracker actually emits today;
+    // stages from retired homepage versions (view:hero, conversion:*) were
+    // producing impossible numbers and are gone.
     const funnelStages = [
-      { key: 'Visited',                 label: 'Visited site' },
-      { key: 'view:hero',               label: 'Saw hero' },
-      { key: 'view:audit',              label: 'Saw audit tool' },
-      { key: 'view:pricing',            label: 'Saw pricing' },
-      { key: 'conversion:audit-completed', label: 'Ran free audit' },
-      { key: 'click:Start free preview', label: 'Clicked CTA' },
-      { key: 'conversion:hero-form',    label: 'Submitted hero form' },
-      { key: 'conversion:contact-form', label: 'Submitted full brief' },
+      { keys: ['Visited'], label: 'Visited site' },
+      { keys: ['whatsapp_click', 'tel_click', 'form_submit'], label: 'Took a contact action' },
+      { keys: ['form_submit'], label: 'Submitted a form' },
     ];
-    const funnel = funnelStages.map(stage => ({
-      label: stage.label,
-      key: stage.key,
-      count: Object.values(sessionSteps).filter(set => Array.from(set).some(s => s === stage.key || s.startsWith(stage.key))).length,
-    }));
+    // Enforce funnel monotonicity: a session only counts at stage N if it
+    // also counted at every earlier stage, so no step can ever exceed 100%
+    // of the one before it.
+    let eligible = Object.values(sessionSteps);
+    const funnel = funnelStages.map(stage => {
+      eligible = eligible.filter(set => stage.keys.some(k => set.has(k)));
+      return { label: stage.label, key: stage.keys[0], count: eligible.length };
+    });
 
     // Recent visitor journeys (last 25 unique sessions with their step sequence)
     const sessionEvents = {};
@@ -254,6 +256,11 @@ exports.handler = async (event) => {
         topPages,
         topReferrers,
         traffic: { direct: directCount, referred: referredCount },
+        geoSplit: {
+          uk: pageviews.filter(e => /united kingdom|^gb$|^uk$/i.test(e.country || '')).length,
+          nonUk: pageviews.filter(e => e.country && !/united kingdom|^gb$|^uk$/i.test(e.country)).length,
+          unknown: pageviews.filter(e => !e.country).length,
+        },
         countries,
         devices: Object.entries(deviceMap).map(([name, count]) => ({ name, count })),
         browsers,

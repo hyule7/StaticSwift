@@ -2,8 +2,8 @@ const { getClients } = require('./_db');
 
 exports.handler = async (event) => {
   const auth = event.headers['x-admin-password'];
-  const validPw = process.env.ADMIN_PASSWORD || 'Harry2001!';
-  if (auth !== validPw) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
+  const validPw = process.env.ADMIN_PASSWORD;
+  if (!validPw || auth !== validPw) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
 
   try {
     const clients = await getClients();

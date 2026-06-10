@@ -1786,21 +1786,8 @@ window.sqContact = async (e) => {
   }
 };
 
-/* ─── PAGEVIEW TRACKER ─── */
-(function tracker(){
-  var ENDPOINT = '/.netlify/functions/track-event';
-  try {
-    var body = JSON.stringify({ type:'pageview', path:location.pathname, ref:document.referrer || '', ua:navigator.userAgent || '' });
-    fetch(ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json'}, body:body, keepalive:true }).catch(function(){});
-  } catch(_){}
-  window.ssTrack = function(evt, meta) {
-    try {
-      fetch(ENDPOINT, { method:'POST', headers:{'Content-Type':'application/json'}, keepalive:true,
-        body: JSON.stringify({ type:'event', evt:evt, path:location.pathname, meta:meta||{} })
-      }).catch(function(){});
-    } catch(_){}
-  };
-})();
+/* ─── PAGEVIEW TRACKER ─── moved to the shared data-ss-tracker snippet at the
+   end of <body> (pageview + duration beacon + funnel events, sessionised). */
 </script>
 <!-- ss:sticky-mobile-cta-v1 — fixed-bottom CTA on phones. Hides when the begin
      form is visible so we never double-stack. Sends a gtag click event for

@@ -13,6 +13,8 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"LocalBusiness","name":"StaticSwift","url":"https://staticswift.co.uk","description":"Website design for businesses in Deal","address":{"@type":"PostalAddress","addressLocality":"Deal","addressRegion":"Kent","addressCountry":"GB"},"priceRange":"£499 - £999"}
 </script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4BZHQMG0RF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-4BZHQMG0RF');</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -64,5 +66,22 @@ footer p{font-size:12px;color:rgba(255,255,255,.3);line-height:1.7}footer a{colo
 <div class="ft-logo"><svg viewBox="0 0 28 28" fill="none" width="20" height="20"><polygon points="14,1 27,7.5 27,20.5 14,27 1,20.5 1,7.5" fill="none" stroke="#b08a3e" stroke-width="1.2" opacity=".7"/><polygon points="14,6 22,10 22,18 14,22 6,18 6,10" fill="#b08a3e" opacity=".12"/><polygon points="14,10 18,12 18,16 14,18 10,16 10,12" fill="#b08a3e" opacity=".45"/></svg><span>StaticSwift</span></div>
 <p><a href="https://staticswift.co.uk">staticswift.co.uk</a> · <a href="mailto:hello@staticswift.co.uk">hello@staticswift.co.uk</a><br>© 2025 StaticSwift. All rights reserved.</p>
 </footer>
+<script data-ss-tracker>
+(function(){var E='/.netlify/functions/track-event';
+var p=location.pathname;
+var q=new URLSearchParams(location.search),src={};
+['utm_source','utm_medium','utm_campaign','ttclid','fbclid','gclid','ref','aff'].forEach(function(k){var v=q.get(k);if(v)src[k]=v;});
+var sid='';try{sid=sessionStorage.getItem('ss_sid')||'';if(!sid){sid=Math.random().toString(36).slice(2,10)+Date.now().toString(36);sessionStorage.setItem('ss_sid',sid);}}catch(_){}
+function send(o){try{var b=JSON.stringify(o);if(navigator.sendBeacon){navigator.sendBeacon(E,new Blob([b],{type:'application/json'}));}else{fetch(E,{method:'POST',headers:{'Content-Type':'application/json'},body:b,keepalive:true}).catch(function(){});}}catch(_){}}
+send({type:'pageview',path:p,ref:document.referrer||'',sid:sid,lang:navigator.language||'',vp:innerWidth+'x'+innerHeight,src:src});
+var t0=Date.now(),sent=false;
+function dur(){if(sent)return;sent=true;send({type:'duration',path:p,sid:sid,dur:Date.now()-t0});}
+addEventListener('pagehide',dur);
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')dur();});
+window.ssTrack=function(evt,meta){send({type:'event',evt:evt,path:p,sid:sid,meta:meta||{}});};
+document.addEventListener('submit',function(e){var f=e.target;if(f&&f.tagName==='FORM')window.ssTrack('form_submit',{form:f.id||''});},true);
+document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;if(!a)return;var h=a.getAttribute('href')||'';if(h.indexOf('wa.me')>-1||h.indexOf('whatsapp')>-1)window.ssTrack('whatsapp_click',{});else if(h.indexOf('tel:')===0)window.ssTrack('tel_click',{});},true);
+})();
+</script>
 </body>
 </html>

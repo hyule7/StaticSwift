@@ -51,11 +51,39 @@ exports.handler = async (event) => {
       .digest('hex')
       .slice(0, 16);
 
+    // Drop obvious bots before they pollute counts.
+    if (/bot|crawl|spider|slurp|headless|lighthouse|pingdom|uptime|monitor|preview|facebookexternalhit|whatsapp|telegram|scrape/i.test(ua)) {
+      return ok();
+    }
+
+    // Normalise the path: strip query strings and fragments so PII from any
+    // GET fallback or prefill params can never enter analytics storage
+    // (GDPR), and so tracking params stop fragmenting page paths.
+    let cleanPath = String(data.path || '/');
+    const qIdx = cleanPath.search(/[?#]/);
+    let srcParams = {};
+    if (qIdx !== -1) {
+      try {
+        const qs = new URLSearchParams(cleanPath.slice(qIdx + 1).split('#')[0]);
+        for (const k of ['utm_source', 'utm_medium', 'utm_campaign', 'ttclid', 'fbclid', 'gclid', 'ref', 'aff']) {
+          if (qs.get(k)) srcParams[k] = trim(qs.get(k));
+        }
+      } catch {}
+      cleanPath = cleanPath.slice(0, qIdx);
+    }
+    // Client may also send a pre-parsed src object; server-parsed wins on clash.
+    if (data.src && typeof data.src === 'object') {
+      for (const [k, v] of Object.entries(data.src)) {
+        if (!(k in srcParams) && typeof v === 'string') srcParams[trim(k)] = trim(v);
+      }
+    }
+
     const evt = {
       t: Date.now(),
       type: trim(String(data.type || 'pageview')),
-      path: trim(String(data.path || '/')),
-      ref: trim(String(data.ref || '')),
+      path: trim(cleanPath),
+      src: Object.keys(srcParams).length ? srcParams : undefined,
+      ref: trim(String(data.ref || '').split('?')[0]),
       sid: trim(String(data.sid || visitorHash)),
       vid: visitorHash,
       lang: trim(String(data.lang || '')),

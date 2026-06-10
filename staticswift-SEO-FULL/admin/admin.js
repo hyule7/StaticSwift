@@ -14,16 +14,8 @@ function tryLogin() {
   const val = document.getElementById('pw-input').value;
   if (!val) return;
 
-  // Client-side password check FIRST — works immediately
-  if (val === 'Harry2001!') {
-    ADMIN_PW = val;
-    sessionStorage.setItem('ss_pw', val);
-    showApp();
-    initApp();
-    return;
-  }
-
-  // If not the hardcoded password, try API (in case env var was changed)
+  // Server-side check only. The password never appears in shipped JS;
+  // the function validates against the ADMIN_PASSWORD env var.
   fetch('/.netlify/functions/get-clients', {
     headers: { 'x-admin-password': val }
   }).then(r => {

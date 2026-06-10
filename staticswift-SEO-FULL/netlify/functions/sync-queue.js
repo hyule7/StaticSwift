@@ -11,8 +11,8 @@ const { readDB, writeDB } = require('./_db');
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
   const auth = event.headers['x-admin-password'];
-  const validPw = process.env.ADMIN_PASSWORD || 'Harry2001!';
-  if (auth !== validPw) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
+  const validPw = process.env.ADMIN_PASSWORD;
+  if (!validPw || auth !== validPw) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
   try {
     const { scanQueue } = JSON.parse(event.body || '{}');
     if (!Array.isArray(scanQueue)) return { statusCode: 400, body: JSON.stringify({ error: 'scanQueue array required' }) };

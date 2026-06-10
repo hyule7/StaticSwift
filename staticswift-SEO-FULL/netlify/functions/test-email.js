@@ -13,8 +13,8 @@ const nodemailer = require('nodemailer');
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
   const auth = event.headers['x-admin-password'];
-  const validPw = process.env.ADMIN_PASSWORD || 'Harry2001!';
-  if (auth !== validPw) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
+  const validPw = process.env.ADMIN_PASSWORD;
+  if (!validPw || auth !== validPw) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
 
   let to;
   try { ({ to } = JSON.parse(event.body || '{}')); } catch {}
@@ -26,7 +26,7 @@ exports.handler = async (event) => {
     SMTP_PORT: process.env.SMTP_PORT || '587 (default)',
     SMTP_USER: process.env.SMTP_USER ? '✓ set' : '✗ MISSING',
     SMTP_PASS: process.env.SMTP_PASS ? '✓ set (' + process.env.SMTP_PASS.length + ' chars)' : '✗ MISSING',
-    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD ? '✓ set' : '⚠ using hardcoded fallback (Harry2001!)',
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD ? '✓ set' : '✗ NOT SET — admin functions will refuse all requests',
     JSONBIN_BIN_ID: process.env.JSONBIN_BIN_ID ? '✓ set' : '✗ MISSING (admin DB)',
     JSONBIN_API_KEY: process.env.JSONBIN_API_KEY ? '✓ set' : '✗ MISSING (admin DB)',
   };
@@ -46,7 +46,7 @@ exports.handler = async (event) => {
           'Open Netlify dashboard → your site → Site configuration → Environment variables',
           'Add SMTP_USER = your-mailbox@yourdomain.co.uk',
           'Add SMTP_PASS = the password for that mailbox',
-          'Add ADMIN_PASSWORD = your own strong password (do not keep Harry2001!)',
+          'Add ADMIN_PASSWORD = your own strong password',
           'Redeploy the site (or trigger a new build)',
           'Click Test email again',
         ],

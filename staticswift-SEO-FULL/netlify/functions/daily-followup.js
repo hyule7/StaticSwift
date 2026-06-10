@@ -177,7 +177,7 @@ exports.handler = async (event) => {
 
   if (!isScheduled) {
     const auth = event.headers && event.headers['x-admin-password'];
-    if (auth !== (process.env.ADMIN_PASSWORD || 'Harry2001!')) {
+    if (auth !== (process.env.ADMIN_PASSWORD)) {
       return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
     }
   }

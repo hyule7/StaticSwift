@@ -4,7 +4,7 @@ const { createTransporter, LOGO_HTML } = require('./_mailer');
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
   const auth = event.headers['x-admin-password'];
-  if (auth !== (process.env.ADMIN_PASSWORD || 'Harry2001!')) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
+  if (auth !== (process.env.ADMIN_PASSWORD)) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
 
   try {
     const { clientId, text } = JSON.parse(event.body || '{}');

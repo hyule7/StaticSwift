@@ -10,7 +10,7 @@
  * box even before you've provisioned an API key.
  */
 
-const ADMIN = process.env.ADMIN_PASSWORD || 'Harry2001!';
+const ADMIN = process.env.ADMIN_PASSWORD;
 const OPENAI_KEY = process.env.OPENAI_API_KEY;
 const { addSuppression, isUnsubReply } = require('./_suppression');
 

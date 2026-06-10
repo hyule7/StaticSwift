@@ -21,6 +21,8 @@
 <script type="application/ld+json">
 {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://staticswift.co.uk"}, {"@type": "ListItem", "position": 2, "name": "Mechanics & Garages Website Design", "item": "https://staticswift.co.uk/mechanic-website-design/"}]}
 </script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4BZHQMG0RF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-4BZHQMG0RF');</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -120,5 +122,22 @@ footer em{font-style:italic;color:var(--gold2)}
 <p>Built by <a href="https://staticswift.co.uk/about/" rel="author"><em>Harry Yule</em></a> &middot; UK studio based in Manchester &middot; <a href="https://staticswift.co.uk/">staticswift.co.uk</a></p>
 <p>&copy; StaticSwift &middot; <a href="https://staticswift.co.uk/about/">About</a> &middot; <a href="https://staticswift.co.uk/showcase/">Showcase</a> &middot; <a href="/order.html">Start a project</a></p>
 </footer>
+<script data-ss-tracker>
+(function(){var E='/.netlify/functions/track-event';
+var p=location.pathname;
+var q=new URLSearchParams(location.search),src={};
+['utm_source','utm_medium','utm_campaign','ttclid','fbclid','gclid','ref','aff'].forEach(function(k){var v=q.get(k);if(v)src[k]=v;});
+var sid='';try{sid=sessionStorage.getItem('ss_sid')||'';if(!sid){sid=Math.random().toString(36).slice(2,10)+Date.now().toString(36);sessionStorage.setItem('ss_sid',sid);}}catch(_){}
+function send(o){try{var b=JSON.stringify(o);if(navigator.sendBeacon){navigator.sendBeacon(E,new Blob([b],{type:'application/json'}));}else{fetch(E,{method:'POST',headers:{'Content-Type':'application/json'},body:b,keepalive:true}).catch(function(){});}}catch(_){}}
+send({type:'pageview',path:p,ref:document.referrer||'',sid:sid,lang:navigator.language||'',vp:innerWidth+'x'+innerHeight,src:src});
+var t0=Date.now(),sent=false;
+function dur(){if(sent)return;sent=true;send({type:'duration',path:p,sid:sid,dur:Date.now()-t0});}
+addEventListener('pagehide',dur);
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')dur();});
+window.ssTrack=function(evt,meta){send({type:'event',evt:evt,path:p,sid:sid,meta:meta||{}});};
+document.addEventListener('submit',function(e){var f=e.target;if(f&&f.tagName==='FORM')window.ssTrack('form_submit',{form:f.id||''});},true);
+document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;if(!a)return;var h=a.getAttribute('href')||'';if(h.indexOf('wa.me')>-1||h.indexOf('whatsapp')>-1)window.ssTrack('whatsapp_click',{});else if(h.indexOf('tel:')===0)window.ssTrack('tel_click',{});},true);
+})();
+</script>
 </body>
 </html>

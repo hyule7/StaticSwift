@@ -182,7 +182,7 @@ exports.handler = async (event) => {
   if (isManual){
     // Manual trigger needs admin password
     const auth = (event.headers && (event.headers['x-admin-password'] || event.headers['X-Admin-Password'])) || '';
-    const want = process.env.ADMIN_PASSWORD || 'Harry2001!';
+    const want = process.env.ADMIN_PASSWORD;
     if (auth !== want) return { statusCode:401, body:JSON.stringify({ error:'Unauthorized' }) };
     try{
       const body = event.body ? JSON.parse(event.body) : {};
