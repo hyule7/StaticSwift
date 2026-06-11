@@ -1,20 +1,76 @@
-<!DOCTYPE html>
+#!/usr/bin/env node
+/**
+ * build-hub-v2.mjs — Phase 1: rebuild town hub pages (website-design-{town})
+ * on the Field Guide system so hubs can convert on their own.
+ *
+ * Keeps: URL, <title> verbatim, every trade-grid link (emoji stripped).
+ * Adds: lead form (required WhatsApp), 200+ word region-aware intro,
+ * pricing + guarantee from facts.json, LocalBusiness schema.
+ * Dry: node scripts/build-hub-v2.mjs --dry
+ */
+import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { join } from 'node:path';
+
+const ROOT = new URL('..', import.meta.url).pathname;
+const DRY = process.argv.includes('--dry');
+const facts = JSON.parse(readFileSync(join(ROOT, 'data/facts.json'), 'utf8'));
+const P = facts.pricing, D = facts.delivery, G = facts.guarantee, C = facts.contact;
+
+const RETIRED = new Set();
+for (const line of readFileSync(join(ROOT, '_redirects'), 'utf8').split('\n')) {
+  const m = line.trim().match(/^(\/[a-z0-9-]+\/)\s+\S+\s+410/);
+  if (m) RETIRED.add(m[1].replace(/\//g, ''));
+}
+
+function parseOld(html) {
+  const title = (html.match(/<title>([\s\S]*?)<\/title>/) || [])[1]?.replace(/\s+/g, ' ').trim();
+  if (!title) return null;
+  const tm = title.match(/Website Design in ([^,|]+)(?:,\s*([^|]+?))?\s*\|/i);
+  if (!tm) return null;
+  const town = tm[1].trim();
+  const region = (tm[2] || '').trim();
+  const grid = (html.match(/<div class="grid">([\s\S]*?)<\/div>/) || [])[1] || '';
+  // Strip emoji/symbols from anchor text, keep hrefs.
+  const links = [...grid.matchAll(/<a href="([^"]+)">([\s\S]*?)<\/a>/g)]
+    .map(([, href, text]) => `<a href="${href}">${text.replace(/[^\p{L}\p{N}&;' -]/gu, '').replace(/\s+/g, ' ').trim()}</a>`);
+  return { title, town, region, links };
+}
+
+const GA4 = `<script async src="https://www.googletagmanager.com/gtag/js?id=G-4BZHQMG0RF"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-4BZHQMG0RF');</script>`;
+
+const TRACKER = readFileSync(join(ROOT, 'scripts/build-leaf-v2.mjs'), 'utf8').match(/const TRACKER = `([\s\S]*?)`;/)[1];
+
+function render({ dir, title, town, region, links }) {
+  const url = `https://staticswift.co.uk/${dir}/`;
+  const count = links.length;
+  const regionLine = region ? `${town} sits in ${region}, and the firms that win its work are the ones a ${region} postcode search can actually find.` : `The firms winning ${town}'s work are the ones a local search can actually find.`;
+  const intro = `Every trade in ${town} has the same quiet problem: the work is local, the searching is local, but the search results are owned by directories and aggregators charging for leads that should have been yours. ${regionLine} StaticSwift builds hand-coded websites for ${town} businesses, one craftsman in Manchester writing every page, ${count} trades served on this page alone. £${P.starter.build} once for a ${P.starter.pages}-page site with your Google Business Profile wired in, hosting and SSL included, and an optional £${P.starter.monthly_optional}/mo managed plan if you would rather never think about it again. You see a real working preview within ${D.preview_hours} hours of sending a brief, before any money moves. If the site does not produce a lead within ${G.days} days of going live, the full amount comes back and the site stays yours. Pick your trade below, or send the brief now and have something real to look at by this time tomorrow.`;
+  const bizSchema = JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'LocalBusiness', '@id': url + '#business',
+    name: 'StaticSwift', url, telephone: C.whatsapp, email: C.email,
+    description: `Website design for businesses in ${town}. Free preview in ${D.preview_hours} hours, from £${P.starter.build}.`,
+    address: { '@type': 'PostalAddress', addressLocality: town, ...(region ? { addressRegion: region } : {}), addressCountry: 'GB' },
+    priceRange: `£${P.starter.build} - £${P.pro.build}`,
+  });
+  const slug = `seo-hub-${dir.replace('website-design-', '')}`;
+
+  return `<!DOCTYPE html>
 <html lang="en-gb">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Website Design in Luton, Bedfordshire | From £499. Optional £49/mo if you want me to manage it | StaticSwift</title>
-<meta name="description" content="Website design in Luton, Bedfordshire. Hand-coded for local businesses, £499 once, optional £49/mo managed. Free working preview in 24 hours, no card. First lead in 60 days or full refund.">
-<link rel="canonical" href="https://staticswift.co.uk/website-design-luton/">
-<meta property="og:title" content="Website Design in Luton, Bedfordshire | From £499. Optional £49/mo if you want me to manage it | StaticSwift">
-<meta property="og:description" content="Hand-coded websites for Luton businesses. £499 once. Free preview in 24h. 60-day lead guarantee.">
+<title>${title}</title>
+<meta name="description" content="Website design in ${town}${region ? ', ' + region : ''}. Hand-coded for local businesses, £${P.starter.build} once, optional £${P.starter.monthly_optional}/mo managed. Free working preview in ${D.preview_hours} hours, no card. First lead in ${G.days} days or full refund.">
+<link rel="canonical" href="${url}">
+<meta property="og:title" content="${title}">
+<meta property="og:description" content="Hand-coded websites for ${town} businesses. £${P.starter.build} once. Free preview in ${D.preview_hours}h. ${G.days}-day lead guarantee.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://staticswift.co.uk/website-design-luton/">
+<meta property="og:url" content="${url}">
 <meta name="theme-color" content="#F2EFE7">
 <link rel="icon" href="/favicon.ico" sizes="any">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","@id":"https://staticswift.co.uk/website-design-luton/#business","name":"StaticSwift","url":"https://staticswift.co.uk/website-design-luton/","telephone":"+447502731799","email":"hello@staticswift.co.uk","description":"Website design for businesses in Luton. Free preview in 24 hours, from £499.","address":{"@type":"PostalAddress","addressLocality":"Luton","addressRegion":"Bedfordshire","addressCountry":"GB"},"priceRange":"£499 - £999"}</script>
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-4BZHQMG0RF"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-4BZHQMG0RF');</script>
+<script type="application/ld+json">${bizSchema}</script>
+${GA4}
 <link rel="preconnect" href="https://api.fontshare.com">
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=sentient@400,400i,500,500i&f[]=switzer@300,400,500,600&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap">
@@ -94,43 +150,43 @@ body{padding-bottom:64px}}
 <body>
 <header class="rh">
   <div class="rh-l">StaticSwift</div>
-  <div class="rh-r"><a href="#lead">Free preview · £499</a></div>
+  <div class="rh-r"><a href="#lead">Free preview · £${P.starter.build}</a></div>
 </header>
 
 <div class="mast">
   <div class="hero-grid">
     <div>
-      <div class="mark">Field Guide · Luton · Bedfordshire</div>
-      <h1>Websites for Luton businesses that make the <em>phone ring.</em></h1>
-      <p class="lede">£499 once. Optional £49/mo if you want it managed. <b>Real working preview in 24 hours</b>, no card. First lead in 60 days or your money back, and you keep the site.</p>
+      <div class="mark">Field Guide · ${town}${region ? ' · ' + region : ''}</div>
+      <h1>Websites for ${town} businesses that make the <em>phone ring.</em></h1>
+      <p class="lede">£${P.starter.build} once. Optional £${P.starter.monthly_optional}/mo if you want it managed. <b>Real working preview in ${D.preview_hours} hours</b>, no card. First lead in ${G.days} days or your money back, and you keep the site.</p>
     </div>
     <form class="lead-card" id="lead" method="post" action="/.netlify/functions/handle-intake" novalidate>
-      <div class="lc-h">Free preview in <em>24 hours.</em></div>
+      <div class="lc-h">Free preview in <em>${D.preview_hours} hours.</em></div>
       <div class="lc-sub">Four fields. No payment until you love it.</div>
       <div class="fg"><label>Your name</label><input type="text" name="name" required maxlength="60" placeholder="e.g. Sarah Jones" autocomplete="name"></div>
       <div class="fg"><label>WhatsApp / mobile</label><input type="tel" name="whatsapp" required maxlength="20" placeholder="07700 900000" autocomplete="tel"></div>
       <div class="fg"><label>Email</label><input type="email" name="delivery_email" required maxlength="100" placeholder="you@email.com" autocomplete="email"></div>
       <div class="fg"><label>Your trade</label><input type="text" name="business_type" required maxlength="60" placeholder="e.g. Plumber" autocomplete="organization-title"></div>
-      <input type="hidden" name="location" value="Luton">
+      <input type="hidden" name="location" value="${town}">
       <input type="text" name="bot-field" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0" aria-hidden="true">
       <button type="submit" class="submit">Get my free preview →</button>
-      <div class="err-box" id="err">Could not send. WhatsApp 07502 731 799 and Harry will pick it up by hand.</div>
-      <div class="ok-box" id="okb">Done. Preview lands within 24 hours. WhatsApp from Harry within the hour, UK working hours.</div>
-      <div class="lc-foot">No card needed · 60-day lead guarantee · You own it forever</div>
+      <div class="err-box" id="err">Could not send. WhatsApp ${C.whatsapp_display} and Harry will pick it up by hand.</div>
+      <div class="ok-box" id="okb">Done. Preview lands within ${D.preview_hours} hours. WhatsApp from Harry within the hour, UK working hours.</div>
+      <div class="lc-foot">No card needed · ${G.days}-day lead guarantee · You own it forever</div>
     </form>
   </div>
 </div>
 
 <section><div class="si fi">
-  <span class="tag">Luton</span>
+  <span class="tag">${town}</span>
   <h2>Local work goes to whoever the search <em>finds first.</em></h2>
-  <p class="body-text">Every trade in Luton has the same quiet problem: the work is local, the searching is local, but the search results are owned by directories and aggregators charging for leads that should have been yours. Luton sits in Bedfordshire, and the firms that win its work are the ones a Bedfordshire postcode search can actually find. StaticSwift builds hand-coded websites for Luton businesses, one craftsman in Manchester writing every page, 51 trades served on this page alone. £499 once for a 5-page site with your Google Business Profile wired in, hosting and SSL included, and an optional £49/mo managed plan if you would rather never think about it again. You see a real working preview within 24 hours of sending a brief, before any money moves. If the site does not produce a lead within 60 days of going live, the full amount comes back and the site stays yours. Pick your trade below, or send the brief now and have something real to look at by this time tomorrow.</p>
+  <p class="body-text">${intro}</p>
 </div></section>
 
 <section style="background:var(--paper-deep)"><div class="si fi">
-  <span class="tag">Pick your trade in Luton</span>
+  <span class="tag">Pick your trade in ${town}</span>
   <h2>Built for your <em>business type.</em></h2>
-  <div class="grid"><a href="https://staticswift.co.uk/accountant-website-design-luton/">Accountant</a><a href="https://staticswift.co.uk/barber-website-design-luton/">Barber</a><a href="https://staticswift.co.uk/beauty-salon-website-design-luton/">Beauty Salon</a><a href="https://staticswift.co.uk/builder-website-design-luton/">Builder</a><a href="https://staticswift.co.uk/cafe-website-design-luton/">Cafe</a><a href="https://staticswift.co.uk/cake-maker-website-design-luton/">Cake Maker</a><a href="https://staticswift.co.uk/carpet-cleaner-website-design-luton/">Carpet Cleaner</a><a href="https://staticswift.co.uk/caterer-website-design-luton/">Caterer</a><a href="https://staticswift.co.uk/childminder-website-design-luton/">Childminder</a><a href="https://staticswift.co.uk/cleaning-company-website-design-luton/">Cleaning Company</a><a href="https://staticswift.co.uk/dj-website-design-luton/">DJ</a><a href="https://staticswift.co.uk/dentist-website-design-luton/">Dentist</a><a href="https://staticswift.co.uk/dog-groomer-website-design-luton/">Dog Groomer</a><a href="https://staticswift.co.uk/driving-instructor-website-design-luton/">Driving Instructor</a><a href="https://staticswift.co.uk/dry-cleaner-website-design-luton/">Dry Cleaner</a><a href="https://staticswift.co.uk/electrician-website-design-luton/">Electrician</a><a href="https://staticswift.co.uk/estate-agent-website-design-luton/">Estate Agent</a><a href="https://staticswift.co.uk/florist-website-design-luton/">Florist</a><a href="https://staticswift.co.uk/food-truck-website-design-luton/">Food Truck</a><a href="https://staticswift.co.uk/gardener-website-design-luton/">Gardener</a><a href="https://staticswift.co.uk/gym-website-design-luton/">Gym</a><a href="https://staticswift.co.uk/joiner-website-design-luton/">Joiner</a><a href="https://staticswift.co.uk/locksmith-website-design-luton/">Locksmith</a><a href="https://staticswift.co.uk/mechanic-website-design-luton/">Mechanic</a><a href="https://staticswift.co.uk/mobile-hairdresser-website-design-luton/">Mobile Hairdresser</a><a href="https://staticswift.co.uk/music-teacher-website-design-luton/">Music Teacher</a><a href="https://staticswift.co.uk/nursery-website-design-luton/">Nursery</a><a href="https://staticswift.co.uk/optician-website-design-luton/">Optician</a><a href="https://staticswift.co.uk/painter-decorator-website-design-luton/">Painter & Decorator</a><a href="https://staticswift.co.uk/personal-trainer-website-design-luton/">Personal Trainer</a><a href="https://staticswift.co.uk/pest-control-website-design-luton/">Pest Control</a><a href="https://staticswift.co.uk/photographer-website-design-luton/">Photographer</a><a href="https://staticswift.co.uk/plasterer-website-design-luton/">Plasterer</a><a href="https://staticswift.co.uk/plumber-website-design-luton/">Plumber</a><a href="https://staticswift.co.uk/pub-website-design-luton/">Pub</a><a href="https://staticswift.co.uk/removals-website-design-luton/">Removals Company</a><a href="https://staticswift.co.uk/restaurant-website-design-luton/">Restaurant</a><a href="https://staticswift.co.uk/retail-website-design-luton/">Retailer</a><a href="https://staticswift.co.uk/roofer-website-design-luton/">Roofer</a><a href="https://staticswift.co.uk/scaffolder-website-design-luton/">Scaffolder</a><a href="https://staticswift.co.uk/skip-hire-website-design-luton/">Skip Hire</a><a href="https://staticswift.co.uk/solicitor-website-design-luton/">Solicitor</a><a href="https://staticswift.co.uk/tattoo-studio-website-design-luton/">Tattoo Studio</a><a href="https://staticswift.co.uk/therapist-website-design-luton/">Therapist</a><a href="https://staticswift.co.uk/tiler-website-design-luton/">Tiler</a><a href="https://staticswift.co.uk/tutor-website-design-luton/">Tutor</a><a href="https://staticswift.co.uk/vet-website-design-luton/">Vet</a><a href="https://staticswift.co.uk/web-designer-website-design-luton/">Web Designer</a><a href="https://staticswift.co.uk/wedding-planner-website-design-luton/">Wedding Planner</a><a href="https://staticswift.co.uk/window-cleaner-website-design-luton/">Window Cleaner</a><a href="https://staticswift.co.uk/yoga-studio-website-design-luton/">Yoga Studio</a></div>
+  <div class="grid">${links.join('')}</div>
 </div></section>
 
 <section><div class="si fi">
@@ -139,15 +195,15 @@ body{padding-bottom:64px}}
   <div class="pricing">
     <div class="pcard feat">
       <div class="pname">Starter</div>
-      <div class="pp">£499</div>
-      <div class="pmo">once · optional £49/mo managed</div>
-      <ul class="pl"><li>5 pages, hand-coded</li><li>Google Business Profile wired in</li><li>Hosting and SSL included</li><li>Free preview in 24h</li><li>Live within 14 days</li><li>1 free revision</li></ul>
+      <div class="pp">£${P.starter.build}</div>
+      <div class="pmo">once · optional £${P.starter.monthly_optional}/mo managed</div>
+      <ul class="pl"><li>${P.starter.pages} pages, hand-coded</li><li>Google Business Profile wired in</li><li>Hosting and SSL included</li><li>Free preview in ${D.preview_hours}h</li><li>Live within ${D.build_days} days</li><li>${D.revisions_included} free revision</li></ul>
     </div>
     <div class="pcard">
       <div class="pname">Pro</div>
-      <div class="pp">£999</div>
-      <div class="pmo">once · optional £99/mo managed</div>
-      <ul class="pl"><li>10 pages for multi-area operators</li><li>Gallery and testimonials</li><li>Priority build</li><li>Everything in Starter</li></ul>
+      <div class="pp">£${P.pro.build}</div>
+      <div class="pmo">once · optional £${P.pro.monthly_optional}/mo managed</div>
+      <ul class="pl"><li>${P.pro.pages} pages for multi-area operators</li><li>Gallery and testimonials</li><li>Priority build</li><li>Everything in Starter</li></ul>
     </div>
   </div>
 </div></section>
@@ -155,8 +211,8 @@ body{padding-bottom:64px}}
 <section class="guarantee"><div class="g-grid fi">
   <div>
     <span class="tag">The guarantee</span>
-    <h2>First lead in 60 days, or it's <em>free.</em></h2>
-    <p class="body-text">If the site doesn't put a new enquiry in your hands within 60 days of going live, you get the full £499 back. And you keep the site. That is the whole clause; there is no asterisk.</p>
+    <h2>First lead in ${G.days} days, or it's <em>free.</em></h2>
+    <p class="body-text">If the site doesn't put a new enquiry in your hands within ${G.days} days of going live, you get the full £${P.starter.build} back. And you keep the site. That is the whole clause; there is no asterisk.</p>
   </div>
   <div>
     <p class="founder">I'm <b>Harry Yule</b>, one developer in Manchester. I write every site by hand, at night mostly, because I watched an agency take a roofer's £1,800 for a WordPress site that never worked. No templates, no page builders, no project managers. One craftsman, your trade, your town.</p>
@@ -166,12 +222,12 @@ body{padding-bottom:64px}}
 
 <footer>
   <span>StaticSwift · MMXXVI · Manchester</span>
-  <span><a href="https://wa.me/447502731799">WhatsApp 07502 731 799</a> · <a href="mailto:hello@staticswift.co.uk">hello@staticswift.co.uk</a> · <a href="https://staticswift.co.uk/about/">About</a> · <a href="/order.html">Start a project</a></span>
+  <span><a href="https://wa.me/${C.whatsapp.replace('+', '')}">WhatsApp ${C.whatsapp_display}</a> · <a href="mailto:${C.email}">${C.email}</a> · <a href="https://staticswift.co.uk/about/">About</a> · <a href="/order.html">Start a project</a></span>
 </footer>
 
 <div class="msticky" id="ss-msticky">
-  <a class="wa" href="https://wa.me/447502731799" target="_blank" rel="noopener">WhatsApp</a>
-  <a class="go" href="#lead">Free preview in 24h →</a>
+  <a class="wa" href="https://wa.me/${C.whatsapp.replace('+', '')}" target="_blank" rel="noopener">WhatsApp</a>
+  <a class="go" href="#lead">Free preview in ${D.preview_hours}h →</a>
 </div>
 
 <script>
@@ -186,35 +242,33 @@ body{padding-bottom:64px}}
     var btn=f.querySelector('.submit'),ok=document.getElementById('okb'),er=document.getElementById('err');
     er.classList.remove('show');btn.disabled=true;var orig=btn.textContent;btn.textContent='Sending…';
     var fd=new FormData(f),data={};fd.forEach(function(v,k){if(k!=='bot-field')data[k]=v});
-    data.source='seo-hub-luton';data.stage='new-lead';data.createdAt=new Date().toISOString();
+    data.source='${slug}';data.stage='new-lead';data.createdAt=new Date().toISOString();
     try{
       var r=await fetch('/.netlify/functions/handle-intake',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
       var j=await r.json().catch(function(){return{ok:r.ok}});
       if(r.ok&&j&&j.ok!==false){
         f.querySelectorAll('.fg,.submit,.lc-sub').forEach(function(el){el.style.display='none'});
         ok.classList.add('show');
-        try{if(typeof gtag==='function')gtag('event','generate_lead',{value:499,currency:'GBP',source:'seo-hub-luton'})}catch(_){}
+        try{if(typeof gtag==='function')gtag('event','generate_lead',{value:${P.starter.build},currency:'GBP',source:'${slug}'})}catch(_){}
       }else{er.classList.add('show');btn.disabled=false;btn.textContent=orig}
     }catch(_){er.classList.add('show');btn.disabled=false;btn.textContent=orig}
   });
 })();
 </script>
-<script data-ss-tracker>
-(function(){var E='/.netlify/functions/track-event';
-var p=location.pathname;
-var q=new URLSearchParams(location.search),src={};
-['utm_source','utm_medium','utm_campaign','ttclid','fbclid','gclid','ref','aff'].forEach(function(k){var v=q.get(k);if(v)src[k]=v;});
-var sid='';try{sid=sessionStorage.getItem('ss_sid')||'';if(!sid){sid=Math.random().toString(36).slice(2,10)+Date.now().toString(36);sessionStorage.setItem('ss_sid',sid);}}catch(_){}
-function send(o){try{var b=JSON.stringify(o);if(navigator.sendBeacon){navigator.sendBeacon(E,new Blob([b],{type:'application/json'}));}else{fetch(E,{method:'POST',headers:{'Content-Type':'application/json'},body:b,keepalive:true}).catch(function(){});}}catch(_){}}
-send({type:'pageview',path:p,ref:document.referrer||'',sid:sid,lang:navigator.language||'',vp:innerWidth+'x'+innerHeight,src:src});
-var t0=Date.now(),sent=false;
-function dur(){if(sent)return;sent=true;send({type:'duration',path:p,sid:sid,dur:Date.now()-t0});}
-addEventListener('pagehide',dur);
-document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')dur();});
-window.ssTrack=function(evt,meta){send({type:'event',evt:evt,path:p,sid:sid,meta:meta||{}});};
-document.addEventListener('submit',function(e){var f=e.target;if(f&&f.tagName==='FORM')window.ssTrack('form_submit',{form:f.id||''});},true);
-document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;if(!a)return;var h=a.getAttribute('href')||'';if(h.indexOf('wa.me')>-1||h.indexOf('whatsapp')>-1)window.ssTrack('whatsapp_click',{});else if(h.indexOf('tel:')===0)window.ssTrack('tel_click',{});},true);
-})();
-</script>
+${TRACKER}
 </body>
-</html>
+</html>`;
+}
+
+let built = 0, skipped = 0;
+for (const d of readdirSync(ROOT, { withFileTypes: true })) {
+  if (!d.isDirectory() || !d.name.startsWith('website-design-')) continue;
+  if (RETIRED.has(d.name)) { skipped++; continue; }
+  const file = join(ROOT, d.name, 'index.html');
+  if (!existsSync(file)) continue;
+  const parsed = parseOld(readFileSync(file, 'utf8'));
+  if (!parsed) { console.log('PARSE FAIL', d.name); skipped++; continue; }
+  built++;
+  if (!DRY) writeFileSync(file, render({ dir: d.name, ...parsed }));
+}
+console.log(`${DRY ? '[DRY] ' : ''}hubs built ${built}, skipped ${skipped}`);
