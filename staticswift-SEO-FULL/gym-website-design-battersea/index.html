@@ -136,6 +136,9 @@ footer a:hover{color:var(--gold2)}
 <div class="ss-fg"><label>Your name</label><input type="text" name="name" required maxlength="60" placeholder="e.g. Sarah Jones" autocomplete="name"></div>
 <div class="ss-fg"><label>Email</label><input type="email" name="delivery_email" required maxlength="100" placeholder="you@email.com" autocomplete="email"></div>
 </div>
+<div class="ss-row" data-ss-phone>
+<div class="ss-fg"><label>WhatsApp / mobile</label><input type="tel" name="whatsapp" required maxlength="20" placeholder="07700 900000" autocomplete="tel"></div>
+</div>
 <div class="ss-row">
 <div class="ss-fg"><label>Business type</label><select name="business_type" required><option value="accountant">Accountant</option><option value="architect">Architect</option><option value="bakery">Bakery</option><option value="barber">Barber / Hair Salon</option><option value="beauty-salon">Beauty / Nail Bar</option><option value="blacksmith">Blacksmith</option><option value="builder">Builder</option><option value="butcher">Butcher</option><option value="cafe">Cafe</option><option value="cake-maker">Cake Maker</option><option value="carpet-cleaner">Carpet Cleaner</option><option value="caterer">Caterer</option><option value="childminder">Childminder</option><option value="cleaning-company">Cleaning Company</option><option value="dentist">Dentist</option><option value="dj">DJ / Entertainer</option><option value="dog-groomer">Dog Groomer</option><option value="driving-instructor">Driving Instructor</option><option value="dry-cleaner">Dry Cleaner</option><option value="electrician">Electrician</option><option value="estate-agent">Estate Agent</option><option value="florist">Florist</option><option value="food-truck">Food Truck</option><option value="gardener">Gardener / Landscaper</option><option value="gym" selected>Gym</option><option value="joiner">Joiner</option><option value="locksmith">Locksmith</option><option value="mechanic">Mechanic</option><option value="mobile-hairdresser">Mobile Hairdresser</option><option value="music-teacher">Music Teacher</option><option value="nursery">Nursery / Pre-school</option><option value="optician">Optician</option><option value="painter-decorator">Painter &amp; Decorator</option><option value="personal-trainer">Personal Trainer</option><option value="pest-control">Pest Control</option><option value="photographer">Photographer</option><option value="plasterer">Plasterer</option><option value="plumber">Plumber</option><option value="pub">Pub / Bar</option><option value="removals">Removals</option><option value="restaurant">Restaurant</option><option value="retail">Retail / Shop</option><option value="roofer">Roofer</option><option value="scaffolder">Scaffolder</option><option value="skip-hire">Skip Hire</option><option value="solicitor">Solicitor</option><option value="tattoo-studio">Tattoo Studio</option><option value="therapist">Therapist</option><option value="tiler">Tiler</option><option value="tutor">Tutor</option><option value="vet">Vet</option><option value="web-designer">Web Designer</option><option value="wedding-planner">Wedding Planner</option><option value="window-cleaner">Window Cleaner</option><option value="yoga-studio">Yoga Studio</option><option value="other">Other</option></select></div>
 <div class="ss-fg"><label>Town / city</label><input type="text" name="location" required maxlength="60" value="Battersea" placeholder="e.g. Manchester" autocomplete="address-level2"></div>
@@ -236,6 +239,27 @@ document.querySelectorAll('.fi').forEach(el=>_o.observe(el));
    }else{er.style.display='block';btn.disabled=false;btn.innerHTML=orig;}
   }catch(err){er.style.display='block';btn.disabled=false;btn.innerHTML=orig;}
  });
+})();
+</script>
+<div class="ss-msticky" id="ss-msticky" data-ss-sticky>
+<a class="ss-msticky-wa" href="https://wa.me/447502731799" target="_blank" rel="noopener" aria-label="WhatsApp Harry">WhatsApp</a>
+<a class="ss-msticky-go" href="#ss-seo-form">Free preview in 24h &rarr;</a>
+</div>
+<style>
+.ss-msticky{display:none}
+@media(max-width:768px){
+.ss-msticky{position:fixed;bottom:0;left:0;right:0;z-index:90;display:flex;gap:1px;box-shadow:0 -4px 18px rgba(0,0,0,.18);transition:transform .25s ease}
+.ss-msticky.off{transform:translateY(110%)}
+.ss-msticky a{flex:1;text-align:center;padding:15px 8px;font:600 15px/1.2 'Outfit',system-ui,sans-serif;text-decoration:none;min-height:44px}
+.ss-msticky-wa{background:#1F8B47;color:#fff;flex:0 0 36%}
+.ss-msticky-go{background:#0a0a0a;color:#fff}
+body{padding-bottom:64px}
+}
+</style>
+<script>
+(function(){var bar=document.getElementById('ss-msticky');var f=document.getElementById('ss-seo-form');
+if(!bar||!f||!('IntersectionObserver' in window))return;
+new IntersectionObserver(function(es){es.forEach(function(e){bar.classList.toggle('off',e.isIntersecting);});},{threshold:.05}).observe(f);
 })();
 </script>
 <script data-ss-tracker>

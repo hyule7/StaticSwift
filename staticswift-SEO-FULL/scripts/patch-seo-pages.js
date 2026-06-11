@@ -224,6 +224,9 @@ function buildFormHtml({ niche, citySlug, cityLabel }) {
 <div class="ss-fg"><label>Your name</label><input type="text" name="name" required maxlength="60" placeholder="e.g. Sarah Jones" autocomplete="name"></div>
 <div class="ss-fg"><label>Email</label><input type="email" name="delivery_email" required maxlength="100" placeholder="you@email.com" autocomplete="email"></div>
 </div>
+<div class="ss-row" data-ss-phone>
+<div class="ss-fg"><label>WhatsApp / mobile</label><input type="tel" name="whatsapp" required maxlength="20" placeholder="07700 900000" autocomplete="tel"></div>
+</div>
 <div class="ss-row">
 <div class="ss-fg"><label>Business type</label><select name="business_type" required>${options}</select></div>
 <div class="ss-fg"><label>Town / city</label><input type="text" name="location" required maxlength="60" value="${escapeHtml(cityLabel)}" placeholder="e.g. Manchester" autocomplete="address-level2"></div>

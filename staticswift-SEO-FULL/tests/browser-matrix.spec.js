@@ -50,6 +50,16 @@ test.describe('leaf form', () => {
     const form = page.locator('#ss-seo-form');
     await expect(form).toHaveAttribute('method', 'post');
     await expect(form).toHaveAttribute('action', '/.netlify/functions/handle-intake');
+    await expect(form.locator('input[name="whatsapp"]')).toHaveAttribute('required', '');
+  });
+
+  test('sticky mobile CTA shows on phones and hides at the form', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'mobile-only bar');
+    await page.goto('/plumber-website-design-burnley/', { waitUntil: 'domcontentloaded' });
+    const bar = page.locator('#ss-msticky');
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight / 2));
+    await page.waitForTimeout(600);
+    await expect(bar).toBeVisible();
   });
 
   test('JS submit posts to handle-intake and shows success', async ({ page }) => {
@@ -62,9 +72,11 @@ test.describe('leaf form', () => {
     await page.goto('/plumber-website-design-burnley/', { waitUntil: 'domcontentloaded' });
     await page.fill('#ss-seo-form input[name="name"]', 'Matrix Test');
     await page.fill('#ss-seo-form input[name="delivery_email"]', 'matrix@test.invalid');
+    await page.fill('#ss-seo-form input[name="whatsapp"]', '07700 900000');
     await page.click('#ss-seo-form .ss-submit');
     await expect(page.locator('#ss-seo-ok')).toBeVisible({ timeout: 8000 });
     expect(posted.name).toBe('Matrix Test');
+    expect(posted.whatsapp).toBe('07700 900000');
     expect(posted.business_type).toBe('plumber');
     expect(posted.location).toBe('Burnley');
     expect(posted.source).toContain('seo-plumber-burnley');
