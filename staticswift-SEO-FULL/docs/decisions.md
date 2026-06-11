@@ -52,3 +52,34 @@ contrast against Wix/Squarespace subscriptions. (Brand Director)
 **D-010. generate_lead value corrected 149 -> 499** estate-wide and in
 patch-seo-pages.js so ad optimisation learns against the real price. (Head
 of Analytics)
+
+## 2026-06-11 (overnight run)
+
+**D-011. Harry pushed Phase 0 to production himself** (commit "PUSH", 22:02).
+Live verification followed: tracker, POST fallback, corrected claims, llms.txt,
+favicon and Salford hub all confirmed live. ADMIN_PASSWORD env var is set in
+Netlify but still equals the burned password; rotation flagged as Harry's
+first job. (CEO)
+
+**D-012. PII purge executed on live analytics**: 622 of 1,803 stored events
+scrubbed of query-string PII across 6 day-buckets. IndexNow ping accepted
+(200); Google's legacy sitemap ping endpoint is retired (404s, expected).
+(Head of Analytics)
+
+**D-013. Phase 1 split into 1a (shipped) and 1b (review-gated).** Because
+Harry deploys main straight to production, the estate-wide template redesign
+is NOT applied blind. 1a shipped surgical, low-risk conversion fixes to all
+31,365 leaf pages: required WhatsApp field and sticky mobile CTA. 1b built
+the full Field Guide leaf template as three noindexed samples under
+/_template-preview/ for Harry's approval before rollout. (CEO, with SEO
+Director's no-bulk-rewrite rule)
+
+**D-014. New leaf template renders everything from facts.json at build
+time**; pricing, guarantee, delivery claims are interpolated, not typed.
+Conversion-critical elements (form, submit, success state) carry no reveal
+animations, fixing the failure class found on the order page. (CRO)
+
+**D-015. Trade pain copy is per-trade, not per-town** (plumber, electrician,
+barber written; remaining trades to follow the same register), with town
+uniqueness from data interpolation. No em dashes; separators are middots.
+(Brand Director)

@@ -43,4 +43,4 @@ head-of-analytics, cfo. All inherit `.claude/agents/_covenant.md`
 5. Batch questions for Harry at phase boundaries; give a deploy preview link.
 
 ## Current phase
-Phase 0 (mechanical truth) in progress. See docs/audit/phase0-findings.md.
+Phase 0 COMPLETE and verified live. Phase 1a (phone field + sticky CTA) shipped estate-wide. Phase 1b template awaiting Harry approval at /_template-preview/. See docs/audit/phase0-findings.md.
