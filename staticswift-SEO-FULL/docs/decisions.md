@@ -83,3 +83,10 @@ animations, fixing the failure class found on the order page. (CRO)
 barber written; remaining trades to follow the same register), with town
 uniqueness from data interpolation. No em dashes; separators are middots.
 (Brand Director)
+
+## 2026-06-12
+
+**D-016. Harry waived review pauses: "do the phases in order, dont ask for
+any approval just keep going."** Phase boundaries no longer wait for sign-off.
+The covenant, identity rules and facts.json gates remain absolute; the
+QA gates (validate-facts, crawl, matrix) still run before every commit. (CEO)

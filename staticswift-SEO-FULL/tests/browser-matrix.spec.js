@@ -35,7 +35,7 @@ for (const tpl of TEMPLATES) {
       await page.goto(tpl.path, { waitUntil: 'domcontentloaded' });
       const cta = tpl.name === 'homepage'
         ? page.locator('#bc-btn-primary')
-        : page.locator('a.hcta, a.hero-cta').first();
+        : page.locator('a.hcta, a.hero-cta, .rh-r a').first();
       await cta.scrollIntoViewIfNeeded();
       await expect(cta).toBeVisible();
       const box = await cta.boundingBox();
@@ -47,7 +47,7 @@ for (const tpl of TEMPLATES) {
 test.describe('leaf form', () => {
   test('has the non-JS POST fallback wired', async ({ page }) => {
     await page.goto('/plumber-website-design-burnley/', { waitUntil: 'domcontentloaded' });
-    const form = page.locator('#ss-seo-form');
+    const form = page.locator('#lead');
     await expect(form).toHaveAttribute('method', 'post');
     await expect(form).toHaveAttribute('action', '/.netlify/functions/handle-intake');
     await expect(form.locator('input[name="whatsapp"]')).toHaveAttribute('required', '');
@@ -70,11 +70,11 @@ test.describe('leaf form', () => {
     });
     await page.route('**/.netlify/functions/track-event', r => r.fulfill({ status: 204, body: '' }));
     await page.goto('/plumber-website-design-burnley/', { waitUntil: 'domcontentloaded' });
-    await page.fill('#ss-seo-form input[name="name"]', 'Matrix Test');
-    await page.fill('#ss-seo-form input[name="delivery_email"]', 'matrix@test.invalid');
-    await page.fill('#ss-seo-form input[name="whatsapp"]', '07700 900000');
-    await page.click('#ss-seo-form .ss-submit');
-    await expect(page.locator('#ss-seo-ok')).toBeVisible({ timeout: 8000 });
+    await page.fill('#lead input[name="name"]', 'Matrix Test');
+    await page.fill('#lead input[name="delivery_email"]', 'matrix@test.invalid');
+    await page.fill('#lead input[name="whatsapp"]', '07700 900000');
+    await page.click('#lead .submit');
+    await expect(page.locator('#okb')).toBeVisible({ timeout: 8000 });
     expect(posted.name).toBe('Matrix Test');
     expect(posted.whatsapp).toBe('07700 900000');
     expect(posted.business_type).toBe('plumber');

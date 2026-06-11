@@ -1,6 +1,6 @@
 # Crawl Audit Report
 
-Generated 2026-06-11T22:48:23.134Z against the local built tree (31853 pages).
+Generated 2026-06-11T23:16:37.729Z against the local built tree (31853 pages).
 
 ## Headline
 
@@ -9,7 +9,7 @@ Generated 2026-06-11T22:48:23.134Z against the local built tree (31853 pages).
 - Broken internal links: 0 unique targets
 - Sitemap URLs that do not resolve on disk: 0
 - Pages on disk missing from sitemaps: 8
-- Pages on disk never linked internally: 10
+- Pages on disk never linked internally: 9
 - Missing canonical: 12 · wrong canonical: 4
 - Missing title: 0 · duplicate titles: 1
 - Missing meta description: 10 · duplicate metas: 1
@@ -43,7 +43,6 @@ None.
 - /client-portal.html
 - /gone.html
 - /index.html
-- /locations.html
 - /niches.html
 - /payment-confirmed.html
 - /thank-you.html

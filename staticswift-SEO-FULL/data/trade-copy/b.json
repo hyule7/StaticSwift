@@ -1,0 +1,164 @@
+{
+  "vet": {
+    "label": "Vet", "plural": "vets",
+    "services": ["Consultations and vaccinations", "Surgery", "Dental care", "Out-of-hours cover", "Puppy and kitten plans", "Nurse clinics"],
+    "pain": "People choose a vet the way they choose a doctor: once, carefully, and mostly online. New arrivals to a town search, compare two or three practices, and register with the one whose website answered their actual questions: consultation prices, out-of-hours arrangements, parking, whether you are independent or corporate. A practice website that states those things plainly, introduces the team with real photographs, and makes registration a five-minute form wins the registrations that fund the next decade. The corporates have noticed this; the independents who match them online keep their towns.",
+    "faqs": [
+      ["Can new clients register online?", "A registration form with pet details lands in your inbox, and the front desk stops retyping passports over the phone."],
+      ["Should consultation prices be listed?", "Independent practices win by being straight about fees while the corporates obscure them. State the consult price and the plans."]
+    ]
+  },
+  "dentist": {
+    "label": "Dentist", "plural": "dentists",
+    "services": ["Check-ups and hygiene", "Fillings and crowns", "Whitening", "Implants", "Invisalign and orthodontics", "Emergency appointments"],
+    "pain": "Every practice says it accepts new private patients; the ones that actually gain them are findable and clear about money. Patients search 'dentist {TOWN}' with two questions: can I get in, and what will it cost. A practice website that states new-patient exam fees, shows the practice and the dentists as real people, and offers an appointment request form converts the searchers the others scare off with silence. Whitening, implants and Invisalign are searched separately by patients with budgets already formed; each deserves its own clear page with honest price ranges.",
+    "faqs": [
+      ["Do treatment pages matter?", "Implants, Invisalign and whitening are searched on their own with money ready. A page per treatment with honest from-prices is where private revenue comes from."],
+      ["Can patients request appointments online?", "A request form with preferred times cuts the 9am phone queue and captures the after-hours browsers who never call back."]
+    ]
+  },
+  "optician": {
+    "label": "Optician", "plural": "opticians",
+    "services": ["Eye examinations", "Contact lens fitting", "Designer and budget frames", "OCT scanning", "Children's eye care", "Home visits"],
+    "pain": "The chains spend millions saying every high street is the same; an independent optician's website is the counter-argument. State what the chains cannot: the same optometrist every visit, OCT as standard, frame ranges the multiples do not carry, repairs done at the counter. Patients overdue a test search when the headaches start or the arm gets too short for the menu, and they will choose the practice that feels like a clinician rather than a conveyor. Show the team, the kit and the test fee, and let the door do the rest.",
+    "faqs": [
+      ["How does an independent compete with the chains online?", "By saying what the chains cannot: continuity of optometrist, longer tests, OCT standard, named frame brands. Specific beats cheap."],
+      ["Can patients book tests through the site?", "A booking request form with preferred days; the practice confirms by phone or text. Most after-hours bookings are lost without it."]
+    ]
+  },
+  "dog-groomer": {
+    "label": "Dog Groomer", "plural": "dog groomers",
+    "services": ["Full grooms", "Bath and brush", "Hand stripping", "Puppy introductions", "Nail trims", "De-shedding treatments"],
+    "pain": "Dog owners choose a groomer with the anxiety of choosing a childminder, because to them it is the same decision. Your website calms that anxiety before the first phone call: photographs of relaxed dogs mid-groom, your qualifications and how you handle nervous animals, prices by size and coat, and reviews that mention the doodle that came back happy. Doodles alone have transformed the trade's economics; their owners book eight grooms a year and they find their groomer by searching. A full book is built on owners like that finding you first.",
+    "faqs": [
+      ["Can prices go on the page by breed size?", "Small, medium, large and coat type, with a note that matted coats are quoted on sight. It filters the calls beautifully."],
+      ["Do photos of dogs really win bookings?", "They are everything. Happy dogs, clean finishes, before-and-after coats: the page should look like the result the owner wants."]
+    ]
+  },
+  "cafe": {
+    "label": "Cafe", "plural": "cafes",
+    "services": ["Breakfast and brunch", "Speciality coffee", "Lunch menus", "Cakes and bakes", "Takeaway and pre-orders", "Private hire"],
+    "pain": "A cafe's customers decide before they leave the house: where has outdoor seating, whether the kitchen does gluten-free, what time food stops. If the answers live only in a sun-faded window menu, the search goes to the cafe whose website answers. Menu with prices, hours that match reality, the room photographed in honest light, and the story of the place in three sentences. Add pre-order for the lunch trade and private-hire details for the evenings, and the site starts paying like a second till.",
+    "faqs": [
+      ["Does a cafe need more than an Instagram?", "Instagram reaches your followers; the website catches strangers searching 'brunch {TOWN}' and answers hours, menu and dogs-welcome in one tap."],
+      ["Can the menu be kept current?", "Yes, edits are part of the managed plan, or you change the file yourself. A wrong menu online costs covers every weekend."]
+    ]
+  },
+  "restaurant": {
+    "label": "Restaurant", "plural": "restaurants",
+    "services": ["A la carte menus", "Sunday lunch", "Bookings and group dining", "Private dining", "Events and occasions", "Gift vouchers"],
+    "pain": "Every empty table is an argument the internet won somewhere else. Diners decide on a search and a menu PDF that will not load has lost more bookings than bad reviews ever did. A restaurant website does five jobs: menu as readable text with prices, booking handled cleanly (your system embedded, or a form the front desk works from), the room photographed truthfully, the Sunday and events offers given their own pages, and the phone number one tap away. The aggregators charge per cover for diners your own name brought; a site that ranks keeps the margin in the kitchen.",
+    "faqs": [
+      ["Can it work with my booking system?", "ResDiary, OpenTable, SevenRooms or a plain form: whatever you run gets embedded so bookings land where the team already looks."],
+      ["Menus change weekly. Is that a problem?", "Menus are text, not PDFs, and updating them is part of the managed plan. PDFs on phones lose diners."]
+    ]
+  },
+  "pub": {
+    "label": "Pub / Bar", "plural": "pubs and bars",
+    "services": ["Food service times", "Cask and craft range", "Sunday roasts", "Live sport and events", "Function room hire", "Beer garden"],
+    "pain": "The two searches that matter to a pub are 'pubs near me showing the football' and 'Sunday roast {TOWN}', and both are answered by a website, not a chalkboard. State the kitchen hours, the screens and the fixtures policy, the roast and its price, the garden, the dog policy, the function room with real photos. The pub that answers online fills tables the others assume walked past. A quiet Tuesday function enquiry caught by a form pays for the site for the year.",
+    "faqs": [
+      ["Do function room enquiries really come through search?", "Wakes, birthdays and christenings are all searched with dates in hand. A function page with capacity, food options and a form is steady, high-margin trade."],
+      ["Can it list sport fixtures?", "A simple what's-on section covers fixtures, quiz nights and live music, and it is what half your searches are looking for."]
+    ]
+  },
+  "food-truck": {
+    "label": "Food Truck", "plural": "food trucks",
+    "services": ["Weekly pitch schedule", "Event catering", "Weddings", "Corporate lunches", "Festivals", "Private parties"],
+    "pain": "A food truck has two businesses: the queue at the hatch, and the bookings that fill the calendar. The queue follows social media; the bookings follow search. Wedding planners and office managers do not scroll Instagram for caterers, they search 'street food catering {TOWN}' with a budget and a date, and they need a menu, a price guide and a booking form within three taps. A truck website that shows the rig, the hygiene rating, the package prices and the pitch schedule converts both kinds of customer without you leaving the fryer.",
+    "faqs": [
+      ["Can it take event bookings?", "A booking form with date, headcount and location is the difference between a full summer and a quiet one. Planners book months ahead, online, in the evening."],
+      ["Does the weekly pitch schedule fit?", "A this-week section lists your pitches; regulars check it and event clients see the truck is alive and trading."]
+    ]
+  },
+  "caterer": {
+    "label": "Caterer", "plural": "caterers",
+    "services": ["Wedding catering", "Funeral teas", "Corporate buffets", "Private dinner parties", "Hog roasts and BBQs", "Dietary-specific menus"],
+    "pain": "Catering is booked by people planning the biggest days of their lives, and they plan online at night. They want sample menus with real prices, photographs of food you actually served, how tastings work, and whether the date is even possible. A caterer's website answers all four and then asks for the date in a form, which is exactly the order the customer wants to do business in. Funeral teas deserve gentle, separate handling and they are searched at short notice; being findable and kind on that page is both decent and good business.",
+    "faqs": [
+      ["Should sample menus carry prices?", "Per-head ranges, yes. Couples and PAs budget before they enquire; menus without numbers get closed."],
+      ["How do tastings work on the site?", "The page explains your tasting policy and the form captures the date enquiry; you confirm availability and take it from there."]
+    ]
+  },
+  "cake-maker": {
+    "label": "Cake Maker", "plural": "cake makers",
+    "services": ["Wedding cakes", "Birthday and celebration cakes", "Cupcakes and towers", "Consultations and tastings", "Dietary options", "Delivery and setup"],
+    "pain": "Nobody orders a wedding cake from a Facebook page with no prices; they fall in love with a portfolio and then check the from-price quietly. A cake maker's website is a gallery first: your best tiers photographed properly, by occasion, with from-prices that respect your work. Then the practical layer: lead times, tasting boxes, delivery radius, dietary options, and your registration with the council's food team. The orders that build a reputation arrive eight months ahead through exactly this path, in the evening, after the venue is booked.",
+    "faqs": [
+      ["Should cake prices be public?", "From-prices by tier count protect your time: enquiries arrive pre-qualified and the bargain hunters drift elsewhere."],
+      ["How far ahead do people book?", "Wedding cakes six to twelve months out, celebration cakes two to four weeks. The site captures both with lead times stated."]
+    ]
+  },
+  "florist": {
+    "label": "Florist", "plural": "florists",
+    "services": ["Bouquets and same-day delivery", "Weddings", "Funeral tributes", "Corporate contracts", "Subscriptions", "Workshops"],
+    "pain": "The relay giants take a third of every order for sending you a customer who searched your own town. A florist's website is how you stop paying that tax: same-day delivery stated with cut-off time, your real work photographed rather than catalogue stock, wedding and funeral pages handled with their very different tones, and a simple order path by phone or form. Funeral flowers especially are ordered locally, urgently and with feeling; the florist whose page is found, clear and kind gets the order and often the family's loyalty after it.",
+    "faqs": [
+      ["Can I take orders without the relay services?", "Phone and order-form to start, full checkout later if volume justifies it. Either way the margin stays in the shop."],
+      ["Do weddings and funerals need separate pages?", "They are different customers in different moments. Separate pages, separate tone, both with real examples of your work."]
+    ]
+  },
+  "beauty-salon": {
+    "label": "Beauty / Nail Bar", "plural": "beauty salons",
+    "services": ["Nails and gel", "Lashes and brows", "Facials and skin", "Waxing", "Spray tans", "Packages and gift vouchers"],
+    "pain": "A salon's diary fills two ways: regulars rebooking, and new clients searching 'nails {TOWN}' on a Thursday night. The second group books whoever shows a current price list, real photographs of finished sets, and a booking link that works at 11pm. Your website carries all three, plus the treatments menu the Instagram bio cannot hold, your patch-test policy, and gift vouchers for the Christmas trade. Treat it as the salon's front desk that never goes home and it pays for itself in a fortnight of new sets.",
+    "faqs": [
+      ["Can it link my booking app?", "Fresha, Treatwell, Ovatu or your own diary: the book-now button goes wherever your diary lives."],
+      ["Do price lists go out of date?", "Updating the list is part of the managed plan, or you edit it yourself. An accurate list online stops the price DMs."]
+    ]
+  },
+  "mobile-hairdresser": {
+    "label": "Mobile Hairdresser", "plural": "mobile hairdressers",
+    "services": ["Cuts and styling at home", "Colour and foils", "Occasion and bridal hair", "Care home visits", "Regular slots", "Family bookings"],
+    "pain": "Mobile hairdressing wins on convenience, but convenience has to be findable. Your clients are people the salons quietly fail: new mums, shift workers, older clients, care homes. They search for exactly what you do, and a one-page website that states your areas, your prices, your hygiene setup and how booking works will fill a round faster than any card on a noticeboard. Regular slots are the gold; the site's job is to start the first appointment, and your scissors keep the rest.",
+    "faqs": [
+      ["Which areas should the site cover?", "The towns and villages on your actual round, listed plainly. That is exactly what your next regular searches for."],
+      ["Can care homes book through it?", "A care-home line with your DBS status and experience opens steady weekday work most mobile stylists never think to advertise."]
+    ]
+  },
+  "tattoo-studio": {
+    "label": "Tattoo Studio", "plural": "tattoo studios",
+    "services": ["Custom pieces", "Flash days", "Cover-ups", "Fine line and realism", "Piercing", "Consultations"],
+    "pain": "Tattoo clients research like art buyers, because that is what they are. They find a style they love, stalk the artist's healed work, then look for the studio: licensing, hygiene, deposit terms, how booking actually opens. If that second search finds nothing but a DM backlog, hesitation creeps in and the deposit goes to a studio that looked like a business. A studio website carries each artist's portfolio and style, the council registration on the wall, aftercare written down, and a booking process that does not depend on being awake when books open.",
+    "faqs": [
+      ["Does each artist get a page?", "Each artist, their style, their healed work, their books-open status. Clients follow artists; the studio site is where following becomes a deposit."],
+      ["Can it handle consultations and deposits?", "Consultation requests come through a form with reference images attached; deposit terms are stated so no-shows stop costing chair time."]
+    ]
+  },
+  "photographer": {
+    "label": "Photographer", "plural": "photographers",
+    "services": ["Weddings", "Family and newborn", "Portraits and headshots", "Commercial and product", "Events", "Print and album sales"],
+    "pain": "A photographer without a website is asking clients to judge full-resolution craft through a compressed Instagram grid. Couples shortlist three wedding photographers and book the one whose galleries loaded beautifully and whose price page did not flinch. Your site is the portfolio at full width, organised by genre, with packages and from-prices, your availability enquiry form, and the about page that makes a stranger want you in the room on their biggest day. Commercial clients buy the same way with shorter emails. The work is visual; the website is the only shopfront that does it justice.",
+    "faqs": [
+      ["Galleries by genre or one big feed?", "By genre. A wedding couple should never have to scroll past product shots to find the first dance."],
+      ["Should packages and prices be shown?", "From-prices at minimum. Hidden pricing loses the planners and attracts the haggler; clear ranges book calls with the right people."]
+    ]
+  },
+  "personal-trainer": {
+    "label": "Personal Trainer", "plural": "personal trainers",
+    "services": ["1-to-1 training", "Small group sessions", "Online coaching", "Nutrition guidance", "Body transformation blocks", "Sport-specific work"],
+    "pain": "January resolutions, post-holiday regret, a doctor's quiet word: when the decision to get help finally lands, your future client searches. They are nervous, comparing three trainers, and looking for reasons to believe. A PT website gives them those reasons: real client results with real timescales, your qualifications and insurance, where and when you train people, block prices, and a first-session form that lowers the barrier to one conversation. The trainers with full books are rarely the fittest; they are the easiest to find and the safest to contact.",
+    "faqs": [
+      ["Do transformation photos belong on the page?", "With written consent, yes, with honest timescales attached. Real twelve-week results beat any stock image of an athlete."],
+      ["Can people book a first session online?", "A short form with goals and availability starts the conversation while the motivation is still hot. Speed matters in this trade."]
+    ]
+  },
+  "gym": {
+    "label": "Gym", "plural": "gyms",
+    "services": ["Memberships", "Day passes", "Classes timetable", "Personal training", "Strength and conditioning", "Corporate memberships"],
+    "pain": "An independent gym beats the budget chains on community and coaching, and loses to them on being findable. The searcher comparing you with the £19.99 warehouse needs your website to answer fast: membership prices, the class timetable, what the floor actually looks like, day-pass terms for the commitment-shy. Show the coaches, the racks, the community wall. Every January the search volume doubles and the chains harvest it with empty promises; a clear site with a join form is how the independent takes its share.",
+    "faqs": [
+      ["Should membership prices be public?", "Yes. Hidden gym pricing reads as a sales-pitch trap; published pricing reads as confidence, and it pre-qualifies every walk-in."],
+      ["Does the timetable live on the site?", "A current timetable, updated as part of the managed plan. It is the most-visited page of any gym site."]
+    ]
+  },
+  "yoga-studio": {
+    "label": "Yoga Studio", "plural": "yoga studios",
+    "services": ["Class timetable", "Beginners courses", "Memberships and passes", "Workshops", "Pregnancy yoga", "Private sessions"],
+    "pain": "The person who finally types 'yoga near me' has usually been meaning to for a year. What stops them is the fear of walking into the wrong room. A studio website dissolves that fear: the space photographed warm and real, teachers introduced as people, a beginners page that says exactly what to bring and expect, the timetable current, and intro offers a tap away. Pregnancy and beginners courses are searched by name with intent; each earns its own page. The studio that feels welcoming online fills the Tuesday 6pm that flyers never could.",
+    "faqs": [
+      ["Is a beginners page worth it?", "It is the highest-converting page a studio has. First-timers need to know what to bring, what to wear and that nobody will fold them in half."],
+      ["Can the timetable and booking app link up?", "Momence, Bookwhen, TeamUp or whichever you run: the timetable embeds and booking happens where it always did."]
+    ]
+  }
+}

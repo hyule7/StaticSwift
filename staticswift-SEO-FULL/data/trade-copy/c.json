@@ -1,0 +1,173 @@
+{
+  "accountant": {
+    "label": "Accountant", "plural": "accountants",
+    "services": ["Year-end accounts", "Self assessment", "VAT and Making Tax Digital", "Payroll", "Company formation", "Tax planning"],
+    "pain": "Every January a wave of panicked sole traders searches 'accountant {TOWN}' with a deadline two weeks out, and every April the limited companies follow. They are not comparing audit methodologies; they are looking for a human who answers, fixed fees they can budget, and somewhere local enough to drop a folder. An accountancy website that states fixed-fee packages, the software you run (Xero, QuickBooks, FreeAgent), and a switching process that takes one signed letter wins clients the bigger firms price out and the cheaper apps cannot reassure.",
+    "faqs": [
+      ["Do fixed fees belong on the page?", "Yes. Fee anxiety is why small businesses delay getting help; published packages turn browsers into booked calls."],
+      ["Can it mention my software stack?", "Xero, QuickBooks and MTD-ready stated plainly; half your future clients are searching because of an HMRC letter about exactly that."]
+    ]
+  },
+  "solicitor": {
+    "label": "Solicitor", "plural": "solicitors",
+    "services": ["Conveyancing", "Wills and probate", "Family law", "Employment advice", "Litigation", "Lasting powers of attorney"],
+    "pain": "Legal work is searched at life's hinge points: an offer accepted, a marriage ending, a parent gone. The client is stressed, comparing three firms, and choosing on clarity rather than prestige. A firm's website wins by being plain where the profession is opaque: conveyancing quoted with a real figure and disbursements explained, probate fees stated by approach, the people shown with faces and direct lines, SRA details visible. The firm that explains itself before the first phone call gets the instruction; the one hiding behind 'contact us for a quote' gets silence.",
+    "faqs": [
+      ["Should conveyancing fees be published?", "A transparent fee table including disbursements is now expected, and it is the single biggest factor in instruction decisions for movers."],
+      ["Do individual solicitors get profiles?", "Yes: photo, specialism, qualification year and direct contact. People instruct people, not letterheads."]
+    ]
+  },
+  "estate-agent": {
+    "label": "Estate Agent", "plural": "estate agents",
+    "services": ["Sales", "Lettings and management", "Free valuations", "Mortgage referrals", "EPCs and compliance", "Land and new homes"],
+    "pain": "The portals own the property search; what they cannot own is the valuation search. 'Estate agents {TOWN}' is typed by every seller at the start of their journey, and the agent whose site offers a frank fee structure, a valuation booking form and proof of recent local sales wins the instruction before the board goes up. Lettings landlords search the same way with longer loyalty. Your website is the argument for the instruction: local sold prices, your fee against the online agents' false economy, and the team who actually answer the phone.",
+    "faqs": [
+      ["Can sellers book valuations online?", "A valuation form with address and preferred time is the site's whole purpose; every one is potentially a five-figure instruction."],
+      ["How does it sit with Rightmove?", "The portals advertise the stock; your site wins the instruction to list it. Different jobs, and the second pays the fees of the first."]
+    ]
+  },
+  "web-designer": {
+    "label": "Web Designer", "plural": "web designers",
+    "services": ["Business websites", "E-commerce", "Branding and identity", "Hosting and care plans", "SEO foundations", "Redesigns"],
+    "pain": "A web designer with a poor website is a chef with an empty restaurant: the customer draws the obvious conclusion. Local businesses still want local designers; they search '{TOWN} web designer' precisely because they want a person they can meet, not a ticket queue. Your site is the proof of craft: a fast, handsome portfolio with live links, plain pricing, and the process explained without jargon. The brief that follows is warmer than anything cold outreach produces, because the work already made the argument.",
+    "faqs": [
+      ["Does a portfolio need live links?", "Screenshots prove Photoshop; live links prove delivery. Always link the real sites with the client's blessing."],
+      ["Should design prices be public?", "Ranges at least. It filters the £100 expectations politely and signals confidence to everyone else."]
+    ]
+  },
+  "driving-instructor": {
+    "label": "Driving Instructor", "plural": "driving instructors",
+    "services": ["Manual lessons", "Automatic lessons", "Intensive courses", "Pass Plus", "Motorway lessons", "Nervous driver specialism"],
+    "pain": "Learners and their parents shop for instructors the modern way: search the town, compare prices, check pass photos, message the one who seems patient. Waiting lists hide this, but lists shrink and recessions cull them. An instructor's website states lesson and block prices, manual or automatic, your pass rate evidence (the wall of test-centre selfies), areas covered and how the diary works. Automatic demand is climbing year on year; if you teach it, say so loudly, because that search has half the supply and all the urgency.",
+    "faqs": [
+      ["Do pass photos belong on the site?", "With permission, absolutely. A wall of green pass certificates is the only advertising this trade has ever needed, now made findable."],
+      ["Can it handle block bookings?", "Block prices stated and an enquiry form that asks postcode and availability; you confirm slots without playing text tennis."]
+    ]
+  },
+  "tutor": {
+    "label": "Tutor", "plural": "tutors",
+    "services": ["GCSE subjects", "A-level subjects", "11+ and entrance exams", "Primary support", "Online sessions", "Exam technique"],
+    "pain": "Tutoring is bought by parents in a specific season of worry: mock results in December, GCSE panic after Easter, 11+ summers. They search subject and town, and they choose on qualifications, DBS, results and a clear hourly rate. A tutor website states all four and adds the thing agencies cannot: you, in your own words, explaining how you teach. The agencies take up to half the hourly rate for the introduction; a site that ranks for '{TOWN} maths tutor' makes the introduction free, forever.",
+    "faqs": [
+      ["Should hourly rates be listed?", "Yes. Parents budget per term; a clear rate with block options books more consistently than 'prices on enquiry'."],
+      ["Is DBS worth stating?", "It is the first checkbox in every parent's head. Enhanced DBS stated plainly, certificate shown on request."]
+    ]
+  },
+  "music-teacher": {
+    "label": "Music Teacher", "plural": "music teachers",
+    "services": ["Piano lessons", "Guitar lessons", "Singing lessons", "Theory and grades", "Children and adult beginners", "Online lessons"],
+    "pain": "Parents search for music teachers in September and January; adults search after a birthday with a guitar in it. Both want the same page: instrument, grades taught, where lessons happen, DBS, price, and whether there is space this term. A music teacher's website answers in thirty seconds and offers a taster lesson form. Exam-board literacy sells: ABRSM and Trinity named, grade results mentioned, recital photos if you hold them. The teachers with waiting lists are not always the best musicians; they are the easiest for a searching parent to say yes to.",
+    "faqs": [
+      ["Do you mention exam boards?", "ABRSM, Trinity, Rock School: named boards and grade results are exactly the proof parents are scanning for."],
+      ["Can adults book tasters too?", "Adult beginners are half the market and twice as nervous. A taster form with a friendly line about being rusty converts them."]
+    ]
+  },
+  "nursery": {
+    "label": "Nursery / Pre-school", "plural": "nurseries",
+    "services": ["Full and half-day care", "Funded hours", "Baby rooms", "Pre-school rooms", "Outdoor play", "Show-arounds"],
+    "pain": "Choosing a nursery is the most emotional purchase a young family makes, and it starts months before the start date with a search and a shortlist. Your website is the first show-around: rooms photographed in honest daylight, the Ofsted outcome linked rather than paraphrased, fees and funded-hours handling stated like an adult conversation, staff turnover and keyworker approach explained, and a visit-booking form. The nursery that answers the questions parents are embarrassed to ask fills its baby room from the waiting list of the one that does not.",
+    "faqs": [
+      ["Should fees be published?", "Yes, with funded-hours handling explained. Fee opacity reads as a warning sign to parents comparing three settings."],
+      ["Can parents book visits online?", "A show-around form with child's age and preferred days; the manager confirms. Most enquiries arrive after bedtime."]
+    ]
+  },
+  "childminder": {
+    "label": "Childminder", "plural": "childminders",
+    "services": ["Full-time places", "Before and after school", "Funded hours", "School pick-ups", "Home-cooked meals", "Outdoor days"],
+    "pain": "Parents looking for a childminder are looking for a second home, and they search like it: town name, reviews, Ofsted, gut feel. A childminder's website does what a Facebook profile cannot: your Ofsted registration and outcome, your daily rhythm, the schools you pick up from, food, fees, and the vetting of everyone in the house. Photographs of the play spaces (no children's faces needed) let parents picture the day. The form asks child's age and days needed, and you reply knowing the enquiry is real and local.",
+    "faqs": [
+      ["What about privacy and photos?", "Spaces, not faces: the playroom, the garden, the lunch table. Parents see the environment; children stay private."],
+      ["Do school pick-ups matter on the page?", "They are often the deciding factor. Name the schools you collect from and the page does the matching for you."]
+    ]
+  },
+  "therapist": {
+    "label": "Therapist", "plural": "therapists",
+    "services": ["Individual counselling", "Couples therapy", "CBT", "Anxiety and depression", "Trauma-informed work", "Online sessions"],
+    "pain": "Someone searching for a therapist has usually rehearsed it for weeks. The page they land on has one job: make the next step feel survivable. That means warmth without slogans, your modality explained in human words, BACP or UKCP registration visible, fees and session length stated so money is not a second anxiety, and a contact route that promises a gentle reply. Directories list hundreds of names; your own site is the only place a nervous stranger gets a sense of sitting in the room with you. That sense is the entire decision.",
+    "faqs": [
+      ["Should fees be on the page?", "Yes, with session length. Removing the money mystery removes one of the two anxieties stopping the first email."],
+      ["Does registration need to be visible?", "BACP, UKCP or HCPC details build the safety a vulnerable searcher is scanning for. Visible, linked, plain."]
+    ]
+  },
+  "dry-cleaner": {
+    "label": "Dry Cleaner", "plural": "dry cleaners",
+    "services": ["Dry cleaning", "Laundry and pressing", "Wedding dress care", "Curtains and soft furnishings", "Repairs and alterations", "Collection and delivery"],
+    "pain": "Dry cleaning survives on habits, and habits form when someone new to town searches once, finds you, and never thinks about it again. The website that wins that single search states prices for the common items, turnaround times, opening hours that match the commute, and the specialist work that pays best: wedding dress boxing, curtains, leather. Add collection and delivery if you run it, because the customers who pay for convenience search for exactly that phrase and stay for years.",
+    "faqs": [
+      ["Should item prices be listed?", "The common dozen: suits, shirts, dresses, coats. Price clarity wins the first visit and the habit follows."],
+      ["Is wedding dress cleaning worth its own section?", "It is searched with emotion and a real budget, often a year after the wedding. A page with boxing options earns its keep."]
+    ]
+  },
+  "dj": {
+    "label": "DJ / Entertainer", "plural": "DJs and entertainers",
+    "services": ["Weddings", "Birthday parties", "Corporate events", "School discos", "Equipment and lighting", "Playlist planning"],
+    "pain": "Couples book wedding DJs eight months out, at night, from a sofa, with three tabs open. The tab that wins shows real events (your rig, real dancefloors), package prices, how the playlist conversation works, your PAT and PLI paperwork for the venue, and a date-check form. Facebook groups produce price-shoppers; search produces planners with budgets. A DJ website also rescues the corporate and school work that never posts in groups: those clients need an invoice-ready business, and looking like one online is most of the audition.",
+    "faqs": [
+      ["Do venues really ask for paperwork?", "PAT and public liability certificates, constantly. Having them stated on the site marks you as the professional option."],
+      ["Can couples check my availability?", "A date-check form is the highest-intent enquiry there is; answer fast and the booking usually follows."]
+    ]
+  },
+  "wedding-planner": {
+    "label": "Wedding Planner", "plural": "wedding planners",
+    "services": ["Full planning", "Partial planning", "On-the-day coordination", "Venue sourcing", "Supplier management", "Destination weddings"],
+    "pain": "Couples hire a planner to buy back their sanity, and they shortlist planners the same evening they realise they need one: online, overwhelmed, comparing three websites. Yours wins by being the calm it promises: real weddings with credits, the three service tiers explained with honest from-prices, how you work with venues and suppliers, and the consultation form. Planning is a trust trade; the about page matters as much as the portfolio. Show the person who will hold the day together and the call books itself.",
+    "faqs": [
+      ["Full, partial or on-the-day: does the site separate them?", "Three tiers, three pages, three price ranges. Couples self-select and arrive at the call knowing what they want."],
+      ["Do real weddings need supplier credits?", "Always. Credits prove the work is real and keep the supplier relationships that feed referrals back."]
+    ]
+  },
+  "retail": {
+    "label": "Retail / Shop", "plural": "shops",
+    "services": ["Opening hours and location", "Featured products", "Click and collect", "Gift vouchers", "Events and launches", "Loyalty"],
+    "pain": "The high street's quiet killer is not online shopping; it is being invisible at the moment someone nearby searches for what you sell. An independent shop's website is a signpost more than a store: what you stock, the brands, the opening hours that are actually true, parking, and the personality that makes a visit worth the trip. Add click-and-collect or vouchers if they suit, but the core job is simpler: when the town searches, exist, and look like somewhere worth walking to.",
+    "faqs": [
+      ["Does a shop need e-commerce?", "Not necessarily. Hours, stock, story and directions capture the local searches; selling online can come later if demand shows."],
+      ["Can it announce events and new stock?", "A simple news section covers launches and late-night openings, and gives regulars a reason to check back."]
+    ]
+  },
+  "blacksmith": {
+    "label": "Blacksmith", "plural": "blacksmiths",
+    "services": ["Bespoke gates and railings", "Architectural ironwork", "Restoration", "Commissions and sculpture", "Repairs", "Courses and experiences"],
+    "pain": "Blacksmithing sells twice: as craft to homeowners and architects commissioning gates and railings, and as experience to people buying a forge day for a birthday. Both buyers search, and both decide on photographs of fire-blackened, hand-finished work no fabricator can fake. A smith's website carries the portfolio, the commission process from sketch to fitting, restoration credentials for the heritage work, and course dates with gift options. The experience days alone, booked online, have kept more forges lit than horseshoes ever will.",
+    "faqs": [
+      ["Are forge experience days worth listing?", "They book solidly as gifts, online, around birthdays and Christmas. Dates, prices and vouchers on the page turn the forge into two businesses."],
+      ["How do architects find a smith?", "Through search and portfolios. A commissions page with drawings, process and finished installs wins the specification."]
+    ]
+  },
+  "architect": {
+    "label": "Architect", "plural": "architects",
+    "services": ["Extensions and lofts", "New builds", "Planning applications", "Building regulations packages", "Listed buildings", "Feasibility studies"],
+    "pain": "Most residential clients hire an architect once in their lives and have no idea how to choose one. They search the town, look at three portfolios, and book the practice whose website explained the process: feasibility, planning, building regs, tender, each with honest fee structure. Show built projects with photographs rather than renders where you can, name the conservation areas and councils you know, and offer a consultation form. Demystifying the RIBA stages on one calm page wins the clients who found the other firms intimidating.",
+    "faqs": [
+      ["Fees: percentage or fixed, and do we say?", "Explain your structure either way. Fee mystery is the main reason householders delay appointing anyone at all."],
+      ["Do planning wins matter on the page?", "Named approvals in local conservation areas are compelling proof you know the council the client is about to face."]
+    ]
+  },
+  "bakery": {
+    "label": "Bakery", "plural": "bakeries",
+    "services": ["Daily bread and pastries", "Sourdough", "Celebration cakes", "Wholesale to cafes", "Pre-orders", "Seasonal specials"],
+    "pain": "A bakery's queue is built on smell and habit; its growth is built on search. Weekend visitors typing 'bakery {TOWN}', cafes seeking a wholesale supplier, parents needing a birthday cake by Friday: all of them choose from a screen first. A bakery website states hours and sell-out reality, shows the loaves and laminates in honest morning light, takes pre-orders so the 6am queue does not decide who eats, and gives wholesale its own quiet page with delivery days. The bakeries that sell out by ten are the ones strangers can find by nine.",
+    "faqs": [
+      ["Do pre-orders work for small bakeries?", "A simple order form with collection day keeps regulars loyal and smooths production planning; no card machine needed to start."],
+      ["Is wholesale worth a page?", "Cafes and restaurants search for local suppliers more than bakers expect. Delivery days, minimums and a sample offer is all it takes."]
+    ]
+  },
+  "butcher": {
+    "label": "Butcher", "plural": "butchers",
+    "services": ["Dry-aged beef", "Local sourcing", "BBQ packs", "Christmas orders", "Sausages made in-house", "Wholesale to pubs"],
+    "pain": "The supermarket sells meat; a butcher sells knowledge, provenance and the Christmas order. All three are searched: 'butchers near me' spikes every December and every barbecue weekend, and the shop that takes turkey orders through a simple form owns the season. A butcher's website names the farms, shows the counter and the dry-ager, lists the BBQ packs with prices, and opens Christmas ordering in October. Pubs and restaurants seeking a local supplier search too; a wholesale line with delivery days brings trade that never walks past the window.",
+    "faqs": [
+      ["Can Christmas orders come through the site?", "An order form with collection slots replaces the December phone chaos and captures customers the counter has never met."],
+      ["Does provenance really sell?", "Named farms and breeds are exactly why customers choose a butcher over a supermarket. Say it plainly."]
+    ]
+  },
+  "food-stall": {
+    "label": "Food Stall", "plural": "food stalls",
+    "services": ["Market pitches", "Event catering", "Private bookings", "Seasonal menus", "Wholesale", "Collaborations"],
+    "pain": "A market stall's regulars know the pitch; everyone else needs a website to find the schedule, the menu and the booking line for events. Organisers booking street food for festivals and weddings search with budgets ready, and they book the stall that shows its hygiene rating, its menu with per-head prices, and photographs of the setup at real events. One page does it all, and the stall stops depending on footfall alone.",
+    "faqs": [
+      ["Can organisers book the stall online?", "A booking form with date, location and headcount. Event work pays better than footfall and books months ahead."],
+      ["Does the pitch schedule matter?", "A this-week section tells regulars where you are and proves to organisers the operation is alive."]
+    ]
+  }
+}

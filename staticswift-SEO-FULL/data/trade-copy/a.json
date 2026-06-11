@@ -1,0 +1,173 @@
+{
+  "plumber": {
+    "label": "Plumber", "plural": "plumbers",
+    "services": ["Emergency call-outs", "Boiler repair and install", "Bathroom fitting", "Leak detection", "Power flushing", "Annual servicing"],
+    "pain": "Most plumbing work is won on the phone, and most of those calls start with a search at 7am from a kitchen with water where water should not be. If the results show your competitors, the job is gone before your kettle boils. A plumber's website has one job: make the call happen. Click-to-call in the thumb zone, your service area spelled out, your Gas Safe number where the customer can see it, and three real reviews doing the persuading. That beats any directory listing, and it ends the lead fees on jobs that should have come to you directly. Checkatrade takes a cut of work your own name earned; a site that ranks for your town keeps the whole invoice.",
+    "faqs": [
+      ["Will my plumber website work on mobile phones?", "Mobile is designed first. Most customers searching for plumbers in {TOWN} are on a phone, often mid-emergency, so the call button stays under the thumb."],
+      ["Can it show my Gas Safe registration?", "Front and centre. Registration number, card photo if you want it, plus your insurance. Compliance is half of what a stranger is checking before they ring."]
+    ]
+  },
+  "electrician": {
+    "label": "Electrician", "plural": "electricians",
+    "services": ["Rewires and consumer units", "EICR testing and certificates", "EV charger installation", "Fault finding", "Lighting design", "Landlord certificates"],
+    "pain": "Electrical work is a distress purchase or a compliance purchase: either something tripped, or a landlord needs an EICR by Friday. Both customers search, scan, and call the first electrician who looks legitimate. Looking legitimate means your NICEIC or NAPIT registration visible, your certificates listed in plain English, real photographs of tidy consumer units, and a number that answers. A page built around those four things wins work from electricians with twice your years and none of your presentation. Add the EV charger demand rising street by street and the case makes itself: the installers getting that work are the ones a postcode search can find.",
+    "faqs": [
+      ["Can I show my certifications?", "Yes, and you should. NICEIC, NAPIT, Part P: badges and registration numbers go above the fold, because compliance is what the customer is actually buying."],
+      ["Does it cover EV charger work?", "If you install chargers, the site says so on its own section with the OZEV details that matter. That market is growing and search is where it shops."]
+    ]
+  },
+  "barber": {
+    "label": "Barber", "plural": "barbers",
+    "services": ["Skin fades", "Beard sculpting", "Hot towel shaves", "Kids cuts", "Walk-ins and bookings", "Loyalty offers"],
+    "pain": "A barbershop lives on two things: whether new faces can find the chair, and whether regulars can book without ringing mid-cut. Your Instagram shows the fades; your website does the boring work that pays. Opening hours that are actually right. A booking link that works first time. The shop pinned on a map. Your Google reviews pulled in where a new customer sees five stars before the price list. One extra walk-in a week from search pays for the site several times over, and unlike the directory apps, nobody takes a percentage of the chair.",
+    "faqs": [
+      ["Can it take bookings?", "Yes. Your existing booking system (Booksy, Fresha, Squire or a simple form) is wired in so regulars book in two taps."],
+      ["I run my shop from Instagram. Why add a site?", "Instagram shows your work to followers. A website catches strangers typing 'barber near me', shows your hours and prices, and hands them a booking button. The two feed each other."]
+    ]
+  },
+  "builder": {
+    "label": "Builder", "plural": "builders",
+    "services": ["Extensions", "Loft conversions", "Renovations", "Garden rooms", "Driveways and patios", "Project management"],
+    "pain": "An extension is a five-figure decision, and nobody hands over five figures to a builder they cannot check up on. Before the first phone call, your customer has already searched your name. If they find nothing, the job quietly goes to the firm with photographs of finished lofts, a real address, and a dozen reviews from streets they recognise. A builder's website is a portfolio with a phone number: before-and-after shots, the trades you manage, your insurance and memberships, and the areas you cover. It does not need to be clever. It needs to make a cautious homeowner feel safe enough to invite you round to quote.",
+    "faqs": [
+      ["Can I show my past jobs?", "That is the heart of it. Galleries per project type, before and after, with a line on what the job involved. Real photos only; stranger trust is built on brickwork, not stock images."],
+      ["What about my FMB or TrustMark membership?", "Displayed with the logo and your number. Accreditations close jobs at this price point."]
+    ]
+  },
+  "roofer": {
+    "label": "Roofer", "plural": "roofers",
+    "services": ["Roof repairs", "Full re-roofs", "Flat roofing and GRP", "Fascias and guttering", "Storm damage call-outs", "Chimney work"],
+    "pain": "Roofing work arrives with the weather. The night a ridge tile comes through the conservatory, your customer is on their phone searching, and the roofer who appears with a clear number and photos of real local jobs gets the call. The rest compete on a knock at the door, and householders have learned to distrust the knock. A roofer's website is your counter to the cowboy reputation the trade carries unfairly: your address, your insurance, scaffold-up photographs of your own work, and reviews from real streets. When the storm comes, be the name the search finds, not the van that happens to be passing.",
+    "faqs": [
+      ["Do emergency call-outs get priority on the page?", "Top of the page with a direct call button. Storm work is searched at strange hours from cold living rooms; the site is built for that moment."],
+      ["Can it show drone shots of finished roofs?", "Yes. If you have them, they are the most persuasive material a roofer owns."]
+    ]
+  },
+  "joiner": {
+    "label": "Joiner", "plural": "joiners",
+    "services": ["Fitted wardrobes", "Kitchen fitting", "Doors and skirting", "Staircases", "Bespoke furniture", "Commercial first and second fix"],
+    "pain": "Joinery sells on the photograph. A fitted alcove unit, a staircase with a clean string, a kitchen scribed tight to a wonky wall: customers cannot judge the work until they see it, and they cannot see it if your best jobs live only in your camera roll. A joiner's website is a portfolio arranged by job type, priced honestly by range, with the towns you cover and a form that asks the right first questions. The customer who finds it has usually been burned by a flat-pack fitter once already. Show them the difference a real bench joiner makes and the quote conversation starts halfway won.",
+    "faqs": [
+      ["Can I arrange my work by job type?", "Yes: wardrobes, kitchens, stairs, doors, each with its own gallery, because a wardrobe customer does not want to scroll past decking."],
+      ["I get most work from word of mouth. Why bother?", "Word of mouth sends people to check you out online before they ring. The site is where the recommendation gets confirmed instead of going cold."]
+    ]
+  },
+  "plasterer": {
+    "label": "Plasterer", "plural": "plasterers",
+    "services": ["Skimming and re-skims", "Boarding and dot-dab", "Rendering", "Coving", "Damp-wall remediation", "Insurance reinstatement work"],
+    "pain": "Plastering is judged in raking light, and so is your reputation. Most plasterers get work through builders until the day the builder's pipeline goes quiet; the ones who survive that month are the ones homeowners can find directly. A plasterer's website carries finished-wall photographs that show a flat skim, your day rate or room-price guidance so tyre-kickers filter themselves out, and the towns you will travel to. It also catches the insurance reinstatement work and landlord refurbs that never reach the builder grapevine. One direct room a fortnight pays the hosting for a decade.",
+    "faqs": [
+      ["Should I publish prices?", "Guide prices per room size work well: they filter bargain hunters before they ring and make serious customers comfortable enough to book a look."],
+      ["Can it show my finish?", "Photographs in natural light, walls and ceilings, before and after. A flat wall photographs better than any sales line reads."]
+    ]
+  },
+  "tiler": {
+    "label": "Tiler", "plural": "tilers",
+    "services": ["Bathroom tiling", "Kitchen splashbacks", "Floor tiling", "Wet rooms", "Porcelain and large format", "Repairs and regrouting"],
+    "pain": "Large-format porcelain has turned tiling into precision work, and customers know it: they have seen the lippage horror photos in the Facebook groups. What they want is proof of clean lines. A tiler's website is that proof: bathrooms shot square-on, mitred edges close up, a wet room floor with falls you can almost feel through the screen. Add the brands you work with, your day rate guidance, and the towns you cover. The bathroom fitter networks take a margin for handing you the same customer your own search result would have brought you free.",
+    "faqs": [
+      ["Does it show detail shots?", "Close-ups of mitres, trims and grout lines, because that is exactly what a nervous customer is zooming in on."],
+      ["Can builders and bathroom fitters find me too?", "Yes. A trade-enquiries line on the page quietly brings subcontract work alongside direct customers."]
+    ]
+  },
+  "painter-decorator": {
+    "label": "Painter & Decorator", "plural": "painters and decorators",
+    "services": ["Interior painting", "Exterior painting", "Wallpapering", "Spray finishing", "New-build snagging and mist coats", "Commercial maintenance"],
+    "pain": "Every street has a painter, so the customer's question is never whether one exists; it is which one will turn up, mask properly, and cut a straight line at the ceiling. Photographs answer that better than promises: crisp cutting-in, papered feature walls with matched pattern, exteriors finished before the scaffold came down. A decorator's website carries those photos, your approach (dust sheets, two coats, named brands), and real reviews. It also lets you steer the work you want, whether that is high-end residential or contract maintenance, instead of taking whatever the week brings.",
+    "faqs": [
+      ["Can I name the paint brands I use?", "Yes, and you should. Farrow & Ball or Dulux Trade on the page tells a customer what level you work at before prices are mentioned."],
+      ["Does exterior work get its own section?", "It does. Exterior jobs are bigger tickets, weather-window driven, and searched in spring; the site catches that season."]
+    ]
+  },
+  "gardener": {
+    "label": "Gardener / Landscaper", "plural": "gardeners and landscapers",
+    "services": ["Garden maintenance", "Lawn care", "Hedge cutting", "Patios and decking", "Turfing", "Garden clearances"],
+    "pain": "Gardening work splits in two: the weekly maintenance round that pays the van, and the landscaping jobs that pay the mortgage. Both start with a local search, and both are won by photographs. A gardener's website shows the transformation shots, lists the rounds you run and the areas you cover, and makes the first contact a form instead of a missed call from the top of a ladder. For landscaping, a gallery of patios and turf with honest price ranges filters the dreamers from the bookers. The customers who pay best are the ones who found you on purpose.",
+    "faqs": [
+      ["Can it handle both maintenance and landscaping?", "Two sections, two enquiry paths. Maintenance customers want a slot on the round; landscaping customers want a quote visit. The site sorts them before you pick up."],
+      ["What about seasonal work?", "Seasonal lines (clearances in autumn, lawn treatment in spring) get their own mentions so search catches the season."]
+    ]
+  },
+  "window-cleaner": {
+    "label": "Window Cleaner", "plural": "window cleaners",
+    "services": ["Regular rounds", "Pure water pole system", "Conservatory roofs", "Gutter clearing", "Solar panel cleaning", "Commercial fronts"],
+    "pain": "A window cleaning round is a subscription business wearing a flat cap. Every house added to the round is recurring revenue for years, and every house comes from someone who either saw the van or searched the town. The van you already have; the search result most window cleaners do not. A simple site that says the rounds you run, the system you use, your gutter and conservatory add-ons, and a form to join the round turns idle postcode searches into standing monthly money. Add GoCardless or standing order details and the awkward doorstep cash conversation disappears too.",
+    "faqs": [
+      ["Can people join my round online?", "That is the point. A short form with postcode and house type, and you reply with the price and the next visit date."],
+      ["Do add-on services help?", "Gutters, fascias and conservatory roofs roughly double the ticket on houses already on the round. The site sells them while you are up the ladder."]
+    ]
+  },
+  "cleaning-company": {
+    "label": "Cleaning Company", "plural": "cleaning companies",
+    "services": ["Domestic cleans", "End of tenancy", "Deep cleans", "Office contracts", "Carpet cleaning", "After-builders cleans"],
+    "pain": "Cleaning is a trust purchase: you are handing a stranger your keys. The companies that grow are the ones that look established at the exact moment a landlord, a letting agent or a busy household goes searching. That means a real website with your insurance and DBS position stated, end-of-tenancy checklists agents can rely on, named team members if you have them, and reviews that mention turning up on time. End-of-tenancy and after-builders work in particular is searched in a hurry with money ready; be the result that looks like a company rather than a leaflet.",
+    "faqs": [
+      ["Do letting agents find cleaners this way?", "Constantly. End-of-tenancy is deadline work; agents bookmark the firm whose site states the checklist, the guarantee and the invoice process plainly."],
+      ["Can it mention insurance and DBS checks?", "Stated plainly on the page. Key-holding customers need to read it before they ring, not be told after."]
+    ]
+  },
+  "carpet-cleaner": {
+    "label": "Carpet Cleaner", "plural": "carpet cleaners",
+    "services": ["Carpet deep cleans", "Upholstery cleaning", "Rug cleaning", "Stain and odour removal", "End of tenancy carpets", "Commercial carpets"],
+    "pain": "Nobody thinks about carpet cleaning until the puppy, the party or the moving-out inspection, and then they think about nothing else for an hour. That hour happens on a search engine. A carpet cleaner's website wins it with before-and-after photographs that look almost implausible, room prices stated plainly, the machine and method named for the customers who research, and a booking form for the ones who do not. Tenants chasing deposits and landlords between lets are the steadiest seam of work, and both search with a date already in mind.",
+    "faqs": [
+      ["Should prices be on the page?", "Per-room guide prices, yes. The job is price-shopped; being clear wins the call over a competitor's 'request a quote'."],
+      ["Do before-and-after photos matter that much?", "They are the entire sales pitch. A grey carpet turning cream again does what no paragraph can."]
+    ]
+  },
+  "locksmith": {
+    "label": "Locksmith", "plural": "locksmiths",
+    "services": ["Emergency lockouts", "Lock changes and upgrades", "uPVC door mechanisms", "Burglary repairs", "Key cutting", "Smart locks"],
+    "pain": "Locksmith work is the most search-driven trade there is: the customer is on the doorstep, locked out, phone in hand. They will call the first result that looks real and answers. National call-centre brokers have colonised that moment and they resell the job to someone like you at a mark-up the customer ends up resenting. Your own site, ranking for your own town, with a real local number, transparent call-out pricing and your DBS check noted, takes that moment back. State no-call-out-fee terms if you offer them, show the brands you fit, and answer the phone. That is the whole business.",
+    "faqs": [
+      ["How do I compete with the national brokers?", "By being visibly local and honest about pricing. Brokers hide fees; your page stating the call-out and labour terms plainly converts the customers who have been burned."],
+      ["Is emergency work really won online?", "Almost entirely. Lockouts are searched on the doorstep; the site exists for that two-minute window."]
+    ]
+  },
+  "pest-control": {
+    "label": "Pest Control", "plural": "pest controllers",
+    "services": ["Rodent control", "Wasp nest treatment", "Bed bug treatment", "Insect infestations", "Bird proofing", "Commercial contracts"],
+    "pain": "Pest problems are searched in disgust and urgency, usually at night, often in embarrassment. The customer wants discretion, speed and a fixed price, and they want to know you are qualified to use what you use. A pest controller's website states BPCA or NPTA membership, treatment pricing by pest, what a visit involves, and an unmarked-van line if you offer one. Wasp season alone justifies the site: every July the searches spike, the work is same-day, and the controller who appears with a price gets the job while the others are still returning voicemails.",
+    "faqs": [
+      ["Can pricing be listed per pest?", "Yes: wasps, mice, rats, bed bugs, each with a from-price. Urgency plus a clear number is what converts."],
+      ["Do commercial contracts come through search?", "Restaurants and landlords find their contractor this way, usually after an EHO visit. A commercial section with compliance reporting wins retained work."]
+    ]
+  },
+  "removals": {
+    "label": "Removals", "plural": "removals firms",
+    "services": ["House removals", "Flat and student moves", "Packing services", "Man and van", "Storage", "Office moves"],
+    "pain": "Moving house is the most stressful purchase your customer makes this year, and they are choosing the firm that will carry everything they own. They choose with a search, two or three quote forms, and a gut feeling about who seems real. A removals website wins that gut feeling: photos of your actual crew and liveried van, your insurance stated with numbers, how the quote survey works, and reviews that mention care on the stairs. The aggregator sites sell the same lead to five firms at once; your own result sells you alone.",
+    "faqs": [
+      ["Can customers get a quote through the site?", "A short form takes the move details and you respond with a survey or a fixed price. It arrives with the dates, which beats voicemail tag."],
+      ["Does insurance really matter on the page?", "It is the first thing a careful mover checks. Goods-in-transit and public liability, with figures, stated plainly."]
+    ]
+  },
+  "skip-hire": {
+    "label": "Skip Hire", "plural": "skip hire firms",
+    "services": ["Mini and midi skips", "Builders skips", "Roll-on roll-off", "Same and next-day delivery", "Permit arrangement", "Wait-and-load"],
+    "pain": "Skip hire is bought like a commodity, which is exactly why a clear website wins: the customer wants a size, a price and a delivery date, and the first firm that states all three gets the order. Put the size guide with dimensions and what fits, the prices including or excluding permit arranged plainly, the postcodes you serve, and a phone number that answers from the weighbridge. Builders ordering at 7am and householders clearing a garage on Saturday both buy the same way: fastest clear answer wins. Be the answer.",
+    "faqs": [
+      ["Should prices be published?", "Yes, by skip size, with the permit position stated for your council areas. Hiding prices in this trade just hands the order to whoever publishes them."],
+      ["Can it explain skip sizes?", "A size guide with dimensions and what-fits examples cuts wrong-size orders and the phone calls that come with them."]
+    ]
+  },
+  "scaffolder": {
+    "label": "Scaffolder", "plural": "scaffolders",
+    "services": ["Residential scaffolds", "Commercial scaffolds", "Temporary roofs", "Edge protection", "Scaffold inspections", "Design and drawings"],
+    "pain": "Scaffolding is bought by two different customers: the homeowner who needs the chimney done and is mildly terrified of the whole subject, and the builder who needs a firm that turns up on programme with the right tickets. One website serves both if it is organised properly: TG20 compliance and CISRS cards stated for the trade, plain-English explanations and street photos for the householder, and a quote form that asks the four questions that actually price a job. The firms winning repeat builder work are the ones whose paperwork looks as tidy as their standards.",
+    "faqs": [
+      ["Do builders find scaffolders through search?", "Smaller builders constantly; they need a reliable firm in the town the job is in. A trade-enquiries line with your insurance and TG20 position wins repeat programmes."],
+      ["Can it handle homeowner jobs too?", "Yes, with photos and plain English. Chimney, gutter and solar scaffolds are steady direct work at decent margins."]
+    ]
+  },
+  "mechanic": {
+    "label": "Mechanic", "plural": "mechanics",
+    "services": ["Servicing and MOT prep", "Diagnostics", "Brakes and clutches", "Timing belts", "Tyres and tracking", "Mobile call-outs"],
+    "pain": "A garage's natural enemies are the dealership's prices and the customer's suspicion, and both are beaten the same way: visible honesty. A mechanic's website states labour rates, lists common jobs with price ranges, shows the diagnostic kit you run, and carries reviews that mention being shown the old part. The warning light customer searches in mild panic; the service customer searches with a date in mind. Both choose the garage that looks straight with them before they have ever rung it. Word of mouth built your last decade; search builds the next one.",
+    "faqs": [
+      ["Should a garage publish labour rates?", "Yes. It is the question every caller is circling anyway, and stating it builds more trust than any slogan."],
+      ["Can customers book through the page?", "A booking form with car reg, job and preferred date drops straight into your day instead of interrupting it."]
+    ]
+  }
+}
