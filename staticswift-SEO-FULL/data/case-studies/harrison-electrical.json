@@ -1,0 +1,11 @@
+{
+  "show": true,
+  "client": "Harrison Electrical",
+  "trade": "electrician",
+  "trade_label": "NICEIC electrician",
+  "town": "Bristol",
+  "url": "/work/harrison-electrical/",
+  "quote": null,
+  "result_numbers": null,
+  "_note": "Real client build. quote and result_numbers stay null (and hidden) until Harry supplies verified figures. Never invent them."
+}

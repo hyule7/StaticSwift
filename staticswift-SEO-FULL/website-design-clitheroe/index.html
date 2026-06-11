@@ -152,6 +152,19 @@ body{padding-bottom:64px}}
   </div>
 </div></section>
 
+
+<section style="background:var(--paper)"><div class="si fi">
+  <span class="tag">Delivered work</span>
+  <div class="links" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px"><a style="font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;border:1px solid var(--hair);padding:9px 14px;border-radius:100px" href="https://staticswift.co.uk/work/harrison-electrical/" target="_blank" rel="noopener">Harrison Electrical · NICEIC electrician · Bristol ↗</a></div>
+  <p class="body-text" style="margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--bronze)" id="ss-last-ship">60-day refunds issued: 0.</p>
+</div></section>
+<script>
+(function(){var el=document.getElementById('ss-last-ship');if(!el)return;
+fetch('/.netlify/functions/get-last-ship').then(function(r){return r.ok?r.json():null}).then(function(d){
+if(!d||!d.ago)return;el.textContent='Last delivered '+d.ago+(d.business?' · '+d.business:'')+(d.town?', '+d.town:'')+'. '+el.textContent;
+}).catch(function(){});})();
+</script>
+
 <section class="guarantee"><div class="g-grid fi">
   <div>
     <span class="tag">The guarantee</span>

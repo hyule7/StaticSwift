@@ -26,6 +26,27 @@ const LIMIT = (() => { const i = process.argv.indexOf('--limit'); return i > -1 
 const facts = JSON.parse(readFileSync(join(ROOT, 'data/facts.json'), 'utf8'));
 const P = facts.pricing, D = facts.delivery, G = facts.guarantee, C = facts.contact;
 
+// Proof strip: real case studies only (show:true), plus the live delivered
+// ticker (get-last-ship) and any verified trust figures. Nothing fabricated;
+// null fields render nothing.
+const CASES = readdirSync(join(ROOT, 'data/case-studies'))
+  .filter(f => f.endsWith('.json'))
+  .map(f => JSON.parse(readFileSync(join(ROOT, 'data/case-studies', f), 'utf8')))
+  .filter(c => c.show);
+const TRUST = JSON.parse(readFileSync(join(ROOT, 'data/trust.json'), 'utf8'));
+const PROOF_STRIP = `
+<section style="background:var(--paper)"><div class="si fi">
+  <span class="tag">Delivered work</span>
+  <div class="links">${CASES.map(c => `<a href="https://staticswift.co.uk${c.url}" target="_blank" rel="noopener">${c.client} · ${c.trade_label} · ${c.town} ↗</a>`).join('')}</div>
+  <p class="body-text" style="margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--bronze)" id="ss-last-ship">${typeof TRUST.refunds_issued === 'number' ? `${G.days}-day refunds issued: ${TRUST.refunds_issued}.` : ''}</p>
+</div></section>
+<script>
+(function(){var el=document.getElementById('ss-last-ship');if(!el)return;
+fetch('/.netlify/functions/get-last-ship').then(function(r){return r.ok?r.json():null}).then(function(d){
+if(!d||!d.ago)return;el.textContent='Last delivered '+d.ago+(d.business?' · '+d.business:'')+(d.town?', '+d.town:'')+'. '+el.textContent;
+}).catch(function(){});})();
+</script>`;
+
 // Merge trade copy files.
 const TRADES = {};
 for (const f of readdirSync(join(ROOT, 'data/trade-copy'))) {
@@ -283,6 +304,8 @@ body{padding-bottom:64px}}
     <div class="sig">Founder · StaticSwift · Manchester</div>
   </div>
 </div></section>
+
+${PROOF_STRIP}
 
 <section><div class="si fi">
   <span class="tag">Questions ${PLU} ask</span>

@@ -172,6 +172,19 @@ body{padding-bottom:64px}}
   </div>
 </div></section>
 
+
+<section style="background:var(--paper)"><div class="si fi">
+  <span class="tag">Delivered work</span>
+  <div class="links"><a href="https://staticswift.co.uk/work/harrison-electrical/" target="_blank" rel="noopener">Harrison Electrical · NICEIC electrician · Bristol ↗</a></div>
+  <p class="body-text" style="margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--bronze)" id="ss-last-ship">60-day refunds issued: 0.</p>
+</div></section>
+<script>
+(function(){var el=document.getElementById('ss-last-ship');if(!el)return;
+fetch('/.netlify/functions/get-last-ship').then(function(r){return r.ok?r.json():null}).then(function(d){
+if(!d||!d.ago)return;el.textContent='Last delivered '+d.ago+(d.business?' · '+d.business:'')+(d.town?', '+d.town:'')+'. '+el.textContent;
+}).catch(function(){});})();
+</script>
+
 <section><div class="si fi">
   <span class="tag">Questions pest controllers ask</span>
   <h2>Straight <em>answers.</em></h2>
