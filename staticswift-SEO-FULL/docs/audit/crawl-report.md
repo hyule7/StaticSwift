@@ -1,6 +1,6 @@
 # Crawl Audit Report
 
-Generated 2026-06-10T20:06:14.609Z against the local built tree (31853 pages).
+Generated 2026-06-11T22:48:23.134Z against the local built tree (31853 pages).
 
 ## Headline
 
