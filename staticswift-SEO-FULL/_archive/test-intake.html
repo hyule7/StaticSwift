@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head><title>Test Intake</title></head>
+<body style="font-family:sans-serif;max-width:600px;margin:40px auto;padding:0 20px;background:#111;color:#fff">
+<h1>StaticSwift Intake Test</h1>
+<p>This page tests the form submission and admin data flow.</p>
+
+<h2>Step 1: Submit test data</h2>
+<button id="btn-submit" style="background:#00C8E0;color:#000;font-weight:700;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-size:16px">
+  Submit Test Client
+</button>
+<pre id="submit-result" style="background:#1a1a2e;padding:16px;border-radius:8px;margin-top:12px;white-space:pre-wrap;font-size:13px;min-height:40px"></pre>
+
+<h2>Step 2: Fetch clients from admin API</h2>
+<input type="text" id="pw" placeholder="Admin password" value="Harry2001!" style="background:#1a1a2e;border:1px solid #333;padding:10px;color:#fff;border-radius:6px;width:200px">
+<button id="btn-fetch" style="background:#00C8E0;color:#000;font-weight:700;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-size:16px;margin-left:8px">
+  Fetch Clients
+</button>
+<pre id="fetch-result" style="background:#1a1a2e;padding:16px;border-radius:8px;margin-top:12px;white-space:pre-wrap;font-size:13px;min-height:40px"></pre>
+
+<h2>Step 3: Check Netlify Blobs directly</h2>
+<button id="btn-raw" style="background:#555;color:#fff;font-weight:700;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-size:16px">
+  Raw Function Response
+</button>
+<pre id="raw-result" style="background:#1a1a2e;padding:16px;border-radius:8px;margin-top:12px;white-space:pre-wrap;font-size:13px;min-height:40px"></pre>
+
+<script>
+document.getElementById('btn-submit').addEventListener('click', async () => {
+  const out = document.getElementById('submit-result');
+  out.textContent = 'Sending...';
+  try {
+    const testData = {
+      name: 'Test Client ' + new Date().toLocaleTimeString(),
+      business_name: 'Test Barber Shop',
+      delivery_email: 'test@example.com',
+      phone: '07700000000',
+      business_type: 'Barber / Hair Salon',
+      package: 'starter',
+      hosting_addon: 'no',
+      location: 'Manchester',
+      business_description: 'A test barber shop for debugging',
+      brand_colours: 'Black and gold',
+      services: 'Haircuts, Beard trims, Hot towel shaves'
+    };
+    const resp = await fetch('/.netlify/functions/handle-intake', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(testData)
+    });
+    const text = await resp.text();
+    out.textContent = `Status: ${resp.status}\nResponse: ${text}`;
+    if (resp.ok) {
+      out.style.color = '#22c55e';
+    } else {
+      out.style.color = '#ef4444';
+    }
+  } catch(err) {
+    out.textContent = `FETCH ERROR: ${err.message}`;
+    out.style.color = '#ef4444';
+  }
+});
+
+document.getElementById('btn-fetch').addEventListener('click', async () => {
+  const out = document.getElementById('fetch-result');
+  const pw = document.getElementById('pw').value;
+  out.textContent = 'Fetching...';
+  try {
+    const resp = await fetch('/.netlify/functions/get-clients', {
+      headers: { 'x-admin-password': pw }
+    });
+    const text = await resp.text();
+    let parsed;
+    try { parsed = JSON.parse(text); } catch { parsed = text; }
+    out.textContent = `Status: ${resp.status}\nClients found: ${Array.isArray(parsed) ? parsed.length : 'N/A'}\n\nResponse:\n${JSON.stringify(parsed, null, 2).substring(0, 2000)}`;
+    out.style.color = resp.ok ? '#22c55e' : '#ef4444';
+  } catch(err) {
+    out.textContent = `FETCH ERROR: ${err.message}`;
+    out.style.color = '#ef4444';
+  }
+});
+
+document.getElementById('btn-raw').addEventListener('click', async () => {
+  const out = document.getElementById('raw-result');
+  out.textContent = 'Testing raw endpoint...';
+  try {
+    // Test without auth to see if function exists
+    const resp = await fetch('/.netlify/functions/get-clients');
+    out.textContent = `No auth test - Status: ${resp.status}\nResponse: ${await resp.text()}\n\n`;
+    
+    // Test handle-intake with OPTIONS
+    const resp2 = await fetch('/.netlify/functions/handle-intake', { method: 'GET' });
+    out.textContent += `GET handle-intake - Status: ${resp2.status}\nResponse: ${await resp2.text()}`;
+  } catch(err) {
+    out.textContent = `ERROR: ${err.message}`;
+    out.style.color = '#ef4444';
+  }
+});
+</script>
+</body>
+</html>

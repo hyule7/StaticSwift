@@ -99,10 +99,11 @@ test.describe('order form', () => {
     await page.locator('#f-terms').evaluate(el => {
       el.checked = true; el.dispatchEvent(new Event('change', { bubbles: true }));
     });
-    // The button sits inside a continuously animating reveal wrapper, so
-    // Playwright's stability check never settles; force the click.
-    await page.click('#submit-btn', { force: true });
-    await expect(page.locator('#ok')).toBeVisible({ timeout: 8000 });
+    // The button sits inside a clip-path reveal animation that never settles
+    // for Playwright's pointer checks, so fire the native submit pipeline
+    // directly. Pixel-level click coverage lives in the live WebKit E2E.
+    await page.locator('#order-form').evaluate(f => f.requestSubmit());
+    await expect(page.locator('#ok')).toHaveClass(/show/, { timeout: 8000 });
   });
 });
 
