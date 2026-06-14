@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+  <rect width="1080" height="1920" fill="#F2EFE7"/>
+  <rect x="0" y="0" width="1080" height="14" fill="#9C2615"/>
+  <text x="100" y="180" font-family="'Courier New', monospace" font-size="34" letter-spacing="10" fill="#8A7B62">STATICSWIFT</text>
+  <text x="100" y="232" font-family="'Courier New', monospace" font-size="26" letter-spacing="6" fill="#9C2615">OFFER</text>
+  <line x1="100" y1="300" x2="980" y2="300" stroke="rgba(14,11,7,.18)" stroke-width="2"/>
+  <text x="100" y="632" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-weight="500" font-size="118" fill="#0E0B07">See your new</text>
+  <text x="100" y="760" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-weight="500" font-size="118" fill="#0E0B07">website before</text>
+  <text x="100" y="888" font-family="Georgia, 'Times New Roman', serif" font-style="italic" font-weight="500" font-size="118" fill="#0E0B07">you pay a penny.</text>
+  <text x="100" y="1056" font-family="Georgia, serif" font-size="46" fill="#29221C">Free working preview in 24 hours. No card.</text>
+  <rect x="100" y="1560" width="880" height="150" rx="75" fill="#0E0B07"/>
+  <text x="540" y="1655" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-weight="700" font-size="52" fill="#F2EFE7">Get my free preview &#8594;</text>
+  <text x="540" y="1810" text-anchor="middle" font-family="'Courier New', monospace" font-size="30" letter-spacing="3" fill="#8A7B62">staticswift.co.uk  ·  60-day lead guarantee</text>
+</svg>

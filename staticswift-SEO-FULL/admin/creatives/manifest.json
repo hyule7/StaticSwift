@@ -1,0 +1,65 @@
+{
+  "updatedAt": "2026-06-14T21:52:30.339Z",
+  "creatives": [
+    {
+      "id": "phone-ring",
+      "kind": "Hook",
+      "hook": "Your next customer is searching for you right now.",
+      "file": "creatives/phone-ring.svg",
+      "format": "svg",
+      "size": "1080x1920",
+      "createdAt": "2026-06-14T21:52:30.338Z",
+      "by": "Ad Creative Designer"
+    },
+    {
+      "id": "free-preview",
+      "kind": "Offer",
+      "hook": "See your new website before you pay a penny.",
+      "file": "creatives/free-preview.svg",
+      "format": "svg",
+      "size": "1080x1920",
+      "createdAt": "2026-06-14T21:52:30.339Z",
+      "by": "Ad Creative Designer"
+    },
+    {
+      "id": "guarantee",
+      "kind": "Trust",
+      "hook": "No lead in 60 days? Full refund.",
+      "file": "creatives/guarantee.svg",
+      "format": "svg",
+      "size": "1080x1920",
+      "createdAt": "2026-06-14T21:52:30.339Z",
+      "by": "Ad Creative Designer"
+    },
+    {
+      "id": "price",
+      "kind": "Price",
+      "hook": "A real website. Hand-coded. GBP 499.",
+      "file": "creatives/price.svg",
+      "format": "svg",
+      "size": "1080x1920",
+      "createdAt": "2026-06-14T21:52:30.339Z",
+      "by": "Ad Creative Designer"
+    },
+    {
+      "id": "one-craftsman",
+      "kind": "Brand",
+      "hook": "No agency. No templates. One craftsman.",
+      "file": "creatives/one-craftsman.svg",
+      "format": "svg",
+      "size": "1080x1920",
+      "createdAt": "2026-06-14T21:52:30.339Z",
+      "by": "Ad Creative Designer"
+    },
+    {
+      "id": "seven-am",
+      "kind": "Hook",
+      "hook": "A builder on a phone at 7am is your customer.",
+      "file": "creatives/seven-am.svg",
+      "format": "svg",
+      "size": "1080x1920",
+      "createdAt": "2026-06-14T21:52:30.339Z",
+      "by": "Ad Creative Designer"
+    }
+  ]
+}

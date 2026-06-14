@@ -14,3 +14,5 @@ test:     ; npx playwright test
 
 report:   ; node scripts/weekly-report.mjs
 roles:    ; node agents/_build-roles.mjs
+
+creatives: ; node scripts/build-ad-creatives.mjs

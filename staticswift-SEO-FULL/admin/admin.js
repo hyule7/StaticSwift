@@ -3576,11 +3576,13 @@ async function loadWorkforce() {
     renderWfQueue({ pending: [] });
     renderWfFeed([]);
     renderWfKill({ global: false });
-    wfBanner('<b>Org chart is live below. Live activity, shifts and the approval queue need the backend deployed.</b><br>Push the latest commits so the new functions go live, set <code>AGENT_TOKEN</code> in Netlify, then run <code>bash agents/install-autostart.sh</code> once. After that this fills in by itself.', 'warn');
+    loadWfCreatives();
+    wfBanner('<b>Org chart and creatives are live below. Live activity, shifts and the approval queue need the backend deployed.</b><br>Push the latest commits so the new functions go live, set <code>AGENT_TOKEN</code> in Netlify, then run <code>bash agents/install-autostart.sh</code> once. After that this fills in by itself.', 'warn');
     return;
   }
 
   wfBanner('', 'ok');
+  loadWfCreatives();
   renderWfShifts(live.shifts || {});
   renderWfQueue(live.queue || {});
   renderWfOrg((live.org && live.org.length) ? live.org : fallback);
@@ -3650,6 +3652,22 @@ function renderWfOrg(org) {
         return '<div class="wf-role' + (active ? ' active' : '') + '"><span class="r">' + wfEsc(r.name) + '</span>' +
           '<span class="a">' + (r.last ? wfAgo(r.last.at) + ' · ' + wfEsc(r.last.action).slice(0, 40) : 'idle') + '</span></div>';
       }).join('') + '</div></div>';
+  }).join('');
+}
+
+async function loadWfCreatives() {
+  const box = document.getElementById('wf-creatives'); if (!box) return;
+  let items = [];
+  // Static manifest (committed creatives, always available).
+  try { const r = await fetch('/admin/creatives/manifest.json?t=' + Date.now()); if (r.ok) { const d = await r.json(); items = (d.creatives || []).map(function (c) { return { id: c.id, kind: c.kind, hook: c.hook, url: '/admin/' + c.file, by: c.by }; }); } } catch (_) {}
+  // Agent-made creatives from the Blobs store (if the function is deployed).
+  try { const r = await fetch('/.netlify/functions/creatives-list', { headers: wfHdr() }); if (r.ok) { const d = await r.json(); (d.creatives || []).forEach(function (c) { items.unshift({ id: c.id, kind: c.kind || 'New', hook: c.hook || '', url: c.url, by: c.by || 'Ad Creative Designer' }); }); } } catch (_) {}
+  const cc = document.getElementById('wf-cr-count'); if (cc) cc.textContent = items.length ? '· ' + items.length : '';
+  if (!items.length) { box.innerHTML = '<div class="wf-empty">No creatives yet. The design team adds them on each evening shift.</div>'; return; }
+  box.innerHTML = items.map(function (c) {
+    return '<a class="wf-cr" href="' + c.url + '" download title="Download ' + wfEsc(c.id) + '">' +
+      '<img class="thumb" src="' + c.url + '" alt="" loading="lazy">' +
+      '<div class="meta"><div class="k">' + wfEsc(c.kind) + '</div><div class="h">' + wfEsc(c.hook) + '</div><div class="dl">Download &#8595;</div></div></a>';
   }).join('');
 }
 
