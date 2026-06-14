@@ -3712,13 +3712,15 @@ function wfToast(msg) {
   t.textContent = msg; t.classList.add('show'); setTimeout(function () { t.classList.remove('show'); }, 2600);
 }
 async function wfStartEveryone() {
-  wfToast('Starting the team...');
+  if (!confirm('BLITZ: send the whole team after a sale right now? Prospects restock, warm leads get chased, previews get built, and the AI sales sprint starts on your Mac. Everything still lands in your approval queue.')) return;
+  wfToast('Blitz on. The team is going after a sale...');
   try {
-    const r = await fetch('/.netlify/functions/trigger-shift', { method: 'POST', headers: wfHdr(), body: JSON.stringify({ shift: 'all' }) });
+    const r = await fetch('/.netlify/functions/trigger-shift', { method: 'POST', headers: wfHdr(), body: JSON.stringify({ shift: 'blitz' }) });
     const d = await r.json().catch(function () { return {}; });
-    wfToast(r.ok ? 'Team triggered. Prospects restocking, approved mail dispatching, work queued.' : 'Could not trigger (check ADMIN_PASSWORD/deploy).');
+    wfToast(r.ok ? 'Blitz running. Restocking, dispatching, re-engaging. Watch the activity feed.' : 'Could not trigger (check ADMIN_PASSWORD/deploy).');
   } catch (_) { wfToast('Could not reach the trigger endpoint. Push + set ADMIN_PASSWORD.'); }
   setTimeout(loadWorkforce, 1500);
+  setTimeout(loadWorkforce, 4000);
 }
 async function wfSendBrief() {
   wfToast('Building your brief...');

@@ -7,7 +7,7 @@
     { "dept": "Customer Service", "roles": ["Triage", "Drafter", "SLA Watcher", "Churn Sentinel"] },
     { "dept": "Design Studio", "roles": ["Brief Parser", "Generator", "Critic", "Revision Handler"] },
     { "dept": "Client Success", "roles": ["Onboarding Chaser", "GBP Manager", "Review Responder", "Reputation Manager", "Monthly Report Compiler", "Upsell Detector"] },
-    { "dept": "Growth & Conversion", "roles": ["Conversion Optimiser", "Paid Ads Manager", "Email Lifecycle Specialist", "Landing Page Tester", "Sales Closer"] },
+    { "dept": "Growth & Conversion", "roles": ["Conversion Optimiser", "Paid Ads Manager", "Email Lifecycle Specialist", "Landing Page Tester", "Sales Closer", "Lead Reactivation Specialist", "Brief Chaser", "Win-back Specialist"] },
     { "dept": "Analytics & Data", "roles": ["Data Analyst", "Attribution Analyst", "Reporting Analyst"] },
     { "dept": "Marketing", "roles": ["TikTok Hook Writer", "SEO Content Writer", "Case Study Writer", "Day-30 Review Chaser", "Copy Chief"] },
     { "dept": "Creative Production", "roles": ["Art Director", "Ad Creative Designer", "Hook Researcher", "Thumbnail Designer", "Variant Tester", "Video Script Writer"] },

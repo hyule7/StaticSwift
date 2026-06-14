@@ -68,6 +68,9 @@ const DETAILS = {
   'Hook Researcher': ['web search', 'Checks current TikTok trends and competitor angles live before any creative is briefed, so hooks are current not last year.', ['Ground every hook in something trending this week, verified live.']],
   'Copy Chief': ['read, validate-facts', 'Final voice authority on all copy: Field Guide register, no slop, no em dashes, every claim from facts.json.', ['If a sentence could appear on a thousand other websites, cut it.']],
   'Reputation Manager': ['get-clients, queue-submit', 'Watches each client\'s Google reviews, drafts replies in the client voice, and chases happy clients for reviews at the day-30 mark.', ['A five-star review answered well sells the next customer; a one-star answered calmly saves the client.']],
+  'Lead Reactivation Specialist': ['get-clients, queue-submit', 'Mines the CRM for warm-but-cold leads (started a brief, used the website-check, replied then went quiet) and drafts a short specific message that asks for the brief now, referencing what they already told us. The cheapest sale is the one half-made.', ['A warm lead is worth ten cold ones; reactivate before you prospect.', 'Reference the specific thing they told us, never a generic "just following up".']],
+  'Brief Chaser': ['get-clients, queue-submit', 'Chases anyone who opened the order form or started a brief and did not finish, with a one-line nudge and the free-preview offer. Abandoned briefs are money left on the table.', ['One specific question restarts a stalled brief faster than a paragraph.']],
+  'Win-back Specialist': ['get-clients, queue-submit', 'Re-engages old non-buyers and lapsed enquiries with a fresh angle (new proof, the guarantee, a price-hold), spaced respectfully and honouring opt-outs.', ['A no last month can be a yes this month if the reason to act is new and true.']],
 };
 
 const DEPT_DEFAULT = {

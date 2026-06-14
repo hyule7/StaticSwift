@@ -40,6 +40,13 @@ echo "[$STAMP] starting $SHIFT shift" | tee "$LOG"
 curl -s -m 10 -X POST "$HEALTH_URL" -H 'Content-Type: application/json' \
   -d "{\"shift\":\"$SHIFT\",\"event\":\"start\",\"at\":\"$STAMP\"}" >/dev/null 2>&1 || true
 
+# Activity ping so the Workforce tab shows the shift kicked off, even before
+# the agents log their own granular actions.
+LOG_URL="${SS_AGENTLOG_URL:-https://staticswift.co.uk/.netlify/functions/agent-log}"
+curl -s -m 10 -X POST "$LOG_URL" -H 'Content-Type: application/json' \
+  -H "x-agent-token: ${AGENT_TOKEN:-}" \
+  -d "{\"role\":\"Chief of Staff\",\"dept\":\"Chief of Staff\",\"action\":\"Started the $SHIFT shift\",\"detail\":\"working the queues in role order\",\"shift\":\"$SHIFT\"}" >/dev/null 2>&1 || true
+
 # The shift prompt is the instruction; CLAUDE.md + agents/roles/ are read by
 # the model as needed. --print runs headless; --permission-mode acceptEdits so
 # file work proceeds, but the agents only ever WRITE to the queue, never send.
