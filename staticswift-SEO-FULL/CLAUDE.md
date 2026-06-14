@@ -43,9 +43,12 @@ head-of-analytics, cfo. All inherit `.claude/agents/_covenant.md`
 5. Batch questions for Harry at phase boundaries; give a deploy preview link.
 
 ## Current phase
-Phases 0-3 COMPLETE (committed on main). 0: mechanical truth + analytics +
-security. 1: full estate on Field Guide template (26,778 leafs + 416 hubs,
-titles/URLs preserved). 2: proof + trust. 3: website-check tool, consent-gated
-pixels, 5-email nurture. Phase 4 (outbound engine) in progress, then 5
-(reporting), 6 (agent workforce). Builders: scripts/build-leaf-v2.mjs,
-build-hub-v2.mjs (read data/trade-copy/, data/facts.json, _consent-snippet).
+Phases 0-6 BUILT and committed on main. 0: mechanical truth/analytics/security.
+1: estate on Field Guide template (build-leaf-v2.mjs, build-hub-v2.mjs). 2:
+proof+trust. 3: /website-check/, consent pixels, nurture (cron-nurture). 4:
+outreach/ toolchain (draft-only). 5: scripts/weekly-report.mjs. 6: approval
+queue (_queue.js, queue-* fns, admin/queue.html, dispatch-approved), agents/
+(20 roles via _build-roles.mjs, 3 shifts, run-shift.sh), send-brief,
+shift-healthcheck, _deliver.js. Run `make gates` before any deploy. Remaining:
+full JSONBin->Blobs consolidation; mission-control org-chart view; Harry to
+set AGENT_TOKEN + NETLIFY_BUILD_HOOK and rotate ADMIN_PASSWORD.
