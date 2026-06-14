@@ -8,21 +8,14 @@
  */
 const { getNamedStore } = require('./_blobs');
 
-// The org, mirrored from agents/roles/. Kept here so the tab renders even if
-// the activity feed is empty (first run). dept -> roles.
-const ORG = [
-  ['Executive', ['CEO Agent', 'CFO Agent']],
-  ['Chief of Staff', ['Chief of Staff']],
-  ['Business Development', ['Prospect Discovery', 'Website Checker', 'Contact Finder', 'Reply Classifier', 'Preview Builder']],
-  ['Customer Service', ['CS Triage', 'CS Drafter']],
-  ['Design Studio', ['Brief Parser', 'Generator', 'Critic']],
-  ['Marketing', ['Marketing']],
-  ['Search', ['Search']],
-  ['Operations and Finance', ['Ops and Finance']],
-  ['Quality and Risk', ['Fact Checker']],
-  ['Client Success', ['Client Success']],
-  ['Technical', ['Bug Watch', 'Webmaster']],
-];
+// The full org from data/org.json (one source of truth, shared with the admin
+// client-side render). require() so esbuild inlines it into the bundle.
+let ORG;
+try {
+  ORG = require('../../data/org.json').departments.map(d => [d.dept, d.roles]);
+} catch (_) {
+  ORG = [['Executive', ['CEO Agent', 'CFO Agent']], ['Chief of Staff', ['Chief of Staff']]];
+}
 
 const SHIFTS = { morning: 6, midday: 12, evening: 20 };
 

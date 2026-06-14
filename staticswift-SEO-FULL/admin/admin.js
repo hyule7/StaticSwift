@@ -3531,20 +3531,64 @@ function wfHdr() { return { 'x-admin-password': (typeof ADMIN_PW !== 'undefined'
 function wfEsc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
 function wfAgo(iso) { if (!iso) return 'never'; var s = (Date.now() - Date.parse(iso)) / 1000; if (s < 60) return Math.round(s) + 's ago'; if (s < 3600) return Math.round(s / 60) + 'm ago'; if (s < 86400) return Math.round(s / 3600) + 'h ago'; return Math.round(s / 86400) + 'd ago'; }
 
+let _wfOrgFallback = null;
+async function wfOrgFallback() {
+  if (_wfOrgFallback) return _wfOrgFallback;
+  try {
+    const r = await fetch('/data/org.json');
+    const d = await r.json();
+    _wfOrgFallback = d.departments.map(function (x) { return { dept: x.dept, roles: x.roles.map(function (r) { return { name: r, last: null }; }) }; });
+  } catch (_) { _wfOrgFallback = []; }
+  return _wfOrgFallback;
+}
+
+function wfBanner(msg, kind) {
+  let el = document.getElementById('wf-banner');
+  if (!el) {
+    el = document.createElement('div'); el.id = 'wf-banner';
+    el.style.cssText = 'margin:0 0 16px;padding:12px 16px;border-radius:10px;font-size:13px;line-height:1.5';
+    const wrap = document.querySelector('.wf-wrap'); if (wrap) wrap.insertBefore(el, wrap.children[1] || null);
+  }
+  if (!msg) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  el.style.background = kind === 'ok' ? 'rgba(34,197,94,.1)' : 'rgba(245,158,11,.12)';
+  el.style.border = '1px solid ' + (kind === 'ok' ? 'var(--green)' : 'var(--amber)');
+  el.style.color = 'var(--text)';
+  el.innerHTML = msg;
+}
+
 async function loadWorkforce() {
+  // Always render the full org first, so the tab is never blank.
+  const fallback = await wfOrgFallback();
+  let live = null;
   try {
     const r = await fetch('/.netlify/functions/workforce-status', { headers: wfHdr() });
-    if (!r.ok) return;
-    const d = await r.json();
-    renderWfShifts(d.shifts || {});
-    renderWfQueue(d.queue || {});
-    renderWfOrg(d.org || []);
-    renderWfFeed(d.activity || []);
-    renderWfKill(d.queue && d.queue.kill || { global: false });
-    const pend = (d.queue && d.queue.counts && d.queue.counts.pending) || 0;
-    const nb = document.getElementById('nav-count-queue'); if (nb) nb.textContent = pend ? pend : '';
-    const qc = document.getElementById('wf-q-count'); if (qc) qc.textContent = pend ? '· ' + pend + ' pending' : '· clear';
-  } catch (_) {}
+    if (r.ok) live = await r.json();
+    else if (r.status === 401) wfBanner('Signed-in session is missing the admin password. Sign out and back in.', 'warn');
+  } catch (_) { /* network/not-deployed */ }
+
+  if (!live) {
+    // Backend not reachable yet (most often: functions not deployed, or
+    // AGENT_TOKEN/Blobs not configured). Show the full org so Harry still has
+    // visibility, with a clear, honest banner on what unlocks the live data.
+    renderWfOrg(fallback);
+    renderWfShifts({});
+    renderWfQueue({ pending: [] });
+    renderWfFeed([]);
+    renderWfKill({ global: false });
+    wfBanner('<b>Org chart is live below. Live activity, shifts and the approval queue need the backend deployed.</b><br>Push the latest commits so the new functions go live, set <code>AGENT_TOKEN</code> in Netlify, then run <code>bash agents/install-autostart.sh</code> once. After that this fills in by itself.', 'warn');
+    return;
+  }
+
+  wfBanner('', 'ok');
+  renderWfShifts(live.shifts || {});
+  renderWfQueue(live.queue || {});
+  renderWfOrg((live.org && live.org.length) ? live.org : fallback);
+  renderWfFeed(live.activity || []);
+  renderWfKill(live.queue && live.queue.kill || { global: false });
+  const pend = (live.queue && live.queue.counts && live.queue.counts.pending) || 0;
+  const nb = document.getElementById('nav-count-queue'); if (nb) nb.textContent = pend ? pend : '';
+  const qc = document.getElementById('wf-q-count'); if (qc) qc.textContent = pend ? '· ' + pend + ' pending' : '· clear';
 }
 
 function renderWfShifts(shifts) {
