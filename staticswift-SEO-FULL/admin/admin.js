@@ -3642,13 +3642,36 @@ function wfEdit(id) {
 
 function renderWfOrg(org) {
   document.getElementById('wf-org').innerHTML = org.map(function (d) {
-    return '<div class="wf-dept"><div class="wf-dept-name">' + wfEsc(d.dept) + '</div><div class="wf-roles">' +
+    const active = d.roles.filter(function (r) { return r.last && (Date.now() - Date.parse(r.last.at)) < 86400000; }).length;
+    const tag = active ? ' <span style="color:#1f8b47">· ' + active + ' active</span>' : ' <span style="color:#6a6256">· ' + d.roles.length + ' idle</span>';
+    return '<div class="wf-dept"><div class="wf-dept-name">' + wfEsc(d.dept) + tag + '</div><div class="wf-roles">' +
       d.roles.map(function (r) {
         const active = r.last && (Date.now() - Date.parse(r.last.at)) < 86400000;
         return '<div class="wf-role' + (active ? ' active' : '') + '"><span class="r">' + wfEsc(r.name) + '</span>' +
           '<span class="a">' + (r.last ? wfAgo(r.last.at) + ' · ' + wfEsc(r.last.action).slice(0, 40) : 'idle') + '</span></div>';
       }).join('') + '</div></div>';
   }).join('');
+}
+
+function wfToast(msg) {
+  let t = document.getElementById('wf-toast'); if (!t) return;
+  t.textContent = msg; t.classList.add('show'); setTimeout(function () { t.classList.remove('show'); }, 2600);
+}
+async function wfStartEveryone() {
+  wfToast('Starting the team...');
+  try {
+    const r = await fetch('/.netlify/functions/trigger-shift', { method: 'POST', headers: wfHdr(), body: JSON.stringify({ shift: 'all' }) });
+    const d = await r.json().catch(function () { return {}; });
+    wfToast(r.ok ? 'Team triggered. Prospects restocking, approved mail dispatching, work queued.' : 'Could not trigger (check ADMIN_PASSWORD/deploy).');
+  } catch (_) { wfToast('Could not reach the trigger endpoint. Push + set ADMIN_PASSWORD.'); }
+  setTimeout(loadWorkforce, 1500);
+}
+async function wfSendBrief() {
+  wfToast('Building your brief...');
+  try {
+    const r = await fetch('/.netlify/functions/send-brief', { method: 'POST', headers: wfHdr() });
+    wfToast(r.ok ? 'Brief sent to your inbox.' : 'Could not send the brief (check SMTP/deploy).');
+  } catch (_) { wfToast('Could not reach send-brief. Push the latest commits.'); }
 }
 
 function renderWfFeed(feed) {

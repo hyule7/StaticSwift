@@ -25,14 +25,23 @@ if [ -z "$TOKEN" ]; then
 fi
 [ -z "$TOKEN" ] && { echo "AGENT_TOKEN is required. Set it in Netlify env first, then re-run."; exit 1; }
 
+# ADMIN_PASSWORD lets the watcher read the "start everyone now" flag.
+APW="${ADMIN_PASSWORD:-}"
+if [ -z "$APW" ]; then
+  read -rsp "Paste your ADMIN_PASSWORD (same value as in Netlify env): " APW; echo
+fi
+
 BASH_BIN="/bin/bash"
 PATH_LINE="/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin"
 
-mk_plist () {  # label, hour|catchup, arg
-  local label="$1" hour="$2" arg="$3" plist="$LA/$label.plist"
+mk_plist () {  # label, hour|catchup|watch, arg
+  local label="$1" hour="$2" arg="$3" plist="$LA/$label.plist" prog="$REPO/agents/run-shift.sh"
   local sched
   if [ "$hour" = "catchup" ]; then
     sched="<key>RunAtLoad</key><true/>"
+  elif [ "$hour" = "watch" ]; then
+    prog="$REPO/agents/run-watcher.sh"
+    sched="<key>StartInterval</key><integer>180</integer><key>RunAtLoad</key><true/>"
   else
     sched="<key>StartCalendarInterval</key><dict><key>Hour</key><integer>$hour</integer><key>Minute</key><integer>0</integer></dict>"
   fi
@@ -42,10 +51,11 @@ mk_plist () {  # label, hour|catchup, arg
 <plist version="1.0"><dict>
   <key>Label</key><string>$label</string>
   <key>ProgramArguments</key>
-  <array><string>$BASH_BIN</string><string>$REPO/agents/run-shift.sh</string><string>$arg</string></array>
+  <array><string>$BASH_BIN</string><string>$prog</string><string>$arg</string></array>
   $sched
   <key>EnvironmentVariables</key><dict>
     <key>AGENT_TOKEN</key><string>$TOKEN</string>
+    <key>ADMIN_PASSWORD</key><string>$APW</string>
     <key>PATH</key><string>$PATH_LINE</string>
   </dict>
   <key>StandardOutPath</key><string>$REPO/agents/logs/launchd-$arg.log</string>
@@ -63,6 +73,8 @@ mk_plist co.staticswift.shift-midday  12 midday
 mk_plist co.staticswift.shift-evening 20 evening
 # Catch-up: runs the right shift the moment you open the laptop / log in.
 mk_plist co.staticswift.shift-catchup catchup catchup
+# Watcher: every 3 min, runs a shift requested from the admin "Start everyone now" button.
+mk_plist co.staticswift.shift-watch watch watch
 
 echo "Setting a 05:55 wake so the morning shift fires lid-shut on power..."
 sudo pmset repeat wake MTWRFSU 05:55:00 || echo "  (skipped pmset; run 'sudo pmset repeat wake MTWRFSU 05:55:00' yourself)"

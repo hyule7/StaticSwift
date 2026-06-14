@@ -109,8 +109,39 @@ exports.handler = async (event) => {
         html: adminHtml,
       });
       console.log('[handle-intake] admin notification sent');
+
+      // ── Instant confirmation to the LEAD ────────────────────────────────
+      // Fires within seconds, 24/7, no AI. Converts: a fast, human reply that
+      // keeps the reply-within-the-hour promise stops the lead shopping around.
+      // Plain text, from Harry, Field Guide voice, no em dashes.
+      if (data.delivery_email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.delivery_email)) {
+        const fname = (data.name || '').trim().split(/\s+/)[0] || 'there';
+        const h = new Date().toLocaleString('en-GB', { timeZone: 'Europe/London', hour: 'numeric', hour12: false });
+        const working = (() => { const hr = Number(h); const day = new Date().toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'Europe/London' }); const we = day === 'Sat' || day === 'Sun'; return !we && hr >= 9 && hr < 18; })();
+        const whenLine = working
+          ? "I'll WhatsApp you within the hour to confirm a couple of details."
+          : "I'll WhatsApp you first thing during working hours to confirm a couple of details.";
+        await transporter.sendMail({
+          from: '"Harry at StaticSwift" <hello@staticswift.co.uk>',
+          to: data.delivery_email,
+          replyTo: 'hello@staticswift.co.uk',
+          subject: 'Got your brief, ' + fname + ' (preview within 24 hours)',
+          text:
+`Hi ${fname},
+
+Got it, your brief just landed with me. ${whenLine}
+
+Your free working preview lands in your inbox within 24 hours. No card, no charge. If you keep it it's £499 once, and if it does not bring you a lead in 60 days you get your money back and keep the site.
+
+If it's quicker for you, just reply here or message me on WhatsApp: 07502 731 799.
+
+Harry
+StaticSwift, Manchester`,
+        });
+        console.log('[handle-intake] lead confirmation sent to', data.delivery_email);
+      }
     } catch (notifyErr) {
-      console.warn('[handle-intake] admin notify failed (non-fatal):', notifyErr.message);
+      console.warn('[handle-intake] notify/confirm failed (non-fatal):', notifyErr.message);
     }
 
     return respond(200, { ok: true, clientId });

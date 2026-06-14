@@ -1107,3 +1107,50 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}
 .wfx-sdot.stale::before{background:var(--red)}
 .wfx-act-line{font-size:13px;color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media(max-width:760px){.wfx-strip{grid-template-columns:1fr 1fr}}
+
+/* ════ Workforce tab — explicit colours, parsed in head (not inline body) ════ */
+.wf-wrap{max-width:1180px}
+.wf-h{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.wf-h h2{font-size:23px;margin:0;color:#14110c}
+.wf-controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.wf-controls button{border:0;border-radius:100px;padding:11px 18px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;min-height:44px}
+.wf-go{background:#1f8b47;color:#fff}
+.wf-brief{background:#14110c;color:#fff}
+.wf-controls .ghost{background:#f6f3ec;color:#14110c;border:1px solid #e4ddd0}
+.wf-killbar{font-size:12px;color:#6a6256;display:flex;align-items:center;gap:8px;margin-left:auto}
+.wf-killbar button{background:#1f8b47;color:#fff;border:0;border-radius:100px;padding:9px 14px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.wf-killbar button.off{background:#c0341f}
+.wf-shifts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+.wf-shift{background:#fff;border:1px solid #e4ddd0;border-radius:14px;padding:15px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.wf-shift .nm{font-weight:700;text-transform:capitalize;display:flex;align-items:center;gap:8px;color:#14110c}
+.wf-dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:#c4bcae}
+.wf-dot.live{background:#1f8b47;box-shadow:0 0 0 4px rgba(31,139,71,.18)}
+.wf-dot.ok{background:#0b6fa8}
+.wf-dot.stale{background:#c0341f;box-shadow:0 0 0 4px rgba(192,52,31,.16)}
+.wf-shift .meta{font-size:12px;color:#6a6256;margin-top:7px;line-height:1.5}
+.wf-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:20px}
+@media(max-width:900px){.wf-grid{grid-template-columns:1fr}.wf-shifts{grid-template-columns:1fr}}
+.wf-panel{background:#fff;border:1px solid #e4ddd0;border-radius:16px;padding:18px;margin-bottom:18px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.wf-panel h3{margin:0 0 14px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#6a6256;font-weight:700}
+.wf-dept{margin-bottom:16px}
+.wf-dept-name{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#0b6fa8;margin-bottom:7px;font-weight:700}
+.wf-roles{display:flex;flex-wrap:wrap;gap:8px}
+.wf-role{background:#f6f3ec;border:1px solid #e4ddd0;border-radius:10px;padding:8px 11px;font-size:13px;display:flex;flex-direction:column;gap:2px;min-width:140px}
+.wf-role .r{font-weight:700;color:#14110c}
+.wf-role .a{font-size:11px;color:#6a6256}
+.wf-role.active{border-color:#1f8b47;background:rgba(31,139,71,.08)}
+.wf-feed{max-height:560px;overflow:auto}
+.wf-feed .row{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #e4ddd0;font-size:13px;color:#14110c}
+.wf-feed .t{color:#6a6256;font-size:11px;white-space:nowrap;font-variant-numeric:tabular-nums;min-width:54px}
+.wf-feed .r{font-weight:700;color:#0b6fa8}
+.wf-q .item{background:#f6f3ec;border:1px solid #e4ddd0;border-radius:12px;padding:14px;margin-bottom:12px}
+.wf-q .cat{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#6a6256;display:flex;justify-content:space-between}
+.wf-q .subj{font-weight:700;margin:5px 0;color:#14110c}
+.wf-q .body{white-space:pre-wrap;font-size:13px;color:#14110c;background:#fff;border:1px solid #e4ddd0;border-radius:8px;padding:11px;max-height:200px;overflow:auto}
+.wf-q .body[contenteditable=true]{outline:2px solid #0b6fa8}
+.wf-q .acts{display:flex;gap:8px;margin-top:11px}
+.wf-q .acts button{flex:1;border:0;border-radius:100px;padding:11px;font:inherit;font-weight:700;font-size:13px;cursor:pointer;min-height:44px}
+.wf-ap{background:#1f8b47;color:#fff}.wf-ed{background:#f6f3ec;color:#14110c;border:1px solid #e4ddd0!important}.wf-rj{background:transparent;color:#c0341f;border:1px solid #c0341f!important}
+.wf-empty{color:#6a6256;text-align:center;padding:34px}
+#wf-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#14110c;color:#fff;padding:12px 22px;border-radius:100px;font-size:14px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;z-index:999}
+#wf-toast.show{opacity:1}
