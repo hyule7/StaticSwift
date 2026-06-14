@@ -18,7 +18,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/admin/admin.css?v=13">
 <!-- Field-guide theme overlay — loaded LAST so it overrides admin.css surfaces. -->
-<link rel="stylesheet" href="/admin/admin-theme.css?v=5">
+<link rel="stylesheet" href="/admin/admin-theme.css?v=6">
 </head>
 <body>
 
@@ -1086,7 +1086,24 @@
 
     <!-- SEO -->
     <div class="page" id="page-seo">
-      <div class="page-header"><h1 class="page-title">SEO Setup</h1></div>
+      <div class="page-header"><h1 class="page-title">SEO &amp; the Search team</h1></div>
+
+      <!-- ════ SEARCH TEAM — live strike list + what the team improved ════ -->
+      <div style="max-width:980px;margin-bottom:24px">
+        <div class="st-grid">
+          <div class="st-card">
+            <div class="st-h">Strike list <span id="st-strike-n"></span></div>
+            <p class="st-sub">Queries ranking positions 4 to 15. One good push from page one. The Search team deepens these exact pages every evening shift.</p>
+            <div id="st-strike"><div class="st-empty">Loading Search Console…</div></div>
+          </div>
+          <div class="st-card">
+            <div class="st-h">What the Search team did</div>
+            <p class="st-sub">Recent on-page improvements and internal links pointed at risers.</p>
+            <div id="st-work"><div class="st-empty">Runs on the evening shift. Appears once shifts run.</div></div>
+          </div>
+        </div>
+      </div>
+
       <div style="max-width:800px">
         <div style="background:rgba(0,200,224,.07);border:1px solid rgba(0,200,224,.2);border-radius:14px;padding:20px;margin-bottom:20px">
           <div style="font-weight:700;font-size:15px;margin-bottom:8px;color:var(--cyan)">Why nothing is showing in Search Console yet</div>

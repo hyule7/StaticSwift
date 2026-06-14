@@ -3513,7 +3513,7 @@ function showPage(id, btn) {
   if (btn) btn.classList.add('active');
   if (id === 'analytics') { loadSelfAnalytics(); loadAnalytics(); }
   if (id === 'outreach') { renderProspects(); renderDorkPicker(); }
-  if (id === 'seo') renderSEOChecklist();
+  if (id === 'seo') { renderSEOChecklist(); renderSearchTeam(); }
   if (id === 'backlinks') renderDirectories();
   if (id === 'workforce') { loadWorkforce(); startWorkforcePoll(); } else { stopWorkforcePoll(); }
 }
@@ -3653,6 +3653,42 @@ function renderWfOrg(org) {
           '<span class="a">' + (r.last ? wfAgo(r.last.at) + ' · ' + wfEsc(r.last.action).slice(0, 40) : 'idle') + '</span></div>';
       }).join('') + '</div></div>';
   }).join('');
+}
+
+// Search-team panel on the SEO page: the strike list (winnable queries
+// ranking 4-15) from Search Console, plus what the Search team improved.
+async function renderSearchTeam() {
+  const strike = document.getElementById('st-strike'); if (!strike) return;
+  try {
+    const r = await fetch('/.netlify/functions/search-console-data', { headers: { 'x-admin-password': ADMIN_PW } });
+    const d = await r.json();
+    const data = d.data || d;
+    const qs = (data && data.topQueries) || [];
+    if (d.unavailable || !qs.length) {
+      strike.innerHTML = '<div class="st-empty">Search Console not connected yet, or no query data on this new domain. Connect the GSC API (one-time) and the strike list fills automatically as Google starts showing positions.</div>';
+      document.getElementById('st-strike-n').textContent = '';
+      return;
+    }
+    const list = qs.filter(function (q) { const p = parseFloat(q.position); return p >= 4 && p <= 15; })
+      .sort(function (a, b) { return (b.impressions || 0) - (a.impressions || 0); }).slice(0, 12);
+    document.getElementById('st-strike-n').textContent = list.length ? '· ' + list.length : '';
+    if (!list.length) { strike.innerHTML = '<div class="st-empty">No queries in the 4-15 band yet. As impressions grow, winnable queries appear here.</div>'; return; }
+    strike.innerHTML = list.map(function (q) {
+      return '<div class="st-row"><span class="q">' + escapeHTML(q.query) + '</span><span class="imp">' + (q.impressions || 0) + ' impr</span><span class="pos">#' + q.position + '</span></div>';
+    }).join('');
+  } catch (_) {
+    strike.innerHTML = '<div class="st-empty">Could not reach Search Console. It needs the GSC API connected and the latest deploy.</div>';
+  }
+  // What the Search team did: pull recent Search-dept activity.
+  try {
+    const r = await fetch('/.netlify/functions/agent-log', { headers: { 'x-admin-password': ADMIN_PW } });
+    if (r.ok) {
+      const d = await r.json();
+      const work = (d.activity || []).filter(function (a) { return /search|seo|strike|index|page/i.test((a.role || '') + (a.dept || '') + (a.action || '')); }).slice(0, 10);
+      const el = document.getElementById('st-work');
+      if (work.length) el.innerHTML = work.map(function (a) { return '<div class="st-row"><span class="q">' + escapeHTML(a.action) + '</span><span class="imp">' + wfAgo(a.at) + '</span></div>'; }).join('');
+    }
+  } catch (_) {}
 }
 
 async function loadWfCreatives() {
