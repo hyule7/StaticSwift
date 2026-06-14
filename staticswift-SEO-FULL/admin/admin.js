@@ -3490,6 +3490,104 @@ function showPage(id, btn) {
   if (id === 'outreach') { renderProspects(); renderDorkPicker(); }
   if (id === 'seo') renderSEOChecklist();
   if (id === 'backlinks') renderDirectories();
+  if (id === 'workforce') { loadWorkforce(); startWorkforcePoll(); } else { stopWorkforcePoll(); }
+}
+
+/* ================================================================
+   THE WORKFORCE — org chart, live activity, approval queue, all
+   inline. One endpoint (workforce-status) feeds everything; the
+   queue actions reuse queue-action. Auto-refreshes every 15s while
+   the tab is open.
+   ================================================================ */
+let _wfPoll = null;
+function startWorkforcePoll() { stopWorkforcePoll(); _wfPoll = setInterval(loadWorkforce, 15000); }
+function stopWorkforcePoll() { if (_wfPoll) { clearInterval(_wfPoll); _wfPoll = null; } }
+function wfHdr() { return { 'x-admin-password': (typeof ADMIN_PW !== 'undefined' && ADMIN_PW) || sessionStorage.getItem('ss_pw') || '', 'Content-Type': 'application/json' }; }
+function wfEsc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+function wfAgo(iso) { if (!iso) return 'never'; var s = (Date.now() - Date.parse(iso)) / 1000; if (s < 60) return Math.round(s) + 's ago'; if (s < 3600) return Math.round(s / 60) + 'm ago'; if (s < 86400) return Math.round(s / 3600) + 'h ago'; return Math.round(s / 86400) + 'd ago'; }
+
+async function loadWorkforce() {
+  try {
+    const r = await fetch('/.netlify/functions/workforce-status', { headers: wfHdr() });
+    if (!r.ok) return;
+    const d = await r.json();
+    renderWfShifts(d.shifts || {});
+    renderWfQueue(d.queue || {});
+    renderWfOrg(d.org || []);
+    renderWfFeed(d.activity || []);
+    renderWfKill(d.queue && d.queue.kill || { global: false });
+    const pend = (d.queue && d.queue.counts && d.queue.counts.pending) || 0;
+    const nb = document.getElementById('nav-count-queue'); if (nb) nb.textContent = pend ? pend : '';
+    const qc = document.getElementById('wf-q-count'); if (qc) qc.textContent = pend ? '· ' + pend + ' pending' : '· clear';
+  } catch (_) {}
+}
+
+function renderWfShifts(shifts) {
+  const order = ['morning', 'midday', 'evening'];
+  document.getElementById('wf-shifts').innerHTML = order.map(function (k) {
+    const s = shifts[k] || {};
+    const cls = s.running ? 'live' : s.stale ? 'stale' : 'ok';
+    const state = s.running ? 'Running now' : s.stale ? 'Not run recently' : 'Idle, healthy';
+    return '<div class="wf-shift"><div class="nm"><span class="wf-dot ' + cls + '"></span>' + k + ' shift</div>' +
+      '<div class="meta">' + state + '<br>Last: ' + wfAgo(s.last) + (s.lastExit != null ? ' · exit ' + s.lastExit : '') + '</div></div>';
+  }).join('');
+}
+
+function renderWfKill(kill) {
+  const on = !kill.global;
+  document.getElementById('wf-killbar').innerHTML = 'Auto-sending: ' +
+    '<button class="' + (on ? '' : 'off') + '" onclick="wfToggleKill(' + (on ? 'true' : 'false') + ')">' +
+    (on ? 'LIVE — tap to stop everything' : 'STOPPED — tap to resume') + '</button>';
+}
+async function wfToggleKill(stop) {
+  await fetch('/.netlify/functions/queue-action', { method: 'POST', headers: wfHdr(), body: JSON.stringify({ action: stop ? 'kill' : 'unkill', category: 'global' }) });
+  loadWorkforce();
+}
+
+function renderWfQueue(q) {
+  const items = q.pending || [];
+  const el = document.getElementById('wf-queue');
+  if (!items.length) { el.innerHTML = '<div class="wf-empty">Nothing waiting. The staff are clear.</div>'; return; }
+  el.innerHTML = items.map(function (it) {
+    return '<div class="item" data-id="' + it.id + '">' +
+      '<div class="cat"><span>' + wfEsc(it.category) + (it.to ? ' · ' + wfEsc(it.to) : '') + '</span><span>' + wfAgo(it.createdAt) + '</span></div>' +
+      '<div class="subj">' + wfEsc(it.subject || '(no subject)') + '</div>' +
+      '<div class="body" id="wf-b-' + it.id + '">' + wfEsc(it.editedBody || it.body) + '</div>' +
+      '<div class="acts">' +
+        '<button class="wf-ap" onclick="wfAct(\'' + it.id + '\',\'approve\')">Approve</button>' +
+        '<button class="wf-ed" onclick="wfEdit(\'' + it.id + '\')">Edit</button>' +
+        '<button class="wf-rj" onclick="wfAct(\'' + it.id + '\',\'reject\')">Reject</button>' +
+      '</div></div>';
+  }).join('');
+}
+async function wfAct(id, action, editedBody) {
+  await fetch('/.netlify/functions/queue-action', { method: 'POST', headers: wfHdr(), body: JSON.stringify({ action: action, id: id, editedBody: editedBody }) });
+  loadWorkforce();
+}
+function wfEdit(id) {
+  const b = document.getElementById('wf-b-' + id);
+  if (b.getAttribute('contenteditable') === 'true') { wfAct(id, 'edit', b.innerText); return; }
+  b.setAttribute('contenteditable', 'true'); b.focus();
+  const btn = b.closest('.item').querySelector('.wf-ed'); if (btn) btn.textContent = 'Save & approve';
+}
+
+function renderWfOrg(org) {
+  document.getElementById('wf-org').innerHTML = org.map(function (d) {
+    return '<div class="wf-dept"><div class="wf-dept-name">' + wfEsc(d.dept) + '</div><div class="wf-roles">' +
+      d.roles.map(function (r) {
+        const active = r.last && (Date.now() - Date.parse(r.last.at)) < 86400000;
+        return '<div class="wf-role' + (active ? ' active' : '') + '"><span class="r">' + wfEsc(r.name) + '</span>' +
+          '<span class="a">' + (r.last ? wfAgo(r.last.at) + ' · ' + wfEsc(r.last.action).slice(0, 40) : 'idle') + '</span></div>';
+      }).join('') + '</div></div>';
+  }).join('');
+}
+
+function renderWfFeed(feed) {
+  const el = document.getElementById('wf-feed');
+  if (!feed.length) { el.innerHTML = '<div class="wf-empty">No activity logged yet. The feed fills as shifts run.</div>'; return; }
+  el.innerHTML = feed.map(function (a) {
+    return '<div class="row"><span class="t">' + wfAgo(a.at) + '</span><span><span class="r">' + wfEsc(a.role) + '</span> ' + wfEsc(a.action) + (a.detail ? ' <span style="color:var(--muted)">· ' + wfEsc(a.detail) + '</span>' : '') + '</span></div>';
+  }).join('');
 }
 
 // ==========================================

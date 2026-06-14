@@ -77,15 +77,15 @@
       <span class="ico">◆</span><span>Tickets</span>
     </button>
 
+    <div class="sidebar-section">The Workforce</div>
+    <button class="nav-tab" data-page="workforce" onclick="showPage('workforce',this)">
+      <span class="ico">⊞</span><span>Workforce</span><span class="nav-badge" id="nav-count-queue"></span>
+    </button>
+
     <div class="sidebar-section">Growth</div>
     <button class="nav-tab" data-page="outreach" onclick="showPage('outreach',this)">
       <span class="ico">⚡</span><span>Outreach</span>
     </button>
-    <!-- ss:admin-xref — standalone Outreach health (cron status, prospects
-         discovered, Companies House feed, draft queue). -->
-    <a class="nav-tab" href="/admin/outreach.html" style="text-decoration:none">
-      <span class="ico">⊟</span><span>Outreach health</span>
-    </a>
     <button class="nav-tab" data-page="backlinks" onclick="showPage('backlinks',this)">
       <span class="ico">⛓</span><span>Backlinks</span>
     </button>
@@ -207,6 +207,73 @@
     </div>
 
     <!-- PIPELINE -->
+    <!-- ════ THE WORKFORCE — org chart, live activity, approval queue, all inline ════ -->
+    <div class="page" id="page-workforce">
+      <style>
+        .wf-wrap{max-width:1180px}
+        .wf-h{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+        .wf-h h2{font-size:22px;margin:0}
+        .wf-killbar{font-size:12px;color:var(--muted)}
+        .wf-killbar button{background:var(--green,#1f8b47);color:#fff;border:0;border-radius:100px;padding:7px 14px;font:inherit;font-size:12px;font-weight:600;cursor:pointer;margin-left:8px}
+        .wf-killbar button.off{background:var(--signal,#9c2615)}
+        .wf-shifts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+        .wf-shift{background:var(--card,#1c1812);border:1px solid var(--border,rgba(255,255,255,.1));border-radius:12px;padding:14px}
+        .wf-shift .nm{font-weight:600;text-transform:capitalize;display:flex;align-items:center;gap:8px}
+        .wf-dot{width:8px;height:8px;border-radius:50%;display:inline-block;background:#888}
+        .wf-dot.live{background:#1f8b47;box-shadow:0 0 0 3px rgba(31,139,71,.25)}
+        .wf-dot.ok{background:#b08a3e}
+        .wf-dot.stale{background:#9c2615}
+        .wf-shift .meta{font-size:12px;color:var(--muted);margin-top:6px}
+        .wf-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:20px}
+        @media(max-width:900px){.wf-grid{grid-template-columns:1fr}.wf-shifts{grid-template-columns:1fr}}
+        .wf-panel{background:var(--card,#1c1812);border:1px solid var(--border,rgba(255,255,255,.1));border-radius:14px;padding:16px;margin-bottom:18px}
+        .wf-panel h3{margin:0 0 12px;font-size:14px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+        .wf-dept{margin-bottom:14px}
+        .wf-dept-name{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted,#8a7b62);margin-bottom:6px}
+        .wf-roles{display:flex;flex-wrap:wrap;gap:8px}
+        .wf-role{border:1px solid var(--border,rgba(255,255,255,.12));border-radius:10px;padding:8px 11px;font-size:13px;display:flex;flex-direction:column;gap:2px;min-width:130px}
+        .wf-role .r{font-weight:600}
+        .wf-role .a{font-size:11px;color:var(--muted)}
+        .wf-role.active{border-color:#1f8b47}
+        .wf-feed{max-height:520px;overflow:auto}
+        .wf-feed .row{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border,rgba(255,255,255,.07));font-size:13px}
+        .wf-feed .t{color:var(--muted);font-size:11px;white-space:nowrap;font-variant-numeric:tabular-nums}
+        .wf-feed .r{font-weight:600}
+        .wf-q .item{border:1px solid var(--border,rgba(255,255,255,.12));border-radius:12px;padding:13px;margin-bottom:12px}
+        .wf-q .cat{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between}
+        .wf-q .subj{font-weight:600;margin:4px 0}
+        .wf-q .body{white-space:pre-wrap;font-size:13px;color:var(--text2,#cfc8bb);background:rgba(0,0,0,.18);border-radius:8px;padding:10px;max-height:200px;overflow:auto}
+        .wf-q .body[contenteditable=true]{outline:1px solid var(--gold,#b08a3e)}
+        .wf-q .acts{display:flex;gap:8px;margin-top:10px}
+        .wf-q .acts button{flex:1;border:0;border-radius:100px;padding:11px;font:inherit;font-weight:600;font-size:13px;cursor:pointer;min-height:44px}
+        .wf-ap{background:#1f8b47;color:#fff}.wf-ed{background:rgba(255,255,255,.12);color:var(--text,#fff)}.wf-rj{background:transparent;color:#9c2615;border:1px solid #9c2615!important}
+        .wf-empty{color:var(--muted);text-align:center;padding:30px}
+      </style>
+      <div class="wf-wrap">
+        <div class="wf-h">
+          <h2>The Workforce</h2>
+          <div class="wf-killbar" id="wf-killbar"></div>
+        </div>
+        <div class="wf-shifts" id="wf-shifts"></div>
+        <div class="wf-grid">
+          <div>
+            <div class="wf-panel wf-q">
+              <h3>Approval queue <span id="wf-q-count"></span></h3>
+              <div id="wf-queue"><div class="wf-empty">Loading</div></div>
+            </div>
+            <div class="wf-panel">
+              <h3>Org chart · live</h3>
+              <div id="wf-org"><div class="wf-empty">Loading</div></div>
+            </div>
+          </div>
+          <div class="wf-panel">
+            <h3>Live activity</h3>
+            <div class="wf-feed" id="wf-feed"><div class="wf-empty">Loading</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="page" id="page-pipeline">
       <div class="page-header">
         <h1 class="page-title">Pipeline</h1>

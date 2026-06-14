@@ -16,6 +16,17 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 SHIFT="${1:-morning}"
+
+# Catch-up: when the laptop opens/logs in, run the shift whose window we are
+# in (or the most recent one) so nothing waits for the next clock tick.
+if [ "$SHIFT" = "catchup" ]; then
+  H=$(date +%H)
+  if   [ "$H" -ge 20 ] || [ "$H" -lt 6 ]; then SHIFT="evening"
+  elif [ "$H" -ge 12 ]; then SHIFT="midday"
+  else SHIFT="morning"; fi
+  echo "catch-up: hour $H -> $SHIFT shift"
+fi
+
 PROMPT="agents/shifts/${SHIFT}.md"
 STAMP="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
 LOG="agents/logs/${SHIFT}-$(date -u +%Y%m%d-%H%M).log"
@@ -34,7 +45,7 @@ curl -s -m 10 -X POST "$HEALTH_URL" -H 'Content-Type: application/json' \
 # file work proceeds, but the agents only ever WRITE to the queue, never send.
 set +e
 claude --print \
-  --append-system-prompt "You are running the StaticSwift $SHIFT shift. Read agents/shifts/${SHIFT}.md and execute it in role order. Every outbound artefact goes to the approval queue via outreach/queue.mjs or queue-submit; you NEVER send email, move money, or change pricing. Obey .claude/agents/_covenant.md. Stop when the shift checklist is done or you approach the usage limit, checkpointing remaining work in agents/logs/." \
+  --append-system-prompt "You are running the StaticSwift $SHIFT shift. Read agents/shifts/${SHIFT}.md and execute it in role order. Every outbound artefact goes to the approval queue via outreach/queue.mjs or queue-submit; you NEVER send email, move money, or change pricing. Obey .claude/agents/_covenant.md. As you work, log each meaningful action so Harry can watch live: POST to https://staticswift.co.uk/.netlify/functions/agent-log with header x-agent-token: \$AGENT_TOKEN and JSON {role, dept, action, detail, shift:'$SHIFT'}. Stop when the shift checklist is done or you approach the usage limit, checkpointing remaining work in agents/logs/." \
   < "$PROMPT" >> "$LOG" 2>&1
 CODE=$?
 set -e
