@@ -38,12 +38,20 @@ exports.handler = async (event) => {
   if (!item) return { statusCode: 404, body: JSON.stringify({ error: 'not found' }) };
   const now = new Date().toISOString();
 
-  if (action === 'approve') { item.status = 'approved'; item.decidedAt = now; recordDecision(control, item.category, 'approved'); }
+  let delivery = null;
+  if (action === 'approve') {
+    item.status = 'approved'; item.decidedAt = now; recordDecision(control, item.category, 'approved');
+    // Phone-tap-completes-delivery: approving a design build ships it.
+    if (item.category === 'design' && item.meta && item.meta.deploy) {
+      try { const { deliverApprovedDesign } = require('./_deliver'); delivery = await deliverApprovedDesign(item); item.delivery = delivery; item.status = 'sent'; }
+      catch (e) { item.deliveryError = e.message; }
+    }
+  }
   else if (action === 'edit') { item.status = 'edited'; item.editedBody = editedBody || item.body; item.decidedAt = now; recordDecision(control, item.category, 'edited'); }
   else if (action === 'reject') { item.status = 'rejected'; item.decidedAt = now; recordDecision(control, item.category, 'rejected'); }
   else return { statusCode: 400, body: JSON.stringify({ error: 'unknown action' }) };
 
   await saveItems(store, items);
   await saveControl(store, control);
-  return { statusCode: 200, body: JSON.stringify({ ok: true, item: { id: item.id, status: item.status }, autonomy: control.autonomy[item.category] }) };
+  return { statusCode: 200, body: JSON.stringify({ ok: true, item: { id: item.id, status: item.status }, delivery, autonomy: control.autonomy[item.category] }) };
 };
