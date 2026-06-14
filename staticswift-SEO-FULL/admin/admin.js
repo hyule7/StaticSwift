@@ -231,6 +231,7 @@ async function initApp() {
   // Render all pages regardless of fetch outcome — otherwise users see
   // permanent "Loading..." placeholders when the backend is unreachable.
   try { renderDashboard(); } catch (e) { console.error('renderDashboard:', e); }
+  try { loadDashWorkforce(); } catch (e) { console.error('loadDashWorkforce:', e); }
   try { renderPipeline(); } catch (e) { console.error('renderPipeline:', e); }
   try { renderRevenue(); } catch (e) { console.error('renderRevenue:', e); }
   try { renderPrompts(); } catch (e) { console.error('renderPrompts:', e); }
@@ -500,6 +501,30 @@ function renderReplyQueue() {
     const i = parseInt(node.dataset.rqi, 10);
     node.addEventListener('click', () => items[i].click());
   });
+}
+
+// Dashboard workforce strip — surfaces the staff so the dashboard is a true
+// one-stop shop. Reuses the same workforce-status endpoint as the tab.
+async function loadDashWorkforce() {
+  try {
+    const r = await fetch('/.netlify/functions/workforce-status', { headers: { 'x-admin-password': ADMIN_PW } });
+    if (!r.ok) return;
+    const d = await r.json();
+    const pend = (d.queue && d.queue.counts && d.queue.counts.pending) || 0;
+    const pe = document.getElementById('wfx-pending');
+    if (pe) { pe.textContent = pend; pe.classList.toggle('zero', pend === 0); }
+    const se = document.getElementById('wfx-sent'); if (se) se.textContent = (d.queue && d.queue.sentToday) || 0;
+    const nb = document.getElementById('nav-count-queue'); if (nb) nb.textContent = pend ? pend : '';
+    const shifts = d.shifts || {};
+    const se2 = document.getElementById('wfx-shifts');
+    if (se2) se2.innerHTML = ['morning', 'midday', 'evening'].map(function (k) {
+      const s = shifts[k] || {}; const cls = s.running ? 'live' : s.stale ? 'stale' : 'ok';
+      return '<span class="wfx-sdot ' + cls + '">' + k[0] + '</span>';
+    }).join('');
+    const last = (d.activity || [])[0];
+    const le = document.getElementById('wfx-last');
+    if (le) le.textContent = last ? (last.role + ': ' + last.action) : 'The studio is idle.';
+  } catch (_) {}
 }
 
 function renderDashTraffic() {

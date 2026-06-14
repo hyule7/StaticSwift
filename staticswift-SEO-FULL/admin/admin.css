@@ -1090,3 +1090,20 @@ input,textarea,select,button{font-family:'DM Sans',sans-serif}
   .outreach-tab { padding: 8px 11px; font-size: 11.5px; }
   .outreach-tab span:not(.ot-icon):not(.ot-badge) { display: none; }
 }
+
+/* ════ Dashboard workforce strip — the staff at a glance ════ */
+.wfx-strip{display:grid;grid-template-columns:1.1fr 1.4fr 0.9fr 2fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:18px;cursor:pointer;transition:border-color .2s}
+.wfx-strip:hover{border-color:var(--cyan)}
+.wfx-cell{background:var(--surface);padding:14px 18px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.wfx-num{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;line-height:1;color:var(--text)}
+.wfx-approvals .wfx-num{color:var(--amber)}
+.wfx-approvals .wfx-num.zero{color:var(--green)}
+.wfx-lbl{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.wfx-shifts{display:flex;gap:8px;align-items:center}
+.wfx-sdot{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-soft);text-transform:capitalize}
+.wfx-sdot::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--dim)}
+.wfx-sdot.live::before{background:var(--green);box-shadow:0 0 0 3px rgba(34,197,94,.2)}
+.wfx-sdot.ok::before{background:var(--cyan)}
+.wfx-sdot.stale::before{background:var(--red)}
+.wfx-act-line{font-size:13px;color:var(--text-soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:760px){.wfx-strip{grid-template-columns:1fr 1fr}}
