@@ -90,3 +90,23 @@ uniqueness from data interpolation. No em dashes; separators are middots.
 any approval just keep going."** Phase boundaries no longer wait for sign-off.
 The covenant, identity rules and facts.json gates remain absolute; the
 QA gates (validate-facts, crawl, matrix) still run before every commit. (CEO)
+
+## 2026-06-12 (Phases 1-3 build)
+
+**D-017. Phase 1 estate rollout shipped on the Field Guide template** via
+build-leaf-v2.mjs (26,778 live UK leafs) and build-hub-v2.mjs (416 hubs).
+Titles kept byte-identical to the pre-Phase-1 snapshot, URLs unchanged,
+curated internal links preserved, all figures from facts.json. 51 trade copy
+blocks in data/trade-copy/. (CEO + SEO Director + Brand Director)
+
+**D-018. Phase 2 proof layer uses real data only.** Harrison Electrical is
+the one real case study; quote and result numbers stay null until Harry
+supplies verified figures. trust.json shows only "60-day refunds issued: 0"
+plus the live ticker; years/sites/Lighthouse hidden until real. Order
+dropdown trimmed 77 -> 27 trades. (CEO, Brand Director)
+
+**D-019. Phase 3 lead capture.** /website-check/ 12-point tool wraps the
+existing analyze-site-public engine. Pixels (Meta/TikTok) are consent-gated:
+nothing loads before Allow, satisfying PECR/GDPR. 5-email nurture runs daily
+via cron-nurture, stops on reply/convert, suppression honoured. (Head of
+Analytics, Head of Outreach, Brand Director)
