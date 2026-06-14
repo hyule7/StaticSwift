@@ -102,6 +102,13 @@
 [functions."cron-nurture"]
   schedule = "0 8 * * *"
 
+# Scheduled function — the approval-queue dispatcher. The ONLY path from an
+# approved artefact to the wire. Runs hourly; itself enforces the UK
+# business-hours window, the daily send cap, kill switches and suppression.
+# Runs 24/7 independent of the Mac (the plumbing never sleeps).
+[functions."dispatch-approved"]
+  schedule = "0 * * * *"
+
 # Scheduled function — sweeps live subscription clients and emails each
 # their monthly £49 invoice. Fires 09:00 UTC on the 1st of every month.
 # Idempotent: a client gets at most one invoice per calendar month, keyed

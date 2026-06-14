@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Approval Queue — StaticSwift</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0E0B07">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--paper:#F2EFE7;--ink:#0E0B07;--ink-mid:#5A4E40;--bronze:#8A7B62;--signal:#9C2615;--green:#347537;--hair:rgba(14,11,7,.16)}
+body{font-family:-apple-system,'Switzer',system-ui,sans-serif;background:#14110C;color:var(--paper);font-size:16px;line-height:1.5;padding:0 0 80px}
+header{position:sticky;top:0;background:#0E0B07;border-bottom:1px solid rgba(242,239,231,.12);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;z-index:10}
+header b{font-size:15px;letter-spacing:.02em}
+header .counts{font-size:12px;color:var(--bronze);font-variant-numeric:tabular-nums}
+.tabs{display:flex;gap:8px;padding:12px 18px;overflow-x:auto}
+.tabs button{background:rgba(242,239,231,.08);color:var(--paper);border:0;padding:8px 14px;border-radius:100px;font:inherit;font-size:13px;white-space:nowrap;cursor:pointer}
+.tabs button.on{background:var(--paper);color:var(--ink)}
+.wrap{padding:8px 14px;max-width:680px;margin:0 auto}
+.card{background:#1C1812;border:1px solid rgba(242,239,231,.12);border-radius:14px;padding:16px;margin-bottom:14px}
+.cat{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--bronze);margin-bottom:6px;display:flex;justify-content:space-between}
+.cat .auto{color:var(--green)}
+.to{font-size:13px;color:var(--bronze);margin-bottom:4px}
+.subj{font-weight:600;margin-bottom:8px}
+.body{white-space:pre-wrap;font-size:14px;color:#D8D2C6;background:#0E0B07;border-radius:10px;padding:12px;max-height:240px;overflow:auto}
+.body[contenteditable=true]{outline:1px solid var(--bronze)}
+.actions{display:flex;gap:8px;margin-top:12px}
+.actions button{flex:1;border:0;padding:13px;border-radius:100px;font:inherit;font-weight:600;font-size:14px;cursor:pointer;min-height:46px}
+.approve{background:var(--green);color:#fff}
+.edit{background:rgba(242,239,231,.12);color:var(--paper)}
+.reject{background:transparent;color:var(--signal);border:1px solid var(--signal)!important}
+.empty{text-align:center;color:var(--bronze);padding:60px 20px}
+.login{max-width:320px;margin:80px auto;padding:0 20px;text-align:center}
+.login input{width:100%;padding:14px;border-radius:10px;border:0;font:inherit;margin:12px 0;background:#1C1812;color:var(--paper)}
+.login button{width:100%;padding:14px;border-radius:100px;border:0;background:var(--paper);color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+.kill{padding:10px 18px;font-size:12px;color:var(--bronze)}
+.kill button{background:none;border:1px solid rgba(242,239,231,.2);color:var(--paper);border-radius:100px;padding:6px 12px;font:inherit;font-size:11px;cursor:pointer;margin-left:6px}
+.kill button.on{background:var(--signal);border-color:var(--signal)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--paper);color:var(--ink);padding:12px 22px;border-radius:100px;font-size:14px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div id="login" class="login">
+  <b style="font-size:18px">StaticSwift · Queue</b>
+  <input type="password" id="pw" placeholder="Admin password" autocomplete="current-password">
+  <button onclick="login()">Open queue</button>
+  <p id="lerr" style="color:#9C2615;font-size:13px;margin-top:10px;display:none">Wrong password.</p>
+</div>
+
+<div id="app" style="display:none">
+  <header><b>Approval queue</b><span class="counts" id="counts"></span></header>
+  <div class="kill" id="killbar"></div>
+  <div class="tabs" id="tabs"></div>
+  <div class="wrap" id="list"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var PW='', STATUS='pending';
+function h(){return {'x-admin-password':PW,'Content-Type':'application/json'};}
+function toast(t){var e=document.getElementById('toast');e.textContent=t;e.classList.add('show');setTimeout(function(){e.classList.remove('show');},1600);}
+
+function login(){
+  PW=document.getElementById('pw').value;
+  fetch('/.netlify/functions/queue-list?status=pending',{headers:h()}).then(function(r){
+    if(!r.ok)throw 0;return r.json();
+  }).then(function(d){
+    try{sessionStorage.setItem('ss_qpw',PW);}catch(_){}
+    document.getElementById('login').style.display='none';
+    document.getElementById('app').style.display='block';
+    render(d);
+  }).catch(function(){document.getElementById('lerr').style.display='block';});
+}
+
+function load(){
+  fetch('/.netlify/functions/queue-list?status='+STATUS,{headers:h()}).then(function(r){return r.json();}).then(render);
+}
+
+function render(d){
+  var counts=d.counts||{};
+  document.getElementById('counts').textContent=(counts.pending||0)+' pending · '+(counts.sent||0)+' sent';
+  var cats=['pending','approved','edited','sent','rejected','all'];
+  document.getElementById('tabs').innerHTML=cats.map(function(c){return '<button class="'+(c===STATUS?'on':'')+'" onclick="STATUS=\''+c+'\';load()">'+c+(counts[c]?' '+counts[c]:'')+'</button>';}).join('');
+  // kill switches
+  var kill=d.kill||{global:false};
+  document.getElementById('killbar').innerHTML='Sending: <button class="'+(kill.global?'on':'')+'" onclick="toggleKill(\'global\','+(!kill.global)+')">'+(kill.global?'STOPPED — tap to resume':'live — tap to stop all')+'</button>';
+  var items=d.items||[];
+  if(!items.length){document.getElementById('list').innerHTML='<div class="empty">Nothing '+STATUS+'. Clear.</div>';return;}
+  document.getElementById('list').innerHTML=items.map(function(it){
+    var auto=(d.autonomy&&d.autonomy[it.category])||{streak:0,auto:false};
+    return '<div class="card" data-id="'+it.id+'">'+
+      '<div class="cat"><span>'+it.category+(it.autoApproved?' · auto':'')+'</span><span class="auto">'+(auto.auto?'AUTO-SEND ON':(auto.streak||0)+'/50)')+'</span></div>'+
+      (it.to?'<div class="to">to '+it.to+'</div>':'')+
+      '<div class="subj">'+(it.subject||'(no subject)')+'</div>'+
+      '<div class="body" id="b-'+it.id+'">'+esc(it.editedBody||it.body)+'</div>'+
+      (STATUS==='pending'?'<div class="actions">'+
+        '<button class="approve" onclick="act(\''+it.id+'\',\'approve\')">Approve</button>'+
+        '<button class="edit" onclick="startEdit(\''+it.id+'\')">Edit</button>'+
+        '<button class="reject" onclick="act(\''+it.id+'\',\'reject\')">Reject</button>'+
+      '</div>':'')+
+    '</div>';
+  }).join('');
+}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+
+function act(id,action,editedBody){
+  fetch('/.netlify/functions/queue-action',{method:'POST',headers:h(),body:JSON.stringify({action:action,id:id,editedBody:editedBody})})
+   .then(function(r){return r.json();}).then(function(){toast(action==='approve'?'Approved':action==='edit'?'Edited & approved':'Rejected');load();});
+}
+function startEdit(id){
+  var b=document.getElementById('b-'+id);
+  if(b.getAttribute('contenteditable')==='true'){act(id,'edit',b.innerText);return;}
+  b.setAttribute('contenteditable','true');b.focus();
+  var card=b.closest('.card');card.querySelector('.edit').textContent='Save & approve';
+}
+function toggleKill(cat,on){
+  fetch('/.netlify/functions/queue-action',{method:'POST',headers:h(),body:JSON.stringify({action:on?'kill':'unkill',category:cat})})
+   .then(function(){toast(on?'Sending stopped':'Sending resumed');load();});
+}
+(function(){try{var s=sessionStorage.getItem('ss_qpw');if(s){PW=s;fetch('/.netlify/functions/queue-list?status=pending',{headers:h()}).then(function(r){return r.ok?r.json():Promise.reject();}).then(function(d){document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';render(d);}).catch(function(){});}}catch(_){}})();
+</script>
+</body>
+</html>
