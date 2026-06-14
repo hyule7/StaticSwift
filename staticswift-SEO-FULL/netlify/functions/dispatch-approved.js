@@ -51,7 +51,7 @@ exports.handler = async (event) => {
     SENDABLE.has(i.category) && i.to &&
     !control.kill[i.category] &&
     (!i.sendAfter || Date.parse(i.sendAfter) <= Date.now())
-  );
+  ).sort((a, b) => ((b.meta && b.meta.heat) || 0) - ((a.meta && a.meta.heat) || 0)); // hottest leads first
 
   let sent = 0, failed = 0, suppressed = 0;
   for (const item of due) {

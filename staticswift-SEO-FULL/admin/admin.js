@@ -3619,9 +3619,13 @@ function renderWfQueue(q) {
   const items = q.pending || [];
   const el = document.getElementById('wf-queue');
   if (!items.length) { el.innerHTML = '<div class="wf-empty">Nothing waiting. The staff are clear.</div>'; return; }
-  el.innerHTML = items.map(function (it) {
+  const blitzN = items.filter(function (i) { return i.meta && i.meta.blitz; }).length;
+  const bar = '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">' +
+    '<button class="wf-go" style="flex:1" onclick="wfApproveAll(' + (blitzN ? 'true' : 'false') + ')">' + (blitzN ? '🔥 Approve &amp; send all ' + blitzN + ' blitz emails' : 'Approve &amp; send all ' + items.length) + '</button></div>';
+  el.innerHTML = bar + items.map(function (it) {
+    var hotTag = (it.meta && it.meta.hot) ? '<span style="color:#c0341f;font-weight:700">🔥 HOT LEAD</span> · ' : (it.meta && it.meta.segment ? '<span style="color:#9a6b16">' + wfEsc(it.meta.segment) + '</span> · ' : '');
     return '<div class="item" data-id="' + it.id + '">' +
-      '<div class="cat"><span>' + wfEsc(it.category) + (it.to ? ' · ' + wfEsc(it.to) : '') + '</span><span>' + wfAgo(it.createdAt) + '</span></div>' +
+      '<div class="cat"><span>' + hotTag + wfEsc(it.category) + (it.to ? ' · ' + wfEsc(it.to) : '') + '</span><span>' + wfAgo(it.createdAt) + '</span></div>' +
       '<div class="subj">' + wfEsc(it.subject || '(no subject)') + '</div>' +
       '<div class="body" id="wf-b-' + it.id + '">' + wfEsc(it.editedBody || it.body) + '</div>' +
       '<div class="acts">' +
@@ -3630,6 +3634,17 @@ function renderWfQueue(q) {
         '<button class="wf-rj" onclick="wfAct(\'' + it.id + '\',\'reject\')">Reject</button>' +
       '</div></div>';
   }).join('');
+}
+async function wfApproveAll(blitzOnly) {
+  if (!confirm('Approve and send these emails now? They go out within the daily cap, every one carries a one-click unsubscribe.')) return;
+  wfToast('Approving and sending...');
+  try {
+    const r = await fetch('/.netlify/functions/queue-action', { method: 'POST', headers: wfHdr(), body: JSON.stringify({ action: 'approve-batch', blitz: !!blitzOnly }) });
+    const d = await r.json().catch(function () { return {}; });
+    const sent = d.dispatched && d.dispatched.sent;
+    wfToast(r.ok ? ('Approved ' + (d.approved || 0) + (sent != null ? ', sent ' + sent + ' now (rest within the cap)' : '. Sending within the daily cap.')) : 'Could not approve (check deploy/password).');
+  } catch (_) { wfToast('Could not reach the queue.'); }
+  setTimeout(loadWorkforce, 1200);
 }
 async function wfAct(id, action, editedBody) {
   await fetch('/.netlify/functions/queue-action', { method: 'POST', headers: wfHdr(), body: JSON.stringify({ action: action, id: id, editedBody: editedBody }) });

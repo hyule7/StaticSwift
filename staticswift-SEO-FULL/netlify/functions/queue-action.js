@@ -26,6 +26,29 @@ exports.handler = async (event) => {
   const { store, items, control } = await load();
   if (!store) return { statusCode: 500, body: JSON.stringify({ error: 'Blobs unavailable' }) };
 
+  // Batch approve: one tap to approve every pending item (or just the blitz
+  // batch). Then the dispatcher sends them within the daily cap. This is the
+  // "approve all and send" the sales blitz needs.
+  if (action === 'approve-batch') {
+    const onlyBlitz = !!p.blitz;
+    const now2 = new Date().toISOString();
+    let approved = 0;
+    for (const it of items) {
+      if (it.status !== 'pending') continue;
+      if (onlyBlitz && !(it.meta && it.meta.blitz)) continue;
+      it.status = 'approved'; it.decidedAt = now2; recordDecision(control, it.category, 'approved'); approved++;
+    }
+    await saveItems(store, items);
+    await saveControl(store, control);
+    // Kick the dispatcher so approved mail starts going out immediately.
+    let dispatched = null;
+    try {
+      const r = await fetch((process.env.URL || 'https://staticswift.co.uk') + '/.netlify/functions/dispatch-approved', { method: 'POST', headers: { 'x-admin-password': process.env.ADMIN_PASSWORD || '' } });
+      dispatched = await r.json().catch(() => null);
+    } catch (_) {}
+    return { statusCode: 200, body: JSON.stringify({ ok: true, approved, dispatched }) };
+  }
+
   if (action === 'kill' || action === 'unkill') {
     const on = action === 'kill';
     if (category === 'global' || !category) control.kill.global = on;

@@ -61,7 +61,18 @@ exports.handler = async (event) => {
   //    also restock prospects, run the outreach follow-up engine, and re-engage
   //    non-buyers, so money-path work starts before the AI shift even spins up.
   const jobs = [fire('discover-companies-house'), fire('dispatch-approved'), fire('ping-sitemaps')];
-  if (blitz) { jobs.push(fire('daily-followup')); jobs.push(fire('cron-nurture')); }
+  let drafted = 0;
+  if (blitz) {
+    jobs.push(fire('daily-followup'));
+    jobs.push(fire('cron-nurture'));
+    // The proper BD push: draft warm reactivation + win-back + cold emails into
+    // the approval queue NOW, server-side, no Mac needed.
+    try {
+      const r = await fetch(SITE + '/.netlify/functions/blitz-push', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-password': process.env.ADMIN_PASSWORD || '' } });
+      const j = await r.json().catch(() => ({}));
+      drafted = j.drafted || 0;
+    } catch (_) {}
+  }
   const fired = await Promise.all(jobs);
 
   // 3. Light up the whole revenue team so Harry watches the blitz live.
@@ -72,7 +83,7 @@ exports.handler = async (event) => {
     log('Brief Chaser', 'Growth & Conversion', 'Chasing started-but-unfinished briefs with the free-preview offer', ''),
     log('Sales Closer', 'Growth & Conversion', 'Standing by to answer every hot reply within minutes', ''),
     log('Preview Builder', 'Business Development', 'Building one-page previews for the top prospects', '"I already built you this"'),
-    log('Writer', 'Business Development', 'Drafting personalised first emails for the queue', ''),
+    log('Writer', 'Business Development', drafted ? ('Drafted ' + drafted + ' personalised emails into the approval queue') : 'Drafting personalised first emails for the queue', drafted ? 'ready for one-tap approval' : ''),
     log('Dispatcher', 'Operations & Finance', 'Sending all approved outreach now', ''),
     log('Conversion Optimiser', 'Growth & Conversion', 'Checking the funnel for one change that lifts sign-ups today', ''),
     log('CEO Agent', 'Executive', 'BLITZ ordered: all hands, one goal, a sale today', 'AI sprint starts on the Mac within minutes'),
@@ -85,7 +96,8 @@ exports.handler = async (event) => {
       ok: true,
       requested: shift,
       blitz,
-      note: ops ? (blitz ? 'BLITZ on. The team is restocking, dispatching and re-engaging now; the AI sales sprint starts on the Mac within minutes.' : 'Shift requested; the Mac will run it on its next watcher tick.') : 'Blobs unavailable; only the instant pieces ran.',
+      drafted,
+      note: ops ? (blitz ? (drafted + ' emails drafted into your approval queue. Approve the batch and they send within the daily cap. The AI sales sprint also starts on the Mac within minutes.') : 'Shift requested; the Mac will run it on its next watcher tick.') : 'Blobs unavailable; only the instant pieces ran.',
       fired,
     }),
   };

@@ -93,9 +93,19 @@ exports.handler = async (event) => {
   // Already-queued or already-sent emails today, to avoid duplicates.
   const queuedTo = new Set(items.filter(i => i.status === 'pending' || i.status === 'approved').map(i => (i.to || '').toLowerCase()));
 
-  const clients = Array.isArray(db.clients) ? db.clients : [];
-  const nurture = Array.isArray(db.nurture) ? db.nurture : [];
-  const prospects = Array.isArray(db.cronProspects) ? db.cronProspects : [];
+  // Hotness score: recency + intent. The hottest get drafted and sent first.
+  const ageDays = iso => { const t = Date.parse(iso || 0); return t ? (Date.now() - t) / 86400000 : 9999; };
+  const clientHeat = c => {
+    let s = 0; const stage = (c.stage || '').toLowerCase();
+    if (stage === 'brief_received') s += 60; else if (stage === 'contacted') s += 35; else if (stage === 'new-lead') s += 45;
+    const a = ageDays(c.createdAt); if (a < 2) s += 40; else if (a < 7) s += 25; else if (a < 30) s += 10;
+    if (c.whatsapp || c.phone) s += 10;
+    return s;
+  };
+  const clients = (Array.isArray(db.clients) ? db.clients : []).slice().sort((a, b) => clientHeat(b) - clientHeat(a));
+  const nurture = (Array.isArray(db.nurture) ? db.nurture : []).slice().sort((a, b) => ageDays(a.addedAt || a.lastSeenAt) - ageDays(b.addedAt || b.lastSeenAt));
+  const prospects = (Array.isArray(db.cronProspects) ? db.cronProspects : []).slice().sort((a, b) => (b.score || 0) - (a.score || 0));
+  let hot = 0;
   const now = new Date().toISOString();
   const drafts = [];
   let warm = 0, cold_ = 0;
@@ -111,7 +121,9 @@ exports.handler = async (event) => {
     if (queuedTo.has(email.toLowerCase())) continue;
     if (await isSuppressed(email)) continue;
     const d = reactivation(c);
-    drafts.push({ to: email, category: 'outreach', subject: d.subject, body: d.body, prospect: { business: c.business_name, stage, segment: 'reactivation' } });
+    const heat = clientHeat(c); const isHot = heat >= 70;
+    if (isHot) hot++;
+    drafts.push({ to: email, category: 'outreach', subject: d.subject, body: d.body, prospect: { business: c.business_name, stage, segment: 'reactivation', heat, hot: isHot } });
     queuedTo.add(email.toLowerCase()); warm++;
   }
 
@@ -138,11 +150,14 @@ exports.handler = async (event) => {
   }
 
   // Push all drafts to the queue (pending).
+  // Hottest drafts to the top so they are approved and sent first.
+  drafts.sort((a, b) => ((b.prospect && b.prospect.heat) || 0) - ((a.prospect && a.prospect.heat) || 0));
   for (const d of drafts) {
     items.push({
       id: 'q_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
       createdAt: now, status: 'pending', category: d.category, to: d.to,
-      subject: d.subject, body: d.body, prospect: d.prospect, meta: { blitz: true, segment: d.prospect && d.prospect.segment },
+      subject: d.subject, body: d.body, prospect: d.prospect,
+      meta: { blitz: true, segment: d.prospect && d.prospect.segment, hot: !!(d.prospect && d.prospect.hot), heat: (d.prospect && d.prospect.heat) || 0 },
     });
   }
   await saveItems(store, items);
@@ -153,7 +168,7 @@ exports.handler = async (event) => {
     body: JSON.stringify({
       ok: true,
       drafted: drafts.length,
-      reactivation: warm, cold: cold_,
+      reactivation: warm, cold: cold_, hot,
       note: drafts.length
         ? drafts.length + ' emails drafted and waiting in your approval queue. Approve the batch and the dispatcher sends them within the daily cap.'
         : 'No contactable warm leads or emailed prospects to draft right now. New Companies House prospects need a contact found first (the Contact Finder runs on the Mac shift).',
