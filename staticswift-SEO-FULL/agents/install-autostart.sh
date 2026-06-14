@@ -35,7 +35,9 @@ BASH_BIN="/bin/bash"
 PATH_LINE="/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin"
 
 mk_plist () {  # label, hour|catchup|watch, arg
-  local label="$1" hour="$2" arg="$3" plist="$LA/$label.plist" prog="$REPO/agents/run-shift.sh"
+  local label="$1" hour="$2" arg="$3"
+  local plist="$LA/$label.plist"
+  local prog="$REPO/agents/run-shift.sh"
   local sched
   if [ "$hour" = "catchup" ]; then
     sched="<key>RunAtLoad</key><true/>"
