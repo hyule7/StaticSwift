@@ -1,0 +1,162 @@
+/*
+ * blitz-push.js — the proper BD push. When Harry hits Blitz, this fills the
+ * approval queue NOW with real, personalised, ready-to-send emails, server
+ * side, no Mac needed:
+ *   - warm-lead reactivation (leads who enquired/started a brief and did not pay)
+ *   - non-buyer win-back (website-check + lead-magnet signups)
+ *   - cold first-touch to contactable prospects (those with a real email)
+ *
+ * Field Guide voice, PECR-compliant (reason for contact + one-click unsub),
+ * suppression honoured, deduped against what is already queued, capped so the
+ * queue stays reviewable. Every draft lands status=pending for one-tap approval;
+ * the dispatcher then sends within the daily cap. Admin or agent token.
+ */
+const { readDB } = require('./_db');
+const { load, saveItems } = require('./_queue');
+const { isSuppressed, unsubUrl } = require('./_suppression');
+
+const F = { build: 499, monthly: 49, previewHours: 24, guaranteeDays: 60, wa: '07502 731 799' };
+const CAP_WARM = 40, CAP_COLD = 40;
+const isEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e || '').trim());
+const first = n => (n && String(n).trim().split(/\s+/)[0]) || 'there';
+const sigUnsub = (email, cat) => 'Not interested? Reply STOP and I will not email again. Unsubscribe: ' + unsubUrl(email, cat);
+
+function reactivation(lead) {
+  const fn = first(lead.name);
+  const town = lead.location || lead.town || 'your area';
+  const trade = (lead.business_type || lead.trade || '').replace(/-/g, ' ');
+  return {
+    subject: 'Your free preview is still waiting' + (lead.business_name ? ', ' + lead.business_name : ''),
+    body:
+`Hi ${fn},
+
+You enquired about a website${trade ? ' for your ' + trade : ''}${town ? ' in ' + town : ''} and I never got it in front of you. That is on me. The offer still stands: a real working preview in ${F.previewHours} hours, free, no card. You only pay the ${F.build} pounds if you keep it, and if it does not bring a lead in ${F.guaranteeDays} days you get it all back.
+
+Want me to build it? Reply here or message me on WhatsApp ${F.wa}.
+
+Harry
+StaticSwift, Manchester
+${sigUnsub(lead.delivery_email, 'reactivation')}`,
+  };
+}
+
+function winback(rec) {
+  const fn = first(rec.name);
+  return {
+    subject: 'Three quick wins for your website',
+    body:
+`Hi ${fn},
+
+You checked your website with my free tool a little while back. I build hand-coded sites for UK trades that fix exactly the things it flags: mobile speed, click-to-call, reviews where customers see them.
+
+If it is easier, I will just build you a new one. Real working preview in ${F.previewHours} hours, free, no card. ${F.build} pounds once if you keep it, ${F.guaranteeDays}-day lead guarantee.
+
+Reply and I will start tonight.
+
+Harry
+StaticSwift, Manchester
+${sigUnsub(rec.email, 'winback')}`,
+  };
+}
+
+function cold(p) {
+  const fn = first(p.contactName || p.name);
+  const town = p.town || 'your area';
+  const trade = (p.trade || p.businessType || 'business').replace(/-/g, ' ');
+  const obs = p.website ? '' : 'You do not seem to have a website yet. ';
+  return {
+    subject: obs ? ('A website for ' + (p.companyName || p.name || 'your ' + trade) + '?') : (trade.charAt(0).toUpperCase() + trade.slice(1) + ' website, ' + town),
+    body:
+`Hi${fn !== 'there' ? ' ' + fn : ''},
+
+${obs}I am Harry, I hand-code websites for ${trade}s around ${town}. I will build you a real working preview in ${F.previewHours} hours, free, no card. If you keep it it is ${F.build} pounds once, and if it does not bring a lead in ${F.guaranteeDays} days you get your money back.
+
+Want me to make you one? Reply here, or start the 60-second brief: https://staticswift.co.uk/order.html?source=blitz&trade=${encodeURIComponent(p.trade || '')}&town=${encodeURIComponent(town)}
+
+Harry
+StaticSwift, Manchester
+Reason for this email: you run a ${trade} in ${town} and I build sites for that trade. ${sigUnsub(p.email, 'outreach')}`,
+  };
+}
+
+exports.handler = async (event) => {
+  const auth = event.headers['x-admin-password'];
+  const agent = event.headers['x-agent-token'];
+  const okAdmin = process.env.ADMIN_PASSWORD && auth === process.env.ADMIN_PASSWORD;
+  const okAgent = process.env.AGENT_TOKEN && agent === process.env.AGENT_TOKEN;
+  if (!okAdmin && !okAgent) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
+
+  let db; try { db = await readDB(); } catch (e) { return { statusCode: 200, body: JSON.stringify({ ok: false, reason: 'CRM unavailable: ' + e.message }) }; }
+  const { store, items } = await load();
+  if (!store) return { statusCode: 200, body: JSON.stringify({ ok: false, reason: 'Blobs unavailable' }) };
+
+  // Already-queued or already-sent emails today, to avoid duplicates.
+  const queuedTo = new Set(items.filter(i => i.status === 'pending' || i.status === 'approved').map(i => (i.to || '').toLowerCase()));
+
+  const clients = Array.isArray(db.clients) ? db.clients : [];
+  const nurture = Array.isArray(db.nurture) ? db.nurture : [];
+  const prospects = Array.isArray(db.cronProspects) ? db.cronProspects : [];
+  const now = new Date().toISOString();
+  const drafts = [];
+  let warm = 0, cold_ = 0;
+
+  // 1. Warm reactivation: enquired, not paid, not already a won/live client.
+  for (const c of clients) {
+    if (warm >= CAP_WARM) break;
+    const email = c.delivery_email || c.email;
+    if (!isEmail(email)) continue;
+    const stage = (c.stage || '').toLowerCase();
+    if (['won', 'live', 'paid', 'lost'].includes(stage)) continue;
+    if (c.paid) continue;
+    if (queuedTo.has(email.toLowerCase())) continue;
+    if (await isSuppressed(email)) continue;
+    const d = reactivation(c);
+    drafts.push({ to: email, category: 'outreach', subject: d.subject, body: d.body, prospect: { business: c.business_name, stage, segment: 'reactivation' } });
+    queuedTo.add(email.toLowerCase()); warm++;
+  }
+
+  // 2. Non-buyer win-back (lead-magnet / website-check signups).
+  for (const r of nurture) {
+    if (warm >= CAP_WARM) break;
+    const email = r.email;
+    if (!isEmail(email) || queuedTo.has(email.toLowerCase())) continue;
+    if (await isSuppressed(email)) continue;
+    const d = winback(r);
+    drafts.push({ to: email, category: 'outreach', subject: d.subject, body: d.body, prospect: { segment: 'winback', source: r.source } });
+    queuedTo.add(email.toLowerCase()); warm++;
+  }
+
+  // 3. Cold first-touch to prospects that actually have an email.
+  for (const p of prospects) {
+    if (cold_ >= CAP_COLD) break;
+    const email = p.email;
+    if (!isEmail(email) || queuedTo.has(email.toLowerCase())) continue;
+    if (await isSuppressed(email)) continue;
+    const d = cold(p);
+    drafts.push({ to: email, category: 'outreach', subject: d.subject, body: d.body, prospect: { business: p.companyName || p.name, trade: p.trade, town: p.town, segment: 'cold' } });
+    queuedTo.add(email.toLowerCase()); cold_++;
+  }
+
+  // Push all drafts to the queue (pending).
+  for (const d of drafts) {
+    items.push({
+      id: 'q_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+      createdAt: now, status: 'pending', category: d.category, to: d.to,
+      subject: d.subject, body: d.body, prospect: d.prospect, meta: { blitz: true, segment: d.prospect && d.prospect.segment },
+    });
+  }
+  await saveItems(store, items);
+
+  return {
+    statusCode: 200,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      ok: true,
+      drafted: drafts.length,
+      reactivation: warm, cold: cold_,
+      note: drafts.length
+        ? drafts.length + ' emails drafted and waiting in your approval queue. Approve the batch and the dispatcher sends them within the daily cap.'
+        : 'No contactable warm leads or emailed prospects to draft right now. New Companies House prospects need a contact found first (the Contact Finder runs on the Mac shift).',
+    }),
+  };
+};
