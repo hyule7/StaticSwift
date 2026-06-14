@@ -59,7 +59,10 @@ async function deliverApprovedDesign(item) {
   try {
     const { getClient, updateClient } = require('./_db');
     if (clientId && typeof updateClient === 'function') {
-      await updateClient(clientId, { stage: 'won', liveUrl, wentLiveAt: new Date().toISOString() });
+      // Field names match get-portal.js so the portal shows the live link
+      // the moment Harry approves from his phone (liveUrl + liveAt).
+      const liveAt = new Date().toISOString();
+      await updateClient(clientId, { stage: 'won', liveUrl, liveAt, wentLiveAt: liveAt });
       result.crm = true;
     }
   } catch (e) { result.crmError = e.message; }
