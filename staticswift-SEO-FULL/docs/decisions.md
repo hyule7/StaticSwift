@@ -110,3 +110,25 @@ existing analyze-site-public engine. Pixels (Meta/TikTok) are consent-gated:
 nothing loads before Allow, satisfying PECR/GDPR. 5-email nurture runs daily
 via cron-nurture, stops on reply/convert, suppression honoured. (Head of
 Analytics, Head of Outreach, Brand Director)
+
+## 2026-06-12 (Phases 4-6 build)
+
+**D-020. Phase 4 outbound is draft-only.** outreach/ enriches, writes and
+sequences into the approval queue; nothing sends itself. Suppression checked
+at draft time. (Head of Outreach)
+
+**D-021. Phase 6 approval queue is the spine.** _queue.js (Blobs) with earned
+autonomy (50 clean approvals per category flips auto-send; any edit/reject
+resets and revokes). dispatch-approved is the only approved->wire path, runs
+24/7 in UK hours under a 30/day cap with kill switches. admin/queue.html is
+the mobile one-tap UI. Money/pricing/refunds never dispatchable. (CEO)
+
+**D-022. Workforce shipped as 20 role files + 3 shifts + headless harness.**
+Generated from agents/_build-roles.mjs so the Covenant/identity/gate are
+uniform. run-shift.sh runs claude --print in role order, healthcheck-pinged.
+send-brief is the 7am Chief of Staff brief. Approving a design build from the
+phone completes delivery end to end (_deliver.js). (CEO)
+
+**D-023. JSONBin remains the live CRM; new agent state is in Blobs**
+(approval-queue, ops, portals, build-archive). Full consolidation to Blobs is
+still outstanding and is the largest remaining Phase 6 item. (CEO)
