@@ -109,6 +109,11 @@
 [functions."dispatch-approved"]
   schedule = "0 * * * *"
 
+# Scheduled function — the 7am Chief of Staff brief to Harry. Belt-and-braces
+# alongside the Morning Ops shift, so the brief lands even if the Mac slept.
+[functions."send-brief"]
+  schedule = "0 6 * * *"
+
 # Scheduled function — sweeps live subscription clients and emails each
 # their monthly £49 invoice. Fires 09:00 UTC on the 1st of every month.
 # Idempotent: a client gets at most one invoice per calendar month, keyed
