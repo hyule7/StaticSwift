@@ -2,3 +2,7 @@ node_modules/
 test-results/
 playwright-report/
 dbg*.mjs
+
+# outreach local dev artifacts
+outreach/.queue.local.json
+outreach/.suppression.local.json

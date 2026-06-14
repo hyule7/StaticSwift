@@ -43,4 +43,9 @@ head-of-analytics, cfo. All inherit `.claude/agents/_covenant.md`
 5. Batch questions for Harry at phase boundaries; give a deploy preview link.
 
 ## Current phase
-Phase 0 COMPLETE and verified live. Phase 1a (phone field + sticky CTA) shipped estate-wide. Phase 1b template awaiting Harry approval at /_template-preview/. See docs/audit/phase0-findings.md.
+Phases 0-3 COMPLETE (committed on main). 0: mechanical truth + analytics +
+security. 1: full estate on Field Guide template (26,778 leafs + 416 hubs,
+titles/URLs preserved). 2: proof + trust. 3: website-check tool, consent-gated
+pixels, 5-email nurture. Phase 4 (outbound engine) in progress, then 5
+(reporting), 6 (agent workforce). Builders: scripts/build-leaf-v2.mjs,
+build-hub-v2.mjs (read data/trade-copy/, data/facts.json, _consent-snippet).
