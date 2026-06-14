@@ -198,7 +198,7 @@ if(!d||!d.ago)return;el.textContent='Last delivered '+d.ago+(d.business?' · '+d
   <span class="tag">More towns we serve</span>
   <div class="links"><a href="https://staticswift.co.uk/work/harrison-electrical/" target="_blank" rel="noopener">Harrison Electrical · NICEIC electrician · Bristol ↗</a></div>
   <span class="tag" style="margin-top:26px">Other services in Harpenden</span>
-  <div class="links"><a href="https://staticswift.co.uk/vet-website-design-harleston/">Vet in Harleston</a><a href="https://staticswift.co.uk/vet-website-design-harlow/">Vet in Harlow</a><a href="https://staticswift.co.uk/vet-website-design-harrogate/">Vet in Harrogate</a><a href="https://staticswift.co.uk/vet-website-design-harrow/">Vet in Harrow</a></div>
+  <div class="links"><a href="https://staticswift.co.uk/work/harrison-electrical/" target="_blank" rel="noopener">Harrison Electrical · NICEIC electrician · Bristol ↗</a></div>
   <div class="links" style="margin-top:18px"><a href="https://staticswift.co.uk/vet-website-design/">Vets nationwide</a><a href="https://staticswift.co.uk/locations.html">All towns</a><a href="https://staticswift.co.uk/website-check/">Free website check</a></div>
 </div></section>
 
@@ -253,6 +253,34 @@ document.addEventListener('visibilitychange',function(){if(document.visibilitySt
 window.ssTrack=function(evt,meta){send({type:'event',evt:evt,path:p,sid:sid,meta:meta||{}});};
 document.addEventListener('submit',function(e){var f=e.target;if(f&&f.tagName==='FORM')window.ssTrack('form_submit',{form:f.id||''});},true);
 document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;if(!a)return;var h=a.getAttribute('href')||'';if(h.indexOf('wa.me')>-1||h.indexOf('whatsapp')>-1)window.ssTrack('whatsapp_click',{});else if(h.indexOf('tel:')===0)window.ssTrack('tel_click',{});},true);
+})();
+</script>
+<div id="ss-consent" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:#0E0B07;color:#F2EFE7;padding:16px clamp(20px,5vw,72px);gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;font-family:'Switzer',system-ui,sans-serif;font-size:14px;line-height:1.5;box-shadow:0 -4px 24px rgba(0,0,0,.3)">
+  <span style="max-width:640px">I use cookies only to measure ad performance (Meta and TikTok) so I can stop wasting money on ads that do not work. Nothing else. <a href="/privacy.html" style="color:#BFB4A0;text-decoration:underline">Privacy</a>.</span>
+  <span style="display:flex;gap:10px;flex-shrink:0">
+    <button id="ss-consent-no" style="background:transparent;color:#F2EFE7;border:1px solid rgba(242,239,231,.4);padding:10px 18px;border-radius:100px;font:inherit;font-weight:600;cursor:pointer;min-height:44px">Decline</button>
+    <button id="ss-consent-yes" style="background:#F2EFE7;color:#0E0B07;border:0;padding:10px 20px;border-radius:100px;font:inherit;font-weight:600;cursor:pointer;min-height:44px">Allow</button>
+  </span>
+</div>
+<script>
+(function(){
+  var TT='D8G5KVRC77UAEKHUL26G'; // TikTok pixel id (also on order.html)
+  function getC(n){return (document.cookie.split('; ').find(function(r){return r.indexOf(n+'=')===0;})||'').split('=')[1]||'';}
+  function setC(n,v){document.cookie=n+'='+v+'; max-age='+(180*86400)+'; path=/; SameSite=Lax';}
+  function loadPixels(){
+    if(window.ttq&&window.ttq._loaded)return;
+    // TikTok
+    !function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"];ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{};ttq._i[e]=[];ttq._i[e]._u=r;ttq._t=ttq._t||{};ttq._t[e]=+new Date;ttq._o=ttq._o||{};ttq._o[e]=n||{};var o=d.createElement("script");o.type="text/javascript";o.async=!0;o.src=r+"?sdkid="+e+"&lib="+t;var s=d.getElementsByTagName("script")[0];s.parentNode.insertBefore(o,s)};ttq.load(TT);ttq.page();}(window,document,'ttq');
+    window.ttq._loaded=true;
+    // Mirror conversions to TikTok once it is live.
+    window.addEventListener('submit',function(){try{window.ttq&&window.ttq.track('SubmitForm');}catch(_){}},true);
+  }
+  var c=getC('ss_consent');
+  if(c==='granted'){loadPixels();return;}
+  if(c==='denied')return;
+  var el=document.getElementById('ss-consent');if(!el)return;el.style.display='flex';
+  document.getElementById('ss-consent-yes').onclick=function(){setC('ss_consent','granted');el.style.display='none';loadPixels();};
+  document.getElementById('ss-consent-no').onclick=function(){setC('ss_consent','denied');el.style.display='none';};
 })();
 </script>
 </body>

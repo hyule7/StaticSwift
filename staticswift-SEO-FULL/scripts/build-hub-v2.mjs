@@ -58,6 +58,7 @@ const GA4 = `<script async src="https://www.googletagmanager.com/gtag/js?id=G-4B
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-4BZHQMG0RF');</script>`;
 
 const TRACKER = readFileSync(join(ROOT, 'scripts/build-leaf-v2.mjs'), 'utf8').match(/const TRACKER = `([\s\S]*?)`;/)[1];
+const CONSENT = readFileSync(join(ROOT, 'scripts/_consent-snippet.html'), 'utf8');
 
 function render({ dir, title, town, region, links }) {
   const url = `https://staticswift.co.uk/${dir}/`;
@@ -276,6 +277,7 @@ ${PROOF_STRIP}
 })();
 </script>
 ${TRACKER}
+${CONSENT}
 </body>
 </html>`;
 }

@@ -62,6 +62,7 @@ for (const line of readFileSync(join(ROOT, '_redirects'), 'utf8').split('\n')) {
 }
 
 const decode = s => s.replace(/&mdash;/g, '—').replace(/&pound;/g, '£').replace(/&amp;/g, '&');
+const CONSENT = readFileSync(join(ROOT, 'scripts/_consent-snippet.html'), 'utf8');
 
 function parseOld(html, dir) {
   const title = (html.match(/<title>([\s\S]*?)<\/title>/) || [])[1]?.replace(/\s+/g, ' ').trim();
@@ -358,6 +359,7 @@ function tf(b){b.parentElement.classList.toggle('open')}
 })();
 </script>
 ${TRACKER}
+${CONSENT}
 </body>
 </html>`;
 }
