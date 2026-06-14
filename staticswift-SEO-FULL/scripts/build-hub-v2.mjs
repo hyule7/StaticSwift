@@ -242,7 +242,7 @@ ${PROOF_STRIP}
 
 <footer>
   <span>StaticSwift · MMXXVI · Manchester</span>
-  <span><a href="https://wa.me/${C.whatsapp.replace('+', '')}">WhatsApp ${C.whatsapp_display}</a> · <a href="mailto:${C.email}">${C.email}</a> · <a href="https://staticswift.co.uk/about/">About</a> · <a href="/order.html">Start a project</a></span>
+  <span><a href="https://wa.me/${C.whatsapp.replace('+', '')}">WhatsApp ${C.whatsapp_display}</a> · <a href="mailto:${C.email}">${C.email}</a> · <a href="https://staticswift.co.uk/website-check/">Free website check</a> · <a href="/order.html">Start a project</a></span>
 </footer>
 
 <div class="msticky" id="ss-msticky">

@@ -1,11 +1,11 @@
 # Crawl Audit Report
 
-Generated 2026-06-11T23:22:35.346Z against the local built tree (31853 pages).
+Generated 2026-06-14T11:53:52.453Z against the local built tree (31854 pages).
 
 ## Headline
 
-- Pages on disk: 31853
-- URLs in sitemaps: 31842
+- Pages on disk: 31854
+- URLs in sitemaps: 31843
 - Broken internal links: 0 unique targets
 - Sitemap URLs that do not resolve on disk: 0
 - Pages on disk missing from sitemaps: 8

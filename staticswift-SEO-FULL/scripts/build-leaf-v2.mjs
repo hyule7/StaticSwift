@@ -318,7 +318,7 @@ ${PROOF_STRIP}
   <div class="links">${townLinks}</div>
   <span class="tag" style="margin-top:26px">Other services in ${townE}</span>
   <div class="links">${tradeLinks}</div>
-  <div class="links" style="margin-top:18px"><a href="https://staticswift.co.uk/${tradeKey}-website-design/">${TL}s nationwide</a><a href="https://staticswift.co.uk/locations.html">All towns</a></div>
+  <div class="links" style="margin-top:18px"><a href="https://staticswift.co.uk/${tradeKey}-website-design/">${TL}s nationwide</a><a href="https://staticswift.co.uk/locations.html">All towns</a><a href="https://staticswift.co.uk/website-check/">Free website check</a></div>
 </div></section>
 
 <footer>
