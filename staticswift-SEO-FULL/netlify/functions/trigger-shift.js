@@ -88,20 +88,45 @@ exports.handler = async (event) => {
   }
   const fired = await Promise.all(jobs);
 
-  // 3. Light up the whole revenue team so Harry watches the blitz live.
+  // 3. ALL HANDS. The whole company comes online so Harry can watch every desk
+  //    work the blitz in parallel. The no-AI desks did real work above; the rest
+  //    are kicked off here and the Mac AI shift (blitz.md) carries them out.
   const okt = fired.find(x => x.fn === 'discover-companies-house');
   await Promise.all([
+    // Business Development
     log('Companies House Watcher', 'Business Development', 'Scanning Companies House for brand-new UK trade companies', okt && okt.status === 200 ? 'fresh prospects pulled' : 'scan triggered'),
-    log('Website Checker', 'Business Development', scavenged ? ('Scavenged ' + scavenged + ' local businesses with bad or no websites') : 'Hunting local businesses with weak websites', 'across the busiest UK towns'),
-    log('Contact Finder', 'Business Development', enriched ? ('Found ' + enriched + ' new email contacts from scavenged sites') : 'Digging out contact details for scavenged businesses', 'published + MX-verified'),
+    log('Website Checker', 'Business Development', scavenged ? ('Scavenged ' + scavenged + ' businesses with bad or no websites') : 'Hunting businesses with weak websites', 'busiest UK towns'),
+    log('Contact Finder', 'Business Development', enriched ? ('Found ' + enriched + ' new email contacts') : 'Digging out contact details', 'published + MX-verified'),
+    log('Writer', 'Business Development', drafted ? ('Drafted ' + drafted + ' personalised emails into the queue') : 'Drafting personalised first emails', 'hottest first'),
+    log('Sequencer', 'Business Development', 'Scheduling day-2 and day-5 follow-ups for everyone emailed', ''),
+    log('Preview Builder', 'Business Development', 'Building one-page previews for the top prospects', 'I already built you this'),
+    // Growth & Conversion (the sales floor)
     log('Lead Reactivation Specialist', 'Growth & Conversion', 'Mining the CRM for warm leads to win back today', ''),
-    log('Brief Chaser', 'Growth & Conversion', 'Chasing started-but-unfinished briefs with the free-preview offer', ''),
-    log('Sales Closer', 'Growth & Conversion', 'Standing by to answer every hot reply within minutes', ''),
-    log('Preview Builder', 'Business Development', 'Building one-page previews for the top prospects', '"I already built you this"'),
-    log('Writer', 'Business Development', drafted ? ('Drafted ' + drafted + ' personalised emails into the approval queue') : 'Drafting personalised first emails for the queue', drafted ? 'ready for one-tap approval' : ''),
-    log('Dispatcher', 'Operations & Finance', 'Sending all approved outreach now', ''),
-    log('Conversion Optimiser', 'Growth & Conversion', 'Checking the funnel for one change that lifts sign-ups today', ''),
-    log('CEO Agent', 'Executive', 'BLITZ ordered: all hands, one goal, a sale today', 'AI sprint starts on the Mac within minutes'),
+    log('Brief Chaser', 'Growth & Conversion', 'Chasing started-but-unfinished briefs', ''),
+    log('Win-back Specialist', 'Growth & Conversion', 'Re-engaging old non-buyers with a fresh angle', ''),
+    log('Sales Closer', 'Growth & Conversion', 'On the phones and inbox for every hot reply', 'answering within minutes'),
+    log('Conversion Optimiser', 'Growth & Conversion', 'Reviewing the funnel for the one change that lifts sign-ups', ''),
+    log('Landing Page Tester', 'Growth & Conversion', 'Testing the highest-traffic pages for drop-off', ''),
+    log('Email Lifecycle Specialist', 'Growth & Conversion', 'Tuning the nurture sequence for replies', ''),
+    log('Paid Ads Manager', 'Growth & Conversion', 'Reviewing cost-per-lead and briefing a fresh creative', ''),
+    // Analytics & Data (watching people leave, in real time)
+    log('Data Analyst', 'Analytics & Data', 'Watching live sessions and bounce rate as visitors land', ''),
+    log('Attribution Analyst', 'Analytics & Data', 'Tracing which channel is bringing the best leads today', ''),
+    log('Reporting Analyst', 'Analytics & Data', 'Building the live blitz scoreboard', ''),
+    // Search (looking at pages)
+    log('Strike List Builder', 'Search', 'Pulling pages ranking 4 to 15 to push onto page one', ''),
+    log('On-Page Optimiser', 'Search', 'Deepening the winnable pages and pointing internal links at them', ''),
+    log('Index Watcher', 'Search', 'Pinging IndexNow and checking crawl coverage', ''),
+    // Creative
+    log('Ad Creative Designer', 'Creative Production', 'Producing fresh TikTok ad creatives in the brand style', 'downloadable in admin'),
+    log('Hook Researcher', 'Creative Production', 'Checking live trends for the angle that stops the scroll', ''),
+    // Customer Service + Client Success
+    log('Triage', 'Customer Service', 'Watching the inbox so no enquiry waits', ''),
+    log('Reputation Manager', 'Client Success', 'Chasing reviews from happy clients for fresh proof', ''),
+    // Ops + Quality + Exec
+    log('Dispatcher', 'Operations & Finance', 'Sending approved outreach, hottest leads first', ''),
+    log('Fact Checker', 'Quality & Risk', 'Checking every drafted message against the facts and the voice', ''),
+    log('CEO Agent', 'Executive', 'BLITZ ordered: all hands, one goal, a sale today', 'sprint running on the Mac'),
   ]);
 
   return {
