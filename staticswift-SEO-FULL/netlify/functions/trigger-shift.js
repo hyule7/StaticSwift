@@ -61,7 +61,7 @@ exports.handler = async (event) => {
   //    also restock prospects, run the outreach follow-up engine, and re-engage
   //    non-buyers, so money-path work starts before the AI shift even spins up.
   const jobs = [fire('discover-companies-house'), fire('dispatch-approved'), fire('ping-sitemaps')];
-  let drafted = 0, scavenged = 0;
+  let drafted = 0, scavenged = 0, enriched = 0;
   if (blitz) {
     jobs.push(fire('daily-followup'));
     jobs.push(fire('cron-nurture'));
@@ -71,6 +71,12 @@ exports.handler = async (event) => {
       const s = await fetch(SITE + '/.netlify/functions/blitz-scavenge', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-password': process.env.ADMIN_PASSWORD || '' } });
       const sj = await s.json().catch(() => ({}));
       scavenged = sj.found || 0;
+    } catch (_) {}
+    // 1b) ENRICH: turn the scavenged websites into emailable contacts.
+    try {
+      const e = await fetch(SITE + '/.netlify/functions/contact-enrich', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-password': process.env.ADMIN_PASSWORD || '' } });
+      const ej = await e.json().catch(() => ({}));
+      enriched = ej.found || 0;
     } catch (_) {}
     // 2) PUSH: draft warm reactivation + win-back + cold emails (to everyone
     //    contactable, hottest first) into the approval queue NOW.
@@ -87,6 +93,7 @@ exports.handler = async (event) => {
   await Promise.all([
     log('Companies House Watcher', 'Business Development', 'Scanning Companies House for brand-new UK trade companies', okt && okt.status === 200 ? 'fresh prospects pulled' : 'scan triggered'),
     log('Website Checker', 'Business Development', scavenged ? ('Scavenged ' + scavenged + ' local businesses with bad or no websites') : 'Hunting local businesses with weak websites', 'across the busiest UK towns'),
+    log('Contact Finder', 'Business Development', enriched ? ('Found ' + enriched + ' new email contacts from scavenged sites') : 'Digging out contact details for scavenged businesses', 'published + MX-verified'),
     log('Lead Reactivation Specialist', 'Growth & Conversion', 'Mining the CRM for warm leads to win back today', ''),
     log('Brief Chaser', 'Growth & Conversion', 'Chasing started-but-unfinished briefs with the free-preview offer', ''),
     log('Sales Closer', 'Growth & Conversion', 'Standing by to answer every hot reply within minutes', ''),
@@ -106,7 +113,8 @@ exports.handler = async (event) => {
       blitz,
       drafted,
       scavenged,
-      note: ops ? (blitz ? ('Scavenged ' + scavenged + ' fresh local businesses and drafted ' + drafted + ' emails into your approval queue. Approve the batch and they send within the daily cap. The AI sprint (deeper contact-finding + previews) also starts on the Mac within minutes.') : 'Shift requested; the Mac will run it on its next watcher tick.') : 'Blobs unavailable; only the instant pieces ran.',
+      enriched,
+      note: ops ? (blitz ? ('Scavenged ' + scavenged + ' businesses, found ' + enriched + ' new email contacts, drafted ' + drafted + ' emails into your queue. Approve the batch and they send within the daily cap. The AI sprint (previews + deeper enrichment) also starts on the Mac.') : 'Shift requested; the Mac will run it on its next watcher tick.') : 'Blobs unavailable; only the instant pieces ran.',
       fired,
     }),
   };

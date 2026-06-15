@@ -102,6 +102,13 @@
 [functions."cron-nurture"]
   schedule = "0 8 * * *"
 
+# Scheduled function — the always-on SDR floor. Every 2 hours it scavenges
+# poor-website businesses, enriches their contacts, and drafts outreach into the
+# approval queue. Self-gates to UK business hours. Makes the pipeline fill all
+# day without Harry touching anything.
+[functions."cron-bd-floor"]
+  schedule = "0 */2 * * *"
+
 # Scheduled function — the approval-queue dispatcher. The ONLY path from an
 # approved artefact to the wire. Runs hourly; itself enforces the UK
 # business-hours window, the daily send cap, kill switches and suppression.
