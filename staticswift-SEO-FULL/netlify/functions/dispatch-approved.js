@@ -70,6 +70,27 @@ exports.handler = async (event) => {
       });
       item.status = 'sent'; item.sentAt = new Date().toISOString();
       sent++; budget--;
+      // Auto-queue the next follow-up so nobody gets one email and silence.
+      // Step 1 (day 3): short bump. Step 2 (day 8): the case study. Pending,
+      // so Harry still approves; only fires if they have not replied (the
+      // classifier flips replied=true and we skip).
+      const step = (item.meta && item.meta.followStep) || 0;
+      if (step < 2 && (item.category === 'outreach' || item.category === 'outreach-followup')) {
+        const nextStep = step + 1;
+        const days = nextStep === 1 ? 3 : 8;
+        const fn2 = (item.to.split('@')[0] || '').replace(/[._-]+/g, ' ').split(' ')[0];
+        const fbody = nextStep === 1
+          ? `Hi${fn2 ? ' ' + fn2 : ''},\n\nJust floating this back up. The free 24-hour preview still stands, no card, and you only pay the 499 pounds if you keep it.\n\nReply with your business name and I will start tonight.\n\nHarry\nStaticSwift, Manchester\nNot interested? Reply STOP.`
+          : `Hi${fn2 ? ' ' + fn2 : ''},\n\nLast one from me. Rather than describe it, here is one I built: Harrison Electrical, Bristol. https://staticswift.co.uk/work/harrison-electrical/\n\nSame for you: hand-coded, live within 14 days, free preview in 24 hours if you want to see it.\n\nHarry\nStaticSwift, Manchester\nNot interested? Reply STOP.`;
+        items.push({
+          id: 'q_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+          createdAt: new Date().toISOString(), status: 'pending', category: 'outreach-followup',
+          to: item.to, subject: 'Re: ' + item.subject.replace(/^Re:\s*/i, ''),
+          body: fbody, prospect: item.prospect,
+          sendAfter: new Date(Date.now() + days * 86400000).toISOString(),
+          meta: { ...(item.meta || {}), followStep: nextStep, blitz: item.meta && item.meta.blitz },
+        });
+      }
     } catch (err) {
       item.status = 'failed'; item.error = err.message; failed++;
     }

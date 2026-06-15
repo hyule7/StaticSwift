@@ -1,4 +1,4 @@
-# BLITZ shift — all hands, one goal: a sale today
+# BLITZ shift · all hands, one goal: a sale today
 
 Harry hit "Start everyone working now". That is a direct order: every revenue
 role works flat out, right now, toward getting one paying brief today. Drop
@@ -36,6 +36,23 @@ first):
   hero, a trust line), draft it for approval.
 - **Paid Ads Manager + Ad Creative Designer:** if ads are running, brief one new
   creative aimed at the cheapest-cost-per-lead angle and queue it.
+
+## 4b. Analytics, watching people leave in real time
+- **Data Analyst:** pull analytics-self. Find the page with the worst bounce or
+  the biggest drop-off in the funnel this week. Name the single likeliest cause
+  (slow hero, weak above-the-fold, no click-to-call, confusing CTA).
+- **Conversion Optimiser:** turn that cause into one concrete fix and draft it
+  for approval so it ships today. One page, one change, measured. Repeat next
+  shift on the next worst page. This is how bounce comes down: a page at a time,
+  evidence first.
+
+## 4c. Search, working the pages that are nearly there
+- **Strike List Builder:** pull positions (Search Console). List pages ranking 4
+  to 15: closest to page one.
+- **On-Page Optimiser:** take the top few and deepen them conservatively (intent
+  match, schema, a sharper title that keeps the keyword, internal links pointed
+  at them from related pages). Never bulk-rewrite a page that already ranks.
+  Draft the changes for approval. More page-one positions is more free leads.
 
 ## 5. Trust and proof
 - **Reputation Manager + Case Study Writer:** surface the strongest proof we have
