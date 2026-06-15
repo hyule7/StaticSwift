@@ -93,8 +93,27 @@ exports.handler = async (event) => {
   const { store, items } = await load();
   if (!store) return { statusCode: 200, body: JSON.stringify({ ok: false, reason: 'Blobs unavailable' }) };
 
-  // Already-queued or already-sent emails today, to avoid duplicates.
+  // ── Anti-spam contact memory ──────────────────────────────────────────
+  // Never draft to someone we already have queued/approved, emailed in the
+  // last RECENT_DAYS, or hit MAX_TOUCHES times ever. This is what stops the
+  // blitz becoming spam and burning the sending domain.
+  const RECENT_DAYS = 10, MAX_TOUCHES = 4;
   const queuedTo = new Set(items.filter(i => i.status === 'pending' || i.status === 'approved').map(i => (i.to || '').toLowerCase()));
+  const touches = {}; const lastAt = {};
+  for (const i of items) {
+    if (i.status !== 'sent' || !i.to) continue;
+    const k = i.to.toLowerCase();
+    touches[k] = (touches[k] || 0) + 1;
+    const t = Date.parse(i.sentAt || i.createdAt || 0);
+    if (t && (!lastAt[k] || t > lastAt[k])) lastAt[k] = t;
+  }
+  const tooSoon = email => {
+    const k = email.toLowerCase();
+    if ((touches[k] || 0) >= MAX_TOUCHES) return true;
+    if (lastAt[k] && (Date.now() - lastAt[k]) < RECENT_DAYS * 86400000) return true;
+    return false;
+  };
+  let skippedFreq = 0;
 
   // Hotness score: recency + intent. The hottest get drafted and sent first.
   const ageDays = iso => { const t = Date.parse(iso || 0); return t ? (Date.now() - t) / 86400000 : 9999; };
@@ -123,6 +142,7 @@ exports.handler = async (event) => {
     if (c.paid) continue;
     if (queuedTo.has(email.toLowerCase())) continue;
     if (await isSuppressed(email)) continue;
+    if (tooSoon(email)) { skippedFreq++; continue; }
     const d = reactivation(c);
     const heat = clientHeat(c); const isHot = heat >= 70;
     if (isHot) hot++;
@@ -136,6 +156,7 @@ exports.handler = async (event) => {
     const email = r.email;
     if (!isEmail(email) || queuedTo.has(email.toLowerCase())) continue;
     if (await isSuppressed(email)) continue;
+    if (tooSoon(email)) { skippedFreq++; continue; }
     const d = winback(r);
     drafts.push({ to: email, category: 'outreach', subject: d.subject, body: d.body, prospect: { segment: 'winback', source: r.source } });
     queuedTo.add(email.toLowerCase()); warm++;
@@ -147,6 +168,7 @@ exports.handler = async (event) => {
     const email = p.email;
     if (!isEmail(email) || queuedTo.has(email.toLowerCase())) continue;
     if (await isSuppressed(email)) continue;
+    if (tooSoon(email)) { skippedFreq++; continue; }
     const d = cold(p);
     drafts.push({ to: email, category: 'outreach', subject: d.subject, body: d.body, prospect: { business: p.companyName || p.bizname || p.name, trade: p.trade || p.type, town: p.town || p.location, segment: 'cold' } });
     queuedTo.add(email.toLowerCase()); cold_++;
@@ -172,6 +194,8 @@ exports.handler = async (event) => {
       ok: true,
       drafted: drafts.length,
       reactivation: warm, cold: cold_, hot,
+      skippedAlreadyContacted: skippedFreq,
+      contactsEverReached: Object.keys(touches).length,
       note: drafts.length
         ? drafts.length + ' emails drafted and waiting in your approval queue. Approve the batch and the dispatcher sends them within the daily cap.'
         : 'No contactable warm leads or emailed prospects to draft right now. New Companies House prospects need a contact found first (the Contact Finder runs on the Mac shift).',
