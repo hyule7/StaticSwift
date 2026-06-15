@@ -60,12 +60,15 @@ ${sigUnsub(rec.email, 'winback')}`,
 }
 
 function cold(p) {
-  const fn = first(p.contactName || p.name);
-  const town = p.town || 'your area';
-  const trade = (p.trade || p.businessType || 'business').replace(/-/g, ' ');
+  // Normalise across prospect shapes: OSM (bizname/type/location), Companies
+  // House (companyName/sicCode/town), and manual (name/trade/town).
+  const biz = p.companyName || p.bizname || p.name || '';
+  const fn = first(p.contactName);
+  const town = p.town || p.location || 'your area';
+  const trade = String(p.trade || p.type || p.businessType || 'business').replace(/-/g, ' ');
   const obs = p.website ? '' : 'You do not seem to have a website yet. ';
   return {
-    subject: obs ? ('A website for ' + (p.companyName || p.name || 'your ' + trade) + '?') : (trade.charAt(0).toUpperCase() + trade.slice(1) + ' website, ' + town),
+    subject: obs ? ('A website for ' + (biz || 'your ' + trade) + '?') : (trade.charAt(0).toUpperCase() + trade.slice(1) + ' website, ' + town),
     body:
 `Hi${fn !== 'there' ? ' ' + fn : ''},
 
@@ -145,7 +148,7 @@ exports.handler = async (event) => {
     if (!isEmail(email) || queuedTo.has(email.toLowerCase())) continue;
     if (await isSuppressed(email)) continue;
     const d = cold(p);
-    drafts.push({ to: email, category: 'outreach', subject: d.subject, body: d.body, prospect: { business: p.companyName || p.name, trade: p.trade, town: p.town, segment: 'cold' } });
+    drafts.push({ to: email, category: 'outreach', subject: d.subject, body: d.body, prospect: { business: p.companyName || p.bizname || p.name, trade: p.trade || p.type, town: p.town || p.location, segment: 'cold' } });
     queuedTo.add(email.toLowerCase()); cold_++;
   }
 

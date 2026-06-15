@@ -3732,7 +3732,7 @@ async function wfStartEveryone() {
   try {
     const r = await fetch('/.netlify/functions/trigger-shift', { method: 'POST', headers: wfHdr(), body: JSON.stringify({ shift: 'blitz' }) });
     const d = await r.json().catch(function () { return {}; });
-    wfToast(r.ok ? 'Blitz running. Restocking, dispatching, re-engaging. Watch the activity feed.' : 'Could not trigger (check ADMIN_PASSWORD/deploy).');
+    wfToast(r.ok ? ('Blitz live: scavenged ' + (d.scavenged || 0) + ' businesses, drafted ' + (d.drafted || 0) + ' emails. Approve them in the queue below.') : 'Could not trigger (check ADMIN_PASSWORD/deploy).');
   } catch (_) { wfToast('Could not reach the trigger endpoint. Push + set ADMIN_PASSWORD.'); }
   setTimeout(loadWorkforce, 1500);
   setTimeout(loadWorkforce, 4000);
