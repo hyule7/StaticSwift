@@ -27,12 +27,11 @@ async function fire(fn, body) {
   } catch (e) { return { fn, error: e.message }; }
 }
 
-// The whole org, inlined at build time (single source of truth, same file the
-// admin and workforce-status read). Lets a blitz light up EVERY desk.
-let ORG = [];
-try { ORG = require('../../data/org.json').departments.map(d => [d.dept, d.roles]); } catch (_) {}
+// Build one activity line per role from the single source of truth, so a blitz
+// lights up EVERY desk. Shared with cron-blitz-tick (the server heartbeat).
+const { buildEntries } = require('./_blitz-roster');
 
-// Log a whole batch of activity in ONE write so all 94 desks light up at once
+// Log a whole batch of activity in ONE write so all desks light up at once
 // the moment Harry hits Blitz (not just when the Mac AI shift finishes).
 async function logBatch(entries) {
   try {
@@ -93,57 +92,9 @@ exports.handler = async (event) => {
   }
   const fired = await Promise.all(jobs);
 
-  // 3. ALL HANDS. Every one of the 94 desks comes online so Harry watches the
-  //    whole company work the blitz at once. The no-AI desks did real work above
-  //    (their lines carry live counts); the rest are on task and the Mac AI
-  //    shift (blitz.md) carries them out. One batched write lights them all up.
-  const okt = fired.find(x => x.fn === 'discover-companies-house');
-
-  // Specific, current-task lines for the revenue desks (with live counts).
-  const SPECIFIC = {
-    'Companies House Watcher': ['Scanning Companies House for brand-new UK trade companies', okt && okt.status === 200 ? 'fresh prospects pulled' : 'scan triggered'],
-    'Website Checker': [scavenged ? ('Scavenged ' + scavenged + ' businesses with bad or no websites') : 'Hunting businesses with weak websites across the UK', 'full web sweep, not just Companies House'],
-    'Contact Finder': [enriched ? ('Found ' + enriched + ' new email contacts') : 'Digging out contact details', 'published + MX-verified'],
-    'Writer': [drafted ? ('Drafted ' + drafted + ' personalised emails into the queue') : 'Drafting personalised first emails', 'hottest first'],
-    'Preview Builder': ['Building cinematic one-page previews for the top prospects', 'I already built you this'],
-    'Lead Reactivation Specialist': ['Mining the CRM for warm leads to win back today', ''],
-    'Sales Closer': ['On the inbox for every hot reply', 'answering within minutes'],
-    'Reply Triage Specialist': ['Reading every inbound reply and routing the hot ones', 'interested / objection / stop'],
-    'Proposal Writer': ['Turning interested replies into proposals', '499 pounds once, preview in 24h'],
-    'Payment Chaser': ['Chasing any unpaid invoices, gently and on schedule', ''],
-    'Invoice Drafter': ['Prepping invoices for anyone who says yes', ''],
-    'Fact Checker': ['Checking every drafted message against the facts and the voice', ''],
-    'CEO Agent': ['BLITZ ordered: all hands, one goal, a sale today', 'sprint running on the Mac'],
-  };
-  // Department-level task for every other desk, so all 94 read as on the blitz.
-  const DEPT_TASK = {
-    'Executive': 'Steering the blitz and clearing blockers',
-    'Chief of Staff': 'Coordinating every desk on the sprint',
-    'Business Development': 'Hunting and qualifying fresh prospects',
-    'Customer Service': 'Watching the inbox so nothing waits',
-    'Design Studio': 'Polishing previews and page design',
-    'Client Success': 'Looking after live clients and chasing reviews',
-    'Growth & Conversion': 'Working the funnel and every hot lead',
-    'Analytics & Data': 'Reading live numbers for the next move',
-    'Marketing': 'Pushing the brand and content out',
-    'Creative Production': 'Producing fresh creative in the brand style',
-    'Search': 'Pushing winnable pages up the rankings',
-    'Operations & Finance': 'Keeping the pipeline and sends flowing',
-    'Finance': 'Tracking revenue against the plan',
-    'Quality & Risk': 'Checking work against the facts and the voice',
-    'Partnerships & Referrals': 'Chasing referral and partner leads',
-    'Legal & Admin': 'Keeping every send compliant',
-    'Resilience': 'Watching the systems stay up',
-    'Technical': 'Keeping the site fast and live',
-  };
-  const entries = [];
-  for (const [dept, roles] of ORG) {
-    for (const role of roles) {
-      const sp = SPECIFIC[role];
-      entries.push({ role, dept, action: sp ? sp[0] : (DEPT_TASK[dept] || ('On the blitz with ' + dept)), detail: sp ? sp[1] : '' });
-    }
-  }
-  await logBatch(entries);
+  // 3. ALL HANDS. Every desk in the org lights up green so Harry watches the
+  //    whole company work the blitz at once. One batched write does it.
+  await logBatch(buildEntries({ scavenged, enriched, drafted }));
 
   return {
     statusCode: 200,

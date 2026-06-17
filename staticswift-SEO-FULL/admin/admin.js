@@ -3601,6 +3601,7 @@ async function loadWorkforce() {
 
   wfBanner('', 'ok');
   _wfLive = live;
+  renderWfSetup(live.env);
   renderBlitzState();
   loadWfCreatives();
   renderWfShifts(live.shifts || {});
@@ -3612,6 +3613,30 @@ async function loadWorkforce() {
   const pend = (live.queue && live.queue.counts && live.queue.counts.pending) || 0;
   const nb = document.getElementById('nav-count-queue'); if (nb) nb.textContent = pend ? pend : '';
   const qc = document.getElementById('wf-q-count'); if (qc) qc.textContent = pend ? '· ' + pend + ' pending' : '· clear';
+}
+
+// Setup health strip: only shows when a critical env var is missing, so Harry
+// can see at a glance why the board/brief/sends might be quiet. When all the
+// must-haves are set, it stays hidden.
+function renderWfSetup(env) {
+  const el = document.getElementById('wf-setup'); if (!el) return;
+  if (!env) { el.style.display = 'none'; return; }
+  const checks = [
+    ['agentToken', 'AGENT_TOKEN', 'the live board and brief stay empty (agents cannot log what they do)', true],
+    ['smtp', 'SMTP_PASS', 'approved outreach cannot actually send', true],
+    ['supportSmtp', 'SUPPORT_SMTP_PASS', 'the reply loop cannot read your inbox', true],
+    ['netlifyToken', 'NETLIFY_AUTH_TOKEN', 'live preview links will not publish', true],
+    ['openai', 'OPENAI_API_KEY', 'reply classification falls back to rules (optional)', false],
+  ];
+  const missing = checks.filter(c => !env[c[0]]);
+  const blocking = missing.filter(c => c[3]);
+  if (!missing.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
+  el.style.display = 'block';
+  el.innerHTML = '<div class="wf-setupbar">' +
+    '<div class="hd">⚙ Setup needed · ' + blocking.length + ' setting' + (blocking.length === 1 ? '' : 's') + ' stop the team working. Add in Netlify → Project configuration → Environment variables, then redeploy.</div>' +
+    missing.map(function (c) {
+      return '<div class="row ' + (c[3] ? 'block' : 'opt') + '"><code>' + c[1] + '</code><span>' + (c[3] ? 'Missing — ' : 'Optional — ') + wfEsc(c[2]) + '</span></div>';
+    }).join('') + '</div>';
 }
 
 function renderWfShifts(shifts) {

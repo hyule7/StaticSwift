@@ -66,9 +66,20 @@ exports.handler = async (event) => {
     roles: roles.map(r => ({ name: r, last: lastByRole[r] || null })),
   }));
 
+  // Setup health: which critical env vars are present. Booleans only, never
+  // values. This turns the silent failures (empty activity feed, no sends,
+  // no live preview links) into a visible checklist in the admin.
+  const env = {
+    agentToken: !!process.env.AGENT_TOKEN,        // agents can log activity -> board + brief fill
+    smtp: !!process.env.SMTP_PASS,                // outreach can actually send
+    supportSmtp: !!process.env.SUPPORT_SMTP_PASS, // reply-loop can read the support inbox
+    netlifyToken: !!process.env.NETLIFY_AUTH_TOKEN, // live preview links work
+    openai: !!process.env.OPENAI_API_KEY,         // sharper reply classification (optional)
+  };
+
   return {
     statusCode: 200,
     headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-    body: JSON.stringify({ ok: true, org, shifts, activity: activity.slice(0, 40), queue: { counts, pending, sentToday, kill, autonomy } }),
+    body: JSON.stringify({ ok: true, org, shifts, activity: activity.slice(0, 40), queue: { counts, pending, sentToday, kill, autonomy }, env }),
   };
 };

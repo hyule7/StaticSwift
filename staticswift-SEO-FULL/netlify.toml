@@ -116,6 +116,13 @@
 [functions."reply-loop"]
   schedule = "*/15 * * * *"
 
+# Scheduled function — the blitz heartbeat. Runs every 2 minutes but only DOES
+# anything while a blitz is active: scavenge -> enrich -> draft -> reply ->
+# dispatch, and re-lights the whole roster. This keeps a blitz climbing toward
+# hundreds of queued drafts and the board green WITHOUT the Mac being open.
+[functions."cron-blitz-tick"]
+  schedule = "*/2 * * * *"
+
 # Scheduled function — the approval-queue dispatcher. The ONLY path from an
 # approved artefact to the wire. Runs hourly; itself enforces the UK
 # business-hours window, the daily send cap, kill switches and suppression.

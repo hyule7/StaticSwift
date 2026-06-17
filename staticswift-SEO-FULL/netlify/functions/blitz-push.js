@@ -22,10 +22,10 @@ const F = { build: 499, monthly: 49, previewHours: 24, buildDays: 14, guaranteeD
 // approval, the anti-spam frequency guard below still blocks re-contacting
 // anyone, and the dispatcher still honours the daily send cap. So a big number
 // here means "the team does loads", never "we spam".
-const CAP_WARM = 80, CAP_COLD = 120;
+const CAP_WARM = 120, CAP_COLD = 300;
 // How many of the hottest cold prospects get a real auto-built preview link
 // in this run. Higher = more "I built you this" emails; each preview is cheap.
-const PREVIEW_CAP = 24;
+const PREVIEW_CAP = 40;
 const SITE = process.env.SS_SITE || 'https://staticswift.co.uk';
 const slug = s => String(s || 'prospect').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'prospect';
 const isEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e || '').trim());
@@ -149,7 +149,13 @@ exports.handler = async (event) => {
   // Never draft to someone we already have queued/approved, emailed in the
   // last RECENT_DAYS, or hit MAX_TOUCHES times ever. This is what stops the
   // blitz becoming spam and burning the sending domain.
-  const RECENT_DAYS = 10, MAX_TOUCHES = 4;
+  // A REAL sequence, not a blast. Each contact is one step in a cadence; we
+  // only draft someone when their next step is actually DUE. STEP_DAYS is the
+  // wait BEFORE each touch: touch 0 now, touch 1 after 4 days of silence, touch
+  // 2 after 11, touch 3 after 25, then stop. So warm leads are not all emailed
+  // the moment a blitz starts; only the ones genuinely due get drafted.
+  const STEP_DAYS = [0, 4, 11, 25];
+  const MAX_TOUCHES = STEP_DAYS.length; // 4 touches then done
   const queuedTo = new Set(items.filter(i => i.status === 'pending' || i.status === 'approved').map(i => (i.to || '').toLowerCase()));
   const touches = {}; const lastAt = {};
   for (const i of items) {
@@ -159,11 +165,15 @@ exports.handler = async (event) => {
     const t = Date.parse(i.sentAt || i.createdAt || 0);
     if (t && (!lastAt[k] || t > lastAt[k])) lastAt[k] = t;
   }
-  const tooSoon = email => {
+  // Not due = already had all its touches, or the wait before its next touch
+  // has not elapsed yet. (Replaces the old blunt "tooSoon" blast guard.)
+  const notDue = email => {
     const k = email.toLowerCase();
-    if ((touches[k] || 0) >= MAX_TOUCHES) return true;
-    if (lastAt[k] && (Date.now() - lastAt[k]) < RECENT_DAYS * 86400000) return true;
-    return false;
+    const n = touches[k] || 0;
+    if (n >= MAX_TOUCHES) return true;            // sequence finished
+    if (!lastAt[k]) return false;                 // never contacted -> first touch is due
+    const waitDays = STEP_DAYS[n] || 25;
+    return (Date.now() - lastAt[k]) < waitDays * 86400000;
   };
   let skippedFreq = 0;
 
@@ -194,7 +204,7 @@ exports.handler = async (event) => {
     if (c.paid) continue;
     if (queuedTo.has(email.toLowerCase())) continue;
     if (await isSuppressed(email)) continue;
-    if (tooSoon(email)) { skippedFreq++; continue; }
+    if (notDue(email)) { skippedFreq++; continue; }
     const d = reactivation(c);
     const heat = clientHeat(c); const isHot = heat >= 70;
     if (isHot) hot++;
@@ -208,7 +218,7 @@ exports.handler = async (event) => {
     const email = r.email;
     if (!isEmail(email) || queuedTo.has(email.toLowerCase())) continue;
     if (await isSuppressed(email)) continue;
-    if (tooSoon(email)) { skippedFreq++; continue; }
+    if (notDue(email)) { skippedFreq++; continue; }
     const d = winback(r);
     drafts.push({ to: email, category: 'outreach', subject: d.subject, body: d.body, prospect: { segment: 'winback', source: r.source } });
     queuedTo.add(email.toLowerCase()); warm++;
@@ -226,7 +236,7 @@ exports.handler = async (event) => {
     const email = p.email;
     if (!isEmail(email) || queuedTo.has(email.toLowerCase())) continue;
     if (await isSuppressed(email)) continue;
-    if (tooSoon(email)) { skippedFreq++; continue; }
+    if (notDue(email)) { skippedFreq++; continue; }
     let d, previewUrl = null;
     if (previews < PREVIEW_CAP) {
       previewUrl = await buildPreviewUrl(previewStore, p);
