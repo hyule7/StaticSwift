@@ -1,23 +1,189 @@
 {
   "_note": "The full StaticSwift agent workforce. One source of truth for the admin Workforce tab (client-side render) and workforce-status.js (live overlay). Each role maps to a file in agents/roles/ where it has one.",
   "departments": [
-    { "dept": "Executive", "roles": ["CEO Agent", "CFO Agent"] },
-    { "dept": "Chief of Staff", "roles": ["Chief of Staff"] },
-    { "dept": "Business Development", "roles": ["Companies House Watcher", "Website Checker", "Contact Finder", "Scorer & Router", "Enricher", "Writer", "Sequencer", "Reply Classifier", "Preview Builder", "Deliverability Engineer", "List Hygiene Specialist", "Local Market Researcher"] },
-    { "dept": "Customer Service", "roles": ["Triage", "Drafter", "SLA Watcher", "Churn Sentinel"] },
-    { "dept": "Design Studio", "roles": ["Brief Parser", "Generator", "Critic", "Revision Handler"] },
-    { "dept": "Client Success", "roles": ["Onboarding Chaser", "GBP Manager", "Review Responder", "Reputation Manager", "Monthly Report Compiler", "Upsell Detector"] },
-    { "dept": "Growth & Conversion", "roles": ["Conversion Optimiser", "Paid Ads Manager", "Email Lifecycle Specialist", "Landing Page Tester", "Sales Closer", "Lead Reactivation Specialist", "Brief Chaser", "Win-back Specialist", "Appointment Setter", "Objection Handler", "Offer Strategist", "Referral Hunter"] },
-    { "dept": "Analytics & Data", "roles": ["Data Analyst", "Attribution Analyst", "Reporting Analyst"] },
-    { "dept": "Marketing", "roles": ["TikTok Hook Writer", "SEO Content Writer", "Case Study Writer", "Day-30 Review Chaser", "Copy Chief"] },
-    { "dept": "Creative Production", "roles": ["Art Director", "Ad Creative Designer", "Hook Researcher", "Thumbnail Designer", "Variant Tester", "Video Script Writer"] },
-    { "dept": "Search", "roles": ["Strike List Builder", "On-Page Optimiser", "Index Watcher", "Client SEO"] },
-    { "dept": "Operations & Finance", "roles": ["Invoice Drafter", "Payment Chaser", "CRM Hygienist", "Uptime Monitor"] },
-    { "dept": "Finance", "roles": ["Reconciliation Agent", "MRR Ledger", "Accountant Pack Compiler"] },
-    { "dept": "Quality & Risk", "roles": ["Fact Checker", "Brand Voice Auditor", "Compliance Watcher", "Red Team"] },
-    { "dept": "Partnerships & Referrals", "roles": ["Partner Prospector", "Referral Manager", "Local PR Agent"] },
-    { "dept": "Legal & Admin", "roles": ["Contracts Maintainer", "Policy Maintainer"] },
-    { "dept": "Resilience", "roles": ["Backup Agent", "Uptime Sentinel", "Dependency Watcher"] },
-    { "dept": "Technical", "roles": ["Bug Watch", "Portal Manager", "Webmaster"] }
+    {
+      "dept": "Executive",
+      "roles": [
+        "CEO Agent",
+        "CFO Agent"
+      ]
+    },
+    {
+      "dept": "Chief of Staff",
+      "roles": [
+        "Chief of Staff"
+      ]
+    },
+    {
+      "dept": "Business Development",
+      "roles": [
+        "Companies House Watcher",
+        "Website Checker",
+        "Contact Finder",
+        "Scorer & Router",
+        "Enricher",
+        "Writer",
+        "Sequencer",
+        "Reply Classifier",
+        "Preview Builder",
+        "Deliverability Engineer",
+        "List Hygiene Specialist",
+        "Local Market Researcher",
+        "LinkedIn Outreach Specialist"
+      ]
+    },
+    {
+      "dept": "Customer Service",
+      "roles": [
+        "Triage",
+        "Drafter",
+        "SLA Watcher",
+        "Churn Sentinel",
+        "Reply Triage Specialist"
+      ]
+    },
+    {
+      "dept": "Design Studio",
+      "roles": [
+        "Brief Parser",
+        "Generator",
+        "Critic",
+        "Revision Handler"
+      ]
+    },
+    {
+      "dept": "Client Success",
+      "roles": [
+        "Onboarding Chaser",
+        "GBP Manager",
+        "Review Responder",
+        "Reputation Manager",
+        "Monthly Report Compiler",
+        "Upsell Detector",
+        "Onboarding Specialist",
+        "Retention Specialist"
+      ]
+    },
+    {
+      "dept": "Growth & Conversion",
+      "roles": [
+        "Conversion Optimiser",
+        "Paid Ads Manager",
+        "Email Lifecycle Specialist",
+        "Landing Page Tester",
+        "Sales Closer",
+        "Lead Reactivation Specialist",
+        "Brief Chaser",
+        "Win-back Specialist",
+        "Appointment Setter",
+        "Objection Handler",
+        "Offer Strategist",
+        "Referral Hunter",
+        "Live Chat Responder",
+        "Proposal Writer",
+        "Upsell Specialist"
+      ]
+    },
+    {
+      "dept": "Analytics & Data",
+      "roles": [
+        "Data Analyst",
+        "Attribution Analyst",
+        "Reporting Analyst",
+        "Conversion Rate Scientist"
+      ]
+    },
+    {
+      "dept": "Marketing",
+      "roles": [
+        "TikTok Hook Writer",
+        "SEO Content Writer",
+        "Case Study Writer",
+        "Day-30 Review Chaser",
+        "Copy Chief",
+        "Social Media Manager",
+        "Content Strategist"
+      ]
+    },
+    {
+      "dept": "Creative Production",
+      "roles": [
+        "Art Director",
+        "Ad Creative Designer",
+        "Hook Researcher",
+        "Thumbnail Designer",
+        "Variant Tester",
+        "Video Script Writer",
+        "Video Editor"
+      ]
+    },
+    {
+      "dept": "Search",
+      "roles": [
+        "Strike List Builder",
+        "On-Page Optimiser",
+        "Index Watcher",
+        "Client SEO",
+        "Technical SEO Auditor"
+      ]
+    },
+    {
+      "dept": "Operations & Finance",
+      "roles": [
+        "Invoice Drafter",
+        "Payment Chaser",
+        "CRM Hygienist",
+        "Uptime Monitor"
+      ]
+    },
+    {
+      "dept": "Finance",
+      "roles": [
+        "Reconciliation Agent",
+        "MRR Ledger",
+        "Accountant Pack Compiler"
+      ]
+    },
+    {
+      "dept": "Quality & Risk",
+      "roles": [
+        "Fact Checker",
+        "Brand Voice Auditor",
+        "Compliance Watcher",
+        "Red Team"
+      ]
+    },
+    {
+      "dept": "Partnerships & Referrals",
+      "roles": [
+        "Partner Prospector",
+        "Referral Manager",
+        "Local PR Agent",
+        "Affiliate Recruiter"
+      ]
+    },
+    {
+      "dept": "Legal & Admin",
+      "roles": [
+        "Contracts Maintainer",
+        "Policy Maintainer"
+      ]
+    },
+    {
+      "dept": "Resilience",
+      "roles": [
+        "Backup Agent",
+        "Uptime Sentinel",
+        "Dependency Watcher"
+      ]
+    },
+    {
+      "dept": "Technical",
+      "roles": [
+        "Bug Watch",
+        "Portal Manager",
+        "Webmaster"
+      ]
+    }
   ]
 }

@@ -3532,9 +3532,17 @@ function showPage(id, btn) {
    queue actions reuse queue-action. Auto-refreshes every 15s while
    the tab is open.
    ================================================================ */
-let _wfPoll = null;
-function startWorkforcePoll() { stopWorkforcePoll(); _wfPoll = setInterval(loadWorkforce, 15000); }
-function stopWorkforcePoll() { if (_wfPoll) { clearInterval(_wfPoll); _wfPoll = null; } }
+let _wfPoll = null, _wfTick = null, _wfOrgData = null, _wfFeedData = null;
+// Two clocks: a 5s NETWORK refresh (pulls fresh state) and a 1s LOCAL tick
+// that just re-renders the "ago" timers and live/working dots from the last
+// data, with no request, so the board ticks second by second without hammering
+// the backend.
+function startWorkforcePoll() {
+  stopWorkforcePoll();
+  _wfPoll = setInterval(loadWorkforce, 5000);
+  _wfTick = setInterval(function () { if (_wfOrgData) renderWfOrg(_wfOrgData); if (_wfFeedData) renderWfFeed(_wfFeedData); }, 1000);
+}
+function stopWorkforcePoll() { if (_wfPoll) { clearInterval(_wfPoll); _wfPoll = null; } if (_wfTick) { clearInterval(_wfTick); _wfTick = null; } }
 function wfHdr() { return { 'x-admin-password': (typeof ADMIN_PW !== 'undefined' && ADMIN_PW) || sessionStorage.getItem('ss_pw') || '', 'Content-Type': 'application/json' }; }
 function wfEsc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
 function wfAgo(iso) { if (!iso) return 'never'; var s = (Date.now() - Date.parse(iso)) / 1000; if (s < 60) return Math.round(s) + 's ago'; if (s < 3600) return Math.round(s / 60) + 'm ago'; if (s < 86400) return Math.round(s / 3600) + 'h ago'; return Math.round(s / 86400) + 'd ago'; }
@@ -3667,17 +3675,42 @@ function wfEdit(id) {
   const btn = b.closest('.item').querySelector('.wf-ed'); if (btn) btn.textContent = 'Save & approve';
 }
 
+// Live tiers (since the role last logged anything):
+//   working now  < 3 min   green, pulsing  - on a task right now
+//   active       < 30 min  amber           - worked very recently this session
+//   idle         else      grey            - off shift / waiting
+function wfState(r) {
+  if (!r.last || !r.last.at) return 'idle';
+  const s = (Date.now() - Date.parse(r.last.at)) / 1000;
+  if (s < 180) return 'work';
+  if (s < 1800) return 'recent';
+  return 'idle';
+}
 function renderWfOrg(org) {
-  document.getElementById('wf-org').innerHTML = org.map(function (d) {
-    const active = d.roles.filter(function (r) { return r.last && (Date.now() - Date.parse(r.last.at)) < 86400000; }).length;
-    const tag = active ? ' <span style="color:#1f8b47">· ' + active + ' active</span>' : ' <span style="color:#6a6256">· ' + d.roles.length + ' idle</span>';
-    return '<div class="wf-dept"><div class="wf-dept-name">' + wfEsc(d.dept) + tag + '</div><div class="wf-roles">' +
-      d.roles.map(function (r) {
-        const active = r.last && (Date.now() - Date.parse(r.last.at)) < 86400000;
-        return '<div class="wf-role' + (active ? ' active' : '') + '"><span class="r">' + wfEsc(r.name) + '</span>' +
-          '<span class="a">' + (r.last ? wfAgo(r.last.at) + ' · ' + wfEsc(r.last.action).slice(0, 40) : 'idle') + '</span></div>';
-      }).join('') + '</div></div>';
+  _wfOrgData = org;
+  let working = 0, totalRoles = 0;
+  const html = org.map(function (d) {
+    let wn = 0, rn = 0;
+    const roles = d.roles.map(function (r) {
+      totalRoles++;
+      const st = wfState(r);
+      if (st === 'work') { wn++; working++; } else if (st === 'recent') rn++;
+      const task = r.last ? wfEsc(r.last.action) : 'waiting for the next shift';
+      const when = r.last ? wfAgo(r.last.at) : '';
+      return '<div class="wf-role st-' + st + '"><span class="wf-rdot"></span>' +
+        '<span class="r">' + wfEsc(r.name) + '</span>' +
+        '<span class="a"><span class="task">' + task + '</span>' + (when ? '<span class="when">' + when + '</span>' : '') + '</span></div>';
+    }).join('');
+    const tag = wn ? ' <span class="wf-tag work">' + wn + ' working now</span>'
+      : rn ? ' <span class="wf-tag recent">' + rn + ' active</span>'
+      : ' <span class="wf-tag idle">' + d.roles.length + ' on standby</span>';
+    return '<div class="wf-dept"><div class="wf-dept-name">' + wfEsc(d.dept) + tag + '</div><div class="wf-roles">' + roles + '</div></div>';
   }).join('');
+  document.getElementById('wf-org').innerHTML = html;
+  const hdr = document.getElementById('wf-org-head');
+  if (hdr) hdr.innerHTML = working
+    ? '<span class="wf-livedot"></span><b>' + working + '</b> of ' + totalRoles + ' staff working right now'
+    : '<span class="wf-livedot off"></span>' + totalRoles + ' staff on standby · hit Blitz to put everyone to work';
 }
 
 // Search-team panel on the SEO page: the strike list (winnable queries
@@ -3779,6 +3812,7 @@ async function wfSendBrief() {
 }
 
 function renderWfFeed(feed) {
+  _wfFeedData = feed;
   const el = document.getElementById('wf-feed');
   if (!feed.length) { el.innerHTML = '<div class="wf-empty">No activity logged yet. The feed fills as shifts run.</div>'; return; }
   el.innerHTML = feed.map(function (a) {

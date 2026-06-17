@@ -122,7 +122,21 @@ exports.handler = async (event) => {
     log('Hook Researcher', 'Creative Production', 'Checking live trends for the angle that stops the scroll', ''),
     // Customer Service + Client Success
     log('Triage', 'Customer Service', 'Watching the inbox so no enquiry waits', ''),
+    log('Reply Triage Specialist', 'Customer Service', 'Reading every inbound reply and routing the hot ones to the closer', 'interested / question / objection / stop'),
+    log('Live Chat Responder', 'Growth & Conversion', 'Answering on-site chat within seconds and booking previews', ''),
+    log('Proposal Writer', 'Growth & Conversion', 'Turning interested replies into one-page proposals', '£499 once, preview in 24h'),
+    log('Upsell Specialist', 'Growth & Conversion', 'Spotting clients who would genuinely benefit from an add-on', ''),
+    log('LinkedIn Outreach Specialist', 'Business Development', 'Drafting specific first messages to trade owners', 'researched, never blasted'),
     log('Reputation Manager', 'Client Success', 'Chasing reviews from happy clients for fresh proof', ''),
+    log('Onboarding Specialist', 'Client Success', 'Prepping the welcome and build checklist for new yeses', ''),
+    log('Retention Specialist', 'Client Success', 'Watching managed-plan clients for any churn signal', ''),
+    // Marketing + Creative + Search + Analytics (deeper bench)
+    log('Social Media Manager', 'Marketing', 'Drafting before/after and proof posts in the brand style', ''),
+    log('Content Strategist', 'Marketing', 'Mapping useful content to the winnable strike-list queries', ''),
+    log('Video Editor', 'Creative Production', 'Cutting vertical hook-first video creatives', 'downloadable in admin'),
+    log('Technical SEO Auditor', 'Search', 'Hunting crawl waste and slow pages across the estate', ''),
+    log('Conversion Rate Scientist', 'Analytics & Data', 'Finding the single change that lifts sign-ups', ''),
+    log('Affiliate Recruiter', 'Partnerships & Referrals', 'Drafting referral offers to people who already serve trades', ''),
     // Ops + Quality + Exec
     log('Dispatcher', 'Operations & Finance', 'Sending approved outreach, hottest leads first', ''),
     log('Fact Checker', 'Quality & Risk', 'Checking every drafted message against the facts and the voice', ''),

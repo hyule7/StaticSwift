@@ -892,10 +892,32 @@ a:hover{color:var(--signal) !important; border-bottom-color:var(--signal) !impor
 #page-workforce .wf-dept{margin-bottom:16px}
 #page-workforce .wf-dept-name{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#0b6fa8;margin-bottom:7px;font-weight:700}
 #page-workforce .wf-roles{display:flex;flex-wrap:wrap;gap:8px}
-#page-workforce .wf-role{background:#f6f3ec !important;border:1px solid #e4ddd0;border-radius:10px;padding:8px 11px;font-size:13px;display:flex;flex-direction:column;gap:2px;min-width:140px}
+#page-workforce .wf-role{background:#f6f3ec !important;border:1px solid #e4ddd0;border-radius:10px;padding:8px 11px;font-size:13px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;min-width:200px;flex:1 1 220px;max-width:300px}
 #page-workforce .wf-role .r{font-weight:700;color:#14110c !important}
-#page-workforce .wf-role .a{font-size:11px;color:#6a6256}
-#page-workforce .wf-role.active{border-color:#1f8b47;background:rgba(31,139,71,.10) !important}
+#page-workforce .wf-role .a{flex-basis:100%;display:flex;justify-content:space-between;gap:8px;font-size:11px;color:#6a6256}
+#page-workforce .wf-role .a .task{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#page-workforce .wf-role .a .when{flex:0 0 auto;font-variant-numeric:tabular-nums;color:#8a8275}
+#page-workforce .wf-rdot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;background:#c2bcae}
+/* Live tiers */
+#page-workforce .wf-role.st-work{border-color:#1f8b47;background:rgba(31,139,71,.10) !important}
+#page-workforce .wf-role.st-work .wf-rdot{background:#1f8b47;animation:wfdot 1.4s ease-in-out infinite}
+#page-workforce .wf-role.st-work .when{color:#1f8b47;font-weight:700}
+#page-workforce .wf-role.st-recent{border-color:#caa53e}
+#page-workforce .wf-role.st-recent .wf-rdot{background:#caa53e}
+#page-workforce .wf-role.st-idle{opacity:.78}
+#page-workforce .wf-role.st-idle .wf-rdot{background:#c2bcae}
+/* Dept count pills */
+#page-workforce .wf-tag{font-size:10px;font-weight:700;letter-spacing:.04em;padding:1px 7px;border-radius:100px;text-transform:none}
+#page-workforce .wf-tag.work{color:#0d5e30;background:rgba(31,139,71,.16)}
+#page-workforce .wf-tag.recent{color:#7a5f12;background:rgba(202,165,62,.18)}
+#page-workforce .wf-tag.idle{color:#6a6256;background:rgba(106,98,86,.12)}
+/* Live header above the org chart */
+#page-workforce .wf-org-head{display:flex;align-items:center;gap:8px;font-size:13px;color:#3a352c;margin:2px 0 12px;font-weight:500}
+#page-workforce .wf-org-head b{color:#0d5e30;font-size:15px}
+#page-workforce .wf-livedot{width:10px;height:10px;border-radius:50%;background:#1f8b47;flex:0 0 auto;animation:wfdot 1.4s ease-in-out infinite}
+#page-workforce .wf-livedot.off{background:#c2bcae;animation:none}
+@keyframes wfdot{0%,100%{box-shadow:0 0 0 0 rgba(31,139,71,.5);opacity:1}50%{box-shadow:0 0 0 5px rgba(31,139,71,0);opacity:.6}}
+@media(prefers-reduced-motion:reduce){#page-workforce .wf-rdot,#page-workforce .wf-livedot{animation:none !important}}
 #page-workforce .wf-feed{max-height:560px;overflow:auto}
 #page-workforce .wf-feed .row{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #e4ddd0;font-size:13px;color:#14110c}
 #page-workforce .wf-feed .t{color:#6a6256;font-size:11px;white-space:nowrap;font-variant-numeric:tabular-nums;min-width:54px}
