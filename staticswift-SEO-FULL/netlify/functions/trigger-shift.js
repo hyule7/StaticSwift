@@ -27,14 +27,19 @@ async function fire(fn, body) {
   } catch (e) { return { fn, error: e.message }; }
 }
 
-// Log activity so the Workforce tab lights up the moment Harry hits Start,
-// not only when the full AI shift completes.
-async function log(role, dept, action, detail) {
+// The whole org, inlined at build time (single source of truth, same file the
+// admin and workforce-status read). Lets a blitz light up EVERY desk.
+let ORG = [];
+try { ORG = require('../../data/org.json').departments.map(d => [d.dept, d.roles]); } catch (_) {}
+
+// Log a whole batch of activity in ONE write so all 94 desks light up at once
+// the moment Harry hits Blitz (not just when the Mac AI shift finishes).
+async function logBatch(entries) {
   try {
     await fetch(SITE + '/.netlify/functions/agent-log', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-agent-token': process.env.AGENT_TOKEN || '' },
-      body: JSON.stringify({ role, dept, action, detail, shift: 'manual' }),
+      body: JSON.stringify({ shift: 'blitz', entries }),
     });
   } catch (_) {}
 }
@@ -88,60 +93,57 @@ exports.handler = async (event) => {
   }
   const fired = await Promise.all(jobs);
 
-  // 3. ALL HANDS. The whole company comes online so Harry can watch every desk
-  //    work the blitz in parallel. The no-AI desks did real work above; the rest
-  //    are kicked off here and the Mac AI shift (blitz.md) carries them out.
+  // 3. ALL HANDS. Every one of the 94 desks comes online so Harry watches the
+  //    whole company work the blitz at once. The no-AI desks did real work above
+  //    (their lines carry live counts); the rest are on task and the Mac AI
+  //    shift (blitz.md) carries them out. One batched write lights them all up.
   const okt = fired.find(x => x.fn === 'discover-companies-house');
-  await Promise.all([
-    // Business Development
-    log('Companies House Watcher', 'Business Development', 'Scanning Companies House for brand-new UK trade companies', okt && okt.status === 200 ? 'fresh prospects pulled' : 'scan triggered'),
-    log('Website Checker', 'Business Development', scavenged ? ('Scavenged ' + scavenged + ' businesses with bad or no websites') : 'Hunting businesses with weak websites', 'busiest UK towns'),
-    log('Contact Finder', 'Business Development', enriched ? ('Found ' + enriched + ' new email contacts') : 'Digging out contact details', 'published + MX-verified'),
-    log('Writer', 'Business Development', drafted ? ('Drafted ' + drafted + ' personalised emails into the queue') : 'Drafting personalised first emails', 'hottest first'),
-    log('Sequencer', 'Business Development', 'Scheduling day-2 and day-5 follow-ups for everyone emailed', ''),
-    log('Preview Builder', 'Business Development', 'Building one-page previews for the top prospects', 'I already built you this'),
-    // Growth & Conversion (the sales floor)
-    log('Lead Reactivation Specialist', 'Growth & Conversion', 'Mining the CRM for warm leads to win back today', ''),
-    log('Brief Chaser', 'Growth & Conversion', 'Chasing started-but-unfinished briefs', ''),
-    log('Win-back Specialist', 'Growth & Conversion', 'Re-engaging old non-buyers with a fresh angle', ''),
-    log('Sales Closer', 'Growth & Conversion', 'On the phones and inbox for every hot reply', 'answering within minutes'),
-    log('Conversion Optimiser', 'Growth & Conversion', 'Reviewing the funnel for the one change that lifts sign-ups', ''),
-    log('Landing Page Tester', 'Growth & Conversion', 'Testing the highest-traffic pages for drop-off', ''),
-    log('Email Lifecycle Specialist', 'Growth & Conversion', 'Tuning the nurture sequence for replies', ''),
-    log('Paid Ads Manager', 'Growth & Conversion', 'Reviewing cost-per-lead and briefing a fresh creative', ''),
-    // Analytics & Data (watching people leave, in real time)
-    log('Data Analyst', 'Analytics & Data', 'Watching live sessions and bounce rate as visitors land', ''),
-    log('Attribution Analyst', 'Analytics & Data', 'Tracing which channel is bringing the best leads today', ''),
-    log('Reporting Analyst', 'Analytics & Data', 'Building the live blitz scoreboard', ''),
-    // Search (looking at pages)
-    log('Strike List Builder', 'Search', 'Pulling pages ranking 4 to 15 to push onto page one', ''),
-    log('On-Page Optimiser', 'Search', 'Deepening the winnable pages and pointing internal links at them', ''),
-    log('Index Watcher', 'Search', 'Pinging IndexNow and checking crawl coverage', ''),
-    // Creative
-    log('Ad Creative Designer', 'Creative Production', 'Producing fresh TikTok ad creatives in the brand style', 'downloadable in admin'),
-    log('Hook Researcher', 'Creative Production', 'Checking live trends for the angle that stops the scroll', ''),
-    // Customer Service + Client Success
-    log('Triage', 'Customer Service', 'Watching the inbox so no enquiry waits', ''),
-    log('Reply Triage Specialist', 'Customer Service', 'Reading every inbound reply and routing the hot ones to the closer', 'interested / question / objection / stop'),
-    log('Live Chat Responder', 'Growth & Conversion', 'Answering on-site chat within seconds and booking previews', ''),
-    log('Proposal Writer', 'Growth & Conversion', 'Turning interested replies into one-page proposals', '£499 once, preview in 24h'),
-    log('Upsell Specialist', 'Growth & Conversion', 'Spotting clients who would genuinely benefit from an add-on', ''),
-    log('LinkedIn Outreach Specialist', 'Business Development', 'Drafting specific first messages to trade owners', 'researched, never blasted'),
-    log('Reputation Manager', 'Client Success', 'Chasing reviews from happy clients for fresh proof', ''),
-    log('Onboarding Specialist', 'Client Success', 'Prepping the welcome and build checklist for new yeses', ''),
-    log('Retention Specialist', 'Client Success', 'Watching managed-plan clients for any churn signal', ''),
-    // Marketing + Creative + Search + Analytics (deeper bench)
-    log('Social Media Manager', 'Marketing', 'Drafting before/after and proof posts in the brand style', ''),
-    log('Content Strategist', 'Marketing', 'Mapping useful content to the winnable strike-list queries', ''),
-    log('Video Editor', 'Creative Production', 'Cutting vertical hook-first video creatives', 'downloadable in admin'),
-    log('Technical SEO Auditor', 'Search', 'Hunting crawl waste and slow pages across the estate', ''),
-    log('Conversion Rate Scientist', 'Analytics & Data', 'Finding the single change that lifts sign-ups', ''),
-    log('Affiliate Recruiter', 'Partnerships & Referrals', 'Drafting referral offers to people who already serve trades', ''),
-    // Ops + Quality + Exec
-    log('Dispatcher', 'Operations & Finance', 'Sending approved outreach, hottest leads first', ''),
-    log('Fact Checker', 'Quality & Risk', 'Checking every drafted message against the facts and the voice', ''),
-    log('CEO Agent', 'Executive', 'BLITZ ordered: all hands, one goal, a sale today', 'sprint running on the Mac'),
-  ]);
+
+  // Specific, current-task lines for the revenue desks (with live counts).
+  const SPECIFIC = {
+    'Companies House Watcher': ['Scanning Companies House for brand-new UK trade companies', okt && okt.status === 200 ? 'fresh prospects pulled' : 'scan triggered'],
+    'Website Checker': [scavenged ? ('Scavenged ' + scavenged + ' businesses with bad or no websites') : 'Hunting businesses with weak websites across the UK', 'full web sweep, not just Companies House'],
+    'Contact Finder': [enriched ? ('Found ' + enriched + ' new email contacts') : 'Digging out contact details', 'published + MX-verified'],
+    'Writer': [drafted ? ('Drafted ' + drafted + ' personalised emails into the queue') : 'Drafting personalised first emails', 'hottest first'],
+    'Preview Builder': ['Building cinematic one-page previews for the top prospects', 'I already built you this'],
+    'Lead Reactivation Specialist': ['Mining the CRM for warm leads to win back today', ''],
+    'Sales Closer': ['On the inbox for every hot reply', 'answering within minutes'],
+    'Reply Triage Specialist': ['Reading every inbound reply and routing the hot ones', 'interested / objection / stop'],
+    'Proposal Writer': ['Turning interested replies into proposals', '499 pounds once, preview in 24h'],
+    'Payment Chaser': ['Chasing any unpaid invoices, gently and on schedule', ''],
+    'Invoice Drafter': ['Prepping invoices for anyone who says yes', ''],
+    'Fact Checker': ['Checking every drafted message against the facts and the voice', ''],
+    'CEO Agent': ['BLITZ ordered: all hands, one goal, a sale today', 'sprint running on the Mac'],
+  };
+  // Department-level task for every other desk, so all 94 read as on the blitz.
+  const DEPT_TASK = {
+    'Executive': 'Steering the blitz and clearing blockers',
+    'Chief of Staff': 'Coordinating every desk on the sprint',
+    'Business Development': 'Hunting and qualifying fresh prospects',
+    'Customer Service': 'Watching the inbox so nothing waits',
+    'Design Studio': 'Polishing previews and page design',
+    'Client Success': 'Looking after live clients and chasing reviews',
+    'Growth & Conversion': 'Working the funnel and every hot lead',
+    'Analytics & Data': 'Reading live numbers for the next move',
+    'Marketing': 'Pushing the brand and content out',
+    'Creative Production': 'Producing fresh creative in the brand style',
+    'Search': 'Pushing winnable pages up the rankings',
+    'Operations & Finance': 'Keeping the pipeline and sends flowing',
+    'Finance': 'Tracking revenue against the plan',
+    'Quality & Risk': 'Checking work against the facts and the voice',
+    'Partnerships & Referrals': 'Chasing referral and partner leads',
+    'Legal & Admin': 'Keeping every send compliant',
+    'Resilience': 'Watching the systems stay up',
+    'Technical': 'Keeping the site fast and live',
+  };
+  const entries = [];
+  for (const [dept, roles] of ORG) {
+    for (const role of roles) {
+      const sp = SPECIFIC[role];
+      entries.push({ role, dept, action: sp ? sp[0] : (DEPT_TASK[dept] || ('On the blitz with ' + dept)), detail: sp ? sp[1] : '' });
+    }
+  }
+  await logBatch(entries);
 
   return {
     statusCode: 200,

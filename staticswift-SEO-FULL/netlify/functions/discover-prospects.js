@@ -39,6 +39,14 @@ const NICHE_TAGS = {
   locksmith:        [['shop','locksmith'], ['craft','locksmith']],
   builder:          [['craft','builder'], ['craft','carpenter']],
   cleaner:          [['shop','cleaning'], ['office','cleaning']],
+  roofer:           [['craft','roofer']],
+  plasterer:        [['craft','plasterer']],
+  carpenter:        [['craft','carpenter'], ['craft','joiner']],
+  tiler:            [['craft','tiler']],
+  painter:          [['craft','painter'], ['shop','paint']],
+  landscaper:       [['craft','gardener'], ['shop','garden_centre']],
+  'heating-engineer': [['craft','plumber'], ['craft','hvac']],
+  'gas-engineer':   [['craft','plumber'], ['craft','hvac']],
 };
 
 // Country code → OSM area name (for nominatim lookup)

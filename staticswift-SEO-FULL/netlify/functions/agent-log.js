@@ -18,20 +18,27 @@ exports.handler = async (event) => {
       return { statusCode: 401, body: 'Unauthorized' };
     }
     let p; try { p = JSON.parse(event.body || '{}'); } catch { return { statusCode: 400, body: 'bad JSON' }; }
-    if (!p.action) return { statusCode: 400, body: 'action required' };
+    // Batch mode: { entries: [{role,dept,action,detail,shift}, ...] } writes the
+    // whole set in ONE blob write. This is how a blitz lights up all 94 desks at
+    // once without 94 racing round-trips (which would drop entries).
+    const batch = Array.isArray(p.entries) ? p.entries : (p.action ? [p] : null);
+    if (!batch || !batch.length) return { statusCode: 400, body: 'action or entries required' };
     if (s) {
       const feed = (await s.get(KEY, { type: 'json' })) || [];
-      feed.unshift({
-        at: new Date().toISOString(),
-        role: String(p.role || 'unknown').slice(0, 60),
-        dept: String(p.dept || '').slice(0, 40),
-        action: String(p.action).slice(0, 200),
-        detail: String(p.detail || '').slice(0, 300),
-        shift: String(p.shift || '').slice(0, 20),
-      });
+      const now = new Date().toISOString();
+      const clean = batch.filter(e => e && e.action).map(e => ({
+        at: e.at || now,
+        role: String(e.role || 'unknown').slice(0, 60),
+        dept: String(e.dept || '').slice(0, 40),
+        action: String(e.action).slice(0, 200),
+        detail: String(e.detail || '').slice(0, 300),
+        shift: String(e.shift || p.shift || '').slice(0, 20),
+      }));
+      feed.unshift(...clean); // newest first, batch order preserved
       await s.setJSON(KEY, feed.slice(0, CAP));
+      return { statusCode: 200, body: JSON.stringify({ ok: true, logged: clean.length }) };
     }
-    return { statusCode: 200, body: JSON.stringify({ ok: true }) };
+    return { statusCode: 200, body: JSON.stringify({ ok: true, logged: 0 }) };
   }
 
   // GET — admin only
