@@ -76,6 +76,9 @@
     <button class="nav-tab" data-page="tickets" onclick="showPage('tickets',this);loadTickets()">
       <span class="ico">◆</span><span>Tickets</span>
     </button>
+    <button class="nav-tab" data-page="messages" onclick="showPage('messages',this);loadMessages()">
+      <span class="ico">💬</span><span>Messages <span id="nav-count-messages" class="nav-count"></span></span>
+    </button>
 
     <div class="sidebar-section">The Workforce</div>
     <button class="nav-tab" data-page="workforce" onclick="showPage('workforce',this)">
@@ -677,6 +680,26 @@
       </div>
     </div>
 
+    <!-- MESSAGES (from the homepage Message-me widget) -->
+    <div class="page" id="page-messages">
+      <div class="page-header">
+        <h1 class="page-title">Messages</h1>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span id="msg-meta" style="color:var(--muted);font-size:13px"></span>
+          <button class="btn-primary" style="font-size:13px;padding:9px 16px" onclick="loadMessages()">↻ Refresh</button>
+        </div>
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin:-6px 0 14px">People who hit "Message me" on the site land here. Reply and it emails them straight back. Auto-refreshes every 15s.</p>
+      <div style="display:grid;grid-template-columns:360px 1fr;gap:0;border:1px solid var(--border);border-radius:14px;overflow:hidden;min-height:560px">
+        <div style="border-right:1px solid var(--border);overflow-y:auto;max-height:720px" id="msg-list">
+          <div style="padding:24px;color:var(--muted);font-size:13px">Loading…</div>
+        </div>
+        <div id="msg-detail" style="overflow-y:auto;max-height:720px">
+          <div style="color:var(--muted);font-size:14px;padding-top:80px;text-align:center">Select a message to read and reply</div>
+        </div>
+      </div>
+    </div>
+
     <!-- OUTREACH -->
     <div class="page" id="page-outreach">
       <div class="page-header">
@@ -1263,6 +1286,6 @@
   </div>
 </div>
 
-<script src="/admin/admin.js?v=24" defer></script>
+<script src="/admin/admin.js?v=25" defer></script>
 </body>
 </html>

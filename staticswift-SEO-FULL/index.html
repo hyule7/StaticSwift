@@ -2024,5 +2024,60 @@ window.sqContact = async (e) => {
   }).catch(function(){});
 })();
 </script>
+
+<!-- Message me widget: posts to /.netlify/functions/messages, lands in the admin Messages tab -->
+<style>
+  #ssm-launch{position:fixed;right:18px;bottom:18px;z-index:9000;background:#9C2615;color:#fff;border:0;border-radius:100px;padding:14px 22px;font:600 15px/1 'Switzer',system-ui,sans-serif;cursor:pointer;box-shadow:0 10px 30px -8px rgba(14,11,7,.45)}
+  #ssm-launch:hover{background:#7A1D10}
+  #ssm-modal{position:fixed;inset:0;z-index:9001;display:none;align-items:flex-end;justify-content:center;background:rgba(14,11,7,.5)}
+  #ssm-modal.open{display:flex}
+  #ssm-card{background:#F2EFE7;color:#0E0B07;width:100%;max-width:440px;border-radius:18px 18px 0 0;padding:26px 24px 30px;font-family:'Switzer',system-ui,sans-serif}
+  @media(min-width:560px){#ssm-modal{align-items:center}#ssm-card{border-radius:18px}}
+  #ssm-card h3{font-family:'Sentient',Georgia,serif;font-size:24px;margin:0 0 4px;color:#0E0B07}
+  #ssm-card p.sub{color:#6b6358;font-size:14px;margin:0 0 18px}
+  #ssm-card label{display:block;font-size:12px;color:#6b6358;margin:12px 0 4px}
+  #ssm-card input,#ssm-card textarea{width:100%;box-sizing:border-box;border:1px solid #d8cebd;border-radius:10px;padding:11px 12px;font:15px/1.4 'Switzer',system-ui,sans-serif;background:#fff;color:#0E0B07}
+  #ssm-card textarea{min-height:96px;resize:vertical}
+  #ssm-card input:focus,#ssm-card textarea:focus{outline:none;border-color:#9C2615}
+  #ssm-send{margin-top:16px;width:100%;background:#0E0B07;color:#F2EFE7;border:0;border-radius:100px;padding:14px;font:600 16px/1 'Switzer',system-ui,sans-serif;cursor:pointer}
+  #ssm-send:hover{background:#9C2615}
+  #ssm-close{float:right;background:none;border:0;font-size:22px;color:#6b6358;cursor:pointer;line-height:1;margin:-6px -4px 0 0}
+  #ssm-note{margin-top:12px;font-size:14px;color:#1f8b47;display:none}
+</style>
+<button id="ssm-launch" onclick="document.getElementById('ssm-modal').classList.add('open')">Message me</button>
+<div id="ssm-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div id="ssm-card">
+    <button id="ssm-close" aria-label="Close" onclick="document.getElementById('ssm-modal').classList.remove('open')">&times;</button>
+    <h3>Message Harry</h3>
+    <p class="sub">A real person, in Manchester. I reply by email, usually within the hour in UK working hours.</p>
+    <form id="ssm-form" onsubmit="return ssmSend(event)">
+      <label for="ssm-name">Your name</label>
+      <input id="ssm-name" name="name" autocomplete="name">
+      <label for="ssm-email">Email (so I can reply)</label>
+      <input id="ssm-email" name="email" type="email" autocomplete="email" required>
+      <label for="ssm-msg">Message</label>
+      <textarea id="ssm-msg" name="message" required placeholder="What do you need?"></textarea>
+      <button id="ssm-send" type="submit">Send to Harry</button>
+      <div id="ssm-note"></div>
+    </form>
+  </div>
+</div>
+<script>
+  function ssmSend(e){
+    e.preventDefault();
+    var btn=document.getElementById('ssm-send'), note=document.getElementById('ssm-note');
+    btn.disabled=true; btn.textContent='Sending...';
+    fetch('/.netlify/functions/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      name:document.getElementById('ssm-name').value, email:document.getElementById('ssm-email').value,
+      message:document.getElementById('ssm-msg').value, page:location.pathname
+    })}).then(function(r){return r.json();}).then(function(d){
+      if(d&&d.ok){ note.style.display='block'; note.textContent=d.message||'Sent. I will be in touch shortly.'; document.getElementById('ssm-form').reset(); btn.textContent='Sent ✓'; setTimeout(function(){document.getElementById('ssm-modal').classList.remove('open'); btn.disabled=false; btn.textContent='Send to Harry'; note.style.display='none';},2600); }
+      else { note.style.display='block'; note.style.color='#9C2615'; note.textContent=(d&&d.error)||'Something went wrong, please email hello@staticswift.co.uk.'; btn.disabled=false; btn.textContent='Send to Harry'; }
+    }).catch(function(){ note.style.display='block'; note.style.color='#9C2615'; note.textContent='Network error, please email hello@staticswift.co.uk.'; btn.disabled=false; btn.textContent='Send to Harry'; });
+    return false;
+  }
+  // Deep-link: staticswift.co.uk/#message opens the widget (used in outreach footers).
+  if(location.hash==='#message'){document.getElementById('ssm-modal').classList.add('open');}
+</script>
 </body>
 </html>

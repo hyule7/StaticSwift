@@ -69,7 +69,7 @@ exports.handler = async (event) => {
         to: item.to,
         replyTo: fromAddr,
         subject: item.subject,
-        text: body + '\n\n— Unsubscribe: ' + unsub,
+        text: body + '\n\nMessage me anytime: https://staticswift.co.uk/#message\nUnsubscribe: ' + unsub,
         headers: { 'List-Unsubscribe': '<' + unsub + '>', 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
       });
       item.status = 'sent'; item.sentAt = new Date().toISOString();

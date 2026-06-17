@@ -3524,6 +3524,7 @@ function showPage(id, btn) {
   if (id === 'seo') { renderSEOChecklist(); renderSearchTeam(); }
   if (id === 'backlinks') renderDirectories();
   if (id === 'workforce') { loadWorkforce(); startWorkforcePoll(); } else { stopWorkforcePoll(); }
+  if (id === 'messages') { loadMessages(); startMsgPoll(); } else { stopMsgPoll(); }
 }
 
 /* ================================================================
@@ -6918,3 +6919,61 @@ window.ssShouldExcludeProspect = function(p) {
 
 ['showAutopilotConfig','toggleApRegion','toggleApNiche','saveAutopilotConfigFromUi','rebuildApTargetsFromConfig','resetAutopilotConfig','deleteApTarget','clearAllApTargets','addManualApTarget']
   .forEach(fn => { try { if (typeof eval(fn) === 'function') window[fn] = eval(fn); } catch(e){} });
+
+// ── Messages: the "Message me" widget threads, two-way with email replies ───
+let _msgThreads = [], _msgSel = null, _msgPoll = null;
+function startMsgPoll() { stopMsgPoll(); _msgPoll = setInterval(loadMessages, 15000); }
+function stopMsgPoll() { if (_msgPoll) { clearInterval(_msgPoll); _msgPoll = null; } }
+async function loadMessages() {
+  const list = document.getElementById('msg-list'); if (!list) return;
+  try {
+    const r = await fetch('/.netlify/functions/messages', { headers: { 'x-admin-password': ADMIN_PW } });
+    if (r.status === 401) { list.innerHTML = '<div style="padding:24px;color:var(--muted);font-size:13px">Session expired. Sign out and back in.</div>'; return; }
+    const d = await r.json();
+    _msgThreads = d.threads || [];
+    renderMsgList();
+    const u = d.unread || 0;
+    const nb = document.getElementById('nav-count-messages'); if (nb) nb.textContent = u ? u : '';
+    const meta = document.getElementById('msg-meta'); if (meta) meta.textContent = _msgThreads.length + ' conversation' + (_msgThreads.length === 1 ? '' : 's') + (u ? (' · ' + u + ' unread') : '');
+    if (_msgSel) openMsgThread(_msgSel, true);
+  } catch (_) {
+    list.innerHTML = '<div style="padding:24px;color:var(--muted);font-size:13px">Could not load messages. Needs NETLIFY_AUTH_TOKEN set and a deploy.</div>';
+  }
+}
+function renderMsgList() {
+  const list = document.getElementById('msg-list'); if (!list) return;
+  if (!_msgThreads.length) { list.innerHTML = '<div style="padding:24px;color:var(--muted);font-size:13px">No messages yet. They appear here the moment someone uses "Message me" on the site.</div>'; return; }
+  list.innerHTML = _msgThreads.map(function (t) {
+    const last = t.messages && t.messages[t.messages.length - 1];
+    return '<div onclick="openMsgThread(\'' + t.id + '\')" style="padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;' + (t.id === _msgSel ? 'background:var(--surface2);' : '') + '">' +
+      '<div style="display:flex;justify-content:space-between;gap:8px"><strong style="font-size:14px">' + escapeHTML(t.name || t.email) + (t.unread ? ' <span style="color:#9C2615">●</span>' : '') + '</strong><span style="font-size:11px;color:var(--muted)">' + wfAgo(t.lastAt) + '</span></div>' +
+      '<div style="font-size:12px;color:var(--muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHTML(last ? last.body : '') + '</div></div>';
+  }).join('');
+}
+async function openMsgThread(id, keepScroll) {
+  _msgSel = id; renderMsgList();
+  const t = _msgThreads.find(function (x) { return x.id === id; }); if (!t) return;
+  if (t.unread) { try { await fetch('/.netlify/functions/messages', { method: 'POST', headers: { 'x-admin-password': ADMIN_PW, 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'read', id: id }) }); t.unread = false; const nb = document.getElementById('nav-count-messages'); if (nb) { const u = _msgThreads.filter(function (x) { return x.unread; }).length; nb.textContent = u ? u : ''; } } catch (_) {} }
+  const detail = document.getElementById('msg-detail'); if (!detail) return;
+  const bubbles = (t.messages || []).map(function (m) {
+    const us = m.from === 'us';
+    return '<div style="display:flex;justify-content:' + (us ? 'flex-end' : 'flex-start') + ';margin:8px 0"><div style="max-width:78%;background:' + (us ? '#0E0B07' : '#fff') + ';color:' + (us ? '#F2EFE7' : '#0E0B07') + ';border:1px solid var(--border);border-radius:14px;padding:10px 14px;font-size:14px;white-space:pre-wrap">' + escapeHTML(m.body) + '<div style="font-size:10px;opacity:.6;margin-top:5px">' + wfAgo(m.at) + '</div></div></div>';
+  }).join('');
+  detail.innerHTML = '<div style="padding:18px 20px;border-bottom:1px solid var(--border)"><strong>' + escapeHTML(t.name || '') + '</strong> · <a href="mailto:' + escapeHTML(t.email) + '">' + escapeHTML(t.email) + '</a>' + (t.page ? ' · <span style="color:var(--muted);font-size:12px">from ' + escapeHTML(t.page) + '</span>' : '') + '</div>' +
+    '<div style="padding:14px 20px">' + bubbles + '</div>' +
+    '<div style="padding:14px 20px;border-top:1px solid var(--border);position:sticky;bottom:0;background:var(--surface)">' +
+    '<textarea id="msg-reply" placeholder="Reply (this emails them straight back)..." style="width:100%;box-sizing:border-box;min-height:80px;border:1px solid var(--border);border-radius:10px;padding:10px;font-size:14px;background:#fff;color:#0E0B07"></textarea>' +
+    '<button class="btn-primary" style="margin-top:8px" onclick="sendMsgReply(\'' + id + '\')">Send reply &amp; email</button></div>';
+}
+async function sendMsgReply(id) {
+  const ta = document.getElementById('msg-reply'); const body = (ta && ta.value || '').trim(); if (!body) return;
+  const btn = event && event.target; if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+  try {
+    const r = await fetch('/.netlify/functions/messages', { method: 'POST', headers: { 'x-admin-password': ADMIN_PW, 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'reply', id: id, body: body }) });
+    if (r.status === 401) { if (btn) { btn.disabled = false; btn.textContent = 'Send reply & email'; } alert('Session expired, sign out and back in.'); return; }
+    const d = await r.json().catch(function () { return {}; });
+    if (d.ok) { await loadMessages(); openMsgThread(id); }
+    else if (btn) { btn.disabled = false; btn.textContent = 'Send reply & email'; }
+  } catch (_) { if (btn) { btn.disabled = false; btn.textContent = 'Send reply & email'; } }
+}
+['loadMessages','openMsgThread','sendMsgReply'].forEach(function (fn) { try { window[fn] = eval(fn); } catch (e) {} });
