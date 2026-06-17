@@ -44,9 +44,17 @@ document.getElementById('pw-input').addEventListener('keydown', e => { if (e.key
 
 const savedPw = sessionStorage.getItem('ss_pw');
 if (savedPw) {
+  // Re-validate the cached password before trusting it. If ADMIN_PASSWORD was
+  // rotated in Netlify the old cached value would otherwise load the app shell
+  // and then 401 every single call ("check ADMIN_PASSWORD/deploy"). Verify
+  // once; if it is stale, clear it and drop back to the login screen.
   ADMIN_PW = savedPw;
-  showApp();
-  initApp();
+  fetch('/.netlify/functions/get-clients', { headers: { 'x-admin-password': savedPw } })
+    .then(r => {
+      if (r.ok) { showApp(); initApp(); }
+      else { sessionStorage.removeItem('ss_pw'); ADMIN_PW = ''; const e = document.getElementById('login-err'); if (e) e.style.display = 'block'; }
+    })
+    .catch(() => { /* network down: let them try the login form */ });
 }
 
 function logout() { sessionStorage.removeItem('ss_pw'); location.reload(); }
