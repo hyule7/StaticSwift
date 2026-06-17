@@ -3532,7 +3532,7 @@ function showPage(id, btn) {
    queue actions reuse queue-action. Auto-refreshes every 15s while
    the tab is open.
    ================================================================ */
-let _wfPoll = null, _wfTick = null, _wfOrgData = null, _wfFeedData = null;
+let _wfPoll = null, _wfTick = null, _wfOrgData = null, _wfFeedData = null, _wfLive = null;
 // Two clocks: a 5s NETWORK refresh (pulls fresh state) and a 1s LOCAL tick
 // that just re-renders the "ago" timers and live/working dots from the last
 // data, with no request, so the board ticks second by second without hammering
@@ -3540,7 +3540,7 @@ let _wfPoll = null, _wfTick = null, _wfOrgData = null, _wfFeedData = null;
 function startWorkforcePoll() {
   stopWorkforcePoll();
   _wfPoll = setInterval(loadWorkforce, 5000);
-  _wfTick = setInterval(function () { if (_wfOrgData) renderWfOrg(_wfOrgData); if (_wfFeedData) renderWfFeed(_wfFeedData); }, 1000);
+  _wfTick = setInterval(function () { if (_wfOrgData) renderWfOrg(_wfOrgData); if (_wfFeedData) renderWfFeed(_wfFeedData); if (_wfLive) renderWfBrief(_wfLive); }, 1000);
 }
 function stopWorkforcePoll() { if (_wfPoll) { clearInterval(_wfPoll); _wfPoll = null; } if (_wfTick) { clearInterval(_wfTick); _wfTick = null; } }
 function wfHdr() { return { 'x-admin-password': (typeof ADMIN_PW !== 'undefined' && ADMIN_PW) || sessionStorage.getItem('ss_pw') || '', 'Content-Type': 'application/json' }; }
@@ -3592,6 +3592,7 @@ async function loadWorkforce() {
     renderWfQueue({ pending: [] });
     renderWfFeed([]);
     renderWfKill({ global: false });
+    _wfLive = null; renderWfBrief(null);
     renderBlitzState();
     loadWfCreatives();
     wfBanner('<b>Org chart and creatives are live below. Live activity, shifts and the approval queue need the backend deployed.</b><br>Push the latest commits so the new functions go live, set <code>AGENT_TOKEN</code> in Netlify, then run <code>bash agents/install-autostart.sh</code> once. After that this fills in by itself.', 'warn');
@@ -3599,12 +3600,14 @@ async function loadWorkforce() {
   }
 
   wfBanner('', 'ok');
+  _wfLive = live;
   renderBlitzState();
   loadWfCreatives();
   renderWfShifts(live.shifts || {});
   renderWfQueue(live.queue || {});
   renderWfOrg((live.org && live.org.length) ? live.org : fallback);
   renderWfFeed(live.activity || []);
+  renderWfBrief(live);
   renderWfKill(live.queue && live.queue.kill || { global: false });
   const pend = (live.queue && live.queue.counts && live.queue.counts.pending) || 0;
   const nb = document.getElementById('nav-count-queue'); if (nb) nb.textContent = pend ? pend : '';
@@ -3800,7 +3803,7 @@ async function renderBlitzState() {
     if (go) { go.textContent = '⚔️ War room running…'; go.disabled = true; go.style.opacity = '.6'; }
   } else {
     el.style.display = 'none'; el.innerHTML = '';
-    if (go) { go.textContent = '🔥 Blitz — all hands for 2 hours'; go.disabled = false; go.style.opacity = '1'; }
+    if (go) { go.textContent = '🔥 Blitz · all hands for 2 hours'; go.disabled = false; go.style.opacity = '1'; }
   }
 }
 async function wfSendBrief() {
@@ -3809,6 +3812,52 @@ async function wfSendBrief() {
     const r = await fetch('/.netlify/functions/send-brief', { method: 'POST', headers: wfHdr() });
     wfToast(r.ok ? 'Brief sent to your inbox.' : 'Could not send the brief (check SMTP/deploy).');
   } catch (_) { wfToast('Could not reach send-brief. Push the latest commits.'); }
+}
+
+// The live brief: a rolling, self-updating boardroom summary composed from the
+// data we already hold (org + queue + feed). Re-rendered every second by the
+// ticker and refreshed every 5s by the poll, so it is genuinely live.
+function renderWfBrief(live) {
+  const el = document.getElementById('wf-brief'); if (!el) return;
+  const lt = document.getElementById('wf-brief-live');
+  if (!live) {
+    if (lt) lt.innerHTML = '';
+    el.innerHTML = '<div class="wf-empty">The live brief fills in once the backend is deployed and a shift or blitz has run.</div>';
+    return;
+  }
+  if (lt) lt.innerHTML = '<span class="wf-livedot"></span>updating live';
+  const org = live.org || [];
+  const feed = live.activity || [];
+  const q = live.queue || {};
+  const counts = q.counts || {};
+  let working = 0, total = 0;
+  org.forEach(function (d) { d.roles.forEach(function (r) { total++; if (r.last && (Date.now() - Date.parse(r.last.at)) < 180000) working++; }); });
+  const pending = counts.pending || 0;
+  const sentToday = q.sentToday || 0;
+  const hot = (q.pending || []).filter(function (i) { return i.meta && i.meta.hot; }).length;
+
+  // Headline KPI strip.
+  const kpis = [
+    ['🟢', working, working === 1 ? 'staff working now' : 'staff working now'],
+    ['✉', pending, 'waiting for your approval'],
+    ['✓', sentToday, 'sent today'],
+    ['🔥', hot, hot === 1 ? 'hot lead in the queue' : 'hot leads in the queue'],
+  ].map(function (k) { return '<div class="wf-kpi"><span class="ic">' + k[0] + '</span><b>' + k[1] + '</b><span class="lb">' + k[2] + '</span></div>'; }).join('');
+
+  // What needs Harry, right now.
+  let action;
+  if (pending > 0) action = '<button class="wf-go" style="padding:10px 18px" onclick="wfApproveAll(' + (hot ? 'true' : 'false') + ')">Approve &amp; send ' + pending + ' now &rarr;</button>';
+  else action = '<span class="wf-allclear">Queue clear · the team is finding and drafting the next wave</span>';
+
+  // Live "right now" lines from the feed (ticking timestamps).
+  const lines = feed.slice(0, 6).map(function (a) {
+    return '<div class="wf-brief-line"><span class="t">' + wfAgo(a.at) + '</span><span><b>' + wfEsc(a.role) + '</b> ' + wfEsc(a.action) + '</span></div>';
+  }).join('') || '<div class="wf-empty">Hit Blitz to put the whole company to work.</div>';
+
+  el.innerHTML =
+    '<div class="wf-kpis">' + kpis + '</div>' +
+    '<div class="wf-brief-action">' + action + '</div>' +
+    '<div class="wf-brief-lines"><div class="hd">Happening right now</div>' + lines + '</div>';
 }
 
 function renderWfFeed(feed) {

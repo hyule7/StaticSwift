@@ -17,10 +17,15 @@ const { isSuppressed, unsubUrl } = require('./_suppression');
 const { renderPreview, fieldsOf } = require('./_preview-builder');
 
 const F = { build: 499, monthly: 49, previewHours: 24, buildDays: 14, guaranteeDays: 60, wa: '07502 731 799', waLink: '+447502731799', email: 'hello@staticswift.co.uk' };
-const CAP_WARM = 40, CAP_COLD = 40;
+// Max-capacity draft volume. These cap how much WORK lands in the approval
+// queue per run, not how much is sent: every draft still waits for Harry's
+// approval, the anti-spam frequency guard below still blocks re-contacting
+// anyone, and the dispatcher still honours the daily send cap. So a big number
+// here means "the team does loads", never "we spam".
+const CAP_WARM = 80, CAP_COLD = 120;
 // How many of the hottest cold prospects get a real auto-built preview link
-// in this run. Capped so a blitz stays fast and storage stays tidy.
-const PREVIEW_CAP = 10;
+// in this run. Higher = more "I built you this" emails; each preview is cheap.
+const PREVIEW_CAP = 24;
 const SITE = process.env.SS_SITE || 'https://staticswift.co.uk';
 const slug = s => String(s || 'prospect').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'prospect';
 const isEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e || '').trim());
