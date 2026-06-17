@@ -5,7 +5,10 @@ function makeConfig(user, pass) {
   return {
     user,
     password: pass,
-    host: process.env.IMAP_HOST || 'imap.fasthost.co.uk',
+    // Default to the SAME mail server the outbound mailer uses
+    // (mail.staticswift.co.uk). The old default 'imap.fasthost.co.uk' did not
+    // exist, so the ticket system connected to a dead host and pulled nothing.
+    host: process.env.IMAP_HOST || process.env.SMTP_HOST || 'mail.staticswift.co.uk',
     port: parseInt(process.env.IMAP_PORT || '993'),
     tls: true,
     tlsOptions: { rejectUnauthorized: false },
@@ -81,21 +84,24 @@ exports.handler = async (event) => {
   const supportUser = process.env.SUPPORT_SMTP_USER || 'support@staticswift.co.uk';
   const supportPass = process.env.SUPPORT_SMTP_PASS || '';
 
-  if (!helloPass || !supportPass) {
-    return { statusCode: 500, body: JSON.stringify({ error: 'SMTP_PASS and SUPPORT_SMTP_PASS must be set in Netlify env vars' }) };
+  // Fetch each mailbox INDEPENDENTLY. A missing SUPPORT_SMTP_PASS must not kill
+  // the hello inbox too (the old all-or-nothing 500 made the ticket system look
+  // dead whenever one var was unset). Only error if neither is configured.
+  const jobs = [];
+  if (helloPass) jobs.push(fetchMailbox(makeConfig(helloUser, helloPass), 'hello'));
+  if (supportPass) jobs.push(fetchMailbox(makeConfig(supportUser, supportPass), 'support'));
+
+  if (!jobs.length) {
+    return { statusCode: 500, body: JSON.stringify({ error: 'No mailbox password set. Add SMTP_PASS (and optionally SUPPORT_SMTP_PASS) in Netlify env vars, then redeploy.' }) };
   }
 
   try {
-    const [hello, support] = await Promise.all([
-      fetchMailbox(makeConfig(helloUser, helloPass), 'hello'),
-      fetchMailbox(makeConfig(supportUser, supportPass), 'support'),
-    ]);
-
-    const all = [...hello, ...support].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const boxes = await Promise.all(jobs);
+    const all = boxes.flat().sort((a, b) => new Date(b.date) - new Date(a.date));
 
     return {
       statusCode: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
       body: JSON.stringify(all),
     };
   } catch (err) {
