@@ -53,9 +53,16 @@ exports.handler = async (event) => {
     combos.push({ niche: trade, area: town });
   }
 
+  // Time budget so a wide sweep never blows the function timeout: keep starting
+  // combos until we are close to the limit, then stop and return what we found.
+  // Frequency (every watcher tick + the 15-min schedule) covers the rest.
+  const started = Date.now();
+  const TIME_BUDGET_MS = Number(process.env.SCAVENGE_BUDGET_MS || 22000);
+
   const results = [];
   let totalProspects = 0, withEmail = 0;
   for (const c of combos) {
+    if (Date.now() - started > TIME_BUDGET_MS) { results.push({ ...c, skipped: 'time budget' }); continue; }
     try {
       const r = await fetch(SITE + '/.netlify/functions/discover-prospects', {
         method: 'POST',

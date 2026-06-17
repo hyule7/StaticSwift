@@ -95,6 +95,8 @@ const DETAILS = {
 };
 
 const DEPT_DEFAULT = {
+  'Business Development': 'Own a beat (a UK region or a trade) on the cold-outreach floor. Find local businesses with weak or no websites, enrich their real published contacts (never guessed), and draft specific, personalised first-touch outreach into the approval queue. Volume is welcome; spam is not. Honour the suppression list and the frequency cap without exception, and never invent a contact detail or a claim.',
+  'Growth & Conversion': 'Turn attention into booked previews and paid builds. Work the funnel and answer every inbound and reply fast, with honest, specific messages and the free 24-hour preview as the hook. Every figure from facts.json; all customer-facing output approval-gated until earned.',
   'Client Success': 'Deliver the recurring-revenue product at scale with zero marginal Harry time. All client-facing output approval-gated until earned.',
   'Marketing': 'Grow reach in the Field Guide voice; hooks grounded in current trends checked live; case studies use only real numbers.',
   'Creative Production': 'Produce ad creatives in the Field Guide design system (real rendered type, never AI-mangled), track performance, retire losers.',

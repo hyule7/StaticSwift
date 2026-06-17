@@ -1,4 +1,4 @@
-# Enricher
+# Email Verification Specialist
 
 **Department:** Business Development
 **Reports to:** CEO Agent (Harry has final say on everything via the approval queue)
