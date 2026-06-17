@@ -6,3 +6,8 @@ dbg*.mjs
 # outreach local dev artifacts
 outreach/.queue.local.json
 outreach/.suppression.local.json
+
+# launchd / agent runtime logs
+agents/logs/*.log
+agents/logs/*.err
+agents/logs/.blitz.lock
