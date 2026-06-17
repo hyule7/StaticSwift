@@ -60,7 +60,7 @@ exports.handler = async (event) => {
   // 2. Fire the full revenue stack NOW (best-effort, parallel). On a blitz we
   //    also restock prospects, run the outreach follow-up engine, and re-engage
   //    non-buyers, so money-path work starts before the AI shift even spins up.
-  const jobs = [fire('discover-companies-house'), fire('dispatch-approved'), fire('ping-sitemaps')];
+  const jobs = [fire('discover-companies-house'), fire('dispatch-approved'), fire('ping-sitemaps'), fire('reply-loop')];
   let drafted = 0, scavenged = 0, enriched = 0;
   if (blitz) {
     jobs.push(fire('daily-followup'));

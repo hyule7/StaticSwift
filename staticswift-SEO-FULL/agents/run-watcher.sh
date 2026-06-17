@@ -26,10 +26,11 @@ if [ -n "$ACTIVE" ]; then
   if [ -f "$LOCK" ]; then exit 0; fi
   echo $$ > "$LOCK"
   trap 'rm -f "$LOCK"' EXIT
-  # No-AI revenue stack every tick: scavenge -> enrich -> draft -> dispatch.
+  # No-AI revenue stack every tick: scavenge -> enrich -> draft -> reply -> dispatch.
   fire blitz-scavenge
   fire contact-enrich
   fire blitz-push
+  fire reply-loop
   fire dispatch-approved
   # All-hands AI sprint (BD, conversion, SEO pages, analytics, creative).
   ./agents/run-shift.sh blitz || true

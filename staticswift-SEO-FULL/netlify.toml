@@ -109,6 +109,13 @@
 [functions."cron-bd-floor"]
   schedule = "0 */2 * * *"
 
+# Scheduled function — the autonomous reply handler. Reads inbound replies to
+# our outreach, classifies them, and drafts the right response into the
+# approval queue (interested + objections). Honours unsubscribes instantly.
+# Every 15 minutes so an interested "yes" never waits long.
+[functions."reply-loop"]
+  schedule = "*/15 * * * *"
+
 # Scheduled function — the approval-queue dispatcher. The ONLY path from an
 # approved artefact to the wire. Runs hourly; itself enforces the UK
 # business-hours window, the daily send cap, kill switches and suppression.
