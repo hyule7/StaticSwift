@@ -64,7 +64,14 @@ exports.handler = async (event) => {
   const existingEmails = new Set(db.cronProspects.map(p => (p.email || '').toLowerCase()).filter(Boolean));
   let found = 0, derived = 0, none = 0;
 
+  // Stop starting new site fetches once we are near the function limit, then
+  // save what we found. Without this, a slow batch timed out and saved nothing,
+  // so the emailable pool never grew and the blitz stalled at ~10.
+  const started = Date.now();
+  const TIME_BUDGET_MS = Number(process.env.ENRICH_BUDGET_MS || 7500);
+
   for (const t of targets) {
+    if (Date.now() - started > TIME_BUDGET_MS) break;
     t.enriched = true; t.enrichedAt = new Date().toISOString();
     let host = ''; try { host = new URL(t.url).hostname; } catch {}
     const domain = host.replace(/^www\./, '');

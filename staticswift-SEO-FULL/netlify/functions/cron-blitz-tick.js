@@ -19,11 +19,12 @@ const { buildEntries } = require('./_blitz-roster');
 const SITE = process.env.URL || 'https://staticswift.co.uk';
 const PW = process.env.ADMIN_PASSWORD || '';
 
-async function fire(fn) {
+async function fire(fn, ms) {
   try {
     const r = await fetch(SITE + '/.netlify/functions/' + fn, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-admin-password': PW },
+      signal: AbortSignal.timeout(ms || 8000),
     });
     return await r.json().catch(() => ({}));
   } catch (_) { return {}; }
@@ -52,22 +53,33 @@ exports.handler = async (event) => {
   if (state.active && state.until && Date.parse(state.until) <= Date.now()) state = { active: false };
   if (!state.active) return { statusCode: 200, body: JSON.stringify({ ok: true, blitz: false, skipped: 'no blitz running' }) };
 
-  // Run the no-AI revenue stack, sequentially so each step feeds the next.
-  const sc = await fire('blitz-scavenge');
-  const en = await fire('contact-enrich');
-  const pu = await fire('blitz-push');
-  const rl = await fire('reply-loop');
-  await fire('dispatch-approved');
+  // Rotate ONE bounded stage per tick so no single invocation runs the whole
+  // sequential pipeline (which blew the ~10s limit and made the blitz stall at
+  // ~10 then stop). These functions share one database, so they must never run
+  // in parallel; rotating keeps each tick fast AND the data consistent. Over a
+  // few minutes the full pipeline cycles, and the queue climbs into the
+  // hundreds across the window instead of stopping after one round.
+  const minute = Math.floor(Date.now() / 60000);
+  const stage = minute % 3;
+  const counts = {};
+  if (stage === 0) {
+    // Discover: hunt fresh businesses with weak/no websites + contacts.
+    const sc = await fire('blitz-scavenge', 8500);
+    counts.scavenged = sc.found || 0;
+  } else if (stage === 1) {
+    // Enrich: turn discovered sites into MX-verified emailable prospects.
+    const en = await fire('contact-enrich', 8500);
+    counts.enriched = en.found || 0;
+  } else {
+    // Draft + send: push new prospects into the queue, handle replies, dispatch.
+    const pu = await fire('blitz-push', 8500);
+    counts.drafted = pu.drafted || 0; counts.queued = pu.drafted || 0;
+    await fire('dispatch-approved', 6000);
+    fire('reply-loop', 1); // best-effort kick; reply-loop also runs on its own 15-min schedule
+  }
 
-  const counts = {
-    scavenged: sc.found || 0,
-    enriched: en.found || 0,
-    drafted: pu.drafted || 0,
-    replies: rl.drafted || 0,
-    queued: (pu.drafted || 0),
-  };
-  // Keep every desk green and show the running counts.
+  // Every tick: keep all desks green and show the running counts (fast).
   await logBatch(buildEntries(counts));
 
-  return { statusCode: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }, body: JSON.stringify({ ok: true, blitz: true, minsLeft: state.until ? Math.max(0, Math.round((Date.parse(state.until) - Date.now()) / 60000)) : null, ...counts }) };
+  return { statusCode: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }, body: JSON.stringify({ ok: true, blitz: true, stage, minsLeft: state.until ? Math.max(0, Math.round((Date.parse(state.until) - Date.now()) / 60000)) : null, ...counts }) };
 };
