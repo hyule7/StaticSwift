@@ -93,6 +93,7 @@ function render(d){
       '<div class="cat"><span>'+it.category+(it.autoApproved?' · auto':'')+'</span><span class="auto">'+(auto.auto?'AUTO-SEND ON':(auto.streak||0)+'/50)')+'</span></div>'+
       (it.to?'<div class="to">to '+it.to+'</div>':'')+
       '<div class="subj">'+(it.subject||'(no subject)')+'</div>'+
+      (it.previewUrl?'<div class="prev"><a href="'+encodeURI(it.previewUrl)+'" target="_blank" rel="noopener">👁 View the preview I built ↗</a></div>':'')+
       '<div class="body" id="b-'+it.id+'">'+esc(it.editedBody||it.body)+'</div>'+
       (STATUS==='pending'?'<div class="actions">'+
         '<button class="approve" onclick="act(\''+it.id+'\',\'approve\')">Approve</button>'+

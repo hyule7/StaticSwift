@@ -14,9 +14,15 @@
 const { readDB } = require('./_db');
 const { load, saveItems } = require('./_queue');
 const { isSuppressed, unsubUrl } = require('./_suppression');
+const { renderPreview, fieldsOf } = require('./_preview-builder');
 
-const F = { build: 499, monthly: 49, previewHours: 24, guaranteeDays: 60, wa: '07502 731 799' };
+const F = { build: 499, monthly: 49, previewHours: 24, buildDays: 14, guaranteeDays: 60, wa: '07502 731 799', waLink: '+447502731799', email: 'hello@staticswift.co.uk' };
 const CAP_WARM = 40, CAP_COLD = 40;
+// How many of the hottest cold prospects get a real auto-built preview link
+// in this run. Capped so a blitz stays fast and storage stays tidy.
+const PREVIEW_CAP = 10;
+const SITE = process.env.SS_SITE || 'https://staticswift.co.uk';
+const slug = s => String(s || 'prospect').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'prospect';
 const isEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e || '').trim());
 const first = n => (n && String(n).trim().split(/\s+/)[0]) || 'there';
 const sigUnsub = (email, cat) => 'Not interested? Reply STOP and I will not email again. Unsubscribe: ' + unsubUrl(email, cat);
@@ -80,6 +86,47 @@ Harry
 StaticSwift, Manchester
 Reason for this email: you run a ${trade} in ${town} and I build sites for that trade. ${sigUnsub(p.email, 'outreach')}`,
   };
+}
+
+// The highest-converting cold email in this niche: a live link to a real
+// one-page site we already built for them.
+function coldWithPreview(p, url) {
+  const biz = p.companyName || p.bizname || p.name || '';
+  const fn = first(p.contactName);
+  const town = p.town || p.location || 'your area';
+  const trade = String(p.trade || p.type || p.businessType || 'business').replace(/-/g, ' ');
+  return {
+    subject: 'I built ' + (biz || 'you') + ' a website (free preview inside)',
+    body:
+`Hi${fn !== 'there' ? ' ' + fn : ''},
+
+I am Harry, I hand-code websites for ${trade}s around ${town}. Rather than just pitch you, I went ahead and built you a real working preview. Here it is, live now:
+
+${url}
+
+It is free and there is no card. If you like it I make it properly yours, live within ${F.buildDays} days, ${F.build} pounds once, and if it does not bring you a lead in ${F.guaranteeDays} days you get every penny back.
+
+Want a change to it, or want it live? Just reply, or message me on WhatsApp ${F.wa}.
+
+Harry
+StaticSwift, Manchester
+Reason for this email: you run a ${trade} in ${town} and I build sites for that trade. ${sigUnsub(p.email, 'outreach')}`,
+  };
+}
+
+// Render a personalised one-page preview for a prospect and store it so
+// serve-preview can return it on a public link. Returns the URL or null.
+// Never throws: a failed preview just falls back to the plain cold email.
+async function buildPreviewUrl(previewStore, p) {
+  if (!previewStore) return null;
+  try {
+    const facts = { build: F.build, previewHours: F.previewHours, buildDays: F.buildDays, guaranteeDays: F.guaranteeDays, waDisplay: F.wa, waLink: F.waLink, email: F.email };
+    const html = renderPreview(p, facts);
+    const fld = fieldsOf(p);
+    const id = 'auto_' + slug(fld.business) + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+    await previewStore.set(id, html, { metadata: { mimeType: 'text/html', filename: slug(fld.business) + '-preview.html', business: fld.business, trade: fld.trade, town: fld.town, kind: 'auto-preview', builtAt: new Date().toISOString() } });
+    return `${SITE}/.netlify/functions/serve-preview?id=${encodeURIComponent(id)}`;
+  } catch { return null; }
 }
 
 exports.handler = async (event) => {
@@ -163,14 +210,25 @@ exports.handler = async (event) => {
   }
 
   // 3. Cold first-touch to prospects that actually have an email.
+  // The hottest get a REAL one-page preview built and a live link in the email
+  // ("I already built you this") - the strongest cold open in this niche.
+  // Falls back to the plain pitch if storage is unavailable or a build fails.
+  let previewStore = null;
+  try { previewStore = require('./_filestore').getFileStore(); } catch { previewStore = null; }
+  let previews = 0;
   for (const p of prospects) {
     if (cold_ >= CAP_COLD) break;
     const email = p.email;
     if (!isEmail(email) || queuedTo.has(email.toLowerCase())) continue;
     if (await isSuppressed(email)) continue;
     if (tooSoon(email)) { skippedFreq++; continue; }
-    const d = cold(p);
-    drafts.push({ to: email, category: 'outreach', subject: d.subject, body: d.body, prospect: { business: p.companyName || p.bizname || p.name, trade: p.trade || p.type, town: p.town || p.location, segment: 'cold' } });
+    let d, previewUrl = null;
+    if (previews < PREVIEW_CAP) {
+      previewUrl = await buildPreviewUrl(previewStore, p);
+      if (previewUrl) previews++;
+    }
+    d = previewUrl ? coldWithPreview(p, previewUrl) : cold(p);
+    drafts.push({ to: email, category: 'outreach', subject: d.subject, body: d.body, previewUrl, prospect: { business: p.companyName || p.bizname || p.name, trade: p.trade || p.type, town: p.town || p.location, segment: 'cold', preview: !!previewUrl } });
     queuedTo.add(email.toLowerCase()); cold_++;
   }
 
@@ -181,8 +239,8 @@ exports.handler = async (event) => {
     items.push({
       id: 'q_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
       createdAt: now, status: 'pending', category: d.category, to: d.to,
-      subject: d.subject, body: d.body, prospect: d.prospect,
-      meta: { blitz: true, segment: d.prospect && d.prospect.segment, hot: !!(d.prospect && d.prospect.hot), heat: (d.prospect && d.prospect.heat) || 0 },
+      subject: d.subject, body: d.body, prospect: d.prospect, previewUrl: d.previewUrl || null,
+      meta: { blitz: true, segment: d.prospect && d.prospect.segment, hot: !!(d.prospect && d.prospect.hot), heat: (d.prospect && d.prospect.heat) || 0, preview: !!d.previewUrl },
     });
   }
   await saveItems(store, items);
@@ -193,7 +251,7 @@ exports.handler = async (event) => {
     body: JSON.stringify({
       ok: true,
       drafted: drafts.length,
-      reactivation: warm, cold: cold_, hot,
+      reactivation: warm, cold: cold_, hot, previewsBuilt: previews,
       skippedAlreadyContacted: skippedFreq,
       contactsEverReached: Object.keys(touches).length,
       note: drafts.length
