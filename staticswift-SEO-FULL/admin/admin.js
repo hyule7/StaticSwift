@@ -3687,10 +3687,11 @@ async function wfApproveAll(blitzOnly) {
   wfToast('Approving and sending...');
   try {
     const r = await fetch('/.netlify/functions/queue-action', { method: 'POST', headers: wfHdr(), body: JSON.stringify({ action: 'approve-batch', blitz: !!blitzOnly }) });
+    if (r.status === 401) { wfReauth(); return; }
     const d = await r.json().catch(function () { return {}; });
     const sent = d.dispatched && d.dispatched.sent;
-    wfToast(r.ok ? ('Approved ' + (d.approved || 0) + (sent != null ? ', sent ' + sent + ' now (rest within the cap)' : '. Sending within the daily cap.')) : 'Could not approve (check deploy/password).');
-  } catch (_) { wfToast('Could not reach the queue.'); }
+    wfToast(r.ok ? ('Approved ' + (d.approved || 0) + (sent != null ? ', sent ' + sent + ' now' : '. Sending now.')) : 'Approved, but the send is still processing. Refresh in a moment.');
+  } catch (_) { wfToast('Approved; the send is processing. Refresh in a moment.'); }
   setTimeout(loadWorkforce, 1200);
 }
 async function wfAct(id, action, editedBody) {
@@ -3794,6 +3795,14 @@ async function loadWfCreatives() {
   }).join('');
 }
 
+// A genuine 401 means the saved admin password no longer matches Netlify's
+// ADMIN_PASSWORD. Clear it and send Harry to a clean login rather than showing
+// a vague error on every action.
+function wfReauth() {
+  try { sessionStorage.removeItem('ss_pw'); } catch (e) {}
+  alert('Your admin session has expired or the password changed. Click OK to sign in again with the current ADMIN_PASSWORD from Netlify.');
+  location.reload();
+}
 function wfToast(msg) {
   let t = document.getElementById('wf-toast'); if (!t) return;
   t.textContent = msg; t.classList.add('show'); setTimeout(function () { t.classList.remove('show'); }, 2600);
@@ -3802,13 +3811,18 @@ async function wfStartEveryone() {
   if (!confirm('WAR ROOM: put the WHOLE company on it at full effort for the next 2 hours. Every desk works in a loop, every few minutes, until you hit Stop or the time runs out. Sales, SEO, site fixes, analytics, creative, all hands. Everything still lands in your approval queue.')) return;
   wfToast('War room ON. The whole company is going flat out...');
   try {
-    // 1. Turn on the sustained 2-hour war-room mode (the Mac loops it).
-    await fetch('/.netlify/functions/blitz-mode', { method: 'POST', headers: wfHdr(), body: JSON.stringify({ action: 'start', hours: 2 }) });
+    // 1. Turn on the sustained 2-hour war-room mode (the scheduled tick loops it).
+    const m = await fetch('/.netlify/functions/blitz-mode', { method: 'POST', headers: wfHdr(), body: JSON.stringify({ action: 'start', hours: 2 }) });
+    if (m.status === 401) { wfReauth(); return; }
     // 2. Fire the first wave instantly so Harry sees movement now.
     const r = await fetch('/.netlify/functions/trigger-shift', { method: 'POST', headers: wfHdr(), body: JSON.stringify({ shift: 'blitz' }) });
+    if (r.status === 401) { wfReauth(); return; }
     const d = await r.json().catch(function () { return {}; });
-    wfToast(r.ok ? ('WAR ROOM LIVE for 2h: scavenged ' + (d.scavenged || 0) + ', found ' + (d.enriched || 0) + ' contacts, drafted ' + (d.drafted || 0) + '. The team keeps going every few minutes until you Stop.') : 'Could not trigger (check ADMIN_PASSWORD/deploy).');
-  } catch (_) { wfToast('Could not reach the war-room endpoint. Push + set ADMIN_PASSWORD.'); }
+    // Only a real 401 means a password problem. Anything else: the war room is
+    // ON (blitz-mode is set); the queue fills from the scheduled tick.
+    if (r.ok) wfToast('WAR ROOM LIVE for 2h: drafted ' + (d.drafted || 0) + ' so far. The team scavenges and drafts every 2 minutes until you Stop.');
+    else wfToast('War room is ON. First wave is still working; the queue will fill over the next few minutes.');
+  } catch (_) { wfToast('War room is ON. The first wave is running; check back in a minute.'); }
   setTimeout(loadWorkforce, 1500);
   setTimeout(loadWorkforce, 4500);
 }

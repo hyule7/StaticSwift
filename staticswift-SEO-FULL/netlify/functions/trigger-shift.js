@@ -16,15 +16,18 @@ const { getNamedStore } = require('./_blobs');
 
 const SITE = process.env.URL || 'https://staticswift.co.uk';
 
-async function fire(fn, body) {
+// Call a sibling function with a hard timeout so one slow call can never make
+// the button hang past Netlify's ~10s sync-function limit (a timeout there is
+// what made the war room wrongly report "check password"). Returns parsed JSON.
+async function fire(fn, ms) {
   try {
     const r = await fetch(SITE + '/.netlify/functions/' + fn, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-admin-password': process.env.ADMIN_PASSWORD || '' },
-      body: body ? JSON.stringify(body) : undefined,
+      signal: AbortSignal.timeout(ms || 7000),
     });
-    return { fn, status: r.status };
-  } catch (e) { return { fn, error: e.message }; }
+    return await r.json().catch(() => ({ status: r.status }));
+  } catch (e) { return { error: e.message }; }
 }
 
 // Build one activity line per role from the single source of truth, so a blitz
@@ -61,40 +64,22 @@ exports.handler = async (event) => {
     await ops.setJSON('manual-shift', { shift: blitz ? 'blitz' : shift, requestedAt: new Date().toISOString(), claimed: false });
   }
 
-  // 2. Fire the full revenue stack NOW (best-effort, parallel). On a blitz we
-  //    also restock prospects, run the outreach follow-up engine, and re-engage
-  //    non-buyers, so money-path work starts before the AI shift even spins up.
-  const jobs = [fire('discover-companies-house'), fire('dispatch-approved'), fire('ping-sitemaps'), fire('reply-loop')];
-  let drafted = 0, scavenged = 0, enriched = 0;
+  // 2. Instant movement, BOUNDED so the button can never time out. We await
+  //    only the fast queue-fillers (draft from the existing pool, then send).
+  //    The heavy discovery (scavenge -> enrich -> reply) is run reliably every
+  //    2 minutes by the scheduled cron-blitz-tick while blitz-mode is active,
+  //    so it does not block this request.
+  let drafted = 0;
   if (blitz) {
-    jobs.push(fire('daily-followup'));
-    jobs.push(fire('cron-nurture'));
-    // 1) SCAVENGE: hunt real local businesses with bad/no websites + their
-    //    published contacts, into the prospect pool (cold-outreach fuel).
-    try {
-      const s = await fetch(SITE + '/.netlify/functions/blitz-scavenge', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-password': process.env.ADMIN_PASSWORD || '' } });
-      const sj = await s.json().catch(() => ({}));
-      scavenged = sj.found || 0;
-    } catch (_) {}
-    // 1b) ENRICH: turn the scavenged websites into emailable contacts.
-    try {
-      const e = await fetch(SITE + '/.netlify/functions/contact-enrich', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-password': process.env.ADMIN_PASSWORD || '' } });
-      const ej = await e.json().catch(() => ({}));
-      enriched = ej.found || 0;
-    } catch (_) {}
-    // 2) PUSH: draft warm reactivation + win-back + cold emails (to everyone
-    //    contactable, hottest first) into the approval queue NOW.
-    try {
-      const r = await fetch(SITE + '/.netlify/functions/blitz-push', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-admin-password': process.env.ADMIN_PASSWORD || '' } });
-      const j = await r.json().catch(() => ({}));
-      drafted = j.drafted || 0;
-    } catch (_) {}
+    const push = await fire('blitz-push', 8500);
+    drafted = (push && push.drafted) || 0;
+    await fire('dispatch-approved', 5000);
+  } else {
+    await fire('dispatch-approved', 5000);
   }
-  const fired = await Promise.all(jobs);
 
-  // 3. ALL HANDS. Every desk in the org lights up green so Harry watches the
-  //    whole company work the blitz at once. One batched write does it.
-  await logBatch(buildEntries({ scavenged, enriched, drafted }));
+  // 3. ALL HANDS. Every desk lights up green immediately. One batched write.
+  await logBatch(buildEntries({ drafted }));
 
   return {
     statusCode: 200,
@@ -104,10 +89,9 @@ exports.handler = async (event) => {
       requested: shift,
       blitz,
       drafted,
-      scavenged,
-      enriched,
-      note: ops ? (blitz ? ('Scavenged ' + scavenged + ' businesses, found ' + enriched + ' new email contacts, drafted ' + drafted + ' emails into your queue. Approve the batch and they send within the daily cap. The AI sprint (previews + deeper enrichment) also starts on the Mac.') : 'Shift requested; the Mac will run it on its next watcher tick.') : 'Blobs unavailable; only the instant pieces ran.',
-      fired,
+      note: blitz
+        ? (drafted ? ('Drafted ' + drafted + ' emails into your queue. The team keeps scavenging, enriching and drafting every 2 minutes for the rest of the blitz, so the queue climbs toward hundreds.') : 'War room live. The team is scavenging and drafting now; the queue fills over the next few minutes.')
+        : 'Shift requested; the Mac will run it on its next watcher tick.',
     }),
   };
 };

@@ -24,8 +24,9 @@ const F = { build: 499, monthly: 49, previewHours: 24, buildDays: 14, guaranteeD
 // here means "the team does loads", never "we spam".
 const CAP_WARM = 120, CAP_COLD = 300;
 // How many of the hottest cold prospects get a real auto-built preview link
-// in this run. Higher = more "I built you this" emails; each preview is cheap.
-const PREVIEW_CAP = 40;
+// in this run. Each preview is a blob write, so keep this modest to stay inside
+// the function time limit; volume builds across the every-2-min blitz ticks.
+const PREVIEW_CAP = 12;
 const SITE = process.env.SS_SITE || 'https://staticswift.co.uk';
 const slug = s => String(s || 'prospect').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'prospect';
 const isEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e || '').trim());

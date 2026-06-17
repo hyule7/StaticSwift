@@ -57,7 +57,9 @@ exports.handler = async (event) => {
   // combos until we are close to the limit, then stop and return what we found.
   // Frequency (every watcher tick + the 15-min schedule) covers the rest.
   const started = Date.now();
-  const TIME_BUDGET_MS = Number(process.env.SCAVENGE_BUDGET_MS || 22000);
+  // Keep well inside Netlify's ~10s sync-function limit. Breadth comes from
+  // running often (every 2-min blitz tick + the schedule), not one huge run.
+  const TIME_BUDGET_MS = Number(process.env.SCAVENGE_BUDGET_MS || 7000);
 
   const results = [];
   let totalProspects = 0, withEmail = 0;
