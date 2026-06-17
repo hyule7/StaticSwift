@@ -90,6 +90,8 @@ function renderPreview(prospect, facts) {
   const F = facts || {};
   const callHref = f.phone ? `tel:${esc(f.phone)}` : (F.waLink ? `https://wa.me/${esc(String(F.waLink).replace(/[^\d]/g, ''))}` : '#');
   const callLabel = f.phoneDisplay ? 'Call ' + esc(f.phoneDisplay) : 'Get in touch';
+  const waDigits = String(F.waLink || '').replace(/[^\d]/g, '');
+  const waHref = waDigits ? 'https://wa.me/' + waDigits : '#';
   const kw = photoKW(f.trade);
   const seed = hash(f.business + f.town);
   const hero = img(1700, 1100, kw, seed % 90);
@@ -228,13 +230,60 @@ function renderPreview(prospect, facts) {
     </div>
   </section>
 
+  <style>
+    .claimband{background:var(--red);color:#fff;text-align:center}
+    .claimband h2{color:#fff;margin-bottom:10px}
+    .claimband p{color:#fbe8e3;max-width:46ch;margin:0 auto 26px;font-size:17px}
+    .claim-cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+    .btn-claim{background:#fff;color:var(--red);border:0;font-weight:700;padding:16px 30px;border-radius:100px;font-size:16.5px;cursor:pointer;font-family:inherit}
+    .btn-claim:hover{transform:translateY(-2px)}
+    .btn-wa{background:#1f8b47;color:#fff !important;font-weight:700;padding:16px 28px;border-radius:100px;font-size:16.5px}
+    .btn-book{background:transparent;color:#fff !important;border:1.5px solid rgba(255,255,255,.7);font-weight:600;padding:15px 26px;border-radius:100px;font-size:16px;cursor:pointer;font-family:inherit}
+    .ss-modal{position:fixed;inset:0;z-index:9000;display:none;align-items:center;justify-content:center;background:rgba(14,11,7,.55);padding:18px}
+    .ss-modal.open{display:flex}
+    .ss-card{background:var(--cream);color:var(--ink);width:100%;max-width:420px;border-radius:18px;padding:26px 24px;position:relative}
+    .ss-card h3{font-size:24px;margin-bottom:4px}
+    .ss-sub{color:var(--muted);font-size:14px;margin-bottom:16px}
+    .ss-card input{width:100%;box-sizing:border-box;border:1px solid #d8cebd;border-radius:10px;padding:12px;margin-bottom:10px;font:15px/1.4 'Switzer',system-ui,sans-serif;background:#fff;color:var(--ink)}
+    .ss-card input:focus{outline:none;border-color:var(--red)}
+    .ss-card .btn-claim{width:100%;background:var(--ink);color:var(--cream)}
+    .ss-x{position:absolute;top:14px;right:16px;background:none;border:0;font-size:24px;color:var(--muted);cursor:pointer;line-height:1}
+    .ss-note{margin-top:10px;font-size:14px;color:#1f8b47;display:none}
+  </style>
+  <section class="claimband">
+    <div class="wrap reveal">
+      <h2>Like it? Make it yours.</h2>
+      <p>Live within ${esc(F.buildDays || 14)} days, ${esc(F.build || 499)} pounds once, with a ${esc(F.guaranteeDays || 60)}-day lead guarantee. Free to look, no card.</p>
+      <div class="claim-cta">
+        <button class="btn-claim" onclick="ssShow('claim')">Make this mine</button>
+        ${waHref !== '#' ? `<a class="btn-wa" href="${waHref}" target="_blank" rel="noopener">WhatsApp Harry</a>` : ''}
+        <button class="btn-book" onclick="ssShow('booking')">Book a quick call</button>
+      </div>
+    </div>
+  </section>
+
   <div class="ribbon">
     <b>This is a free preview StaticSwift built for ${esc(f.business)}.</b><br>
     Like it? It is yours, live within ${esc(F.buildDays || 14)} days, ${esc(F.build || 499)} pounds once, with a ${esc(F.guaranteeDays || 60)}-day lead guarantee.
-    Reply to Harry${F.email ? ' at ' + esc(F.email) : ''}${F.waDisplay ? ', or WhatsApp ' + esc(F.waDisplay) : ''}.
   </div>
 
-  <div class="stickycall"><a href="${callHref}">${callLabel}</a></div>
+  <div id="ss-modal" class="ss-modal" onclick="if(event.target===this)ssHide()">
+    <div class="ss-card">
+      <button class="ss-x" aria-label="Close" onclick="ssHide()">&times;</button>
+      <h3 id="ss-title">Make this yours</h3>
+      <p class="ss-sub" id="ss-sub">Leave your details and Harry will make it live.</p>
+      <form id="ss-form" onsubmit="return ssSubmit(event)">
+        <input id="ss-name" placeholder="Your name" autocomplete="name">
+        <input id="ss-phone" placeholder="Phone (best for a quick call)" autocomplete="tel">
+        <input id="ss-email" type="email" placeholder="Email" autocomplete="email">
+        <input id="ss-slot" placeholder="Best time to call" style="display:none">
+        <button type="submit" class="btn-claim" id="ss-submit">Send to Harry</button>
+        <div class="ss-note" id="ss-note"></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="stickycall"><a href="#" onclick="ssShow('claim');return false">Make this mine</a></div>
   <script>
     (function(){
       var bar=document.getElementById('bar');
@@ -245,6 +294,32 @@ function renderPreview(prospect, facts) {
         document.querySelectorAll('.reveal').forEach(function(el){io.observe(el);});
       } else { document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('in');}); }
     })();
+    // Claim / booking capture -> lands in the admin Messages tab as a hot lead.
+    var SS_BIZ = ${JSON.stringify(f.business)};
+    var ssKind = 'claim';
+    function ssShow(kind){
+      ssKind = kind;
+      document.getElementById('ss-title').textContent = kind === 'booking' ? 'Book a quick call' : 'Make this yours';
+      document.getElementById('ss-sub').textContent = kind === 'booking' ? 'Leave your number and the best time, Harry will call.' : 'Leave your details and Harry will make it live, usually within the hour.';
+      document.getElementById('ss-slot').style.display = kind === 'booking' ? 'block' : 'none';
+      document.getElementById('ss-submit').textContent = kind === 'booking' ? 'Book my call' : 'Make this mine';
+      document.getElementById('ss-modal').classList.add('open');
+    }
+    function ssHide(){ document.getElementById('ss-modal').classList.remove('open'); }
+    function ssSubmit(e){
+      e.preventDefault();
+      var btn=document.getElementById('ss-submit'), note=document.getElementById('ss-note');
+      var name=document.getElementById('ss-name').value, phone=document.getElementById('ss-phone').value, email=document.getElementById('ss-email').value, slot=document.getElementById('ss-slot').value;
+      if(!email && !phone){ note.style.display='block'; note.style.color='#9C2615'; note.textContent='Please leave a phone or email.'; return false; }
+      btn.disabled=true; btn.textContent='Sending...';
+      fetch('/.netlify/functions/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+        kind:ssKind, name:name, phone:phone, email:email, slot:slot, business:SS_BIZ, previewUrl:location.href, page:location.pathname
+      })}).then(function(r){return r.json();}).then(function(d){
+        if(d&&d.ok){ note.style.display='block'; note.style.color='#1f8b47'; note.textContent=d.message||'Sent. Harry will be in touch shortly.'; btn.textContent='Sent ✓'; }
+        else { note.style.display='block'; note.style.color='#9C2615'; note.textContent=(d&&d.error)||'Something went wrong.'; btn.disabled=false; btn.textContent='Try again'; }
+      }).catch(function(){ note.style.display='block'; note.style.color='#9C2615'; note.textContent='Network error, please WhatsApp instead.'; btn.disabled=false; btn.textContent='Try again'; });
+      return false;
+    }
   </script>
 </body>
 </html>`;

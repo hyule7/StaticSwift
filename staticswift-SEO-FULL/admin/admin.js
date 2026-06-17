@@ -6945,8 +6945,9 @@ function renderMsgList() {
   if (!_msgThreads.length) { list.innerHTML = '<div style="padding:24px;color:var(--muted);font-size:13px">No messages yet. They appear here the moment someone uses "Message me" on the site.</div>'; return; }
   list.innerHTML = _msgThreads.map(function (t) {
     const last = t.messages && t.messages[t.messages.length - 1];
+    const tag = t.kind === 'claim' ? '<span style="color:#9C2615;font-weight:700;font-size:10px">🔥 CLAIM </span>' : t.kind === 'booking' ? '<span style="color:#0b6fa8;font-weight:700;font-size:10px">📞 CALL </span>' : '';
     return '<div onclick="openMsgThread(\'' + t.id + '\')" style="padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;' + (t.id === _msgSel ? 'background:var(--surface2);' : '') + '">' +
-      '<div style="display:flex;justify-content:space-between;gap:8px"><strong style="font-size:14px">' + escapeHTML(t.name || t.email) + (t.unread ? ' <span style="color:#9C2615">●</span>' : '') + '</strong><span style="font-size:11px;color:var(--muted)">' + wfAgo(t.lastAt) + '</span></div>' +
+      '<div style="display:flex;justify-content:space-between;gap:8px"><strong style="font-size:14px">' + tag + escapeHTML(t.name || t.email || t.phone || '') + (t.unread ? ' <span style="color:#9C2615">●</span>' : '') + '</strong><span style="font-size:11px;color:var(--muted)">' + wfAgo(t.lastAt) + '</span></div>' +
       '<div style="font-size:12px;color:var(--muted);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escapeHTML(last ? last.body : '') + '</div></div>';
   }).join('');
 }
@@ -6959,7 +6960,11 @@ async function openMsgThread(id, keepScroll) {
     const us = m.from === 'us';
     return '<div style="display:flex;justify-content:' + (us ? 'flex-end' : 'flex-start') + ';margin:8px 0"><div style="max-width:78%;background:' + (us ? '#0E0B07' : '#fff') + ';color:' + (us ? '#F2EFE7' : '#0E0B07') + ';border:1px solid var(--border);border-radius:14px;padding:10px 14px;font-size:14px;white-space:pre-wrap">' + escapeHTML(m.body) + '<div style="font-size:10px;opacity:.6;margin-top:5px">' + wfAgo(m.at) + '</div></div></div>';
   }).join('');
-  detail.innerHTML = '<div style="padding:18px 20px;border-bottom:1px solid var(--border)"><strong>' + escapeHTML(t.name || '') + '</strong> · <a href="mailto:' + escapeHTML(t.email) + '">' + escapeHTML(t.email) + '</a>' + (t.page ? ' · <span style="color:var(--muted);font-size:12px">from ' + escapeHTML(t.page) + '</span>' : '') + '</div>' +
+  const kindBadge = t.kind === 'claim' ? '<span style="color:#9C2615;font-weight:700">🔥 PREVIEW CLAIMED</span> · ' : t.kind === 'booking' ? '<span style="color:#0b6fa8;font-weight:700">📞 CALL BOOKED</span> · ' : '';
+  const phoneBit = t.phone ? ' · <a href="tel:' + escapeHTML(t.phone) + '">' + escapeHTML(t.phone) + '</a>' : '';
+  const bizBit = t.business ? ' · ' + escapeHTML(t.business) : '';
+  const prevBit = t.previewUrl ? ' · <a href="' + encodeURI(t.previewUrl) + '" target="_blank" rel="noopener">view preview ↗</a>' : '';
+  detail.innerHTML = '<div style="padding:18px 20px;border-bottom:1px solid var(--border)">' + kindBadge + '<strong>' + escapeHTML(t.name || '') + '</strong>' + bizBit + (t.email ? ' · <a href="mailto:' + escapeHTML(t.email) + '">' + escapeHTML(t.email) + '</a>' : '') + phoneBit + prevBit + (t.page ? ' · <span style="color:var(--muted);font-size:12px">from ' + escapeHTML(t.page) + '</span>' : '') + '</div>' +
     '<div style="padding:14px 20px">' + bubbles + '</div>' +
     '<div style="padding:14px 20px;border-top:1px solid var(--border);position:sticky;bottom:0;background:var(--surface)">' +
     '<textarea id="msg-reply" placeholder="Reply (this emails them straight back)..." style="width:100%;box-sizing:border-box;min-height:80px;border:1px solid var(--border);border-radius:10px;padding:10px;font-size:14px;background:#fff;color:#0E0B07"></textarea>' +

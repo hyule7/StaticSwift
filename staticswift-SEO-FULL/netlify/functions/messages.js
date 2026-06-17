@@ -73,25 +73,50 @@ exports.handler = async (event) => {
     return { statusCode: 200, body: JSON.stringify({ ok: true, emailed, emailError }) };
   }
 
-  // ── Public: a visitor sends a message ───────────────────────────────────
+  // ── Public: a visitor sends a message / claims a preview / books a call ──
+  // kind: 'message' (default) | 'claim' (Make this mine) | 'booking' (call).
+  const kind = ['claim', 'booking'].includes(p.kind) ? p.kind : 'message';
   const name = esc(p.name).slice(0, 80) || 'Someone';
   const email = String(p.email || '').trim().slice(0, 120);
-  const message = esc(p.message).slice(0, 4000).trim();
-  if (!message) return { statusCode: 400, body: JSON.stringify({ ok: false, error: 'Please write a message.' }) };
-  if (!isEmail(email)) return { statusCode: 400, body: JSON.stringify({ ok: false, error: 'Please add a valid email so I can reply.' }) };
+  const phone = esc(p.phone).slice(0, 40).trim();
+  const business = esc(p.business).slice(0, 120).trim();
+  const slot = esc(p.slot).slice(0, 80).trim();          // preferred call time (booking)
+  const previewUrl = String(p.previewUrl || '').slice(0, 400);
+  // A claim/booking is high intent: a phone OR email is enough. A message needs email.
+  if (kind === 'message' && !esc(p.message).trim()) return { statusCode: 400, body: JSON.stringify({ ok: false, error: 'Please write a message.' }) };
+  if (!isEmail(email) && !phone) return { statusCode: 400, body: JSON.stringify({ ok: false, error: 'Please leave an email or a phone number so Harry can reach you.' }) };
 
-  // Append to an existing open thread for this email, or start a new one.
-  let th = threads.find(t => (t.email || '').toLowerCase() === email.toLowerCase());
+  const body = kind === 'claim'
+    ? ('YES, I want this website' + (business ? ' for ' + business : '') + '.' + (esc(p.message) ? ' ' + esc(p.message).slice(0, 2000) : ''))
+    : kind === 'booking'
+      ? ('Booking a call' + (slot ? ', best time: ' + slot : '') + '.' + (esc(p.message) ? ' ' + esc(p.message).slice(0, 2000) : ''))
+      : esc(p.message).slice(0, 4000).trim();
+
+  // Match an existing thread by email or phone; else start a new one.
+  const key = (email || phone).toLowerCase();
+  let th = threads.find(t => ((t.email || '').toLowerCase() === key) || (phone && t.phone === phone));
   if (!th) {
-    th = { id: 'm_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name, email, page: esc(p.page).slice(0, 200), createdAt: now, lastAt: now, unread: true, messages: [] };
+    th = { id: 'm_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name, email, phone, business, kind, page: esc(p.page).slice(0, 200), previewUrl, createdAt: now, lastAt: now, unread: true, hot: kind !== 'message', messages: [] };
     threads.unshift(th);
+  } else {
+    if (phone && !th.phone) th.phone = phone;
+    if (business && !th.business) th.business = business;
+    if (previewUrl && !th.previewUrl) th.previewUrl = previewUrl;
+    if (kind !== 'message') { th.hot = true; th.kind = kind; }
   }
-  th.messages.push({ from: 'them', body: message, at: now });
+  th.messages.push({ from: 'them', body, at: now });
   th.lastAt = now; th.unread = true; if (name && name !== 'Someone') th.name = name;
   if (threads.length > 2000) threads.length = 2000;
   await store.setJSON(KEY, threads);
 
-  await notify('New message from ' + name + ' (' + email + ')', message + '\n\nReply in the admin Messages tab.');
+  const label = kind === 'claim' ? 'PREVIEW CLAIMED' : kind === 'booking' ? 'CALL BOOKING' : 'New message';
+  await notify(label + ' from ' + name + (business ? ' (' + business + ')' : '') + (phone ? ' · ' + phone : ''),
+    body + '\n\n' + (email ? 'Email: ' + email + '\n' : '') + (phone ? 'Phone: ' + phone + '\n' : '') + (previewUrl ? 'Preview: ' + previewUrl + '\n' : '') + '\nReply/act in the admin Messages tab.');
 
-  return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ok: true, message: 'Thanks, that is with Harry. He replies by email, usually within the hour during UK working hours.' }) };
+  const thanks = kind === 'claim'
+    ? 'Brilliant. Harry has your details and will call or email shortly to make it live. Usually within the hour in UK working hours.'
+    : kind === 'booking'
+      ? 'Booked. Harry will be in touch to confirm your call. Usually within the hour in UK working hours.'
+      : 'Thanks, that is with Harry. He replies by email, usually within the hour during UK working hours.';
+  return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ok: true, message: thanks }) };
 };
