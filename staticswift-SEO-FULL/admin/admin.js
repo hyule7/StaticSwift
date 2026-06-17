@@ -3576,12 +3576,14 @@ async function loadWorkforce() {
     renderWfQueue({ pending: [] });
     renderWfFeed([]);
     renderWfKill({ global: false });
+    renderBlitzState();
     loadWfCreatives();
     wfBanner('<b>Org chart and creatives are live below. Live activity, shifts and the approval queue need the backend deployed.</b><br>Push the latest commits so the new functions go live, set <code>AGENT_TOKEN</code> in Netlify, then run <code>bash agents/install-autostart.sh</code> once. After that this fills in by itself.', 'warn');
     return;
   }
 
   wfBanner('', 'ok');
+  renderBlitzState();
   loadWfCreatives();
   renderWfShifts(live.shifts || {});
   renderWfQueue(live.queue || {});
@@ -3727,15 +3729,38 @@ function wfToast(msg) {
   t.textContent = msg; t.classList.add('show'); setTimeout(function () { t.classList.remove('show'); }, 2600);
 }
 async function wfStartEveryone() {
-  if (!confirm('BLITZ: send the whole team after a sale right now? Prospects restock, warm leads get chased, previews get built, and the AI sales sprint starts on your Mac. Everything still lands in your approval queue.')) return;
-  wfToast('Blitz on. The team is going after a sale...');
+  if (!confirm('WAR ROOM: put the WHOLE company on it at full effort for the next 2 hours. Every desk works in a loop, every few minutes, until you hit Stop or the time runs out. Sales, SEO, site fixes, analytics, creative, all hands. Everything still lands in your approval queue.')) return;
+  wfToast('War room ON. The whole company is going flat out...');
   try {
+    // 1. Turn on the sustained 2-hour war-room mode (the Mac loops it).
+    await fetch('/.netlify/functions/blitz-mode', { method: 'POST', headers: wfHdr(), body: JSON.stringify({ action: 'start', hours: 2 }) });
+    // 2. Fire the first wave instantly so Harry sees movement now.
     const r = await fetch('/.netlify/functions/trigger-shift', { method: 'POST', headers: wfHdr(), body: JSON.stringify({ shift: 'blitz' }) });
     const d = await r.json().catch(function () { return {}; });
-    wfToast(r.ok ? ('Blitz live: scavenged ' + (d.scavenged || 0) + ', found ' + (d.enriched || 0) + ' contacts, drafted ' + (d.drafted || 0) + ' emails. Approve them below.') : 'Could not trigger (check ADMIN_PASSWORD/deploy).');
-  } catch (_) { wfToast('Could not reach the trigger endpoint. Push + set ADMIN_PASSWORD.'); }
+    wfToast(r.ok ? ('WAR ROOM LIVE for 2h: scavenged ' + (d.scavenged || 0) + ', found ' + (d.enriched || 0) + ' contacts, drafted ' + (d.drafted || 0) + '. The team keeps going every few minutes until you Stop.') : 'Could not trigger (check ADMIN_PASSWORD/deploy).');
+  } catch (_) { wfToast('Could not reach the war-room endpoint. Push + set ADMIN_PASSWORD.'); }
   setTimeout(loadWorkforce, 1500);
-  setTimeout(loadWorkforce, 4000);
+  setTimeout(loadWorkforce, 4500);
+}
+async function wfStopBlitz() {
+  wfToast('Standing the team down...');
+  try { await fetch('/.netlify/functions/blitz-mode', { method: 'POST', headers: wfHdr(), body: JSON.stringify({ action: 'stop' }) }); wfToast('War room off. Drafts already made stay in your queue.'); }
+  catch (_) { wfToast('Could not reach the endpoint.'); }
+  setTimeout(loadWorkforce, 1000);
+}
+async function renderBlitzState() {
+  const el = document.getElementById('wf-blitzbar'); if (!el) return;
+  let m = {};
+  try { const r = await fetch('/.netlify/functions/blitz-mode', { headers: wfHdr() }); if (r.ok) m = await r.json(); } catch (_) {}
+  const go = document.querySelector('.wf-go');
+  if (m && m.active) {
+    el.style.display = 'block';
+    el.innerHTML = '<div class="wf-warroom">⚔️ WAR ROOM ACTIVE · whole company working flat out · <b>' + (m.minsLeft || 0) + ' min left</b> <button onclick="wfStopBlitz()">■ Stop</button></div>';
+    if (go) { go.textContent = '⚔️ War room running…'; go.disabled = true; go.style.opacity = '.6'; }
+  } else {
+    el.style.display = 'none'; el.innerHTML = '';
+    if (go) { go.textContent = '🔥 Blitz — all hands for 2 hours'; go.disabled = false; go.style.opacity = '1'; }
+  }
 }
 async function wfSendBrief() {
   wfToast('Building your brief...');

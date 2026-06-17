@@ -932,3 +932,7 @@ a:hover{color:var(--signal) !important; border-bottom-color:var(--signal) !impor
 #page-seo .st-row .pos{font-variant-numeric:tabular-nums;font-weight:700;color:#9a6b16;white-space:nowrap}
 #page-seo .st-row .imp{color:#6a6256;font-size:11px;white-space:nowrap}
 #page-seo .st-empty{color:#6a6256;font-size:13px;padding:14px 0}
+#page-workforce .wf-warroom{background:#c0341f;color:#fff;border-radius:12px;padding:12px 16px;font-weight:700;font-size:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;animation:wfpulse 2s ease-in-out infinite}
+#page-workforce .wf-warroom button{margin-left:auto;background:#fff;color:#c0341f;border:0;border-radius:100px;padding:8px 16px;font:inherit;font-weight:700;cursor:pointer;min-height:40px}
+@keyframes wfpulse{0%,100%{box-shadow:0 0 0 0 rgba(192,52,31,.4)}50%{box-shadow:0 0 0 6px rgba(192,52,31,0)}}
+@media(prefers-reduced-motion:reduce){#page-workforce .wf-warroom{animation:none}}

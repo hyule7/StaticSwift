@@ -18,7 +18,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/admin/admin.css?v=13">
 <!-- Field-guide theme overlay — loaded LAST so it overrides admin.css surfaces. -->
-<link rel="stylesheet" href="/admin/admin-theme.css?v=6">
+<link rel="stylesheet" href="/admin/admin-theme.css?v=7">
 </head>
 <body>
 
@@ -235,10 +235,11 @@
           <div class="wf-killbar" id="wf-killbar"></div>
         </div>
         <div class="wf-controls">
-          <button class="wf-go" onclick="wfStartEveryone()">🔥 Blitz — get me a sale now</button>
+          <button class="wf-go" onclick="wfStartEveryone()">🔥 Blitz — all hands for 2 hours</button>
           <button class="wf-brief" onclick="wfSendBrief()">✉ Send my brief now</button>
           <button class="ghost" onclick="loadWorkforce()">↻ Refresh</button>
         </div>
+        <div id="wf-blitzbar" style="display:none"></div>
         <div class="wf-shifts" id="wf-shifts"></div>
         <div class="wf-grid">
           <div>
@@ -1248,6 +1249,6 @@
   </div>
 </div>
 
-<script src="/admin/admin.js?v=17" defer></script>
+<script src="/admin/admin.js?v=18" defer></script>
 </body>
 </html>
