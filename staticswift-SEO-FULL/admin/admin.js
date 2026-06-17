@@ -3532,7 +3532,7 @@ function showPage(id, btn) {
    queue actions reuse queue-action. Auto-refreshes every 15s while
    the tab is open.
    ================================================================ */
-let _wfPoll = null, _wfTick = null, _wfOrgData = null, _wfFeedData = null, _wfLive = null;
+let _wfPoll = null, _wfTick = null, _wfOrgData = null, _wfFeedData = null, _wfLive = null, _wfTeam = null;
 // Two clocks: a 5s NETWORK refresh (pulls fresh state) and a 1s LOCAL tick
 // that just re-renders the "ago" timers and live/working dots from the last
 // data, with no request, so the board ticks second by second without hammering
@@ -3540,7 +3540,7 @@ let _wfPoll = null, _wfTick = null, _wfOrgData = null, _wfFeedData = null, _wfLi
 function startWorkforcePoll() {
   stopWorkforcePoll();
   _wfPoll = setInterval(loadWorkforce, 5000);
-  _wfTick = setInterval(function () { if (_wfOrgData) renderWfOrg(_wfOrgData); if (_wfFeedData) renderWfFeed(_wfFeedData); if (_wfLive) renderWfBrief(_wfLive); }, 1000);
+  _wfTick = setInterval(function () { if (_wfOrgData) renderWfOrg(_wfOrgData); if (_wfFeedData) renderWfFeed(_wfFeedData); if (_wfLive) { renderWfBrief(_wfLive); renderWfTeams(_wfLive); } }, 1000);
 }
 function stopWorkforcePoll() { if (_wfPoll) { clearInterval(_wfPoll); _wfPoll = null; } if (_wfTick) { clearInterval(_wfTick); _wfTick = null; } }
 function wfHdr() { return { 'x-admin-password': (typeof ADMIN_PW !== 'undefined' && ADMIN_PW) || sessionStorage.getItem('ss_pw') || '', 'Content-Type': 'application/json' }; }
@@ -3602,6 +3602,7 @@ async function loadWorkforce() {
   wfBanner('', 'ok');
   _wfLive = live;
   renderWfSetup(live.env);
+  renderWfTeams(live);
   renderBlitzState();
   loadWfCreatives();
   renderWfShifts(live.shifts || {});
@@ -3710,8 +3711,8 @@ function wfEdit(id) {
 function wfState(r) {
   if (!r.last || !r.last.at) return 'idle';
   const s = (Date.now() - Date.parse(r.last.at)) / 1000;
-  if (s < 180) return 'work';
-  if (s < 1800) return 'recent';
+  if (s < 360) return 'work';   // heartbeat re-logs every 2 min; 6-min window keeps desks green through a blitz
+  if (s < 3600) return 'recent';
   return 'idle';
 }
 function renderWfOrg(org) {
@@ -3883,6 +3884,77 @@ function renderWfBrief(live) {
     '<div class="wf-kpis">' + kpis + '</div>' +
     '<div class="wf-brief-action">' + action + '</div>' +
     '<div class="wf-brief-lines"><div class="hd">Happening right now</div>' + lines + '</div>';
+}
+
+// ── Teams: a tab per department, each with its people, live work, and a
+// derived issues/resolve list Harry can copy and send to be fixed. ──────────
+function deriveTeamIssues(live) {
+  const env = live.env || {};
+  const q = live.queue || {};
+  const counts = q.counts || {};
+  const kill = q.kill || {};
+  const issues = [];
+  // Env gaps (the usual reason the team looks asleep).
+  if (!env.agentToken) issues.push({ team: 'All', sev: 'block', issue: 'Activity logging is offline, so the board cannot show what anyone is doing.', resolve: 'Set AGENT_TOKEN in Netlify env vars, then redeploy.' });
+  if (!env.smtp) issues.push({ team: 'Operations & Finance', sev: 'block', issue: 'Approved emails cannot be sent.', resolve: 'Set SMTP_PASS in Netlify env vars.' });
+  if (!env.supportSmtp) issues.push({ team: 'Customer Service', sev: 'block', issue: 'The reply loop cannot read the inbox, so inbound replies are not handled.', resolve: 'Set SUPPORT_SMTP_PASS in Netlify env vars.' });
+  if (!env.netlifyToken) issues.push({ team: 'Business Development', sev: 'warn', issue: 'Live preview links will not publish, so cold emails fall back to the plain pitch.', resolve: 'Set NETLIFY_AUTH_TOKEN in Netlify env vars.' });
+  if (!env.openai) issues.push({ team: 'Customer Service', sev: 'info', issue: 'Reply classification is using the rule engine (no AI).', resolve: 'Optional: set OPENAI_API_KEY for sharper triage.' });
+  // Operational signals.
+  if (kill.global) issues.push({ team: 'Operations & Finance', sev: 'block', issue: 'Auto-sending is stopped (kill switch on).', resolve: 'Tap the auto-sending switch at the top of the Workforce tab to resume.' });
+  if (counts.failed) issues.push({ team: 'Operations & Finance', sev: 'warn', issue: counts.failed + ' email(s) failed to send.', resolve: 'Usually an SMTP credential or a bad address; check the dispatcher logs.' });
+  return issues;
+}
+function wfCopyIssues() {
+  const live = _wfLive; if (!live) return;
+  const issues = deriveTeamIssues(live);
+  if (!issues.length) { wfToast('No open issues to copy. Every team is clear.'); return; }
+  const txt = 'StaticSwift workforce issues (' + new Date().toLocaleString('en-GB') + '):\n\n' +
+    issues.map(function (i, n) { return (n + 1) + '. [' + i.team + '] ' + i.issue + '\n   Fix: ' + i.resolve; }).join('\n\n');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(txt).then(function () { wfToast('Copied ' + issues.length + ' issue(s). Paste them to me and I will fix them.'); }, function () { wfToast('Could not copy automatically.'); });
+  } else { wfToast('Clipboard not available in this browser.'); }
+}
+function wfSelectTeam(dept) { _wfTeam = dept; if (_wfLive) renderWfTeams(_wfLive); }
+function renderWfTeams(live) {
+  const tabsEl = document.getElementById('wf-team-tabs'); const detEl = document.getElementById('wf-team-detail');
+  if (!tabsEl || !detEl) return;
+  const org = live.org || [];
+  if (!org.length) { tabsEl.innerHTML = ''; detEl.innerHTML = '<div class="wf-empty">Teams fill in once the backend is logging activity.</div>'; return; }
+  const issues = deriveTeamIssues(live);
+  const lt = document.getElementById('wf-teams-live');
+  if (lt) lt.innerHTML = issues.length ? ('<span style="color:#9C2615;font-weight:700">' + issues.length + ' issue' + (issues.length === 1 ? '' : 's') + ' to fix</span>') : '<span class="wf-livedot"></span>all clear';
+  if (!_wfTeam || (_wfTeam !== 'All' && !org.find(function (d) { return d.dept === _wfTeam; }))) _wfTeam = org[0].dept;
+
+  // Tabs: each dept, with a working count and an issue dot.
+  const issueDepts = {}; issues.forEach(function (i) { issueDepts[i.team] = (issueDepts[i.team] || 0) + 1; });
+  tabsEl.innerHTML = org.map(function (d) {
+    const wn = d.roles.filter(function (r) { return wfState(r) === 'work'; }).length;
+    const hasIssue = issueDepts[d.dept] || issueDepts['All'];
+    return '<button class="wf-teamtab' + (_wfTeam === d.dept ? ' on' : '') + '" onclick="wfSelectTeam(\'' + d.dept.replace(/'/g, "\\'") + '\')">' +
+      wfEsc(d.dept) + ' <span class="n">' + wn + '/' + d.roles.length + '</span>' + (hasIssue ? '<span class="idot"></span>' : '') + '</button>';
+  }).join('');
+
+  // Detail for the selected team.
+  const dept = org.find(function (d) { return d.dept === _wfTeam; }) || org[0];
+  const feed = (live.activity || []).filter(function (a) { return a.dept === dept.dept; }).slice(0, 8);
+  const teamIssues = issues.filter(function (i) { return i.team === dept.dept || i.team === 'All'; });
+  const members = dept.roles.map(function (r) {
+    const st = wfState(r);
+    return '<div class="wf-tm st-' + st + '"><span class="wf-rdot"></span><span class="nm">' + wfEsc(r.name) + '</span>' +
+      '<span class="tk">' + (r.last ? wfEsc(r.last.action) + ' <span class="ago">' + wfAgo(r.last.at) + '</span>' : 'on standby') + '</span></div>';
+  }).join('');
+  const work = feed.length ? feed.map(function (a) { return '<div class="wf-tw"><span class="t">' + wfAgo(a.at) + '</span><span><b>' + wfEsc(a.role) + '</b> ' + wfEsc(a.action) + '</span></div>'; }).join('')
+    : '<div class="wf-empty">No work logged for this team yet.</div>';
+  const issuesHtml = teamIssues.length
+    ? teamIssues.map(function (i) { return '<div class="wf-iss ' + i.sev + '"><div class="q">⚠ ' + wfEsc(i.issue) + '</div><div class="r">Fix: ' + wfEsc(i.resolve) + '</div></div>'; }).join('')
+    : '<div class="wf-allclear">No open issues for this team.</div>';
+  detEl.innerHTML =
+    '<div class="wf-team-cols">' +
+      '<div class="wf-tcol"><div class="hd">People</div>' + members + '</div>' +
+      '<div class="wf-tcol"><div class="hd">Recent work</div>' + work + '</div>' +
+      '<div class="wf-tcol"><div class="hd">Issues to resolve</div>' + issuesHtml + '</div>' +
+    '</div>';
 }
 
 function renderWfFeed(feed) {

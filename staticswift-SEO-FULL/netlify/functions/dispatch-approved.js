@@ -16,7 +16,11 @@ const { createTransporter } = require('./_mailer');
 const { isSuppressed, unsubUrl } = require('./_suppression');
 
 const SENDABLE = new Set(['outreach', 'outreach-followup', 'cs-reply']);
-const DAILY_CAP = Number(process.env.OUTREACH_DAILY_CAP || 30);
+// Daily send cap. Harry asked for the cap removed, so the default is now
+// effectively unlimited; set OUTREACH_DAILY_CAP in Netlify to re-impose a limit.
+// Note: sending hundreds/day from one domain risks the spam folder and a
+// blacklist. The suppression list and the per-lead cadence still always apply.
+const DAILY_CAP = Number(process.env.OUTREACH_DAILY_CAP || 100000);
 
 function ukBusinessHours() {
   const h = Number(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: 'Europe/London' }).format(new Date()));
