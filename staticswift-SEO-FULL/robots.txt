@@ -18,4 +18,20 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
+# ChatGPT Search (live citation crawler, separate from GPTBot training)
+User-agent: OAI-SearchBot
+Allow: /
+
+# Google AI Overviews / Gemini grounding
+User-agent: Google-Extended
+Allow: /
+
+# Common Crawl (feeds many open LLMs)
+User-agent: CCBot
+Allow: /
+
+# Apple Intelligence
+User-agent: Applebot-Extended
+Allow: /
+
 Sitemap: https://staticswift.co.uk/sitemap-index.xml
