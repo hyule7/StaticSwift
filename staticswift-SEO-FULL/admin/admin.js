@@ -298,10 +298,10 @@ function renderDashboard() {
     (c.invoiceSentAt && new Date(c.invoiceSentAt).getTime() >= last30) ||
     (c.paid && c.paidAt && new Date(c.paidAt).getTime() >= last30)
   );
-  const collected = paidLast30.reduce((s, c) => s + (c.amount || (c.package === 'advanced' ? 299 : 149)), 0);
-  const invoicedSum = invoicedLast30.reduce((s, c) => s + (c.amount || (c.package === 'advanced' ? 299 : 149)), 0);
+  const collected = paidLast30.reduce((s, c) => s + (c.amount || (c.package === 'advanced' || c.package === 'pro' ? 999 : 499)), 0);
+  const invoicedSum = invoicedLast30.reduce((s, c) => s + (c.amount || (c.package === 'advanced' || c.package === 'pro' ? 999 : 499)), 0);
   const outstanding = allClients.filter(c => c.stage === 'invoice-sent' && !c.paid)
-    .reduce((s, c) => s + (c.amount || (c.package === 'advanced' ? 299 : 149)), 0);
+    .reduce((s, c) => s + (c.amount || (c.package === 'advanced' || c.package === 'pro' ? 999 : 499)), 0);
 
   setText('rev-collected', '£' + collected);
   setText('rev-invoiced', '£' + invoicedSum);
@@ -313,7 +313,7 @@ function renderDashboard() {
 
   // Topbar month total
   const paidMonth = allClients.filter(c => c.paid && c.paidAt && new Date(c.paidAt).getTime() >= monthStart)
-    .reduce((s, c) => s + (c.amount || 149), 0);
+    .reduce((s, c) => s + (c.amount || 499), 0);
   setText('month-revenue', '£' + paidMonth + ' this month');
   setText('dash-meta', allClients.length + ' clients · ' + paidMonth + ' GBP this month');
 
@@ -666,8 +666,8 @@ function ssShowInvoiceModal(c) {
 
   const adv = !isBlank && c.package === 'advanced';
   const hosting = !isBlank && c.hosting_addon === 'yes';
-  const base = adv ? 299 : 149;
-  const hostingAmt = hosting ? 29 : 0;
+  const base = adv ? 999 : 499;
+  const hostingAmt = 0;
   const total = base + hostingAmt;
   const email = (!isBlank && c.delivery_email) || '';
   const bizName = !isBlank ? (c.business_name || c.name || 'Client') : 'New invoice';
@@ -727,14 +727,14 @@ function ssShowInvoiceModal(c) {
         <div class="ssim-field">
           <label for="ssim-pkg">Package</label>
           <select id="ssim-pkg" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);color:#f0f2f8;font-family:inherit;font-size:14px;padding:11px 14px;border-radius:10px;outline:none">
-            <option value="starter">Starter — £149</option>
-            <option value="advanced">Advanced — £299</option>
+            <option value="starter">Starter — £499</option>
+            <option value="advanced">Pro — £999</option>
             <option value="custom">Custom amount</option>
           </select>
         </div>
         <div class="ssim-field" id="ssim-customWrap" style="display:none">
           <label for="ssim-customAmt">Custom amount (£)</label>
-          <input type="number" id="ssim-customAmt" min="0" step="1" placeholder="149" value="149">
+          <input type="number" id="ssim-customAmt" min="0" step="1" placeholder="499" value="499">
         </div>
         <label style="display:flex;align-items:center;gap:8px;color:#8890a8;font-size:13px;margin-bottom:18px;cursor:pointer">
           <input type="checkbox" id="ssim-hosting" style="accent-color:#00c6ff"> Include hosting upload (+£29)
@@ -825,10 +825,10 @@ function ssShowInvoiceModal(c) {
         // accepts invoiceHtml + toEmail with no client lookup required).
         const pkgVal = wrap.querySelector('#ssim-pkg').value;
         const hostingOn = wrap.querySelector('#ssim-hosting').checked;
-        let lineAmt = 149, lineDesc = 'Starter Website Design';
+        let lineAmt = 499, lineDesc = 'Website build (Starter)';
         if (pkgVal === 'advanced') { lineAmt = 299; lineDesc = 'Advanced Website Design'; }
         else if (pkgVal === 'custom') { lineAmt = parseFloat(wrap.querySelector('#ssim-customAmt').value) || 0; lineDesc = 'Website Design'; }
-        const totalAmt = lineAmt + (hostingOn ? 29 : 0);
+        const totalAmt = lineAmt + (0);
         const toName = wrap.querySelector('#ssim-toName').value.trim() || 'Customer';
         const invNumStr = 'SS-' + new Date().getFullYear() + '-' + String(Math.floor(Date.now()/1000) % 10000).padStart(4,'0');
         const invoiceHtml = `<!doctype html><html><body style="margin:0;padding:0;background:#f4f1ea;font-family:Arial,Helvetica,sans-serif;color:#0a0a0a"><table cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#f4f1ea"><tr><td align="center" style="padding:32px 14px"><table cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 12px 36px rgba(0,0,0,.06)"><tr><td style="padding:30px 36px 8px"><div style="font-size:20px;font-weight:800">StaticSwift</div><div style="font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#b08a3e;margin-top:18px">Invoice ${invNumStr}</div><h1 style="font-family:Georgia,serif;font-size:24px;line-height:1.2;margin:8px 0 14px;font-weight:500">Hi ${escapeHTML(toName.split(/\s+/)[0])},</h1><p style="font-size:15px;line-height:1.65;color:#3a3a3a;margin:0 0 18px">Invoice attached. Bank transfer (or card on request) and we're sorted.</p></td></tr><tr><td style="padding:0 36px 12px"><table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;font-size:14px"><tr style="background:#faf8f2"><td style="padding:12px 14px;border:1px solid #ece6d6">${escapeHTML(lineDesc)}</td><td style="padding:12px 14px;border:1px solid #ece6d6;text-align:right">£${lineAmt}</td></tr>${hostingOn ? `<tr><td style="padding:12px 14px;border:1px solid #ece6d6">Hosting upload service</td><td style="padding:12px 14px;border:1px solid #ece6d6;text-align:right">£29</td></tr>` : ''}<tr style="background:#0a0a0a;color:#fff;font-weight:700"><td style="padding:14px;border:1px solid #0a0a0a">Total due</td><td style="padding:14px;border:1px solid #0a0a0a;text-align:right;font-size:18px">£${totalAmt}</td></tr></table></td></tr><tr><td style="padding:18px 36px 26px"><div style="background:#faf8f2;border:1px solid #ece6d6;border-radius:10px;padding:18px 20px;font-size:13.5px;line-height:1.7"><strong>Bank transfer</strong><br>Beneficiary: Harry Yule<br>Sort code: 04-00-75<br>Account: 98518224<br>Reference: ${invNumStr}<br>Bank: Revolut Ltd</div></td></tr><tr><td style="padding:20px 36px 30px;border-top:1px solid #eee;text-align:center;font-size:12px;color:#999">Harry &middot; StaticSwift &middot; <a href="https://staticswift.co.uk" style="color:#b08a3e;text-decoration:none">staticswift.co.uk</a></td></tr></table></td></tr></table></body></html>`;
@@ -945,7 +945,7 @@ function ssShowInvoiceClientPicker(clients) {
   const rows = clients.slice(0, 30).map(c => {
     const adv = c.package === 'advanced';
     const hosting = c.hosting_addon === 'yes';
-    const total = (adv ? 299 : 149) + (hosting ? 29 : 0);
+    const total = (adv ? 999 : 499) + 0;
     return `
       <button class="ssp-row" data-id="${escapeAttr(c.clientId)}">
         <div class="ssp-row-l">
@@ -1049,7 +1049,7 @@ function exportLeadsCSV() {
       c.business_name || '', c.name || '', c.delivery_email || '', c.phone || '',
       c.business_type || '', c.location || '', c.source || '',
       c.package || '', c.stage || '',
-      c.amount || (c.package === 'advanced' ? 299 : 149),
+      c.amount || (c.package === 'advanced' || c.package === 'pro' ? 999 : 499),
       c.paid ? 'yes' : 'no',
       c.createdAt || ''
     ]);
@@ -1086,7 +1086,7 @@ function renderPipeline() {
 function renderCard(c) {
   const days = Math.floor((Date.now() - new Date(c.createdAt).getTime()) / 86400000);
   const urgentClass = days >= 3 && ['preview-sent','invoice-sent'].includes(c.stage) ? 'urgent' : days >= 2 ? 'warn' : '';
-  const amount = (c.package === 'advanced' ? 299 : 149) + (c.hosting_addon === 'yes' ? 29 : 0);
+  const amount = (c.package === 'advanced' || c.package === 'pro' ? 999 : 499) + 0;
   const src = c.source === 'intake-form' ? 'form' : 'manual';
   return `<div class="pipeline-card ${urgentClass}" onclick="openClient('${c.clientId}')">
     <div class="card-name">${escapeHTML(c.name || '—')}</div>
@@ -1132,7 +1132,7 @@ function openClient(id) {
   if (replyMsg) replyMsg.style.display = 'none';
 
   document.getElementById('panel-title').textContent = c.business_name || c.name || 'Client';
-  document.getElementById('panel-subtitle').textContent = `${c.package === 'advanced' ? 'Advanced £299' : 'Starter £149'} — ${STAGE_LABELS[c.stage] || c.stage}`;
+  document.getElementById('panel-subtitle').textContent = `£${c.amount || (c.package === 'advanced' || c.package === 'pro' ? 999 : 499)} · ${STAGE_LABELS[c.stage] || c.stage}`;
 
   const waNum = (c.whatsapp || c.wa || c.phone || '').replace(/\D/g, '').replace(/^0/, '44');
   const waBase = waNum ? `https://wa.me/${waNum}?text=` : null;
@@ -1545,7 +1545,7 @@ async function panelAction(type) {
   }
   if (type === 'paid') {
     if (confirm('Mark ' + c.business_name + ' as paid?')) {
-      const amount = (c.package === 'advanced' ? 299 : 149) + (c.hosting_addon === 'yes' ? 29 : 0);
+      const amount = (c.package === 'advanced' || c.package === 'pro' ? 999 : 499) + 0;
       let portalUUID = c.portalUUID;
       if (!portalUUID) portalUUID = makeUUID('portal');
       const portalUrl = 'https://staticswift.co.uk/client?uuid=' + portalUUID;
@@ -1696,7 +1696,7 @@ async function saveNewOrder() {
     special_requests: document.getElementById('no-requests').value,
     notes: document.getElementById('no-notes').value,
     package: pkg, hosting_addon: hosting,
-    amount: (pkg === 'advanced' ? 299 : 149) + (hosting === 'yes' ? 29 : 0),
+    amount: (pkg === 'advanced' || pkg === 'pro' ? 999 : 499) + 0,
     stage: 'new-lead', source: 'admin-manual',
   };
   client.claudePrompt = generatePrompt(client);
@@ -1966,7 +1966,7 @@ function generatePrompt(c) {
 
 You are a world-class creative director and frontend engineer.
 Build a complete single-file HTML website for ${c.business_name || '[BUSINESS]'}, a ${c.business_type || '[TYPE]'} based in ${c.location || '[LOCATION]'}.
-Tier: ${pkg ? 'Advanced (multi-section, gallery, testimonials, rich animations). Worth £299.' : 'Starter (clean single page). Worth £149.'}
+Tier: ${pkg ? 'Advanced (multi-section, gallery, testimonials, rich animations). Worth £999.' : 'Starter (clean single page). Worth £499.'}
 
 === CLIENT ===
 Owner: ${c.name || '—'}
@@ -2754,15 +2754,15 @@ let selectedProspectIdx = null;
 
 const OUTREACH_TEMPLATES = [
   { name: '🚫 No Website', subject: 'Quick idea for {business}',
-    body: `Hi {name},\n\nI came across {business} on Facebook — great reviews and clearly a busy operation.\n\nI noticed you don't have a website yet. When someone Googles "{type} {location}", you're invisible — even if you're the best in the area.\n\nI build clean, professional websites for local businesses from £149, delivered within 24 hours. No monthly fees, you own the files outright.\n\nHappy to put together a free mockup for you with no obligation — just reply and I'll get it done.\n\nHarry\nStaticSwift — staticswift.co.uk` },
+    body: `Hi {name},\n\nI came across {business} on Facebook — great reviews and clearly a busy operation.\n\nI noticed you don't have a website yet. When someone Googles "{type} {location}", you're invisible — even if you're the best in the area.\n\nI build clean, professional websites for local businesses free to preview, then £499 once, with a free working preview in 24 hours. You own the files, you own the files outright.\n\nHappy to put together a free mockup for you with no obligation — just reply and I'll get it done.\n\nHarry\nStaticSwift — staticswift.co.uk` },
   { name: '🔄 Outdated Site', subject: 'Quick idea for {business}',
-    body: `Hi {name},\n\nI came across {business} online — I build websites for local businesses and noticed yours could do with a refresh.\n\nA modern, fast site helps you rank on Google and gives customers confidence before they call. From £149, delivered in 24 hours, you own the files.\n\nHappy to show you a free mockup — just reply and I'll put one together.\n\nHarry\nStaticSwift — staticswift.co.uk` },
+    body: `Hi {name},\n\nI came across {business} online — I build websites for local businesses and noticed yours could do with a refresh.\n\nA modern, fast site helps you rank on Google and gives customers confidence before they call. From £499, with a free working preview in 24 hours, you own the files.\n\nHappy to show you a free mockup — just reply and I'll put one together.\n\nHarry\nStaticSwift — staticswift.co.uk` },
   { name: '📲 Facebook Only', subject: 'Free mockup for {business}',
-    body: `Hi {name},\n\nI found {business} on Facebook — you've clearly got a great reputation locally.\n\nThe problem is, Facebook doesn't show up when people Google "{type} near me". A proper website fixes that overnight.\n\nI build professional sites from £149, delivered in 24 hours. No monthly fees, no lock-in — you own everything.\n\nI'll build you a free mockup so you can see exactly what it would look like before paying anything. Just reply with a yes.\n\nHarry\nStaticSwift — staticswift.co.uk` },
+    body: `Hi {name},\n\nI found {business} on Facebook — you've clearly got a great reputation locally.\n\nThe problem is, Facebook doesn't show up when people Google "{type} near me". A proper website fixes that overnight.\n\nI build professional sites free to preview, then £499 once, with a free working preview in 24 hours. You own the files, no lock-in — you own everything.\n\nI'll build you a free mockup so you can see exactly what it would look like before paying anything. Just reply with a yes.\n\nHarry\nStaticSwift — staticswift.co.uk` },
   { name: '🔁 Follow-Up', subject: 'Following up — {business}',
-    body: `Hi {name},\n\nJust following up on my earlier message about a website for {business}.\n\nIf the timing's not right, no worries at all — but if you're open to it I'd love to show you what I can put together. It only takes 24 hours and starts at £149.\n\nHarry\nStaticSwift — staticswift.co.uk` },
+    body: `Hi {name},\n\nJust following up on my earlier message about a website for {business}.\n\nIf the timing's not right, no worries at all — but if you're open to it I'd love to show you what I can put together. You get a free working preview in 24 hours, then £499 once if you keep it.\n\nHarry\nStaticSwift — staticswift.co.uk` },
   { name: '🏆 Trades Special', subject: 'More jobs from Google — {business}',
-    body: `Hi {name},\n\nI work with tradespeople across the UK who are missing out on Google enquiries because they don't have a website.\n\nFor {business}, a simple professional site would mean that when someone in {location} Googles "{type}", you actually show up.\n\n£149 one-off, delivered in 24 hours, no monthly fees. I'll do a free mockup first so you can see it before committing.\n\nInteresting?\n\nHarry\nStaticSwift — staticswift.co.uk` },
+    body: `Hi {name},\n\nI work with tradespeople across the UK who are missing out on Google enquiries because they don't have a website.\n\nFor {business}, a simple professional site would mean that when someone in {location} Googles "{type}", you actually show up.\n\n£499 once, with a free working preview in 24 hours. I'll do a free mockup first so you can see it before committing.\n\nInteresting?\n\nHarry\nStaticSwift — staticswift.co.uk` },
 ];
 
 function updateOutreachStats() {
@@ -3842,10 +3842,22 @@ async function renderBlitzState() {
     el.style.display = 'block';
     el.innerHTML = '<div class="wf-warroom">⚔️ WAR ROOM ACTIVE · whole company working flat out · <b>' + (m.minsLeft || 0) + ' min left</b> <button onclick="wfStopBlitz()">■ Stop</button></div>';
     if (go) { go.textContent = '⚔️ War room running…'; go.disabled = true; go.style.opacity = '.6'; }
+    wfKeepAlive(); // drive the pipeline ourselves so it never stalls while the tab is open
   } else {
     el.style.display = 'none'; el.innerHTML = '';
     if (go) { go.textContent = '🔥 Blitz · all hands for 2 hours'; go.disabled = false; go.style.opacity = '1'; }
   }
+}
+// Drive the blitz pipeline from the browser so it never stalls after one pass.
+// The scheduled heartbeat can be flaky on the host; this guarantees that while
+// the Workforce tab is open during a war room, the no-AI stack (scavenge ->
+// enrich -> draft -> dispatch) keeps running and hunting new prospects. Admin-
+// authenticated, throttled to every 90s so it never piles up.
+let _wfKeepAt = 0;
+function wfKeepAlive() {
+  if (Date.now() - _wfKeepAt < 90000) return;
+  _wfKeepAt = Date.now();
+  fetch('/.netlify/functions/cron-blitz-tick', { method: 'POST', headers: wfHdr() }).catch(function () {});
 }
 async function wfSendBrief() {
   wfToast('Building your brief...');
@@ -4126,7 +4138,7 @@ const TEMPLATES = {
 
 Saw your site. One thing jumped out at me — {observation}.
 
-I build fast hand-coded sites for UK trades (£149 flat, live in 24h, no payment until you love it). Happy to mock up a free preview if you're curious — no email needed, just reply "yes" and your address.
+I build fast hand-coded sites for UK trades (£499 once, free preview in 24h, no payment until you love it). Happy to mock up a free preview if you're curious — no email needed, just reply "yes" and your address.
 
 Either way, hope business is busy.
 
@@ -4143,7 +4155,7 @@ Quick honest one — opened {website} on my phone yesterday. Two things you'd pr
 
 {issuesBullets}
 
-I rebuild sites like yours from scratch in 24 hours, £149 flat, no payment until you approve the preview. If you'd rather see what I make than read about it: staticswift.co.uk
+I rebuild sites like yours from scratch in 24 hours, £499 once, no payment until you approve the preview. If you'd rather see what I make than read about it: staticswift.co.uk
 
 If now's not the time, no worries — just reply STOP and I'll go quiet.
 
@@ -4160,7 +4172,7 @@ I'm Harry — I build hand-coded websites for UK small businesses out of Manches
 
 Honest, one-line observation: {observation}.
 
-If you ever want to replace it, I do flat-fee sites (£149 starter, £299 advanced) with a working preview in 24 hours — no payment until you love it. I'm not asking you to buy anything today; just wanted to put my name in your inbox in case you've been thinking about it.
+If you ever want to replace it, I do flat-fee sites (£499 once) with a working preview in 24 hours — no payment until you love it. I'm not asking you to buy anything today; just wanted to put my name in your inbox in case you've been thinking about it.
 
 If you'd rather see what I build than read about it: https://staticswift.co.uk
 
@@ -4171,7 +4183,7 @@ Harry`,
     subject: 'New website for {biz}?',
     body: `Hi {nameOrThere},
 
-I'm Harry — I build websites for UK trades out of Manchester. Flat fee (£149 starter, £299 advanced), live in 24 hours, no payment until you love it.
+I'm Harry — I build websites for UK trades out of Manchester. Flat fee (£499 once), with a free preview in 24 hours, no payment until you love it.
 
 If {biz} is due a new site — or doesn't have one yet — I'd love the chance to build you a free preview. No commitment, no card. You either love it and pay, or walk away.
 
@@ -4210,7 +4222,7 @@ I had a quick look at {website} and noticed:
 
 {issuesBullets}
 
-I build hand-coded sites that fix all three by default — £149 for a one-pager, £299 for an advanced site, live in 24 hours, no payment until you love it.
+I build hand-coded sites that fix all three by default — £499 once, with a free preview in 24 hours, no payment until you love it.
 
 If you'd like a free preview of what a new {biz} site could look like, just hit reply with "yes please" and your business address.
 
@@ -4226,7 +4238,7 @@ Harry`,
 
 I'm a UK web designer and I'd genuinely like to make you a free mockup of what {biz}'s website could look like — no commitment, no pitch.
 
-Why I'm offering this: I'd rather show you what I make than tell you. If you like it, it's £149 to build properly. If you don't, you keep the mockup as inspiration.
+Why I'm offering this: I'd rather show you what I make than tell you. If you like it, it's £499 to build properly. If you don't, you keep the mockup as inspiration.
 
 Just hit reply with your address (or just "yes" — I'll grab the details from {website}).
 
@@ -4241,7 +4253,7 @@ P.S. Turnaround is normally 24 hours.`,
 
 What's the one thing about your current site that bothers you most?
 
-Reason: I rebuild sites for UK trades — £149, 24 hours, no payment until you love it — and I'd rather fix the thing that actually annoys you than guess.
+Reason: I rebuild sites for UK trades — £499, 24 hours, no payment until you love it — and I'd rather fix the thing that actually annoys you than guess.
 
 If now's not the time, reply STOP and I'll vanish.
 
@@ -4253,7 +4265,7 @@ Harry · Manchester
     subject: 'how a local barber tripled bookings',
     body: `Hi {nameOrThere},
 
-A barber in Manchester ran a Facebook page only — no website. I built him a £149 hand-coded site over a weekend. Eight months later: triple the bookings, 4.9 on Google with 187 reviews, indexes #1 for "barber northern quarter".
+Most trades I build for were invisible on Google before, running off a Facebook page. A fast hand-coded site changes how customers find you and judge you before they call. I would rather show you a free preview of yours than make claims about anyone else.
 
 That site is at staticswift.co.uk/example-fade-and-blade if you want to see it.
 
@@ -4270,7 +4282,7 @@ Harry`,
 
 I'll close the loop on this — totally fine if it's not the right time.
 
-Just wanted to say: if at any point you want a free preview of what a new {biz} site could look like, my offer still stands. £149 if you love it, walk away if you don't.
+Just wanted to say: if at any point you want a free preview of what a new {biz} site could look like, my offer still stands. £499 if you love it, walk away if you don't.
 
 Hope business stays busy either way.
 
@@ -4291,7 +4303,7 @@ const SUBJECT_VARIANTS = {
   'post-analysis': ['{biz} — three fixes', 'a real audit of {biz}', '{biz}\'s site, honestly'],
   'free-preview': ['free mockup for {biz}?', 'showing > telling', 'no-strings preview for {biz}'],
   'specific-cta': ['a question about {biz}', 'one question, {biz}', 'quick one for {nameOrThere}'],
-  'social-proof': ['how a local barber tripled bookings', 'a £149 case study', '{biz} could do this too'],
+  'social-proof': ['how a local barber tripled bookings', 'a real case study', '{biz} could do this too'],
   'final-bump': ['closing the loop on {biz}', 'last one, promise', 'archiving — unless?'],
 };
 function pickSubjectVariant(prospectId, tmplKey) {
