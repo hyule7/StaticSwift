@@ -59,23 +59,25 @@ exports.handler = async (event) => {
   // in parallel; rotating keeps each tick fast AND the data consistent. Over a
   // few minutes the full pipeline cycles, and the queue climbs into the
   // hundreds across the window instead of stopping after one round.
+  // Two-phase rotation so the team HUNTS hard (finding prospects is the
+  // bottleneck) and still drafts+sends regularly. Each phase pairs two bounded
+  // calls that comfortably fit the ~10s limit. Finding new prospects happens on
+  // 2 of every 3 ticks; drafting+sending on 1 of 3.
   const minute = Math.floor(Date.now() / 60000);
-  const stage = minute % 3;
+  const phase = minute % 3;
   const counts = {};
-  if (stage === 0) {
-    // Discover: hunt fresh businesses with weak/no websites + contacts.
-    const sc = await fire('blitz-scavenge', 8500);
-    counts.scavenged = sc.found || 0;
-  } else if (stage === 1) {
-    // Enrich: turn discovered sites into MX-verified emailable prospects.
-    const en = await fire('contact-enrich', 8500);
-    counts.enriched = en.found || 0;
-  } else {
-    // Draft + send: push new prospects into the queue, handle replies, dispatch.
-    const pu = await fire('blitz-push', 8500);
+  if (phase === 2) {
+    // Draft from the pool + send.
+    const pu = await fire('blitz-push', 6500);
     counts.drafted = pu.drafted || 0; counts.queued = pu.drafted || 0;
-    await fire('dispatch-approved', 6000);
-    fire('reply-loop', 1); // best-effort kick; reply-loop also runs on its own 15-min schedule
+    await fire('dispatch-approved', 3000);
+  } else {
+    // HUNT: discover fresh businesses, then immediately enrich them into
+    // emailable prospects so the pool keeps growing every cycle.
+    const sc = await fire('blitz-scavenge', 4000);
+    counts.scavenged = sc.found || 0;
+    const en = await fire('contact-enrich', 4000);
+    counts.enriched = en.found || 0;
   }
 
   // Every tick: keep all desks green and show the running counts (fast).
