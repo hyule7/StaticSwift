@@ -20,7 +20,7 @@ const WA = '07502 731 799';
 const isEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(e || '').trim());
 const first = n => (n && String(n).trim().split(/\s+/)[0]) || 'there';
 // Business types that make good referrers (they have trade clients to refer).
-const REFERRER = /account|bookkeep|market|consult|coach|advisor|adviser|supplier|wholesale|merchant|insur|mortgage|solicitor|finance|agency|signage|print|van|tool/i;
+const REFERRER = /account|bookkeep|market|consult|coach|advisor|adviser|supplier|wholesale|merchant|insur|mortgage|solicitor|finance|agency|signage|print|van|tool|photograph|videograph|content|creator|influenc|media|blog|social|studio/i;
 
 function pitch(p) {
   const biz = p.companyName || p.bizname || p.name || 'your business';
@@ -35,7 +35,7 @@ I am Harry at StaticSwift. I hand-code websites for UK tradespeople: free workin
 
 You already work with the exact people I build for. So here is a straight offer: introduce me to a tradesperson who needs a website, and if they go live I pay you ${FEE} pounds. No cost to you, no lock-in, no catch. You just make the introduction and I do the rest.
 
-Plenty of accountants, suppliers and coaches are quietly earning this way. If it is of interest, reply and I will set you up with a simple referral link, or we can keep it as easy as you forwarding my details.
+Plenty of accountants, suppliers and coaches are quietly earning this way. Set yourself up in 60 seconds and get your own referral link and dashboard here: ${SITE}/partners/ . Or just reply and I will sort it for you.
 
 Harry
 StaticSwift, Manchester

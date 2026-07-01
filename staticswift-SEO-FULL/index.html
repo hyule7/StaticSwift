@@ -2078,6 +2078,16 @@ window.sqContact = async (e) => {
   }
   // Deep-link: staticswift.co.uk/#message opens the widget (used in outreach footers).
   if(location.hash==='#message'){document.getElementById('ssm-modal').classList.add('open');}
+  // Partner referral capture: ?ref=CODE cookies the code (90 days) and records a click.
+  (function(){
+    try{
+      var ref=new URLSearchParams(location.search).get('ref');
+      if(ref){ ref=ref.replace(/[^a-z0-9]/gi,'').slice(0,40);
+        document.cookie='ss_ref='+ref+';path=/;max-age='+(90*86400)+';samesite=lax';
+        fetch('/.netlify/functions/partners',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'click',code:ref})}).catch(function(){});
+      }
+    }catch(e){}
+  })();
 </script>
 </body>
 </html>

@@ -79,6 +79,9 @@
     <button class="nav-tab" data-page="messages" onclick="showPage('messages',this);loadMessages()">
       <span class="ico">💬</span><span>Messages <span id="nav-count-messages" class="nav-count"></span></span>
     </button>
+    <button class="nav-tab" data-page="partners" onclick="showPage('partners',this);loadPartners()">
+      <span class="ico">🤝</span><span>Partners <span id="nav-count-partners" class="nav-count"></span></span>
+    </button>
 
     <div class="sidebar-section">The Workforce</div>
     <button class="nav-tab" data-page="workforce" onclick="showPage('workforce',this)">
@@ -704,6 +707,19 @@
       </div>
     </div>
 
+    <!-- PARTNERS (commission-only affiliate programme) -->
+    <div class="page" id="page-partners">
+      <div class="page-header">
+        <h1 class="page-title">Partners</h1>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span id="ptr-meta" style="color:var(--muted);font-size:13px"></span>
+          <button class="btn-primary" style="font-size:13px;padding:9px 16px" onclick="loadPartners()">↻ Refresh</button>
+        </div>
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin:-6px 0 14px">People who sign up at <a href="https://staticswift.co.uk/partners/" target="_blank" style="color:var(--cyan)">staticswift.co.uk/partners</a>. Credit a referral when a client they sent goes live; mark it paid once you have paid them. Replies email the partner.</p>
+      <div id="ptr-list"><div class="dash-empty">Loading…</div></div>
+    </div>
+
     <!-- OUTREACH -->
     <div class="page" id="page-outreach">
       <div class="page-header">
@@ -1290,6 +1306,6 @@
   </div>
 </div>
 
-<script src="/admin/admin.js?v=28" defer></script>
+<script src="/admin/admin.js?v=29" defer></script>
 </body>
 </html>

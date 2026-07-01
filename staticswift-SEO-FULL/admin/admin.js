@@ -3525,6 +3525,7 @@ function showPage(id, btn) {
   if (id === 'backlinks') renderDirectories();
   if (id === 'workforce') { loadWorkforce(); startWorkforcePoll(); } else { stopWorkforcePoll(); }
   if (id === 'messages') { loadMessages(); startMsgPoll(); } else { stopMsgPoll(); }
+  if (id === 'partners') { loadPartners(); }
 }
 
 /* ================================================================
@@ -7029,3 +7030,45 @@ async function sendMsgReply(id) {
   } catch (_) { if (btn) { btn.disabled = false; btn.textContent = 'Send reply & email'; } }
 }
 ['loadMessages','openMsgThread','sendMsgReply'].forEach(function (fn) { try { window[fn] = eval(fn); } catch (e) {} });
+
+// ── Partners: commission-only affiliate programme admin ─────────────────────
+let _partners = [];
+async function loadPartners() {
+  const el = document.getElementById('ptr-list'); if (!el) return;
+  try {
+    const r = await fetch('/.netlify/functions/partners', { headers: { 'x-admin-password': ADMIN_PW } });
+    if (r.status === 401) { el.innerHTML = '<div class="dash-empty">Session expired. Sign out and back in.</div>'; return; }
+    const d = await r.json(); _partners = d.partners || [];
+    const t = d.totals || {};
+    const meta = document.getElementById('ptr-meta'); if (meta) meta.textContent = (t.partners || 0) + ' partners · ' + (t.clicks || 0) + ' clicks · £' + (t.due || 0) + ' due · £' + (t.paid || 0) + ' paid';
+    const unread = _partners.filter(function (p) { return p.unread; }).length;
+    const nb = document.getElementById('nav-count-partners'); if (nb) nb.textContent = unread ? unread : '';
+    renderPartners();
+  } catch (_) { el.innerHTML = '<div class="dash-empty">Could not load partners (needs NETLIFY_AUTH_TOKEN + deploy).</div>'; }
+}
+function renderPartners() {
+  const el = document.getElementById('ptr-list'); if (!el) return;
+  if (!_partners.length) { el.innerHTML = '<div class="dash-empty">No partners yet. Share staticswift.co.uk/partners or let the recruiter drum some up.</div>'; return; }
+  el.innerHTML = _partners.map(function (p) {
+    const refs = (p.refs || []).map(function (r, i) {
+      const st = r.paid ? 'paid' : r.status;
+      return '<div style="display:flex;gap:8px;align-items:center;font-size:13px;padding:3px 0"><span style="flex:1">' + escapeHTML(r.client || '') + ' · £' + (r.fee || 0) + '</span>' +
+        '<span style="color:' + (st === 'paid' ? 'var(--muted)' : st === 'live' ? '#1f8b47' : '#8a8275') + '">' + st + '</span>' +
+        (st !== 'live' && st !== 'paid' ? '<button class="link-btn" onclick="setRefStatus(\'' + p.id + '\',' + i + ',\'live\')">mark live</button>' : '') +
+        (st === 'live' ? '<button class="link-btn" onclick="setRefStatus(\'' + p.id + '\',' + i + ',\'paid\')">mark paid</button>' : '') + '</div>';
+    }).join('') || '<div style="font-size:12px;color:var(--muted)">No referrals yet.</div>';
+    const msgs = (p.messages || []).slice(-4).map(function (m) { return '<div style="font-size:12px;color:' + (m.from === 'us' ? 'var(--muted)' : 'var(--text)') + ';padding:2px 0">' + (m.from === 'us' ? 'You: ' : escapeHTML(p.name) + ': ') + escapeHTML(m.body) + '</div>'; }).join('');
+    return '<div class="panel" style="margin-bottom:14px">' +
+      '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px"><div><strong>' + escapeHTML(p.name) + '</strong> · <a href="mailto:' + escapeHTML(p.email) + '">' + escapeHTML(p.email) + '</a>' + (p.unread ? ' <span style="color:#9C2615">●</span>' : '') + '<br><span style="font-size:12px;color:var(--muted)">code ' + escapeHTML(p.code) + ' · ' + (p.clicks || 0) + ' clicks · £' + (p.due || 0) + ' due · £' + (p.paid || 0) + ' paid</span></div></div>' +
+      '<div style="margin:10px 0">' + refs + '</div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px"><input id="cr-' + p.id + '" placeholder="Client name they referred" style="flex:1;min-width:160px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:13px"><button class="btn-ghost" style="font-size:13px;padding:8px 14px" onclick="creditReferral(\'' + p.id + '\')">+ Credit referral (live)</button></div>' +
+      (msgs ? '<div style="border-top:1px solid var(--border);padding-top:8px;margin-top:8px">' + msgs + '</div>' : '') +
+      '<div style="display:flex;gap:6px;margin-top:8px"><input id="pr-' + p.id + '" placeholder="Reply to ' + escapeHTML(p.name) + ' (emails them)" style="flex:1;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px;color:var(--text);font-size:13px"><button class="btn-primary" style="font-size:13px;padding:8px 14px" onclick="replyPartner(\'' + p.id + '\')">Send</button></div>' +
+      '</div>';
+  }).join('');
+}
+async function ptrPost(body) { const r = await fetch('/.netlify/functions/partners', { method: 'POST', headers: { 'x-admin-password': ADMIN_PW, 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); return r.json().catch(function () { return {}; }); }
+async function creditReferral(id) { const inp = document.getElementById('cr-' + id); const client = (inp && inp.value || '').trim(); if (!client) return; await ptrPost({ action: 'credit', id: id, client: client, status: 'live' }); loadPartners(); }
+async function setRefStatus(id, idx, status) { await ptrPost({ action: 'setstatus', id: id, refIndex: idx, status: status }); loadPartners(); }
+async function replyPartner(id) { const inp = document.getElementById('pr-' + id); const body = (inp && inp.value || '').trim(); if (!body) return; await ptrPost({ action: 'reply', id: id, body: body }); loadPartners(); }
+['loadPartners','creditReferral','setRefStatus','replyPartner'].forEach(function (fn) { try { window[fn] = eval(fn); } catch (e) {} });

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en-gb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>StaticSwift Partners · Earn for every trade you refer</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=sentient@400,500,700&f[]=switzer@400,500,600&display=swap" rel="stylesheet">
+<style>
+  :root{--cream:#F2EFE7;--ink:#0E0B07;--red:#9C2615;--muted:#6b6358;--line:#e2dccf;--card:#fbf9f4;--green:#1f8b47}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Switzer',system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:'Sentient',Georgia,serif;font-weight:700;line-height:1.1;letter-spacing:-.015em}
+  a{color:var(--red)}
+  .wrap{max-width:760px;margin:0 auto;padding:0 22px}
+  header{padding:22px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+  .brand{font-family:'Sentient',serif;font-weight:700;font-size:19px}
+  .brand span{color:var(--red)}
+  .hero{padding:60px 0 40px}
+  .eyebrow{text-transform:uppercase;letter-spacing:.2em;font-size:12px;color:var(--red);font-weight:700;margin-bottom:16px}
+  .hero h1{font-size:clamp(34px,7vw,54px);margin-bottom:16px;max-width:16ch}
+  .hero p{font-size:19px;color:var(--muted);max-width:44ch;margin-bottom:28px}
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:34px 0}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+  .step b{font-family:'Sentient',serif;display:block;font-size:18px;margin-bottom:4px}
+  .step p{color:var(--muted);font-size:14px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;margin:24px 0}
+  label{display:block;font-size:12px;color:var(--muted);margin:12px 0 4px}
+  input,textarea{width:100%;box-sizing:border-box;border:1px solid #d8cebd;border-radius:10px;padding:12px;font:15px/1.4 'Switzer',system-ui,sans-serif;background:#fff;color:var(--ink)}
+  input:focus,textarea:focus{outline:none;border-color:var(--red)}
+  .btn{background:var(--ink);color:var(--cream);border:0;border-radius:100px;padding:14px 26px;font:600 16px/1 'Switzer',system-ui,sans-serif;cursor:pointer;margin-top:14px}
+  .btn:hover{background:var(--red)}
+  .btn.sec{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+  .tabs{display:flex;gap:8px;margin-bottom:6px}
+  .tabs button{background:none;border:0;font:600 14px/1 'Switzer';color:var(--muted);cursor:pointer;padding:6px 0;margin-right:16px;border-bottom:2px solid transparent}
+  .tabs button.on{color:var(--ink);border-color:var(--red)}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:8px 0 20px}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px}
+  .kpi b{font-family:'Sentient',serif;font-size:26px;display:block}
+  .kpi span{font-size:12px;color:var(--muted)}
+  .linkbox{display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px;font-size:14px;word-break:break-all}
+  .reftable{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+  .reftable th,.reftable td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+  .pill{font-size:11px;font-weight:700;padding:2px 8px;border-radius:100px}
+  .pill.live{background:rgba(31,139,71,.15);color:var(--green)}
+  .pill.pending{background:rgba(106,98,86,.12);color:var(--muted)}
+  .pill.paid{background:rgba(14,11,7,.85);color:#fff}
+  .msgs{max-height:260px;overflow:auto;margin:8px 0}
+  .msg{display:flex;margin:6px 0}
+  .msg .b{max-width:80%;border:1px solid var(--line);border-radius:12px;padding:9px 13px;font-size:14px;white-space:pre-wrap}
+  .msg.us{justify-content:flex-end}.msg.us .b{background:var(--ink);color:var(--cream)}
+  .msg.them .b{background:#fff}
+  .note{font-size:14px;margin-top:10px;display:none}
+  .muted{color:var(--muted);font-size:13px}
+  footer{padding:40px 0;color:var(--muted);font-size:13px;text-align:center}
+</style>
+</head>
+<body>
+<header><div class="brand">Static<span>Swift</span> Partners</div><a href="https://staticswift.co.uk/" style="font-size:14px;color:var(--ink)">Main site</a></header>
+
+<div class="wrap">
+  <!-- Landing / auth (shown until logged in) -->
+  <div id="lander">
+    <section class="hero">
+      <div class="eyebrow">Commission-only partner programme</div>
+      <h1>Earn for every trade you send my way.</h1>
+      <p>I hand-code websites for UK tradespeople. You already know people who need one. Introduce them, and when they go live you get paid. No cost, no lock-in.</p>
+    </section>
+    <div class="steps">
+      <div class="step"><b>1. Grab your link</b><p>Sign up in ten seconds and get your own referral link.</p></div>
+      <div class="step"><b>2. Share it</b><p>Send it to any tradesperson who needs a proper website.</p></div>
+      <div class="step"><b>3. Get paid</b><p>When they go live you earn a fee. Track it all in your dashboard.</p></div>
+    </div>
+
+    <div class="panel">
+      <div class="tabs">
+        <button id="tab-join" class="on" onclick="showTab('join')">Join</button>
+        <button id="tab-login" onclick="showTab('login')">Log in</button>
+      </div>
+      <form id="form-join" onsubmit="return doSignup(event)">
+        <label>Your name</label><input id="j-name" autocomplete="name">
+        <label>Email</label><input id="j-email" type="email" required autocomplete="email">
+        <button class="btn" type="submit">Get my referral link</button>
+        <div class="note" id="j-note"></div>
+      </form>
+      <form id="form-login" style="display:none" onsubmit="return doLogin(event)">
+        <label>Email</label><input id="l-email" type="email" required autocomplete="email">
+        <label>Login key (from your welcome email)</label><input id="l-key" required>
+        <button class="btn" type="submit">Log in</button>
+        <div class="note" id="l-note"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard (shown after login) -->
+  <div id="dash" style="display:none">
+    <section class="hero" style="padding:44px 0 12px">
+      <div class="eyebrow">Partner dashboard</div>
+      <h1 id="d-hello" style="font-size:34px"></h1>
+    </section>
+    <div class="kpis">
+      <div class="kpi"><b id="d-clicks">0</b><span>link clicks</span></div>
+      <div class="kpi"><b id="d-refs">0</b><span>referrals</span></div>
+      <div class="kpi"><b id="d-due">£0</b><span>due to you</span></div>
+      <div class="kpi"><b id="d-paid">£0</b><span>paid so far</span></div>
+    </div>
+    <div class="panel">
+      <h3 style="font-size:18px;margin-bottom:8px">Your referral link</h3>
+      <div class="linkbox"><span id="d-link"></span><button class="btn sec" style="margin:0;padding:8px 16px" onclick="copyLink()">Copy</button></div>
+      <p class="muted" style="margin-top:8px">You earn <b id="d-fee">£100</b> for every client who goes live through this link.</p>
+    </div>
+    <div class="panel">
+      <h3 style="font-size:18px;margin-bottom:8px">Your referrals</h3>
+      <div id="d-reftable"><p class="muted">No referrals yet. Share your link to get started.</p></div>
+    </div>
+    <div class="panel">
+      <h3 style="font-size:18px;margin-bottom:8px">Message Harry</h3>
+      <div class="msgs" id="d-msgs"></div>
+      <form onsubmit="return doMessage(event)">
+        <textarea id="m-body" placeholder="Ask me anything about the programme..." style="min-height:70px"></textarea>
+        <button class="btn" type="submit" style="margin-top:8px">Send</button>
+        <div class="note" id="m-note"></div>
+      </form>
+    </div>
+    <p style="margin:10px 0 40px"><a href="#" onclick="logout();return false" style="font-size:14px">Log out</a></p>
+  </div>
+</div>
+<footer>StaticSwift · Manchester · hello@staticswift.co.uk</footer>
+
+<script>
+  var API='/.netlify/functions/partners';
+  var SESSION=null;
+  function showTab(t){document.getElementById('tab-join').classList.toggle('on',t==='join');document.getElementById('tab-login').classList.toggle('on',t==='login');document.getElementById('form-join').style.display=t==='join'?'':'none';document.getElementById('form-login').style.display=t==='login'?'':'none';}
+  function money(n){return '£'+(Number(n)||0).toLocaleString('en-GB');}
+  function note(id,msg,ok){var e=document.getElementById(id);e.style.display='block';e.style.color=ok?'#1f8b47':'#9C2615';e.textContent=msg;}
+  function save(email,key){try{localStorage.setItem('ss_partner',JSON.stringify({email:email,key:key}))}catch(e){}}
+  function post(body){return fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json();});}
+  function doSignup(e){e.preventDefault();var name=document.getElementById('j-name').value,email=document.getElementById('j-email').value;
+    post({action:'signup',name:name,email:email}).then(function(d){ if(d.ok){ save(email,d.key); render(d); note('j-note','You are in. Your login key is '+d.key+' (also emailed).',true);} else note('j-note',d.error||'Something went wrong.'); }).catch(function(){note('j-note','Network error.');});return false;}
+  function doLogin(e){e.preventDefault();var email=document.getElementById('l-email').value,key=document.getElementById('l-key').value;
+    post({action:'login',email:email,key:key}).then(function(d){ if(d.ok){ save(email,key); render(d);} else note('l-note',d.error||'Login failed.'); }).catch(function(){note('l-note','Network error.');});return false;}
+  function logout(){try{localStorage.removeItem('ss_partner')}catch(e){}location.reload();}
+  function copyLink(){if(SESSION&&navigator.clipboard)navigator.clipboard.writeText(SESSION.link);}
+  function doMessage(e){e.preventDefault();var body=document.getElementById('m-body').value.trim();if(!body)return false;var s=cred();
+    post({action:'message',email:s.email,key:s.key,body:body}).then(function(d){ if(d.ok){ document.getElementById('m-body').value=''; renderMsgs(d.messages); note('m-note','Sent to Harry.',true);} else note('m-note',d.error||'Could not send.'); });return false;}
+  function cred(){try{return JSON.parse(localStorage.getItem('ss_partner'))||{}}catch(e){return {}}}
+  function renderMsgs(msgs){var el=document.getElementById('d-msgs');if(!msgs||!msgs.length){el.innerHTML='<p class="muted">No messages yet.</p>';return;}
+    el.innerHTML=msgs.map(function(m){return '<div class="msg '+(m.from==='us'?'us':'them')+'"><div class="b">'+(m.body||'').replace(/</g,'&lt;')+'</div></div>';}).join('');el.scrollTop=el.scrollHeight;}
+  function render(d){ SESSION=d;
+    document.getElementById('lander').style.display='none';document.getElementById('dash').style.display='';
+    document.getElementById('d-hello').textContent='Hi '+(d.name||'partner');
+    document.getElementById('d-clicks').textContent=d.clicks||0;
+    document.getElementById('d-refs').textContent=(d.referrals||[]).length;
+    document.getElementById('d-due').textContent=money(d.due);
+    document.getElementById('d-paid').textContent=money(d.paid);
+    document.getElementById('d-link').textContent=d.link;
+    document.getElementById('d-fee').textContent=money(d.feePerReferral);
+    var rt=document.getElementById('d-reftable');
+    if((d.referrals||[]).length){ rt.innerHTML='<table class="reftable"><tr><th>Client</th><th>Status</th><th>Fee</th></tr>'+d.referrals.map(function(r){var st=r.paid?'paid':r.status;return '<tr><td>'+(r.client||'').replace(/</g,'&lt;')+'</td><td><span class="pill '+st+'">'+st+'</span></td><td>'+money(r.fee)+'</td></tr>';}).join('')+'</table>'; }
+    else rt.innerHTML='<p class="muted">No referrals yet. Share your link to get started.</p>';
+    renderMsgs(d.messages);
+  }
+  // Auto-login if we have a saved session.
+  (function(){var s=cred();if(s&&s.email&&s.key){post({action:'login',email:s.email,key:s.key}).then(function(d){if(d.ok)render(d);});}})();
+</script>
+</body>
+</html>
