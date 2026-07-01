@@ -123,6 +123,12 @@
 [functions."cron-blitz-tick"]
   schedule = "*/2 * * * *"
 
+# Scheduled function — recruit commission-only referral partners (accountants,
+# suppliers, coaches who already have UK trade clients). Drafts partner pitches
+# into the approval queue once a day. A compounding, no-ad-spend lead source.
+[functions."affiliate-recruit"]
+  schedule = "0 10 * * *"
+
 # Scheduled function — the approval-queue dispatcher. The ONLY path from an
 # approved artefact to the wire. Runs hourly; itself enforces the UK
 # business-hours window, the daily send cap, kill switches and suppression.
