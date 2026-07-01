@@ -1184,6 +1184,7 @@ function openClient(id) {
     ${c.enquiry_email ? `<div class="info-row"><span class="info-key">Enquiry email</span><span class="info-val">${escapeHTML(c.enquiry_email)}</span></div>` : ''}
     <div class="info-row"><span class="info-key">Source</span><span class="info-val">${escapeHTML(c.source || '—')}${c.heard_about ? ' · ' + escapeHTML(c.heard_about) : ''}</span></div>
     <div class="info-row"><span class="info-key">Received</span><span class="info-val">${c.createdAt ? new Date(c.createdAt).toLocaleDateString('en-GB') : '—'}</span></div>
+    ${c.ref ? `<div class="info-row"><span class="info-key">Referred by</span><span class="info-val" style="color:#9C2615;font-weight:700">🤝 partner ${escapeHTML(c.ref)} · credit them in Partners</span></div>` : ''}
     ${c.previewUrl ? `<div class="info-row"><span class="info-key">Preview</span><span class="info-val"><a href="${encodeURI(c.previewUrl)}" target="_blank" rel="noopener">View ↗</a></span></div>` : ''}
     ${c.finalUrl ? `<div class="info-row"><span class="info-key">Final File</span><span class="info-val"><a href="${encodeURI(c.finalUrl)}" target="_blank" rel="noopener">Download ↗</a></span></div>` : ''}
   `;

@@ -26,12 +26,17 @@ exports.handler = async (event) => {
     if (data['bot-field']) return respond(200, { ok: true });
 
     const clientId = 'client_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    // Partner referral attribution: prefer the posted ref field, fall back to
+    // the ss_ref cookie set when they clicked a partner link. Sanitised.
+    const cookieRef = (((event.headers && (event.headers.cookie || event.headers.Cookie)) || '').match(/ss_ref=([^;]+)/) || [])[1] || '';
+    const ref = String(data.ref || cookieRef || '').replace(/[^a-z0-9]/gi, '').slice(0, 40);
     const client = {
       ...data,
       clientId,
       stage: 'new-lead',
       createdAt: new Date().toISOString(),
       source: data.source || 'intake-form',
+      ref: ref || undefined,
       emailLog: [],
     };
 

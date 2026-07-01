@@ -1126,5 +1126,19 @@ document.addEventListener('submit',function(e){var f=e.target;if(f&&f.tagName===
 document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;if(!a)return;var h=a.getAttribute('href')||'';if(h.indexOf('wa.me')>-1||h.indexOf('whatsapp')>-1)window.ssTrack('whatsapp_click',{});else if(h.indexOf('tel:')===0)window.ssTrack('tel_click',{});},true);
 })();
 </script>
+<script>
+// Partner referral attribution: if a partner link points straight here
+// (/order.html?ref=CODE) capture it; otherwise reuse the ss_ref cookie set on
+// the homepage. Add it as a hidden field so it saves onto the lead.
+(function(){
+  try{
+    var ref=new URLSearchParams(location.search).get('ref');
+    if(ref){ref=ref.replace(/[^a-z0-9]/gi,'').slice(0,40);document.cookie='ss_ref='+ref+';path=/;max-age='+(90*86400)+';samesite=lax';}
+    if(!ref){ref=((document.cookie.match(/ss_ref=([^;]+)/)||[])[1]||'').replace(/[^a-z0-9]/gi,'').slice(0,40);}
+    var f=document.getElementById('order-form');
+    if(f&&ref){var i=document.createElement('input');i.type='hidden';i.name='ref';i.value=ref;f.appendChild(i);}
+  }catch(e){}
+})();
+</script>
 </body>
 </html>

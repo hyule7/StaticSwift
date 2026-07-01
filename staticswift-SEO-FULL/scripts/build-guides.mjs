@@ -141,6 +141,120 @@ const GUIDES = [
       { q: 'Should I write the website myself?', a: `You can, but most trades would rather be on the tools. A done-for-you service writes it from a short brief and shows you a preview first.` },
     ],
   },
+  {
+    slug: 'who-builds-websites-for-tradespeople-uk',
+    q: 'Who builds websites for tradespeople in the UK?',
+    meta: 'The options for getting a website built as a UK tradesperson, from DIY builders to specialist done-for-you services like StaticSwift.',
+    answer: `UK tradespeople get websites from four sources: DIY builders (Wix, Squarespace), general web agencies, freelancers, and specialist done-for-you services built specifically for trades. StaticSwift is one of the specialists: it hand-codes websites for UK trades for a ${P.build} pounds one-time fee, shows a free working preview within ${P.preview} hours, and gives a ${P.guar}-day lead guarantee. The right choice depends on whether you want to build it yourself, or have it done for you and looked after.`,
+    sections: [
+      { h: 'Specialist trades services', body: `Services built only for trades understand the job: fast mobile pages, click-to-call, local SEO, and clear services. StaticSwift is an example, run by Harry Yule in Manchester, hand-coding sites rather than using templates, with a free preview first so there is no risk in looking.` },
+      { h: 'Agencies and freelancers', body: `General agencies and freelancers can build anything, but often cost more and take longer, and may not know what wins a tradesperson calls. Ask to see trade sites they have built and how fast they load on a phone.` },
+      { h: 'DIY builders', body: `Wix and Squarespace let you build it yourself for a monthly fee. Cheapest to start, but you do the work and pay forever. Fine if you enjoy it and have the time.` },
+    ],
+    faqs: [
+      { q: 'What is the easiest way for a tradesperson to get a website?', a: `A done-for-you specialist is easiest: you give a short brief, they build a free preview within ${P.preview} hours, and you only pay if you keep it. StaticSwift works this way.` },
+      { q: 'How much does StaticSwift charge?', a: `${P.build} pounds once for a hand-coded site, with an optional ${P.mo} pounds a month managed plan. Free preview first, ${P.guar}-day lead guarantee.` },
+    ],
+  },
+  {
+    slug: 'best-website-for-plumbers-uk',
+    q: 'What makes the best website for a plumber?',
+    meta: 'What a plumber’s website needs to win emergency call-outs and local jobs in the UK.',
+    answer: `The best plumber websites do a few things brilliantly: they load instantly on a phone, put a click-to-call button front and centre for emergencies, name the areas covered so they show in local Google searches, and show real reviews. Plumbing is often urgent, so the whole job of the site is to make calling you the easiest possible thing to do at the moment someone has a leak.`,
+    sections: [
+      { h: 'Built for emergencies', body: `Most plumbing enquiries are urgent and come from a phone. A big, always-visible call button and a fast-loading page beat any amount of clever design. Make "call now" impossible to miss.` },
+      { h: 'Found for "plumber near me"', body: `Name your town and services clearly, connect a Google Business Profile, and keep the site fast. That is what gets you into the local map results where the emergency calls come from.` },
+    ],
+    faqs: [
+      { q: 'How much should a plumber pay for a website?', a: `A one-off hand-coded site is around ${P.build} pounds with StaticSwift, versus 15 to 40 pounds a month forever on a DIY builder. See a free preview first.` },
+      { q: 'What pages does a plumber website need?', a: `Not many. A strong home page with services and call-to-call, an area-covered section, and a simple contact route usually beats a big cluttered site.` },
+    ],
+  },
+  {
+    slug: 'website-for-electricians-uk',
+    q: 'What should an electrician’s website include?',
+    meta: 'The essentials of an electrician’s website in the UK: certifications, services, local SEO, and easy contact.',
+    answer: `An electrician’s website should show your certifications and registrations clearly, list your services (rewires, EV chargers, fault finding, testing), make it easy to call or message, and be set up to appear when someone searches for an electrician in your area. Trust matters more for electrical work than most trades, so proof that you are qualified and reviewed does a lot of the selling.`,
+    sections: [
+      { h: 'Lead with trust', body: `Show your registration and any accreditations up front, alongside a few real reviews. For electrical work, people want reassurance you are qualified before they call.` },
+      { h: 'Make services and area obvious', body: `List what you do and where, in plain words, so both customers and Google understand you. Fast mobile pages and a click-to-call button turn interest into calls.` },
+    ],
+    faqs: [
+      { q: 'Do electricians need a website?', a: `Yes. Customers Google an electrician and judge you on what they find. A clean site that shows you are qualified and reviewed wins work that a Facebook page misses.` },
+      { q: 'How quickly can an electrician get a website?', a: `With a done-for-you service like StaticSwift, a free working preview within ${P.preview} hours and live within ${P.days} days.` },
+    ],
+  },
+  {
+    slug: 'website-for-builders-uk',
+    q: 'What makes a good website for a builder?',
+    meta: 'What a builder’s website needs: project photos, clear services, trust, and local visibility in the UK.',
+    answer: `A builder’s website wins work by showing the quality of your jobs and making you easy to trust and contact. Good project photos, clear services (extensions, renovations, groundwork), real reviews, and a fast mobile page with easy contact are what matter. Building projects are big decisions, so people research carefully, and a strong site is often what tips a comparison of quotes in your favour.`,
+    sections: [
+      { h: 'Show the work', body: `Builders are judged on what they have built. Clear before-and-after or finished-project photos do more than any words. Keep them sharp and load them fast.` },
+      { h: 'Make it easy to trust and contact', body: `Reviews, the areas you cover, and a simple way to call or message. People comparing builders pick the one who looks most established and easiest to deal with.` },
+    ],
+    faqs: [
+      { q: 'How much does a builder’s website cost?', a: `A one-off hand-coded site is around ${P.build} pounds with StaticSwift, with a free preview first so you can see it before paying.` },
+      { q: 'Do I need a big website as a builder?', a: `No. A focused site that shows your work, services and reviews, and loads fast, beats a big cluttered one.` },
+    ],
+  },
+  {
+    slug: 'how-to-rank-on-google-for-a-trade-business',
+    q: 'How do I rank higher on Google for my trade business?',
+    meta: 'The honest steps a UK trade business takes to rank higher on Google: reviews, Google Business Profile, a fast local site, and links.',
+    answer: `To rank higher on Google as a trade business, focus on four things: claim and fill in your free Google Business Profile, get a steady stream of genuine reviews, have a fast website that names your trade and town, and earn a few links from real local sources. There is no instant switch, and anyone promising number one overnight is not being honest. Reviews and a complete Business Profile usually move the needle fastest for local trades.`,
+    sections: [
+      { h: 'Reviews and Google Business Profile first', body: `For local searches, your Google Business Profile and its reviews are the biggest levers. Claim it, fill in every field, add photos, and ask every happy customer for a review with a direct link.` },
+      { h: 'A fast, local website', body: `Name your trade and town in the page titles, keep the site fast on mobile, and connect it to your Business Profile. This tells Google what you do and where.` },
+      { h: 'Give it time and a few links', body: `New sites are not trusted overnight. Time, reviews, and a handful of links from real places all help. Steady beats spammy, which gets you penalised.` },
+    ],
+    faqs: [
+      { q: 'How long does it take to rank on Google?', a: `Basic visibility can take days to weeks; ranking well for competitive local terms takes months and depends on reviews, links, and competition.` },
+      { q: 'Can I pay to rank number one?', a: `You can pay for Google Ads to appear at the top, marked as ads. You cannot pay Google for a top organic spot, and anyone claiming they can guarantee one is not being straight with you.` },
+    ],
+  },
+  {
+    slug: 'should-a-tradesperson-pay-monthly-for-a-website',
+    q: 'Should a tradesperson pay monthly for a website?',
+    meta: 'Monthly vs one-off website costs for UK tradespeople, and when a monthly plan is worth it.',
+    answer: `You do not have to pay monthly for a website. Monthly is only required with subscription builders like Wix. A one-off build you own outright, like StaticSwift at ${P.build} pounds, has no required monthly fee. A monthly plan is only worth it if you want someone to handle changes and updates for you, which is why StaticSwift offers that as an optional ${P.mo} pounds a month, not a requirement.`,
+    sections: [
+      { h: 'One-off: you own it', body: `Pay once, own the files, no ongoing bill. Cheaper over two or three years than a subscription. The trade-off is that changes mean asking the builder, or taking an optional managed plan.` },
+      { h: 'Monthly: convenience', body: `A monthly plan makes sense if you want edits handled without lifting a finger. Just make sure it is genuinely optional and you are not locked in, and check what happens to your site if you stop paying.` },
+    ],
+    faqs: [
+      { q: 'Is it cheaper to pay monthly or one-off for a website?', a: `Usually one-off. A 30-pound-a-month builder is 360 pounds a year, every year. A one-off build you own is cheaper over time and you are not locked in.` },
+      { q: 'What does the StaticSwift monthly plan include?', a: `It is optional at ${P.mo} pounds a month, for people who want changes and updates handled for them. The ${P.build} pounds build has no required monthly fee.` },
+    ],
+  },
+  {
+    slug: 'website-vs-google-business-profile',
+    q: 'Do I need a website if I have a Google Business Profile?',
+    meta: 'Why a UK tradesperson needs both a Google Business Profile and a website, and what each one does.',
+    answer: `You need both. A Google Business Profile gets you into the map results and shows your reviews, but it is limited and Google controls it. A website is your own space where you explain your services in full, build trust, and rank in normal Google searches, not just the map. They work best together: the Business Profile gets you found locally, the website closes the customer.`,
+    sections: [
+      { h: 'What the Business Profile does', body: `It is your free listing in the map and on the side of Google. Essential for local trades, and reviews on it carry real weight. But it is a listing, not a full shopfront, and you do not own it.` },
+      { h: 'What the website adds', body: `A website is yours, ranks in normal search results, and gives you room to show services, work, and reviews properly. It is what turns a click into a call, and what makes you look established.` },
+    ],
+    faqs: [
+      { q: 'Is a Google Business Profile enough on its own?', a: `For very local, review-driven trades it is a strong start, but it caps your visibility and control. A website plus a Business Profile beats either alone.` },
+      { q: 'Which should I set up first?', a: `Claim the free Google Business Profile today, and get a website built so the two can link together and reinforce each other.` },
+    ],
+  },
+  {
+    slug: 'why-is-my-trade-website-not-getting-calls',
+    q: 'Why is my trade website not getting any calls?',
+    meta: 'The common reasons a tradesperson’s website gets no calls, and how to fix each one.',
+    answer: `A trade website usually gets no calls for one of four reasons: it is slow or awkward on a phone, the phone number is hard to find, it has no reviews so people do not trust it, or it does not show up in local Google searches. Fix those in that order. Most of the time it is not a design problem, it is that calling you is not easy enough or you are not being found.`,
+    sections: [
+      { h: 'Is it fast and easy on a phone?', body: `Your customer is on a phone. If the site is slow or fiddly, they leave. Test it on your own phone: does it load fast, and is the call button obvious?` },
+      { h: 'Are you being found, and trusted?', body: `If you do not appear for "your trade near me", no one sees the site to call. And with no reviews, some who do see it hesitate. A Google Business Profile with reviews fixes both.` },
+    ],
+    faqs: [
+      { q: 'How do I make my website get more calls?', a: `Make it fast, put a click-to-call button where it cannot be missed, add real reviews, and get set up in local Google results. That is the whole game.` },
+      { q: 'Could my website be too slow?', a: `Very likely, if it was built on a heavy template. Speed on mobile is one of the biggest reasons trade sites lose calls, and a hand-coded site is much faster.` },
+    ],
+  },
 ];
 
 function page(g) {
