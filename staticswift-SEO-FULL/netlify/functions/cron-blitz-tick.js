@@ -59,25 +59,26 @@ exports.handler = async (event) => {
   // in parallel; rotating keeps each tick fast AND the data consistent. Over a
   // few minutes the full pipeline cycles, and the queue climbs into the
   // hundreds across the window instead of stopping after one round.
-  // Two-phase rotation so the team HUNTS hard (finding prospects is the
-  // bottleneck) and still drafts+sends regularly. Each phase pairs two bounded
-  // calls that comfortably fit the ~10s limit. Finding new prospects happens on
-  // 2 of every 3 ticks; drafting+sending on 1 of 3.
-  const minute = Math.floor(Date.now() / 60000);
-  const phase = minute % 3;
+  // Fast 4-phase rotation. Advances every 12s (matched to the browser pulse) so
+  // that over ~48 seconds the team does EVERYTHING: discover, enrich, draft+send,
+  // and recruit partners. Each phase is one bounded call (or a fast pair) that
+  // fits the ~10s function limit. The shared DB is never written in parallel.
+  const phase = Math.floor(Date.now() / 12000) % 4;
   const counts = {};
-  if (phase === 2) {
-    // Draft from the pool + send.
-    const pu = await fire('blitz-push', 6500);
+  if (phase === 0) {
+    const sc = await fire('blitz-scavenge', 8500);
+    counts.scavenged = sc.found || 0;
+  } else if (phase === 1) {
+    const en = await fire('contact-enrich', 8500);
+    counts.enriched = en.found || 0;
+  } else if (phase === 2) {
+    const pu = await fire('blitz-push', 6000);
     counts.drafted = pu.drafted || 0; counts.queued = pu.drafted || 0;
     await fire('dispatch-approved', 3000);
   } else {
-    // HUNT: discover fresh businesses, then immediately enrich them into
-    // emailable prospects so the pool keeps growing every cycle.
-    const sc = await fire('blitz-scavenge', 4000);
-    counts.scavenged = sc.found || 0;
-    const en = await fire('contact-enrich', 4000);
-    counts.enriched = en.found || 0;
+    const af = await fire('affiliate-recruit', 5000);
+    counts.partners = af.drafted || 0;
+    fire('reply-loop', 1); // best-effort; also on its own 15-min schedule
   }
 
   // Every tick: keep all desks green and show the running counts (fast).

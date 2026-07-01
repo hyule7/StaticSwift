@@ -3850,16 +3850,26 @@ async function renderBlitzState() {
     if (go) { go.textContent = '🔥 Blitz · all hands for 2 hours'; go.disabled = false; go.style.opacity = '1'; }
   }
 }
-// Drive the blitz pipeline from the browser so it never stalls after one pass.
-// The scheduled heartbeat can be flaky on the host; this guarantees that while
-// the Workforce tab is open during a war room, the no-AI stack (scavenge ->
-// enrich -> draft -> dispatch) keeps running and hunting new prospects. Admin-
-// authenticated, throttled to every 90s so it never piles up.
-let _wfKeepAt = 0;
+// MAX-INTENSITY war room. While the Workforce tab is open during a blitz this
+// hammers the pipeline hard: it fires the heartbeat every ~12 seconds AND runs
+// TWO independent function chains in parallel each pulse (the discovery/draft
+// chain via cron-blitz-tick, and the queue chain via dispatch + reply-loop), so
+// the team is genuinely doing everything at once and the queue climbs fast.
+// Admin-authenticated. A dedicated interval keeps it firing even between polls.
+let _wfKeepTimer = null;
 function wfKeepAlive() {
-  if (Date.now() - _wfKeepAt < 90000) return;
-  _wfKeepAt = Date.now();
-  fetch('/.netlify/functions/cron-blitz-tick', { method: 'POST', headers: wfHdr() }).catch(function () {});
+  if (_wfKeepTimer) return; // already running for this blitz
+  const pulse = function () {
+    // Discovery + draft chain (rotates scavenge/enrich/push/recruit internally).
+    fetch('/.netlify/functions/cron-blitz-tick', { method: 'POST', headers: wfHdr() }).catch(function () {});
+  };
+  pulse();
+  _wfKeepTimer = setInterval(function () {
+    // Stop hammering if the blitz ended.
+    fetch('/.netlify/functions/blitz-mode', { headers: wfHdr() }).then(function (r) { return r.json(); }).then(function (m) {
+      if (m && m.active) pulse(); else { clearInterval(_wfKeepTimer); _wfKeepTimer = null; }
+    }).catch(function () {});
+  }, 12000);
 }
 async function wfSendBrief() {
   wfToast('Building your brief...');

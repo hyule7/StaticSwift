@@ -43,6 +43,7 @@ function buildEntries(counts) {
     'Lead Reactivation Specialist': ['Re-engaging warm leads whose follow-up is due today', 'on a real cadence, never all at once'],
     'Sales Closer': ['On the inbox for every hot reply', 'answering within minutes'],
     'Reply Triage Specialist': [c.replies ? ('Drafted ' + c.replies + ' replies to inbound leads') : 'Reading every inbound reply and routing the hot ones', 'interested / objection / stop'],
+    'Affiliate Recruiter': [c.partners ? ('Recruited ' + c.partners + ' commission-only partners') : 'Reaching out to accountants, suppliers and creators to refer us', 'commission only, no cost'],
     'Proposal Writer': ['Turning interested replies into proposals', '499 pounds once, preview in 24h'],
     'Payment Chaser': ['Chasing any unpaid invoices, gently and on schedule', ''],
     'Invoice Drafter': ['Prepping invoices for anyone who says yes', ''],
