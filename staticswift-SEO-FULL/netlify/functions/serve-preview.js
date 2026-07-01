@@ -1,5 +1,21 @@
 const { getFileStore } = require('./_filestore');
 
+// Count a preview view so the conversion funnel can measure preview -> claim.
+// Best-effort and bot-filtered; never blocks the page.
+async function trackView(fileId, ua) {
+  if (/bot|crawler|spider|preview|facebookexternalhit|slackbot|whatsapp/i.test(ua || '')) return;
+  try {
+    const { getNamedStore } = require('./_blobs');
+    const ops = getNamedStore('ops'); if (!ops) return;
+    const s = (await ops.get('preview-stats', { type: 'json' })) || { total: 0, byId: {}, viewers: {} };
+    s.total = (s.total || 0) + 1;
+    s.byId[fileId] = (s.byId[fileId] || 0) + 1;
+    if (!s.viewers[fileId]) s.viewers[fileId] = new Date().toISOString(); // first-seen
+    s.lastViewAt = new Date().toISOString();
+    await ops.setJSON('preview-stats', s);
+  } catch (_) {}
+}
+
 exports.handler = async (event) => {
   const fileId = event.queryStringParameters?.id;
   if (!fileId) return { statusCode: 400, body: 'Missing id' };
@@ -29,6 +45,7 @@ exports.handler = async (event) => {
       };
     }
 
+    await trackView(fileId, event.headers && (event.headers['user-agent'] || event.headers['User-Agent']));
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' },

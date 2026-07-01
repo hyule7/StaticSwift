@@ -3604,6 +3604,7 @@ async function loadWorkforce() {
   _wfLive = live;
   renderWfSetup(live.env);
   renderWfTeams(live);
+  loadWfFunnel();
   renderBlitzState();
   loadWfCreatives();
   renderWfShifts(live.shifts || {});
@@ -3911,6 +3912,40 @@ function renderWfBrief(live) {
     '<div class="wf-kpis">' + kpis + '</div>' +
     '<div class="wf-brief-action">' + action + '</div>' +
     '<div class="wf-brief-lines"><div class="hd">Happening right now</div>' + lines + '</div>';
+}
+
+// ── Conversion funnel: shows where leads die (prospects -> ... -> paid). ────
+let _wfFunnelAt = 0;
+async function loadWfFunnel() {
+  const el = document.getElementById('wf-funnel'); if (!el) return;
+  if (Date.now() - _wfFunnelAt < 20000 && el.dataset.loaded) return; // funnel changes slowly; refresh every 20s
+  _wfFunnelAt = Date.now();
+  let f = null;
+  try { const r = await fetch('/.netlify/functions/funnel', { headers: wfHdr() }); if (r.ok) { const d = await r.json(); f = d.funnel; } } catch (_) {}
+  if (!f) { el.innerHTML = '<div class="wf-empty">Funnel loads once the backend is deployed.</div>'; return; }
+  el.dataset.loaded = '1';
+  const stages = [
+    ['Prospects', f.prospects, 'businesses found with a contact'],
+    ['Emailed', f.sent, 'first-touch emails sent'],
+    ['Preview views', f.previewViews, (f.previewsSeen || 0) + ' previews opened'],
+    ['Replies', f.replies, 'people who wrote back'],
+    ['Claims + calls', (f.claims || 0) + (f.bookings || 0), 'said "make it mine" or booked'],
+    ['Paid', f.paid, '£' + (f.revenue || 0).toLocaleString('en-GB') + ' won'],
+  ];
+  const max = Math.max(1, stages[0][1], f.drafted || 0);
+  // Find the biggest proportional drop to flag where leads die.
+  let worstIdx = -1, worstRate = 1;
+  for (let i = 1; i < stages.length; i++) { const prev = stages[i - 1][1] || 0; const cur = stages[i][1] || 0; if (prev >= 5) { const rate = cur / prev; if (rate < worstRate) { worstRate = rate; worstIdx = i; } } }
+  el.innerHTML = stages.map(function (s, i) {
+    const prev = i ? (stages[i - 1][1] || 0) : 0;
+    const conv = i && prev ? Math.round((s[1] / prev) * 100) + '%' : '';
+    const w = Math.max(2, Math.round(((s[1] || 0) / max) * 100));
+    const leak = i === worstIdx ? ' leak' : '';
+    return '<div class="wf-fn' + leak + '"><div class="lb"><b>' + s[1] + '</b> ' + s[0] + (conv ? ' <span class="cv">' + conv + ' of previous</span>' : '') + (leak ? ' <span class="leaktag">← biggest drop-off</span>' : '') + '</div>' +
+      '<div class="bar"><span style="width:' + w + '%"></span></div><div class="sub">' + s[2] + '</div></div>';
+  }).join('');
+  const meta = document.getElementById('wf-funnel-meta');
+  if (meta) meta.innerHTML = f.drafted ? (f.drafted + ' drafted total') : '';
 }
 
 // ── Teams: a tab per department, each with its people, live work, and a
