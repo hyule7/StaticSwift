@@ -1164,7 +1164,15 @@ function openClient(id) {
 
   const waActionsEl = document.getElementById('panel-wa-actions');
   if (waActionsEl) waActionsEl.innerHTML = waActionsHtml;
-  document.getElementById('panel-contact').innerHTML = `
+  // Flag missing build info so no order stalls for want of detail.
+  const _need = [];
+  if (!(c.business_description || '').trim()) _need.push('what the business does');
+  if (!(c.services || '').trim()) _need.push('services and prices');
+  if (!(c.hours || '').trim()) _need.push('opening hours');
+  const missingHtml = _need.length
+    ? `<div style="margin-bottom:12px;padding:10px 12px;background:rgba(156,38,21,.08);border:1px solid rgba(156,38,21,.35);border-radius:8px;font-size:12.5px;color:#9C2615;font-weight:600">⚠ Missing to build: ${_need.join(', ')}. <button onclick="askForInfo()" style="margin-left:4px;background:#9C2615;color:#fff;border:0;border-radius:6px;padding:4px 12px;font-size:12px;cursor:pointer">Ask now</button></div>`
+    : '';
+  document.getElementById('panel-contact').innerHTML = missingHtml + `
     <div class="info-row"><span class="info-key">Name</span><span class="info-val">${escapeHTML(c.name || '—')}</span></div>
     <div class="info-row"><span class="info-key">Email</span><span class="info-val"><a href="mailto:${encodeURIComponent(c.delivery_email||'')}">${escapeHTML(c.delivery_email || '—')}</a></span></div>
     <div class="info-row"><span class="info-key">Phone</span><span class="info-val">${c.phone ? `<a href="tel:${escapeHTML(c.phone)}" style="color:var(--cyan)">${escapeHTML(c.phone)}</a>` : '—'}</span></div>
@@ -1394,6 +1402,39 @@ function openClient(id) {
 }
 
 function closePanel() { document.getElementById('client-panel').classList.remove('open'); currentClientId = null; }
+
+// Ask a client for the exact build info that is missing, by email. Composes a
+// friendly checklist so no order ever stalls for want of detail. Self-contained
+// so it works from the panel and the "missing" banner alike.
+async function askForInfo() {
+  const c = (typeof allClients !== 'undefined' && allClients.find(function (x) { return x.clientId === currentClientId; })) || null;
+  if (!c) { alert('Open a client first.'); return; }
+  const to = c.delivery_email || c.enquiry_email;
+  if (!to) { alert('This lead has no email on file.'); return; }
+  const first = (c.name || c.business_name || 'there').split(' ')[0];
+  const need = [];
+  if (!(c.business_description || '').trim()) need.push('A sentence on what your business does');
+  if (!(c.services || '').trim()) need.push('Your main services, with prices if you have them');
+  if (!(c.hours || '').trim()) need.push('Your opening hours');
+  if (!(c.location || c.address || '').trim()) need.push('The areas you cover');
+  // Always needed to build, and never captured by the form.
+  need.push('Your logo, if you have one (or say if you would like one designed)');
+  need.push('4 to 8 photos of your work, team, or van');
+  const list = need.map(function (m) { return '- ' + m; }).join('\n');
+  const subject = 'Quick bits I need to build your ' + (c.business_name || 'website');
+  const body = 'Hi ' + first + ',\n\nGreat news, I am ready to start on your website. To make it brilliant I just need a few quick things from you:\n\n' + list + '\n\nJust reply to this email with whatever you have, no need to make it neat. The sooner I have these, the sooner your preview is ready.\n\nThanks,\nHarry\nStaticSwift';
+  if (!confirm('Email ' + to + ' asking for:\n\n' + need.join('\n') + '\n\nSend now?')) return;
+  try {
+    const r = await fetch('/.netlify/functions/send-email', { method: 'POST', headers: { 'x-admin-password': ADMIN_PW, 'Content-Type': 'application/json' }, body: JSON.stringify({ clientId: currentClientId, emailType: 'custom', customSubject: subject, customBody: body }) });
+    if (r.status === 401) { alert('Session expired, sign out and back in.'); return; }
+    const d = await r.json().catch(function () { return {}; });
+    const msg = document.getElementById('panel-action-msg');
+    if (msg) { msg.style.display = 'block'; msg.style.color = d.ok ? '#347537' : '#9C2615'; msg.textContent = d.ok ? ('Sent to ' + to + ' asking for the missing info.') : ('Could not send: ' + (d.error || 'unknown')); }
+    // Record that we chased, so it shows in notes/history.
+    try { await updateClient(currentClientId, { infoRequestedAt: new Date().toISOString() }); } catch (e) {}
+  } catch (e) { alert('Could not send: ' + e.message); }
+}
+window.askForInfo = askForInfo;
 function closePanelBg(e) { if (e.target.id === 'client-panel') closePanel(); }
 
 // Mark a preview annotation as resolved — visible immediately in the panel

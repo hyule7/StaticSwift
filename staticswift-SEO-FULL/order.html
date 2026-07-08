@@ -690,12 +690,12 @@ img,svg{display:block;max-width:100%;height:auto}
         </summary>
         <div class="details-body">
           <div class="fg">
-            <label>What does your business do?</label>
-            <textarea name="business_description" maxlength="240" placeholder="Emergency plumbing &amp; boiler servicing across Manchester. Available 7 days a week."></textarea>
+            <label>What does your business do? *</label>
+            <textarea name="business_description" id="f-bizdesc" required maxlength="240" placeholder="Emergency plumbing and boiler servicing across Manchester. Available 7 days a week."></textarea>
           </div>
           <div class="fg">
-            <label>Services &amp; prices</label>
-            <textarea name="services" maxlength="500" placeholder="Haircut — £20&#10;Beard Trim — £12&#10;Full Groom — £30"></textarea>
+            <label>Services and prices *</label>
+            <textarea name="services" id="f-services" required maxlength="500" placeholder="List your main services, one per line, with prices if you have them."></textarea>
           </div>
           <div class="fg">
             <label>What makes you stand out?</label>
@@ -1034,14 +1034,19 @@ document.getElementById('order-form').addEventListener('submit', async function(
   var errBox = document.getElementById('err-box');
   errBox.classList.remove('show');
 
-  var required = ['f-name','f-bizname','f-biztype','f-location','f-wa','f-email'];
+  var required = ['f-name','f-bizname','f-biztype','f-location','f-wa','f-email','f-bizdesc','f-services'];
   var firstBad = null;
   for (var i = 0; i < required.length; i++){
     var el = document.getElementById(required[i]);
     if (!el || !el.value.trim()){
-      el.style.borderBottomColor = 'var(--signal)';
-      if (!firstBad) firstBad = el;
-      setTimeout((function(node){return function(){node.style.borderBottomColor='';}})(el), 2400);
+      if (el){
+        el.style.borderBottomColor = 'var(--signal)';
+        // The build-info fields live in a collapsed section: open it so the
+        // customer can see and fill what is missing, so no lead arrives unbuildable.
+        var det = el.closest('details'); if (det) det.open = true;
+        if (!firstBad) firstBad = el;
+        setTimeout((function(node){return function(){node.style.borderBottomColor='';}})(el), 2400);
+      }
     }
   }
   var email = document.getElementById('f-email');
