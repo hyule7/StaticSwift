@@ -13,10 +13,17 @@ exports.handler = async (event) => {
     const client = await getClient(clientId);
     if (!client) return { statusCode: 404, body: JSON.stringify({ error: 'Client not found' }) };
 
+    // Ensure the client has a portal so the "open your portal" link works.
+    let portalUUID = client.portalUUID;
+    const patch = {};
+    if (!portalUUID) { portalUUID = require('crypto').randomUUID(); patch.portalUUID = portalUUID; }
+
     // Append admin reply to portal thread
     const messages = Array.isArray(client.portalMessages) ? client.portalMessages : [];
     messages.push({ from: 'admin', text, sentAt: new Date().toISOString() });
-    await updateClient(clientId, { portalMessages: messages });
+    patch.portalMessages = messages;
+    await updateClient(clientId, patch);
+    client.portalUUID = portalUUID;
 
     // Email client
     const fromAddr = process.env.SMTP_USER || 'hello@staticswift.co.uk';

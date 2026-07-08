@@ -1429,15 +1429,20 @@ async function askForInfo() {
   if (msg) { msg.style.display = 'block'; msg.style.color = d.ok ? '#347537' : '#9C2615'; msg.textContent = d.ok ? ('Opened a thread in Messages and ' + (d.emailed ? 'emailed' : 'saved for') + ' ' + to + '. Their reply lands in Messages.') : ('Could not send: ' + (d.error || 'unknown')); }
   if (d.ok) { try { await updateClient(currentClientId, { infoRequestedAt: new Date().toISOString() }); } catch (e) {} }
 }
-// Send any outbound client email through the messaging portal: it starts (or
-// appends to) a thread in the Messages tab AND emails the client, so you always
-// have a two-way conversation you can see and reply to, even if email is flaky.
+// Every outbound client message goes through the client's PORTAL: it appends to
+// their portal conversation (client.portalMessages) AND emails them a notice
+// with a link to open their portal, where they read and reply. So the client
+// has one messaging tool (their portal), you see the whole thread in the panel,
+// and nothing depends on a raw email getting read.
 async function messageClient(email, name, subject, body) {
-  if (!email) return { ok: false, error: 'no email' };
+  const text = (subject ? subject + '\n\n' : '') + (body || '');
+  if (!text.trim()) return { ok: false, error: 'empty' };
   try {
-    const r = await fetch('/.netlify/functions/messages', { method: 'POST', headers: { 'x-admin-password': ADMIN_PW, 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'client-message', clientId: currentClientId, email: email, name: name || '', subject: subject || '', body: body || '' }) });
+    const r = await fetch('/.netlify/functions/portal-reply', { method: 'POST', headers: { 'x-admin-password': ADMIN_PW, 'Content-Type': 'application/json' }, body: JSON.stringify({ clientId: currentClientId, text: text }) });
     if (r.status === 401) { alert('Session expired, sign out and back in.'); return { ok: false, error: '401' }; }
-    return await r.json().catch(function () { return { ok: false }; });
+    const d = await r.json().catch(function () { return { ok: false }; });
+    if (d.ok) { d.emailed = true; try { await fetchClients(); } catch (e) {} } // refresh so the new portal message shows in the panel
+    return d;
   } catch (e) { return { ok: false, error: e.message }; }
 }
 window.askForInfo = askForInfo;
@@ -1569,11 +1574,16 @@ async function panelAction(type) {
     return;
   }
   if (type === 'custom') {
-    const subject = prompt('Email subject:');
+    const subject = prompt('Message subject:');
     if (!subject) return;
-    const body = prompt('Email body (plain text):');
+    const body = prompt('Message (plain text):');
     if (!body) return;
-    await sendEmailAction({ clientId: currentClientId, emailType: 'custom', customSubject: subject, customBody: body });
+    // Route through the portal: appends to their conversation + emails a notice
+    // with a link to open their portal and reply.
+    const d = await messageClient(c.delivery_email, c.name || c.business_name, subject, body);
+    const msg = document.getElementById('panel-action-msg');
+    if (msg) { msg.style.display = 'block'; msg.style.color = d.ok ? '#347537' : '#9C2615'; msg.textContent = d.ok ? 'Sent to their portal and emailed them to open it.' : ('Could not send: ' + (d.error || 'unknown')); }
+    return;
   }
   if (type === 'next-stage') {
     const idx = STAGES.indexOf(c.stage);
