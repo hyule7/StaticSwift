@@ -255,6 +255,134 @@ const GUIDES = [
       { q: 'Could my website be too slow?', a: `Very likely, if it was built on a heavy template. Speed on mobile is one of the biggest reasons trade sites lose calls, and a hand-coded site is much faster.` },
     ],
   },
+  {
+    slug: 'website-for-roofers-uk',
+    q: 'What should a roofer’s website include?',
+    meta: 'What a roofer’s website needs to win repair and re-roof jobs in the UK: trust, photos, area covered, and fast contact.',
+    answer: `A roofer’s website should show clear photos of finished roofs, list your services (repairs, flat roofs, guttering, chimney work), make you easy to trust with reviews, and be fast with a click-to-call button for storm-damage emergencies. Roofing is high-value and often urgent, so proof of quality work and instant contact do the heavy lifting.`,
+    sections: [
+      { h: 'Show the roofs', body: `Roofing is judged on results. Sharp before-and-after photos of finished jobs reassure a homeowner spending thousands. Load them fast.` },
+      { h: 'Ready for storm-damage calls', body: `A lot of roofing enquiries are urgent after wind or leaks. A visible call button and a fast mobile page turn those panicked searches into your calls.` },
+    ],
+    faqs: [
+      { q: 'How much does a roofer’s website cost?', a: `A one-off hand-coded site is around ${P.build} pounds with StaticSwift, with a free preview first.` },
+      { q: 'Do roofers get work from a website?', a: `Yes, especially for re-roofs and insurance work where homeowners research carefully before choosing who to trust.` },
+    ],
+  },
+  {
+    slug: 'website-for-plasterers-uk',
+    q: 'Does a plasterer need a website?',
+    meta: 'Why a plasterer benefits from a website, and what to put on it to win skimming and rendering jobs in the UK.',
+    answer: `Yes. Even though a lot of plastering work comes through builders and word of mouth, a website gets you found directly on Google, shows the quality of your finish, and lets homeowners contact you without a middleman. Photos of clean, finished walls and ceilings, your services (skimming, rendering, coving), and easy contact are what matter.`,
+    sections: [
+      { h: 'A finish sells itself', body: `Plastering is visual. A few photos of smooth, finished work say more than any description. Keep them sharp and fast-loading.` },
+      { h: 'Get found beyond the builders', body: `A website lets homeowners find you directly for small jobs and repairs, not just the trade contacts who currently pass you work.` },
+    ],
+    faqs: [
+      { q: 'Is a website worth it for a plasterer?', a: `Yes, for direct homeowner work and to look established. It is a one-off ${P.build} pounds with StaticSwift, free preview first.` },
+      { q: 'What should a plasterer’s website show?', a: `Finished-work photos, your services, the areas you cover, reviews, and an easy way to call.` },
+    ],
+  },
+  {
+    slug: 'website-for-painters-decorators-uk',
+    q: 'What makes a good website for a painter and decorator?',
+    meta: 'How a painter and decorator wins work with a website: portfolio photos, clear services, trust, and easy contact.',
+    answer: `A painter and decorator’s website is a portfolio first. Clean, bright photos of finished rooms and exteriors do most of the selling, backed by clear services (interior, exterior, wallpapering), real reviews, and an easy way to get a quote. Decorating is a taste and trust decision, so showing your work and being easy to deal with wins the job.`,
+    sections: [
+      { h: 'Lead with your best rooms', body: `Homeowners choosing a decorator want to see finishes they would want in their own home. A tidy photo gallery is your strongest selling tool.` },
+      { h: 'Make getting a quote easy', body: `A simple call or message button, and the areas you cover, turns browsers into quote requests.` },
+    ],
+    faqs: [
+      { q: 'Do decorators need a website?', a: `Yes, to show your work and get found on Google. Word of mouth is great, but a website compounds it and reaches new customers.` },
+      { q: 'How much does it cost?', a: `${P.build} pounds once with StaticSwift, free working preview within ${P.preview} hours, ${P.guar}-day lead guarantee.` },
+    ],
+  },
+  {
+    slug: 'website-for-landscapers-gardeners-uk',
+    q: 'What should a landscaper or gardener’s website include?',
+    meta: 'The essentials of a landscaper or gardener’s website in the UK: project photos, services, seasonal work, and easy contact.',
+    answer: `A landscaper or gardener’s website should show striking photos of finished gardens, patios and planting, list your services (design, paving, fencing, maintenance), and make it easy to request a quote. Landscaping is a considered, higher-value purchase, so a strong portfolio and clear, trustworthy contact win the bigger jobs.`,
+    sections: [
+      { h: 'Photos win landscaping jobs', body: `Before-and-after garden transformations are compelling. A good gallery is the difference between a browse and a quote request.` },
+      { h: 'Seasonal and maintenance work', body: `Make clear whether you do one-off projects, regular maintenance, or both, so the right customers get in touch at the right time of year.` },
+    ],
+    faqs: [
+      { q: 'Do gardeners need a website?', a: `For maintenance rounds, word of mouth goes far; for design and landscaping jobs, a website showing your work wins the bigger contracts.` },
+      { q: 'How much does a landscaper’s website cost?', a: `${P.build} pounds once with StaticSwift, with a free preview first so there is no risk in seeing it.` },
+    ],
+  },
+  {
+    slug: 'website-for-carpenters-joiners-uk',
+    q: 'Does a carpenter or joiner need a website?',
+    meta: 'Why a carpenter or joiner benefits from a website, and what to include to win bespoke and fitted work in the UK.',
+    answer: `Yes, especially for bespoke and fitted work where customers want to see craftsmanship before committing. A carpenter or joiner’s website should showcase finished pieces (fitted kitchens, staircases, bespoke joinery), list services, and make contact easy. The quality of your photos does most of the persuading.`,
+    sections: [
+      { h: 'Craft sells on sight', body: `Fitted kitchens, staircases and bespoke work are bought on the strength of what you have made before. A clean gallery is essential.` },
+      { h: 'Bespoke needs conversation', body: `Make it easy to start a conversation, since custom joinery usually begins with a chat. A clear call or message route wins the enquiry.` },
+    ],
+    faqs: [
+      { q: 'Is a website worth it for a joiner?', a: `Yes for bespoke and fitted work. It shows your craftsmanship and gets you found. ${P.build} pounds once with StaticSwift.` },
+      { q: 'What should it show?', a: `Photos of finished work, your services, areas covered, reviews, and an easy way to get in touch.` },
+    ],
+  },
+  {
+    slug: 'how-to-get-more-google-reviews',
+    q: 'How do I get more Google reviews for my trade business?',
+    meta: 'A simple, honest system for getting more Google reviews as a UK tradesperson, and why they matter so much.',
+    answer: `The reliable way to get more Google reviews is to ask every happy customer the day you finish, with a direct link that opens the review box in one tap. Do it every time, reply to every review, and never buy fake ones. Reviews are one of the biggest factors in local Google ranking and in whether a stranger trusts you enough to call, so a steady trickle is worth more than any clever marketing.`,
+    sections: [
+      { h: 'Ask at the right moment', body: `Right after you finish a job, while the customer is happy, is the moment. A quick "would you mind leaving a quick Google review? here is the link" works far better than an email a week later.` },
+      { h: 'Make it one tap', body: `Get your review link from your Google Business Profile (Ask for reviews) and send it directly by text or WhatsApp. Every extra step loses reviews.` },
+      { h: 'Reply to every review', body: `Replying, even a thank you, shows Google the profile is active and shows customers you care. Never buy reviews; it breaks Google’s rules and the trust you are building.` },
+    ],
+    faqs: [
+      { q: 'How many Google reviews do I need?', a: `More than your local competitors, and growing steadily. The first handful matter most; after that, a regular trickle keeps you ahead.` },
+      { q: 'Can I put Google reviews on my website?', a: `Yes, showing real reviews on your site builds trust at the moment someone is deciding whether to call.` },
+    ],
+  },
+  {
+    slug: 'what-is-local-seo-for-tradespeople',
+    q: 'What is local SEO, and how does it help tradespeople?',
+    meta: 'A plain-English explanation of local SEO for UK tradespeople and the few things that actually move it.',
+    answer: `Local SEO is how you show up when someone nearby searches for your trade, like "electrician near me" or "roofer in Leeds". For tradespeople it comes down to a few things: a complete Google Business Profile, genuine reviews, a fast website that names your trade and town, and consistent contact details across the web. Get those right and you appear in the map and local results where the calls are.`,
+    sections: [
+      { h: 'The map results are the prize', body: `Most local searches show a map with three businesses at the top. Getting into that pack, driven mostly by your Google Business Profile and reviews, is where the local calls come from.` },
+      { h: 'Consistency matters', body: `Your business name, address and phone should match everywhere they appear online. Inconsistent details confuse Google and cost you rankings.` },
+    ],
+    faqs: [
+      { q: 'Is local SEO different from normal SEO?', a: `Yes. Local SEO is about appearing for nearby searches and in the map pack, which relies heavily on your Google Business Profile and reviews, not just your website.` },
+      { q: 'Can I do local SEO myself?', a: `The basics, yes: claim your Business Profile, ask for reviews, keep details consistent, and have a fast website that names your trade and town.` },
+    ],
+  },
+  {
+    slug: 'how-to-show-up-on-google-maps',
+    q: 'How do I get my trade business to show up on Google Maps?',
+    meta: 'The steps to appear on Google Maps as a UK tradesperson, and why some businesses show and others do not.',
+    answer: `To show on Google Maps you need a claimed and verified Google Business Profile, filled in completely, with reviews coming in. Maps ranking is driven by how relevant, well-reviewed and complete your profile is, and how close you are to the searcher. There is no paid shortcut to the top of Maps; a complete profile and steady reviews are what get you there.`,
+    sections: [
+      { h: 'Claim and verify the profile', body: `You cannot show on Maps without a verified Google Business Profile. Claim it, verify it, and fill in every field: services, areas, hours, photos.` },
+      { h: 'Reviews and completeness rank you', body: `A complete profile with genuine reviews outranks a sparse one. Ask every customer, respond to reviews, and keep the profile active with photos and posts.` },
+    ],
+    faqs: [
+      { q: 'Why is my business not on Google Maps?', a: `Usually because the Business Profile is not claimed or verified, or it is too sparse. Claim it, complete it, and start gathering reviews.` },
+      { q: 'Do I need a website to show on Maps?', a: `No, but a website linked to your profile strengthens it and gives customers somewhere to learn more, which helps you win the call.` },
+    ],
+  },
+  {
+    slug: 'how-to-choose-a-web-designer-for-your-trade',
+    q: 'How do I choose a web designer for my trade business?',
+    meta: 'What to look for, and what to avoid, when choosing someone to build your trade website in the UK.',
+    answer: `Choose a web designer who understands trades, shows you fast trade sites they have built, is clear on price with no surprise fees, and lets you see something before you commit. Avoid anyone locking you into long contracts, promising a number-one Google ranking, or unable to show real examples. The safest option is a service that builds a free preview first, so you judge the work, not the sales pitch.`,
+    sections: [
+      { h: 'See the work, and the speed', body: `Ask for trade sites they have built and open them on your phone. If they load slowly or look like everyone else, keep looking.` },
+      { h: 'Clear price, no lock-in', body: `Know the total cost up front and whether there are monthly fees. Be wary of long contracts and anyone who cannot tell you a straight price.` },
+      { h: 'Preview before you pay', body: `The lowest-risk option is a service that shows you a real working preview first. StaticSwift builds one free within ${P.preview} hours, and you only pay the ${P.build} pounds if you keep it.` },
+    ],
+    faqs: [
+      { q: 'Should I use a local web designer or a specialist?', a: `A trades specialist usually understands what wins you calls better than a general local designer. What matters most is real trade examples and a fair, clear price.` },
+      { q: 'What is a fair price for a trade website?', a: `Around ${P.build} to 1,500 pounds one-off, or 15 to 40 pounds a month on a builder. Be wary of both very cheap template work and overpriced agencies.` },
+    ],
+  },
 ];
 
 function page(g) {
