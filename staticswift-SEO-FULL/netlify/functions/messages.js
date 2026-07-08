@@ -56,6 +56,56 @@ exports.handler = async (event) => {
   const threads = (await store.get(KEY, { type: 'json' })) || [];
   const now = new Date().toISOString();
 
+  // ── Admin: start/append a CLIENT thread and send it (all outbound client
+  //    email flows through here, so everything is a two-way thread in the
+  //    Messages tab, and the client's reply lands back in the same thread). ──
+  if (p.action === 'client-message') {
+    if (!isAdmin) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
+    const email = String(p.email || '').trim();
+    if (!isEmail(email)) return { statusCode: 400, body: JSON.stringify({ ok: false, error: 'valid client email required' }) };
+    const body = String(p.body || '').trim();
+    if (!body) return { statusCode: 400, body: JSON.stringify({ ok: false, error: 'empty message' }) };
+    let th = threads.find(t => (t.email || '').toLowerCase() === email.toLowerCase());
+    if (!th) {
+      th = { id: 'm_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name: esc(p.name).slice(0, 80) || email, email, kind: 'client', clientId: p.clientId || null, createdAt: now, lastAt: now, unread: false, messages: [] };
+      threads.unshift(th);
+    } else { th.kind = th.kind === 'message' ? 'client' : th.kind; if (p.clientId) th.clientId = p.clientId; }
+    let emailed = false, emailError = null;
+    try { await emailVisitor(email, (p.subject ? '' : '') + body); emailed = true; } catch (e) { emailError = e.message; }
+    th.messages.push({ from: 'us', body: (p.subject ? p.subject + '\n\n' : '') + body, at: now });
+    th.lastAt = now;
+    await store.setJSON(KEY, threads);
+    return { statusCode: 200, body: JSON.stringify({ ok: true, emailed, emailError, threadId: th.id }) };
+  }
+
+  // ── Admin: pull inbound email and merge replies into their threads, so a
+  //    client's reply shows up in the same conversation in the Messages tab. ──
+  if (p.action === 'ingest-inbox') {
+    if (!isAdmin) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
+    let inbox = [];
+    try {
+      const r = await fetch((process.env.URL || 'https://staticswift.co.uk') + '/.netlify/functions/fetch-inbox', { headers: { 'x-admin-password': process.env.ADMIN_PASSWORD } });
+      if (r.ok) inbox = await r.json();
+    } catch (_) {}
+    if (!Array.isArray(inbox)) inbox = [];
+    const emailOf = s => { const m = String(s || '').match(/[^\s<>"]+@[^\s<>"]+/); return m ? m[0].toLowerCase().replace(/[>",]+$/, '') : ''; };
+    const byEmail = {}; threads.forEach(t => { if (t.email) byEmail[t.email.toLowerCase()] = t; });
+    let added = 0;
+    for (const m of inbox) {
+      const from = emailOf(m.from); if (!from) continue;
+      const th = byEmail[from]; if (!th) continue;                 // only merge into existing threads
+      th.seenIds = th.seenIds || [];
+      if (th.seenIds.includes(m.id)) continue;                     // dedupe
+      th.seenIds.push(m.id); if (th.seenIds.length > 200) th.seenIds = th.seenIds.slice(-200);
+      const body = String(m.text || m.snippet || m.subject || '').slice(0, 4000).trim();
+      if (!body) continue;
+      th.messages.push({ from: 'them', body, at: m.date || now });
+      th.lastAt = m.date || now; th.unread = true; added++;
+    }
+    if (added) await store.setJSON(KEY, threads);
+    return { statusCode: 200, headers: { 'Cache-Control': 'no-store' }, body: JSON.stringify({ ok: true, added }) };
+  }
+
   // ── Admin actions ──────────────────────────────────────────────────────
   if (p.action === 'reply' || p.action === 'read') {
     if (!isAdmin) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };

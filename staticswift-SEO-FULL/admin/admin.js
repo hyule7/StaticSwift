@@ -1423,18 +1423,25 @@ async function askForInfo() {
   const list = need.map(function (m) { return '- ' + m; }).join('\n');
   const subject = 'Quick bits I need to build your ' + (c.business_name || 'website');
   const body = 'Hi ' + first + ',\n\nGreat news, I am ready to start on your website. To make it brilliant I just need a few quick things from you:\n\n' + list + '\n\nJust reply to this email with whatever you have, no need to make it neat. The sooner I have these, the sooner your preview is ready.\n\nThanks,\nHarry\nStaticSwift';
-  if (!confirm('Email ' + to + ' asking for:\n\n' + need.join('\n') + '\n\nSend now?')) return;
+  if (!confirm('Message ' + to + ' asking for:\n\n' + need.join('\n') + '\n\nThis opens a conversation in Messages and emails them. Send now?')) return;
+  const d = await messageClient(to, c.name || c.business_name, subject, body);
+  const msg = document.getElementById('panel-action-msg');
+  if (msg) { msg.style.display = 'block'; msg.style.color = d.ok ? '#347537' : '#9C2615'; msg.textContent = d.ok ? ('Opened a thread in Messages and ' + (d.emailed ? 'emailed' : 'saved for') + ' ' + to + '. Their reply lands in Messages.') : ('Could not send: ' + (d.error || 'unknown')); }
+  if (d.ok) { try { await updateClient(currentClientId, { infoRequestedAt: new Date().toISOString() }); } catch (e) {} }
+}
+// Send any outbound client email through the messaging portal: it starts (or
+// appends to) a thread in the Messages tab AND emails the client, so you always
+// have a two-way conversation you can see and reply to, even if email is flaky.
+async function messageClient(email, name, subject, body) {
+  if (!email) return { ok: false, error: 'no email' };
   try {
-    const r = await fetch('/.netlify/functions/send-email', { method: 'POST', headers: { 'x-admin-password': ADMIN_PW, 'Content-Type': 'application/json' }, body: JSON.stringify({ clientId: currentClientId, emailType: 'custom', customSubject: subject, customBody: body }) });
-    if (r.status === 401) { alert('Session expired, sign out and back in.'); return; }
-    const d = await r.json().catch(function () { return {}; });
-    const msg = document.getElementById('panel-action-msg');
-    if (msg) { msg.style.display = 'block'; msg.style.color = d.ok ? '#347537' : '#9C2615'; msg.textContent = d.ok ? ('Sent to ' + to + ' asking for the missing info.') : ('Could not send: ' + (d.error || 'unknown')); }
-    // Record that we chased, so it shows in notes/history.
-    try { await updateClient(currentClientId, { infoRequestedAt: new Date().toISOString() }); } catch (e) {}
-  } catch (e) { alert('Could not send: ' + e.message); }
+    const r = await fetch('/.netlify/functions/messages', { method: 'POST', headers: { 'x-admin-password': ADMIN_PW, 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'client-message', clientId: currentClientId, email: email, name: name || '', subject: subject || '', body: body || '' }) });
+    if (r.status === 401) { alert('Session expired, sign out and back in.'); return { ok: false, error: '401' }; }
+    return await r.json().catch(function () { return { ok: false }; });
+  } catch (e) { return { ok: false, error: e.message }; }
 }
 window.askForInfo = askForInfo;
+window.messageClient = messageClient;
 function closePanelBg(e) { if (e.target.id === 'client-panel') closePanel(); }
 
 // Mark a preview annotation as resolved — visible immediately in the panel
@@ -7024,8 +7031,15 @@ window.ssShouldExcludeProspect = function(p) {
 let _msgThreads = [], _msgSel = null, _msgPoll = null;
 function startMsgPoll() { stopMsgPoll(); _msgPoll = setInterval(loadMessages, 15000); }
 function stopMsgPoll() { if (_msgPoll) { clearInterval(_msgPoll); _msgPoll = null; } }
+let _msgIngestAt = 0;
 async function loadMessages() {
   const list = document.getElementById('msg-list'); if (!list) return;
+  // Pull inbound email into matching threads (throttled to once a minute) so a
+  // client's reply shows up in the same conversation. Best-effort; slow (IMAP).
+  if (Date.now() - _msgIngestAt > 60000) {
+    _msgIngestAt = Date.now();
+    try { await fetch('/.netlify/functions/messages', { method: 'POST', headers: { 'x-admin-password': ADMIN_PW, 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'ingest-inbox' }) }); } catch (_) {}
+  }
   try {
     const r = await fetch('/.netlify/functions/messages', { headers: { 'x-admin-password': ADMIN_PW } });
     if (r.status === 401) { list.innerHTML = '<div style="padding:24px;color:var(--muted);font-size:13px">Session expired. Sign out and back in.</div>'; return; }
