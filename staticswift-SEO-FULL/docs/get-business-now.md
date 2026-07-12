@@ -1,4 +1,4 @@
-# Get business now — the do-it-this-week playbook
+# Get business now: the do-it-this-week playbook
 
 The machine is built. This is how you turn it into paying customers, fastest
 first. You do not need to write anything; copy and paste. Everything here uses
