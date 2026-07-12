@@ -132,3 +132,15 @@ phone completes delivery end to end (_deliver.js). (CEO)
 **D-023. JSONBin remains the live CRM; new agent state is in Blobs**
 (approval-queue, ops, portals, build-archive). Full consolidation to Blobs is
 still outstanding and is the largest remaining Phase 6 item. (CEO)
+
+## Estate title reorder for CTR (keyword-first)
+Reordered ~31,375 programmatic page titles from brand-first
+("StaticSwift — {Trade} Website Design in {City} ...") to keyword-first
+("{Trade} Website Design in {City} (£499, free 24h preview) | StaticSwift"),
+and cleaned 52 trade-root titles (— UK Coverage -> · UK Coverage). TITLE ONLY:
+no URL, canonical, heading, body, description or schema changes, so no 301s
+needed. Rationale: Google shows the front of the title; leading with the
+searched keyword lifts CTR, and it removes the banned em dash. Idempotent patch
+in scripts/patch-titles-ctr.mjs. Verified: leaf page renders, canonical + lead
+form + H1 unchanged, 0 console errors, facts clean. SEO Director sign-off: the
+change is conservative (keyword pattern preserved), a known CTR win.
