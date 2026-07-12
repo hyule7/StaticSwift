@@ -97,6 +97,31 @@ function renderPreview(prospect, facts) {
   const hero = img(1700, 1100, kw, seed % 90);
   const band = img(1700, 900, kw, (seed + 41) % 90);
 
+  // Per-business variation so no two previews look or read the same. All
+  // seeded from the business name, so a given business always gets the same
+  // (stable) look. Honest: only phrasing and accent colour vary, never claims.
+  const pick = (arr, off) => arr[Math.abs(seed + (off || 0)) % arr.length];
+  const accent = pick(['#9C2615', '#1f6b45', '#1d3a63', '#6b2148', '#14676b', '#a5561b'], 0); // brick / forest / navy / plum / teal / amber
+  const heroSub = pick([
+    `Trusted ${esc(f.trade)} work across ${esc(f.town)} and the surrounding area. Done properly, on time, and tidied up after.`,
+    `${esc(f.tradeTitle)} you can count on in ${esc(f.town)}. Fair prices, tidy work, and we turn up when we say we will.`,
+    `Reliable ${esc(f.trade)} services for ${esc(f.town)} and nearby. Clear quotes, quality work, no mess left behind.`,
+    `Your local ${esc(f.trade)} in ${esc(f.town)}. Straight talking, properly done, ready when you need us.`,
+  ], 1);
+  const doHead = pick([`${esc(f.tradeTitle)} work, done right`, `What ${esc(f.business)} does`, `Our ${esc(f.trade)} services`, `How we can help`], 2);
+  const doSub = pick([`Whatever the job, big or small, across ${esc(f.town)} and nearby.`, `From quick fixes to big jobs, all across ${esc(f.town)}.`, `Honest ${esc(f.trade)} work for homes and businesses in ${esc(f.town)}.`], 3);
+  const tileCap = pick(['Done properly, tidied up after.', 'Quality work, fair price.', 'On time and left spotless.', 'No fuss, no mess.'], 5);
+  const heroCta2 = pick(['Request a quote', 'Get a free quote', 'Ask for a price'], 4);
+  const WHY = [
+    ['Local and reliable', 'We turn up when we say we will, and keep you posted from quote to finish.'],
+    ['Clear pricing', 'A proper quote up front. No surprises when the invoice lands.'],
+    ['Tidy, careful work', 'We treat your home or premises like our own and leave it spotless.'],
+    ['Experienced hands', 'We have seen the job before and get it right the first time.'],
+    ['Quick to respond', 'Message or call and you hear back fast, not next week.'],
+    ['Fully accountable', 'If something is not right, we put it right. Simple as that.'],
+  ];
+  const whyPick = [pick(WHY, 0), pick(WHY, 2), pick(WHY, 4)];
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -108,7 +133,7 @@ function renderPreview(prospect, facts) {
 <link rel="preconnect" href="https://loremflickr.com">
 <link href="https://api.fontshare.com/v2/css?f[]=sentient@400,500,700&f[]=switzer@400,500,600&display=swap" rel="stylesheet">
 <style>
-  :root{--cream:#F2EFE7;--ink:#0E0B07;--red:#9C2615;--muted:#6b6358;--line:#e7e1d4;--card:#fbf9f4}
+  :root{--cream:#F2EFE7;--ink:#0E0B07;--red:${accent};--muted:#6b6358;--line:#e7e1d4;--card:#fbf9f4}
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
   body{font-family:'Switzer',system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
@@ -191,20 +216,20 @@ function renderPreview(prospect, facts) {
     <div class="wrap">
       <div class="eyebrow">${esc(f.tradeTitle)} · ${esc(f.town)}</div>
       <h1>${esc(f.business)}</h1>
-      <p>Trusted ${esc(f.trade)} work across ${esc(f.town)} and the surrounding area. Done properly, on time, and tidied up after.</p>
+      <p>${heroSub}</p>
       <div class="cta-row">
         <a class="btn-primary" href="${callHref}">${callLabel}</a>
-        <a class="btn-ghost" href="#contact">Request a quote</a>
+        <a class="btn-ghost" href="#contact">${heroCta2}</a>
       </div>
     </div>
   </section>
 
   <section>
     <div class="wrap">
-      <div class="lede reveal"><div class="eyebrow">What we do</div><h2>${esc(f.tradeTitle)} work, done right</h2>
-      <p class="sub">Whatever the job, big or small, across ${esc(f.town)} and nearby.</p></div>
+      <div class="lede reveal"><div class="eyebrow">What we do</div><h2>${doHead}</h2>
+      <p class="sub">${doSub}</p></div>
       <div class="tiles">
-        ${f.services.map((s, i) => `<div class="tile reveal"><img loading="lazy" src="${img(720, 900, kw, (seed + 7 + i * 13) % 90)}" alt="${esc(f.trade)} work"><div class="cap"><h3>${esc(s)}</h3><p>Done properly, tidied up after.</p></div></div>`).join('\n        ')}
+        ${f.services.map((s, i) => `<div class="tile reveal"><img loading="lazy" src="${img(720, 900, kw, (seed + 7 + i * 13) % 90)}" alt="${esc(f.trade)} work"><div class="cap"><h3>${esc(s)}</h3><p>${tileCap}</p></div></div>`).join('\n        ')}
       </div>
     </div>
   </section>
@@ -214,9 +239,7 @@ function renderPreview(prospect, facts) {
     <div class="wrap">
       <div class="lede reveal"><h2>Why ${esc(f.business)}</h2></div>
       <ul class="points">
-        <li class="reveal"><span class="n">1</span><div><b>Local and reliable</b><span class="d">We turn up when we say we will, and we keep you posted from quote to finish.</span></div></li>
-        <li class="reveal"><span class="n">2</span><div><b>Clear pricing</b><span class="d">A proper quote up front. No surprises when the invoice lands.</span></div></li>
-        <li class="reveal"><span class="n">3</span><div><b>Tidy, careful work</b><span class="d">We treat your home or premises like our own and leave it spotless.</span></div></li>
+        ${whyPick.map((w, i) => `<li class="reveal"><span class="n">${i + 1}</span><div><b>${esc(w[0])}</b><span class="d">${esc(w[1])}</span></div></li>`).join('\n        ')}
       </ul>
     </div>
   </section>
