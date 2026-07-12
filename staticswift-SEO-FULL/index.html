@@ -368,6 +368,10 @@ img,svg{display:block;max-width:100%;height:auto}
   color:var(--bronze);
 }
 .hs-foot::after{content:''; flex:1; max-width:280px; height:1px; background:var(--hair)}
+/* Early hero CTA so a convinced visitor can act without scrolling to section 08. */
+.hs-cta{ margin-top:clamp(28px,4vw,44px); display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
+.hs-cta-note{ font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--bronze); max-width:24ch; line-height:1.5; }
+@media(max-width:520px){ .hs-cta{ gap:12px } .hs-cta .bc-btn{ width:100%; justify-content:center } }
 
 /* ─── PINNED PHONE — 'A glimpse of the work' ─── */
 .pin{
@@ -1232,6 +1236,13 @@ img,svg{display:block;max-width:100%;height:auto}
       the kind locals find on <em>Google.</em>
     </h2>
     <p class="hs-foot"><b>£499 to build</b> · Optional <b>£49/mo</b> if you want me to manage it · Refund if no leads in 60 days</p>
+    <div class="hs-cta">
+      <a href="/order.html" class="bc-btn cursor-grow" id="hero-cta-primary">
+        <span>See your free preview</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <span class="hs-cta-note">Free in 24 hours · no card · you only pay if you keep it</span>
+    </div>
   </section>
 
   <!-- 02 — PINNED PHONE (cinematic moment) -->
