@@ -11,7 +11,7 @@
  * Only links pages that actually exist on disk, so no broken internal links.
  * Run: node scripts/build-city-guides.mjs
  */
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -23,9 +23,6 @@ const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(
 const waDigits = P.waLink.replace(/[^\d]/g, '');
 const titleCase = s => s.replace(/[-\s]+/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
 
-// Major UK cities (slug used in the estate). Display handled by a map for the
-// few that need it; the rest title-case cleanly.
-const CITY_SLUGS = ['manchester', 'birmingham', 'leeds', 'liverpool', 'sheffield', 'bristol', 'newcastle', 'nottingham', 'leicester', 'glasgow', 'edinburgh', 'cardiff', 'london', 'coventry', 'bradford', 'hull', 'stoke-on-trent', 'wolverhampton', 'sunderland', 'southampton', 'reading', 'derby', 'plymouth', 'swansea', 'brighton', 'bolton', 'preston', 'middlesbrough', 'aberdeen', 'york'];
 const DISPLAY = { hull: 'Hull', york: 'York', 'stoke-on-trent': 'Stoke-on-Trent', 'newcastle': 'Newcastle' };
 const cityName = slug => DISPLAY[slug] || titleCase(slug);
 
@@ -147,6 +144,19 @@ function page(slug) {
 </body>
 </html>`;
 }
+
+// Auto-discover every city that has an estate hub AND enough real trade pages
+// to link to, so each guide is genuinely substantive (real internal links, not
+// a thin doorway). This scales the city guides across the whole estate while
+// keeping each one worth indexing.
+const MIN_TRADES = 6;   // only cities with at least this many linkable trade pages
+const hubSlugs = readdirSync(ROOT, { withFileTypes: true })
+  .filter(d => d.isDirectory() && /^website-design-[a-z0-9-]+$/.test(d.name))
+  .map(d => d.name.replace(/^website-design-/, ''));
+const CITY_SLUGS = hubSlugs
+  .filter(slug => tradeLinks(slug).length >= MIN_TRADES)
+  .sort();
+console.log(`Discovered ${hubSlugs.length} city hubs; ${CITY_SLUGS.length} qualify (>= ${MIN_TRADES} trade pages).`);
 
 let n = 0; const built = [];
 for (const slug of CITY_SLUGS) {
