@@ -25,9 +25,12 @@ exports.handler = async (event) => {
     await updateClient(clientId, patch);
     client.portalUUID = portalUUID;
 
-    // Email client
+    // Email client. Report whether it actually sent, so the admin does not
+    // show a silent success when SMTP is misconfigured.
     const fromAddr = process.env.SMTP_USER || 'hello@staticswift.co.uk';
-    try {
+    let emailed = false, emailError = null;
+    if (!process.env.SMTP_PASS) { emailError = 'SMTP not configured (SMTP_PASS missing)'; }
+    else try {
       const transporter = createTransporter();
       await transporter.sendMail({
         from: '"StaticSwift" <' + fromAddr + '>',
@@ -41,9 +44,10 @@ exports.handler = async (event) => {
           <p style="color:#888;font-size:13px;margin-top:28px">StaticSwift — staticswift.co.uk</p>
           </div>`,
       });
-    } catch(e) { console.error('Portal reply email failed:', e.message); }
+      emailed = true;
+    } catch(e) { emailError = e.message; console.error('Portal reply email failed:', e.message); }
 
-    return { statusCode: 200, body: JSON.stringify({ ok: true }) };
+    return { statusCode: 200, body: JSON.stringify({ ok: true, emailed, emailError }) };
   } catch (err) {
     console.error('[portal-reply] error:', err.message);
     return { statusCode: 500, body: JSON.stringify({ error: err.message }) };

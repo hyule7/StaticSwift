@@ -1441,7 +1441,8 @@ async function messageClient(email, name, subject, body) {
     const r = await fetch('/.netlify/functions/portal-reply', { method: 'POST', headers: { 'x-admin-password': ADMIN_PW, 'Content-Type': 'application/json' }, body: JSON.stringify({ clientId: currentClientId, text: text }) });
     if (r.status === 401) { alert('Session expired, sign out and back in.'); return { ok: false, error: '401' }; }
     const d = await r.json().catch(function () { return { ok: false }; });
-    if (d.ok) { d.emailed = true; try { await fetchClients(); } catch (e) {} } // refresh so the new portal message shows in the panel
+    if (d.ok) { try { await fetchClients(); } catch (e) {} } // refresh so the new portal message shows in the panel
+    if (d.ok && !d.emailed) { alert('Saved to their portal, but the EMAIL did not send: ' + (d.emailError || 'SMTP not configured') + '.\n\nSet SMTP_PASS (and SMTP_USER) in Netlify env vars so clients get notified.'); }
     return d;
   } catch (e) { return { ok: false, error: e.message }; }
 }
@@ -3751,8 +3752,18 @@ async function wfApproveAll(blitzOnly) {
     const r = await fetch('/.netlify/functions/queue-action', { method: 'POST', headers: wfHdr(), body: JSON.stringify({ action: 'approve-batch', blitz: !!blitzOnly }) });
     if (r.status === 401) { wfReauth(); return; }
     const d = await r.json().catch(function () { return {}; });
-    const sent = d.dispatched && d.dispatched.sent;
-    wfToast(r.ok ? ('Approved ' + (d.approved || 0) + (sent != null ? ', sent ' + sent + ' now' : '. Sending now.')) : 'Approved, but the send is still processing. Refresh in a moment.');
+    const disp = d.dispatched || {};
+    if (!r.ok) { wfToast('Could not approve (check password/deploy).'); }
+    else if (disp.reason) {
+      // The dispatcher ran but sent nothing, and told us why. Surface it loudly
+      // so a config problem (usually SMTP not set) is not silent.
+      var why = /smtp/i.test(disp.reason) ? 'emails are NOT sending: SMTP is not configured. Set SMTP_PASS in Netlify env vars, then redeploy.' : disp.reason;
+      wfToast('Approved ' + (d.approved || 0) + ', but ' + why);
+      alert('Approved ' + (d.approved || 0) + ' emails, but the dispatcher sent NONE.\n\nReason: ' + disp.reason + '\n\n' + (/smtp/i.test(disp.reason) ? 'Fix: add SMTP_PASS (and SMTP_USER) in Netlify > Environment variables, then redeploy.' : ''));
+    }
+    else if (disp.failed) { wfToast('Approved ' + (d.approved || 0) + ', but ' + disp.failed + ' failed to send (SMTP error). Check SMTP_PASS + mail host.'); }
+    else if (disp.sent != null) { wfToast('Approved ' + (d.approved || 0) + ', sent ' + disp.sent + ' now.' + (disp.suppressed ? ' (' + disp.suppressed + ' suppressed)' : '')); }
+    else { wfToast('Approved ' + (d.approved || 0) + '. Sending within the cap.'); }
   } catch (_) { wfToast('Approved; the send is processing. Refresh in a moment.'); }
   setTimeout(loadWorkforce, 1200);
 }

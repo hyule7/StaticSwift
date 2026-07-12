@@ -51,7 +51,11 @@ exports.handler = async (event) => {
     out.leads = clients.length;
     const paid = clients.filter(c => c.paid || ['won', 'live', 'paid'].includes((c.stage || '').toLowerCase()));
     out.paid = paid.length;
-    out.revenue = paid.reduce((s, c) => s + (Number(c.amount) || (c.package === 'advanced' || c.package === 'pro' ? 999 : 499)), 0);
+    // Never show a retired/banned price (149/299/29/871) from stale client data:
+    // if the stored amount is a banned figure, use the current price instead.
+    const BANNED = [149, 299, 29, 871];
+    const realAmt = c => { const a = Number(c.amount); const isPro = c.package === 'advanced' || c.package === 'pro'; return (a && !BANNED.includes(a)) ? a : (isPro ? 999 : 499); };
+    out.revenue = paid.reduce((s, c) => s + realAmt(c), 0);
   } catch (_) {}
 
   return { statusCode: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }, body: JSON.stringify({ ok: true, funnel: out }) };
