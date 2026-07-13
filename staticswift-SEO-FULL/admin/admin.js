@@ -1172,7 +1172,13 @@ function openClient(id) {
   const missingHtml = _need.length
     ? `<div style="margin-bottom:12px;padding:10px 12px;background:rgba(156,38,21,.08);border:1px solid rgba(156,38,21,.35);border-radius:8px;font-size:12.5px;color:#9C2615;font-weight:600">⚠ Missing to build: ${_need.join(', ')}. <button onclick="askForInfo()" style="margin-left:4px;background:#9C2615;color:#fff;border:0;border-radius:6px;padding:4px 12px;font-size:12px;cursor:pointer">Ask now</button></div>`
     : '';
-  document.getElementById('panel-contact').innerHTML = missingHtml + `
+  // Delivered and not yet asked for a review: nudge, because reviews are the
+  // biggest ranking + trust lever.
+  const _delivered = ['complete', 'delivered', 'live', 'won', 'paid'].includes((c.stage || '').toLowerCase());
+  const reviewNudge = (_delivered && !c.reviewRequestedAt)
+    ? `<div style="margin-bottom:12px;padding:10px 12px;background:rgba(31,139,71,.08);border:1px solid rgba(31,139,71,.3);border-radius:8px;font-size:12.5px;color:#1f8b47;font-weight:600">★ Site delivered. Ask for a Google review while they are happy. <button onclick="askForReview()" style="margin-left:4px;background:#1f8b47;color:#fff;border:0;border-radius:6px;padding:4px 12px;font-size:12px;cursor:pointer">Ask now</button></div>`
+    : (c.reviewRequestedAt ? `<div style="margin-bottom:12px;font-size:12px;color:var(--muted)">★ Review requested ${new Date(c.reviewRequestedAt).toLocaleDateString('en-GB')}</div>` : '');
+  document.getElementById('panel-contact').innerHTML = missingHtml + reviewNudge + `
     <div class="info-row"><span class="info-key">Name</span><span class="info-val">${escapeHTML(c.name || '—')}</span></div>
     <div class="info-row"><span class="info-key">Email</span><span class="info-val"><a href="mailto:${encodeURIComponent(c.delivery_email||'')}">${escapeHTML(c.delivery_email || '—')}</a></span></div>
     <div class="info-row"><span class="info-key">Phone</span><span class="info-val">${c.phone ? `<a href="tel:${escapeHTML(c.phone)}" style="color:var(--cyan)">${escapeHTML(c.phone)}</a>` : '—'}</span></div>
@@ -1448,6 +1454,26 @@ async function messageClient(email, name, subject, body) {
 }
 window.askForInfo = askForInfo;
 window.messageClient = messageClient;
+
+// Your Google review link. Update this to the direct write-review link from
+// Google Business Profile > Ask for reviews (g.page/r/... ) for one-tap reviews.
+const REVIEW_URL = 'https://share.google/mb0l0ixAOIiLGprW1';
+// Ask a delivered client for a Google review, through the portal (so it is a
+// thread you can see) and by email. Reviews are the biggest ranking + trust
+// lever, so make this a habit the day every site goes live.
+async function askForReview() {
+  const c = (typeof allClients !== 'undefined' && allClients.find(function (x) { return x.clientId === currentClientId; })) || null;
+  if (!c) { alert('Open a client first.'); return; }
+  if (!c.delivery_email) { alert('This client has no email on file.'); return; }
+  const first = (c.name || c.business_name || 'there').split(' ')[0];
+  const body = 'Hi ' + first + ',\n\nReally glad you are happy with the site. Would you mind leaving a quick Google review? It genuinely helps a one-man band like me, and takes about 20 seconds:\n\n' + REVIEW_URL + '\n\nThank you,\nHarry\nStaticSwift';
+  if (!confirm('Send a Google review request to ' + c.delivery_email + '?')) return;
+  const d = await messageClient(c.delivery_email, c.name || c.business_name, 'A quick favour', body);
+  const msg = document.getElementById('panel-action-msg');
+  if (msg) { msg.style.display = 'block'; msg.style.color = d.ok ? '#347537' : '#9C2615'; msg.textContent = d.ok ? 'Review request sent to their portal + emailed. Once it lands on Google, add it to data/reviews.json to show stars.' : ('Could not send: ' + (d.error || 'unknown')); }
+  if (d.ok) { try { await updateClient(currentClientId, { reviewRequestedAt: new Date().toISOString() }); } catch (e) {} }
+}
+window.askForReview = askForReview;
 function closePanelBg(e) { if (e.target.id === 'client-panel') closePanel(); }
 
 // Mark a preview annotation as resolved — visible immediately in the panel

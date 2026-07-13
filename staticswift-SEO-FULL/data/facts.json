@@ -32,7 +32,9 @@
     "whatsapp": "+447502731799",
     "whatsapp_display": "07502 731 799",
     "email": "hello@staticswift.co.uk",
-    "reply_promise": "WhatsApp within 1 hour, UK working hours"
+    "reply_promise": "WhatsApp within 1 hour, UK working hours",
+    "google_review_url": "https://share.google/mb0l0ixAOIiLGprW1",
+    "google_review_url_note": "This opens the verified GBP profile. Replace with the direct write-review link from Google Business Profile > Ask for reviews (starts with g.page/r/... or search.google.com/local/writereview) for one-tap reviews."
   },
   "positioning": {
     "audience": "UK trades",
