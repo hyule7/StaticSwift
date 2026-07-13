@@ -18,15 +18,26 @@ Check current state first (paste the domain into):
 - https://www.mail-tester.com  (send it a test email, aim for 10/10)
 - https://mxtoolbox.com/SuperTool.aspx  (check SPF, DKIM, DMARC records)
 
-**SPF** (one TXT record on the root domain). With Fasthosts sending:
-```
-Type: TXT   Host: @   Value: v=spf1 include:_spf.fasthosts.co.uk ~all
-```
-(Confirm the exact include with Fasthosts; do NOT have two SPF records, merge
-into one.)
+IMPORTANT: staticswift.co.uk is on FastHosts **LiveMail** (MX
+`mailserver.livemail.co.uk`), NOT generic fasthosts.co.uk mail. Use the livemail
+values. In the FastHosts DNS panel the root-domain host is LEFT BLANK (not `@`),
+and a subdomain host is just the label (e.g. `_dmarc`).
 
-**DKIM** — enable in the Fasthosts mail control panel; it gives you a
-`selector._domainkey` TXT record to add. Add exactly what they provide.
+**SPF** (exactly ONE TXT record on the root domain, host left blank):
+```
+v=spf1 mx a include:_spf.livemail.co.uk ~all
+```
+CRITICAL: only ONE SPF record allowed. A second one (e.g. the generic
+`include:_spf.fasthosts.co.uk`) makes SPF fail validation (permerror) and mail
+lands in junk. If two exist, delete the wrong one, keep the livemail one above.
+
+**DKIM** — already enabled here via CNAMEs
+`livemail1..4._domainkey -> livemailN._domainkey.<id>.dkim.livemail.co.uk`
+(mailbox shows DKIM: Enabled). Nothing to add.
+
+Server settings for Netlify env vars: SMTP `smtp.livemail.co.uk` (port 587),
+IMAP `mail.livemail.co.uk` (port 993, TLS). The IMAP host DIFFERS from SMTP, so
+set IMAP_HOST explicitly or tickets/Sent-copies connect to the wrong server.
 
 **DMARC** (one TXT record). Start in monitor mode, then tighten:
 ```

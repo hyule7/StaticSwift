@@ -160,7 +160,7 @@ exports.handler = async (event) => {
     }
 
     const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'mail.staticswift.co.uk',
+      host: process.env.SMTP_HOST || 'smtp.livemail.co.uk',
       port: parseInt(process.env.SMTP_PORT || '587'),
       secure: false,
       auth: { user: fromAddr, pass: fromPass },

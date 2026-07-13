@@ -22,7 +22,7 @@ exports.handler = async (event) => {
 
   // === ENV DIAGNOSTICS ===
   const env = {
-    SMTP_HOST: process.env.SMTP_HOST || 'mail.staticswift.co.uk (default)',
+    SMTP_HOST: process.env.SMTP_HOST || 'smtp.livemail.co.uk (default)',
     SMTP_PORT: process.env.SMTP_PORT || '587 (default)',
     SMTP_USER: process.env.SMTP_USER ? '✓ set' : '✗ MISSING',
     SMTP_PASS: process.env.SMTP_PASS ? '✓ set (' + process.env.SMTP_PASS.length + ' chars)' : '✗ MISSING',
@@ -56,7 +56,7 @@ exports.handler = async (event) => {
 
   // === SMTP CONNECT TEST ===
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'mail.staticswift.co.uk',
+    host: process.env.SMTP_HOST || 'smtp.livemail.co.uk',
     port: parseInt(process.env.SMTP_PORT || '587', 10),
     secure: false,
     requireTLS: true,
@@ -76,7 +76,7 @@ exports.handler = async (event) => {
         env,
         howToFix: [
           'Double-check SMTP_USER + SMTP_PASS are correct in Netlify env vars',
-          'Verify SMTP_HOST — common values: mail.staticswift.co.uk, smtp.fasthost.co.uk, smtp.gmail.com',
+          'Verify SMTP_HOST — common values: smtp.livemail.co.uk (FastHosts LiveMail), smtp.gmail.com',
           'Check the mailbox provider allows SMTP from external IPs (some require app-specific password)',
           'If using FastHosts: confirm SMTP relay is enabled on your mailbox',
         ],
@@ -90,8 +90,8 @@ exports.handler = async (event) => {
       from: '"StaticSwift Test" <' + process.env.SMTP_USER + '>',
       to,
       subject: 'StaticSwift email test — ' + new Date().toISOString(),
-      text: 'If you can read this, your SMTP config is working.\n\nSent from: test-email Netlify function\nAt: ' + new Date().toUTCString() + '\nFrom: ' + process.env.SMTP_USER + '\nHost: ' + (process.env.SMTP_HOST || 'mail.staticswift.co.uk'),
-      html: '<div style="font-family:sans-serif;line-height:1.6;max-width:540px"><h2 style="color:#0066cc">✓ SMTP is working</h2><p>If you can read this, your StaticSwift admin can send emails to clients and prospects.</p><p style="font-size:13px;color:#666">Sent: ' + new Date().toUTCString() + '<br>From: ' + process.env.SMTP_USER + '<br>Host: ' + (process.env.SMTP_HOST || 'mail.staticswift.co.uk') + '</p></div>',
+      text: 'If you can read this, your SMTP config is working.\n\nSent from: test-email Netlify function\nAt: ' + new Date().toUTCString() + '\nFrom: ' + process.env.SMTP_USER + '\nHost: ' + (process.env.SMTP_HOST || 'smtp.livemail.co.uk'),
+      html: '<div style="font-family:sans-serif;line-height:1.6;max-width:540px"><h2 style="color:#0066cc">✓ SMTP is working</h2><p>If you can read this, your StaticSwift admin can send emails to clients and prospects.</p><p style="font-size:13px;color:#666">Sent: ' + new Date().toUTCString() + '<br>From: ' + process.env.SMTP_USER + '<br>Host: ' + (process.env.SMTP_HOST || 'smtp.livemail.co.uk') + '</p></div>',
     });
     return {
       statusCode: 200,

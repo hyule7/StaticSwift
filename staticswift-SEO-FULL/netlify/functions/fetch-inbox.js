@@ -5,10 +5,11 @@ function makeConfig(user, pass) {
   return {
     user,
     password: pass,
-    // Default to the SAME mail server the outbound mailer uses
-    // (mail.staticswift.co.uk). The old default 'imap.fasthost.co.uk' did not
-    // exist, so the ticket system connected to a dead host and pulled nothing.
-    host: process.env.IMAP_HOST || process.env.SMTP_HOST || 'mail.staticswift.co.uk',
+    // FastHosts LiveMail uses a DIFFERENT host for IMAP (mail.livemail.co.uk)
+    // than for SMTP (smtp.livemail.co.uk), so we must NOT fall back to SMTP_HOST
+    // for IMAP - that connected the ticket system to an SMTP-only host and it
+    // pulled nothing. Set IMAP_HOST in Netlify to override.
+    host: process.env.IMAP_HOST || 'mail.livemail.co.uk',
     port: parseInt(process.env.IMAP_PORT || '993'),
     tls: true,
     tlsOptions: { rejectUnauthorized: false },
@@ -116,7 +117,7 @@ exports.handler = async (event) => {
       // Every configured mailbox failed and we have nothing: this is the real
       // "tickets not pulling through" case. Say so loudly with the reason.
       body.error = 'IMAP connection failed: ' + failed.map(m => m.label + ' (' + m.error + ')').join('; ') +
-        '. Check IMAP_HOST/IMAP_PORT (993, TLS) and that the mailbox password is right. FastHosts IMAP host is usually the same as your SMTP host.';
+        '. Check IMAP_HOST/IMAP_PORT (993, TLS) and that the mailbox password is right. For FastHosts LiveMail the IMAP host is mail.livemail.co.uk (not the SMTP host smtp.livemail.co.uk).';
     }
     return {
       statusCode: 200,

@@ -5,7 +5,7 @@ function createTransporter() {
 
   if (provider === 'fasthosts') {
     return nodemailer.createTransport({
-      host: process.env.SMTP_HOST || 'mail.staticswift.co.uk',
+      host: process.env.SMTP_HOST || 'smtp.livemail.co.uk',
       port: parseInt(process.env.SMTP_PORT || '587'),
       secure: process.env.SMTP_SECURE === 'true',
       auth: {

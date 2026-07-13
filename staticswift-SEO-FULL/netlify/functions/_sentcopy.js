@@ -34,7 +34,8 @@ function imapConfig(user, pass) {
   return {
     user,
     password: pass,
-    host: process.env.IMAP_HOST || process.env.SMTP_HOST || 'mail.staticswift.co.uk',
+    // LiveMail IMAP host differs from SMTP; never fall back to SMTP_HOST here.
+    host: process.env.IMAP_HOST || 'mail.livemail.co.uk',
     port: parseInt(process.env.IMAP_PORT || '993'),
     tls: true,
     tlsOptions: { rejectUnauthorized: false },
