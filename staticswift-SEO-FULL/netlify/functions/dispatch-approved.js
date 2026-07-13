@@ -102,6 +102,27 @@ exports.handler = async (event) => {
   }
 
   await saveItems(store, items);
+
+  // Durable send counter. The queue is trimmed to the last 2000 items on save,
+  // so old 'sent' rows fall off the front and the funnel would under-count real
+  // sends. Keep a monotonic tally in the ops store (never trimmed) so the
+  // conversion tracker stays truthful no matter how big the queue gets.
+  if (sent > 0) {
+    try {
+      const { getNamedStore } = require('./_blobs');
+      const ops = getNamedStore('ops');
+      if (ops) {
+        const key = 'send-stats';
+        const s = (await ops.get(key, { type: 'json' })) || { total: 0, byDay: {} };
+        s.total = (s.total || 0) + sent;
+        s.byDay = s.byDay || {};
+        s.byDay[today] = (s.byDay[today] || 0) + sent;
+        s.lastSentAt = new Date().toISOString();
+        await ops.setJSON(key, s);
+      }
+    } catch (e) { console.log('[dispatch-approved] send-stats write failed', e.message); }
+  }
+
   console.log('[dispatch-approved]', JSON.stringify({ sent, failed, suppressed, sentToday }));
   return { statusCode: 200, body: JSON.stringify({ ok: true, sent, failed, suppressed, remainingBudget: budget }) };
 };

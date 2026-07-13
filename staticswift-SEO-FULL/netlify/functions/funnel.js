@@ -26,6 +26,18 @@ exports.handler = async (event) => {
     out.replies = items.filter(i => i.category === 'cs-reply').length;
   } catch (_) {}
 
+  // Durable send total. The queue only keeps the last 2000 items, so sent rows
+  // get evicted once the pipeline is busy and the queue-derived count above
+  // under-reports. dispatch-approved keeps a never-trimmed tally in ops; use the
+  // larger of the two so "Emailed" is always the truth, never fewer than reality.
+  try {
+    const ops = getNamedStore('ops');
+    const ss = (ops && (await ops.get('send-stats', { type: 'json' }))) || {};
+    if (Number(ss.total) > out.sent) out.sent = Number(ss.total);
+    out.sentToday = (ss.byDay && ss.byDay[new Date().toISOString().slice(0, 10)]) || 0;
+    out.lastSentAt = ss.lastSentAt || null;
+  } catch (_) {}
+
   // Preview views.
   try {
     const ops = getNamedStore('ops');
