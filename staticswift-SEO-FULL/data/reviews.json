@@ -1,0 +1,4 @@
+{
+  "_note": "Real reviews only. Never invent a review, a rating or a count - it breaks Google's policy (manual penalty) and the StaticSwift constitution. Add each genuine review below, then run: node scripts/build-reviews.mjs . Stars appear on the homepage (visible text + schema) only when real reviews exist here.",
+  "items": []
+}

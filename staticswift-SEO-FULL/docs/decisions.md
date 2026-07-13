@@ -144,3 +144,14 @@ searched keyword lifts CTR, and it removes the banned em dash. Idempotent patch
 in scripts/patch-titles-ctr.mjs. Verified: leaf page renders, canonical + lead
 form + H1 unchanged, 0 console errors, facts clean. SEO Director sign-off: the
 change is conservative (keyword pattern preserved), a known CTR win.
+
+## Breadcrumbs + honest review snippets
+- Added BreadcrumbList JSON-LD to 27,197 estate pages (leaf / city hub / trade
+  root) via scripts/patch-breadcrumbs.mjs. Schema only, no visible layout
+  change, all trail URLs point to real pages. Idempotent. Lifts SERP appearance
+  (breadcrumb trail instead of raw URL) and clarifies site hierarchy.
+- Review snippets: built data/reviews.json + scripts/build-reviews.mjs. Injects
+  AggregateRating + Review schema AND a visible "What clients say" section on the
+  homepage ONLY when data/reviews.json holds real reviews; zero reviews injects
+  nothing. NO fabricated ratings ever (Google policy + constitution). Verified:
+  empty = nothing, one real review = valid schema, revert = clean.
