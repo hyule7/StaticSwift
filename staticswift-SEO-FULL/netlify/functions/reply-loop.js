@@ -91,11 +91,17 @@ exports.handler = async (event) => {
   const okAgent = process.env.AGENT_TOKEN && agent === process.env.AGENT_TOKEN;
   if (!isSchedule && !okAdmin && !okAgent) return { statusCode: 401, body: JSON.stringify({ error: 'Unauthorized' }) };
 
-  // 1. Pull the inbox (fetch-inbox is admin-gated and returns an array).
+  // 1. Pull the inbox. fetch-inbox now returns { emails, mailboxes, error }
+  // (older shape was a bare array). Handle both. If IMAP is down, log it so a
+  // silent connection failure does not quietly starve the reply loop of leads.
   let inbox = [];
   try {
     const r = await fire('fetch-inbox', null, 'GET');
-    if (r && r.ok) inbox = await r.json();
+    if (r && r.ok) {
+      const d = await r.json();
+      inbox = Array.isArray(d) ? d : (d.emails || []);
+      if (!Array.isArray(d) && d.error) { await log('reply-loop', 'ops', 'inbox-error', d.error); }
+    }
   } catch (_) {}
   if (!Array.isArray(inbox)) inbox = [];
 

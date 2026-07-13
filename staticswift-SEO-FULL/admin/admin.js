@@ -2366,7 +2366,13 @@ async function loadInbox() {
       list.innerHTML = '<div style="padding:24px;color:var(--red);font-size:13px">Error: ' + (d.error || r.status) + '</div>';
       return;
     }
-    inboxEmails = await r.json();
+    const data = await r.json();
+    inboxEmails = Array.isArray(data) ? data : (data.emails || []);
+    // Surface a broken IMAP connection instead of showing a misleading empty list.
+    if (!Array.isArray(data) && data.error) {
+      list.innerHTML = '<div style="padding:24px;color:var(--red);font-size:13px;line-height:1.5">Inbox not connecting: ' + data.error + '</div>';
+      return;
+    }
     inboxLoaded = true;
     renderInbox();
     renderReplyQueue();
@@ -2703,7 +2709,12 @@ async function loadTickets() {
       list.innerHTML = '<div style="padding:24px;color:var(--red);font-size:13px">Error: ' + (d.error || r.status) + '</div>';
       return;
     }
-    const emails = await r.json();
+    const data = await r.json();
+    const emails = Array.isArray(data) ? data : (data.emails || []);
+    if (!Array.isArray(data) && data.error) {
+      list.innerHTML = '<div style="padding:24px;color:var(--red);font-size:13px;line-height:1.5">Mailboxes not connecting: ' + data.error + '</div>';
+      return;
+    }
     const threads = {};
     emails.forEach(e => {
       const key = e.subject.replace(/^(re:|fwd?:)\s*/i,'').trim().toLowerCase();

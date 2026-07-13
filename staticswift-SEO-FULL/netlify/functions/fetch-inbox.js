@@ -20,18 +20,25 @@ function makeConfig(user, pass) {
 function fetchMailbox(config, label) {
   return new Promise((resolve) => {
     const emails = [];
+    let boxError = null;
+    let done = false;
+    const finish = () => { if (!done) { done = true; resolve({ label, emails, error: boxError }); } };
     const imap = new Imap(config);
 
     imap.once('error', (err) => {
+      // Surface WHY, do not swallow. A dead IMAP host or a bad password used to
+      // resolve([]) silently, so a broken connection looked identical to an
+      // empty inbox and replies/tickets "did not pull through" with no clue.
+      boxError = err.message;
       console.error('[fetch-inbox] IMAP error:', label, err.message);
-      resolve([]);
+      finish();
     });
 
     imap.once('ready', () => {
       imap.openBox('INBOX', true, (err, box) => {
-        if (err) { imap.end(); return resolve([]); }
+        if (err) { boxError = err.message; imap.end(); return finish(); }
         const total = box.messages.total;
-        if (total === 0) { imap.end(); return resolve([]); }
+        if (total === 0) { imap.end(); return finish(); }
 
         const start = Math.max(1, total - 29);
         const f = imap.seq.fetch(`${start}:${total}`, { bodies: '', struct: true });
@@ -68,7 +75,7 @@ function fetchMailbox(config, label) {
       });
     });
 
-    imap.once('end', () => resolve(emails));
+    imap.once('end', () => finish());
     imap.connect();
   });
 }
@@ -96,13 +103,25 @@ exports.handler = async (event) => {
   }
 
   try {
-    const boxes = await Promise.all(jobs);
-    const all = boxes.flat().sort((a, b) => new Date(b.date) - new Date(a.date));
+    const results = await Promise.all(jobs); // [{ label, emails, error }]
+    const all = results.flatMap(r => r.emails).sort((a, b) => new Date(b.date) - new Date(a.date));
+    const mailboxes = results.map(r => ({ label: r.label, count: r.emails.length, error: r.error || null }));
+    const failed = mailboxes.filter(m => m.error);
 
+    // Backward compatible: `emails` holds the array old callers expected via the
+    // top level. New callers read `.emails` + `.mailboxes` to SEE connection
+    // failures instead of mistaking a broken IMAP link for an empty inbox.
+    const body = { ok: true, emails: all, mailboxes };
+    if (failed.length && all.length === 0) {
+      // Every configured mailbox failed and we have nothing: this is the real
+      // "tickets not pulling through" case. Say so loudly with the reason.
+      body.error = 'IMAP connection failed: ' + failed.map(m => m.label + ' (' + m.error + ')').join('; ') +
+        '. Check IMAP_HOST/IMAP_PORT (993, TLS) and that the mailbox password is right. FastHosts IMAP host is usually the same as your SMTP host.';
+    }
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
-      body: JSON.stringify(all),
+      body: JSON.stringify(body),
     };
   } catch (err) {
     console.error('[fetch-inbox] error:', err.message);
