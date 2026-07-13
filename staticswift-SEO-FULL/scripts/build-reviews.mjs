@@ -54,10 +54,14 @@ if (items.length) {
 const file = join(ROOT, 'index.html');
 let html = readFileSync(file, 'utf8');
 const re = new RegExp(OPEN.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[\\s\\S]*?' + CLOSE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-if (re.test(html)) {
-  html = html.replace(re, block); // replace (or clear, if block is empty)
-} else if (block) {
-  html = html.replace('</main>', block + '\n</main>'); // first insert, before the footer/end
+// Always strip any existing block first, then (re)inject at the preferred spot,
+// so the section can be added, updated, moved, or cleared cleanly each run.
+html = html.replace(new RegExp('\\s*' + re.source), '');
+if (block) {
+  // Place the proof just BEFORE the footer/colophon (near the decision), else
+  // fall back to before </main>.
+  if (html.includes('<footer class="colophon"')) html = html.replace('<footer class="colophon"', block + '\n<footer class="colophon"');
+  else html = html.replace('</main>', block + '\n</main>');
 }
 writeFileSync(file, html);
 console.log(items.length ? `Injected ${items.length} real reviews (avg ${(items.reduce((s, r) => s + Number(r.rating), 0) / items.length).toFixed(1)}) + schema.` : 'No real reviews yet - nothing injected (correct). Add real reviews to data/reviews.json and re-run.');
