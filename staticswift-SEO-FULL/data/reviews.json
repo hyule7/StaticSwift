@@ -1,4 +1,12 @@
 {
   "_note": "Real reviews only. Never invent a review, a rating or a count - it breaks Google's policy (manual penalty) and the StaticSwift constitution. Add each genuine review below, then run: node scripts/build-reviews.mjs . Stars appear on the homepage (visible text + schema) only when real reviews exist here.",
-  "items": []
+  "items": [
+    {
+      "author": "Beth Maloney",
+      "rating": 5,
+      "text": "I got Harry to create my drop shipping website, the quality and time it took was nothing short of amazing, recommend highly.",
+      "date": "2026-07-13",
+      "source": "Google"
+    }
+  ]
 }
