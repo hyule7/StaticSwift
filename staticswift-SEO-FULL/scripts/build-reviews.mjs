@@ -53,6 +53,18 @@ if (items.length) {
 
 const file = join(ROOT, 'index.html');
 let html = readFileSync(file, 'utf8');
+
+// Compact rating badge in the hero, near the CTA (highest-converting spot).
+const HR_OPEN = '<!-- ss:hero-rating -->', HR_CLOSE = '<!-- /ss:hero-rating -->';
+let heroBadge = '';
+if (items.length) {
+  const avg = Math.round((items.reduce((s, r) => s + Number(r.rating), 0) / items.length) * 10) / 10;
+  heroBadge = `<div class="hs-rating" style="margin-top:18px;display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--ink)"><span style="color:#9C2615;letter-spacing:2px;font-size:14px">★★★★★</span> Rated ${avg} out of 5 on Google</div>`;
+}
+{
+  const hr = new RegExp(HR_OPEN.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[\\s\\S]*?' + HR_CLOSE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  if (hr.test(html)) html = html.replace(hr, HR_OPEN + heroBadge + HR_CLOSE);
+}
 const re = new RegExp(OPEN.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[\\s\\S]*?' + CLOSE.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
 // Always strip any existing block first, then (re)inject at the preferred spot,
 // so the section can be added, updated, moved, or cleared cleanly each run.
