@@ -57,22 +57,30 @@ exports.handler = async (event) => {
     (!i.sendAfter || Date.parse(i.sendAfter) <= Date.now())
   ).sort((a, b) => ((b.meta && b.meta.heat) || 0) - ((a.meta && a.meta.heat) || 0)); // hottest leads first
 
+  const { buildRaw, appendMany } = require('./_sentcopy');
+  const fromHeader = '"Harry at StaticSwift" <' + fromAddr + '>';
+  const sentCopies = []; // raw RFC822 of each sent message, appended to Sent at the end
+
   let sent = 0, failed = 0, suppressed = 0;
   for (const item of due) {
     if (budget <= 0) break;
     if (await isSuppressed(item.to)) { item.status = 'rejected'; item.meta = { ...item.meta, suppressedAtSend: true }; suppressed++; continue; }
     const body = item.editedBody || item.body;
     const unsub = unsubUrl(item.to, item.category);
+    const fullText = body + '\n\nMessage me anytime: https://staticswift.co.uk/#message\nUnsubscribe: ' + unsub;
     try {
-      await transporter.sendMail({
-        from: '"Harry at StaticSwift" <' + fromAddr + '>',
+      const info = await transporter.sendMail({
+        from: fromHeader,
         to: item.to,
         replyTo: fromAddr,
         subject: item.subject,
-        text: body + '\n\nMessage me anytime: https://staticswift.co.uk/#message\nUnsubscribe: ' + unsub,
+        text: fullText,
         headers: { 'List-Unsubscribe': '<' + unsub + '>', 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
       });
       item.status = 'sent'; item.sentAt = new Date().toISOString();
+      if (info && info.messageId) item.messageId = info.messageId;
+      // Keep a copy for the Sent folder so it is visible where Harry looks.
+      sentCopies.push(buildRaw({ from: fromHeader, to: item.to, subject: item.subject, text: fullText, messageId: info && info.messageId, date: item.sentAt }));
       sent++; budget--;
       // Auto-queue the next follow-up so nobody gets one email and silence.
       // Step 1 (day 3): short bump. Step 2 (day 8): the case study. Pending,
@@ -103,6 +111,15 @@ exports.handler = async (event) => {
 
   await saveItems(store, items);
 
+  // Save copies to the mailbox "Sent" folder (SMTP alone never does this, which
+  // is why FastHosts webmail Sent looked empty even though mail was going out).
+  // Best-effort: one IMAP connection, never blocks the actual send result.
+  let sentCopy = null;
+  if (sentCopies.length && process.env.SMTP_PASS) {
+    try { sentCopy = await appendMany(fromAddr, process.env.SMTP_PASS, sentCopies); }
+    catch (e) { sentCopy = { appended: 0, error: e.message }; }
+  }
+
   // Durable send counter. The queue is trimmed to the last 2000 items on save,
   // so old 'sent' rows fall off the front and the funnel would under-count real
   // sends. Keep a monotonic tally in the ops store (never trimmed) so the
@@ -123,6 +140,6 @@ exports.handler = async (event) => {
     } catch (e) { console.log('[dispatch-approved] send-stats write failed', e.message); }
   }
 
-  console.log('[dispatch-approved]', JSON.stringify({ sent, failed, suppressed, sentToday }));
-  return { statusCode: 200, body: JSON.stringify({ ok: true, sent, failed, suppressed, remainingBudget: budget }) };
+  console.log('[dispatch-approved]', JSON.stringify({ sent, failed, suppressed, sentToday, sentCopy }));
+  return { statusCode: 200, body: JSON.stringify({ ok: true, sent, failed, suppressed, remainingBudget: budget, sentCopy }) };
 };
