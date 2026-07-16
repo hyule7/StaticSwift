@@ -383,6 +383,141 @@ const GUIDES = [
       { q: 'What is a fair price for a trade website?', a: `Around ${P.build} to 1,500 pounds one-off, or 15 to 40 pounds a month on a builder. Be wary of both very cheap template work and overpriced agencies.` },
     ],
   },
+
+  // ── Comparison guides (high commercial intent, AI engines love to cite these) ──
+  {
+    slug: 'checkatrade-vs-your-own-website',
+    q: 'Do I need my own website if I am on Checkatrade?',
+    meta: 'Checkatrade vs having your own website for a UK tradesperson: what each does, what they cost, and why most trades benefit from both.',
+    answer: `Being on Checkatrade and having your own website do two different jobs, and most tradespeople are best served by both. Checkatrade is a paid directory where customers compare vetted trades, and you pay a monthly membership to appear. Your own website is something you own outright: it ranks in Google under your own name, has no per-lead or membership fee, and lets you show your work and reviews your way. A directory rents you visibility; a website builds an asset you keep.`,
+    sections: [
+      { h: 'What Checkatrade gives you', body: `A trusted, vetted badge and a stream of customers actively comparing trades, in exchange for an ongoing membership fee. It is genuinely useful for reputation, but you do not own the profile, you compete with other members on the same page, and the fee never stops.` },
+      { h: 'What your own website gives you', body: `A home that is only yours. It shows in Google when someone searches your trade and town, it carries your reviews and photos with no competitor listed beside them, and it costs a one-off ${P.build} pounds with StaticSwift rather than a fee forever. Customers who find you on a directory also Google you, and a real site wins the ones who are deciding.` },
+      { h: 'The honest answer: use both', body: `Keep the directory for the trust badge and comparison traffic, and add a website so you own your presence and stop paying per lead for every customer. The two reinforce each other. A website with a free preview first, like StaticSwift, is a low-risk way to add the piece you actually own.` },
+    ],
+    faqs: [
+      { q: 'Is Checkatrade enough on its own?', a: `It can bring work, but you are renting visibility and competing on every page. A website you own ranks under your own name and has no per-lead cost, which is why most established trades run both.` },
+      { q: 'How much does a website cost compared to a directory membership?', a: `A directory is a recurring monthly fee. A StaticSwift website is a one-off ${P.build} pounds that you own, with an optional ${P.mo} pounds a month plan only if you want changes handled for you.` },
+    ],
+  },
+  {
+    slug: 'bark-and-lead-sites-vs-your-own-website',
+    q: 'Are lead sites like Bark worth it, or should I get my own website?',
+    meta: 'Paying per lead on Bark, MyBuilder or Rated People vs owning your own website: the real trade-offs for a UK tradesperson.',
+    answer: `Pay-per-lead sites like Bark, MyBuilder and Rated People can bring quick work, but you pay for every lead, you share each one with rival trades, and the cost never builds into anything you own. Your own website is the opposite: a one-off cost, every enquiry is yours alone, and it keeps working for free once it ranks. Lead sites are worth it as a top-up; your own site is worth it as the foundation.`,
+    sections: [
+      { h: 'The catch with pay-per-lead', body: `You often pay whether or not you win the job, the same lead is sold to several trades, and you are pushed to compete on price. It can fill a quiet week, but you are renting other people's audience and the spend disappears each month.` },
+      { h: 'Why a website compounds instead', body: `A website is bought once and keeps earning. Enquiries come straight to you, not to five competitors, and there is no per-lead charge. StaticSwift builds one hand-coded for ${P.build} pounds, with a free working preview within ${P.preview} hours so you can see it before paying.` },
+      { h: 'A sensible mix', body: `Use lead sites to smooth out quiet spells, but put your money into the asset you keep. Over a year, the trades who own their presence spend less per genuine customer than those renting leads.` },
+    ],
+    faqs: [
+      { q: 'Is Bark good for tradespeople?', a: `It can bring leads fast, but you pay per lead, share them with competitors, and own nothing at the end. Good as a top-up, poor as your only source.` },
+      { q: 'What is cheaper over a year, lead sites or a website?', a: `A website almost always. Lead fees repeat every month; a StaticSwift site is a one-off ${P.build} pounds and every enquiry it brings is yours with no extra charge.` },
+    ],
+  },
+  {
+    slug: 'yell-vs-your-own-website-for-trades',
+    q: 'Is a Yell listing enough, or do I need my own website?',
+    meta: 'A Yell.com listing vs your own website for a UK trade business: visibility, cost, ownership and which wins more work.',
+    answer: `A Yell listing puts you in a directory, but it does not give you what a website does: a page that ranks under your own name in Google, carries only your reviews, and costs nothing per enquiry. Yell can be a useful citation for local SEO, but on its own it caps how you appear and keeps you paying. Treat a directory listing as one signal, and your own website as the presence you actually control.`,
+    sections: [
+      { h: 'What a directory listing does and does not do', body: `It adds a citation that can help local search, and some customers browse directories. But you sit beside competitors, you cannot shape the page, and the listing is not yours to keep. It is a supporting act, not the main one.` },
+      { h: 'Why your own site wins the deciding customer', body: `When someone is choosing who to call, they look for a real website with clear services, reviews and an easy way to get in touch. A hand-coded StaticSwift site does that for a one-off ${P.build} pounds, and you own the files outright.` },
+    ],
+    faqs: [
+      { q: 'Do directory listings help my Google ranking?', a: `Consistent listings (same name, address, phone) are a small positive signal. They help most alongside a real website and a Google Business Profile, not instead of them.` },
+      { q: 'Should I cancel my directory listings if I get a website?', a: `No need. Keep consistent free listings as citations, and let your website be the presence you own and send people to.` },
+    ],
+  },
+
+  // ── More trade-specific guides (long-tail, buyer intent) ──
+  {
+    slug: 'website-for-roofers-uk',
+    q: 'What makes a good website for a roofer?',
+    meta: 'What a roofer’s website should include to win work in the UK: photos of jobs, reviews, area covered, and fast mobile click-to-call.',
+    answer: `A roofer’s website wins work when it quickly shows proof and makes calling easy: clear before-and-after photos of real jobs, reviews, the areas you cover, and a call button that works instantly on a phone. Roofing is a trust-and-urgency purchase, often a leak or storm damage, so a fast site that proves you are local, reviewed and reachable beats a slow or cluttered one every time.`,
+    sections: [
+      { h: 'Show the work, prove the trust', body: `Photos of completed roofs, a few genuine reviews, and any accreditations do more than clever design. Customers want to see you have done their kind of job nearby.` },
+      { h: 'Make an urgent call effortless', body: `Many roofing enquiries are urgent. A phone number that is one tap away on mobile, plus a WhatsApp option, turns a worried homeowner into a booked job. StaticSwift builds this in, hand-coded, for ${P.build} pounds with a free preview first.` },
+    ],
+    faqs: [
+      { q: 'How much should a roofer pay for a website?', a: `A one-off hand-coded site is around ${P.build} pounds with StaticSwift, versus 15 to 40 pounds a month forever on a DIY builder. You see a free preview before paying.` },
+      { q: 'What pages does a roofing website need?', a: `Not many. A strong home page with services, job photos, area covered and click-to-call usually beats a big cluttered site.` },
+    ],
+  },
+  {
+    slug: 'website-for-painters-and-decorators-uk',
+    q: 'What should a painter and decorator’s website include?',
+    meta: 'How a painter and decorator can win more work online: a photo-led website with reviews, areas covered and easy contact.',
+    answer: `Painting and decorating is a visual trade, so the website should lead with photos: clean, well-lit shots of finished rooms and exteriors, alongside reviews and the areas you cover. Decorators are chosen on taste and tidiness as much as price, so a site that shows your finish and makes it easy to enquire wins the jobs a Facebook page misses.`,
+    sections: [
+      { h: 'Let the finish sell you', body: `A small gallery of your best work, shown fast and clean, is the strongest thing on a decorator’s site. Pair it with two or three real reviews and you have earned the enquiry.` },
+      { h: 'Make enquiring simple', body: `A clear contact route, click-to-call and WhatsApp, means a customer who likes your work can reach you in seconds. StaticSwift builds a hand-coded, photo-led site for ${P.build} pounds, with a free preview within ${P.preview} hours.` },
+    ],
+    faqs: [
+      { q: 'Do decorators really need a website?', a: `Yes. Customers judge a decorator on finish and reliability, and a clean site with photos and reviews proves both in a way word of mouth alone cannot reach new customers.` },
+      { q: 'How quickly can I get a decorating website?', a: `A free working preview within ${P.preview} hours from a short brief, and live within ${P.days} days with StaticSwift.` },
+    ],
+  },
+  {
+    slug: 'website-for-landscapers-and-gardeners-uk',
+    q: 'What makes a good website for a landscaper or gardener?',
+    meta: 'What a landscaper or gardener’s website needs to win work: project photos, services, seasonal clarity and easy local contact.',
+    answer: `A landscaper or gardener’s website should show transformation and make the services obvious: photos of finished gardens and projects, a clear list of what you do (maintenance, design, patios, fencing), the areas you cover, and an easy way to book a quote. Garden work is seasonal and visual, so a fast, photo-led site that proves you are local and reviewed turns browsers into booked visits.`,
+    sections: [
+      { h: 'Show the transformation', body: `Before-and-after photos of gardens and hard landscaping are your best salesperson. Customers want to picture their own space done to that standard.` },
+      { h: 'Be clear on services and area', body: `Spell out what you offer and where you work, so the right customers self-select. StaticSwift builds a clean, hand-coded site for ${P.build} pounds with a free preview first.` },
+    ],
+    faqs: [
+      { q: 'How much does a gardener’s website cost?', a: `Around ${P.build} pounds one-off with StaticSwift, with a free preview before you pay, versus a monthly fee forever on a DIY builder.` },
+      { q: 'Should a gardener’s website show prices?', a: `A "from" guide or clear quote process helps, but most garden jobs need a visit. Make booking that visit the easy next step.` },
+    ],
+  },
+  {
+    slug: 'website-for-plasterers-uk',
+    q: 'What should a plasterer’s website include?',
+    meta: 'How a plasterer can win more work online: a simple, fast website with job photos, reviews, areas covered and click-to-call.',
+    answer: `A plasterer’s website does not need to be fancy, it needs to be fast, show clean finished work, and make calling easy. A few photos of smooth, finished walls and ceilings, a couple of reviews, the areas you cover, and a phone button that works on mobile will win more work than an elaborate site that loads slowly. Plastering is judged on finish and reliability, so prove both and make contact effortless.`,
+    sections: [
+      { h: 'Proof over polish', body: `Photos of a flawless finish and honest reviews matter more than heavy design. Keep it clean and quick.` },
+      { h: 'One-tap contact', body: `Most enquiries come from a phone. A clear call button and WhatsApp link turn interest into a booking. StaticSwift builds this hand-coded for ${P.build} pounds with a free preview within ${P.preview} hours.` },
+    ],
+    faqs: [
+      { q: 'Do plasterers need a website?', a: `Yes. Even with word of mouth, customers Google you before booking, and a clean site with photos and reviews wins the ones who are still deciding.` },
+      { q: 'What is the cheapest way for a plasterer to get a proper website?', a: `A one-off productised build. StaticSwift is ${P.build} pounds once with a free preview first, so there is no risk in seeing it.` },
+    ],
+  },
+
+  // ── High commercial intent ──
+  {
+    slug: 'cheapest-way-to-get-a-professional-website-uk',
+    q: 'What is the cheapest way to get a professional website in the UK?',
+    meta: 'The genuinely cheapest way for a UK small business to get a professional website, comparing DIY builders, freelancers and productised builds.',
+    answer: `The cheapest way to get a genuinely professional website in the UK depends on your time. If you have hours to spare, a DIY builder like Wix is cheapest to start at 15 to 40 pounds a month, but you build and maintain it and pay forever. If you would rather it be done properly for you, a productised one-off build is cheapest over time: StaticSwift is a single ${P.build} pounds, hand-coded, that you own, with no monthly fee required and a free preview before you pay a penny.`,
+    sections: [
+      { h: 'Cheap to start vs cheap over time', body: `A monthly builder has the lowest upfront cost but never stops charging: 30 pounds a month is 360 pounds a year, every year. A one-off build you own is usually cheaper within two to three years and you are not locked in.` },
+      { h: 'How to keep it cheap without it looking cheap', body: `Avoid long contracts and per-page upsells. Look for a clear total price and a preview first, so you never pay for something you have not seen. StaticSwift shows you a real working preview within ${P.preview} hours, free.` },
+    ],
+    faqs: [
+      { q: 'Is a free website builder truly free?', a: `Rarely. Free tiers usually show ads, use a long messy web address and load slowly, which costs you customers. A proper domain and fast site pays for itself in calls.` },
+      { q: 'What is the cheapest done-for-you website?', a: `A productised build like StaticSwift at ${P.build} pounds once, with a free preview first and no required monthly fee, is among the cheapest ways to get a proper site built for you.` },
+    ],
+  },
+  {
+    slug: 'how-to-get-more-leads-as-a-tradesperson',
+    q: 'How do I get more leads as a tradesperson?',
+    meta: 'Practical, honest ways for a UK tradesperson to get more leads: Google Business Profile, reviews, a fast website, and local visibility.',
+    answer: `The most reliable way for a tradesperson to get more leads is to be easy to find and easy to trust in local Google searches. In order: claim and complete your free Google Business Profile, gather a steady stream of reviews, and have a fast website that shows your work and makes calling effortless. Those three feed each other. Paid lead sites and ads can top up quiet weeks, but the free, compounding wins come first.`,
+    sections: [
+      { h: 'Get found: Business Profile and local search', body: `A complete Google Business Profile is the single biggest free lead source for local trades. Add photos, post occasionally, and keep your details consistent everywhere.` },
+      { h: 'Get trusted: reviews and a real website', body: `Ask every happy customer for a review with a direct link, and reply to each. Back it with a fast website that shows your work and reviews. StaticSwift builds one for ${P.build} pounds with a free preview within ${P.preview} hours.` },
+      { h: 'Top up: ads and lead sites, carefully', body: `Google Ads and pay-per-lead sites can fill gaps, but treat them as a top-up on the free foundation, not a replacement. The trades who win spend least per genuine customer by owning their presence.` },
+    ],
+    faqs: [
+      { q: 'What is the fastest way to get more trade leads?', a: `A complete Google Business Profile with a few reviews, which is free and can show results in days. A fast website makes every one of those views more likely to call.` },
+      { q: 'Do I need to pay for leads?', a: `Not to start. The biggest wins, a Business Profile, reviews and a fast website, are one-off or free. Paid leads are a top-up, not the foundation.` },
+    ],
+  },
 ];
 
 function page(g) {
