@@ -77,6 +77,15 @@
   status = 200
   force = true
 
+# Browsable multi-file previews. upload-preview unzips a build into the file
+# store; serve-preview-site maps /preview/{fileId}/{asset} to those files so the
+# portal iframe renders a real site (relative CSS/JS/images resolve).
+[[redirects]]
+  from = "/preview/*"
+  to = "/.netlify/functions/serve-preview-site"
+  status = 200
+  force = true
+
 # Friendly unsubscribe URL — old emails sent before we shipped the proper
 # /.netlify/functions/unsubscribe link may use https://staticswift.co.uk/unsubscribe.
 # Both must resolve to the same function so neither audience clicks a 404.

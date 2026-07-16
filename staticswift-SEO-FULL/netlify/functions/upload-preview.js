@@ -66,9 +66,49 @@ exports.handler = async (event) => {
     };
   }
 
+  const siteUrl = (process.env.URL || 'https://staticswift.co.uk').replace(/\/$/, '');
+  const ft = fileType || 'preview';
+
+  // A PREVIEW zip is a whole multi-file site. Unpack it and serve it as a
+  // browsable mini-site (/preview/{fileId}/...) so the portal iframe renders it
+  // and relative CSS/JS/image links resolve. (A FINAL zip stays a download.)
+  if (isZip && ft === 'preview') {
+    try {
+      const JSZip = require('jszip');
+      const zip = await JSZip.loadAsync(fileBuffer);
+      const files = Object.values(zip.files).filter(f => !f.dir && !/(^|\/)(__MACOSX|\.DS_Store)/.test(f.name));
+      const index = files
+        .filter(f => /(^|\/)index\.html?$/i.test(f.name))
+        .sort((a, b) => a.name.length - b.name.length)[0];
+      if (!index) {
+        return { statusCode: 400, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ok: false, error: 'The zip has no index.html at any level. Add one and re-upload.' }) };
+      }
+      const root = index.name.replace(/index\.html?$/i, ''); // directory the site lives in
+      const extMime = { html: 'text/html', htm: 'text/html', css: 'text/css', js: 'text/javascript', json: 'application/json', svg: 'image/svg+xml', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp', ico: 'image/x-icon', woff: 'font/woff', woff2: 'font/woff2', ttf: 'font/ttf' };
+      let stored = 0;
+      for (const f of files) {
+        let rel = f.name;
+        if (root) { if (!rel.startsWith(root)) continue; rel = rel.slice(root.length); }
+        rel = rel.replace(/^\/+/, '');
+        if (!rel) continue;
+        const content = await f.async('nodebuffer');
+        const ext = (rel.split('.').pop() || '').toLowerCase();
+        await store.set(`${fileId}/${rel}`, content, { metadata: { mimeType: extMime[ext] || 'application/octet-stream', sitefile: true, clientId, uploadedAt: new Date().toISOString() } });
+        stored++;
+      }
+      const previewUrl = `${siteUrl}/preview/${fileId}/`;
+      console.log('[upload-preview] unpacked site', fileId, stored, 'files, root=', root || '(zip root)');
+      return { statusCode: 200, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ok: true, fileId, previewUrl, cdnUrl: previewUrl, filename: safeName, files: stored, mode: 'site' }) };
+    } catch (err) {
+      console.error('[upload-preview] unzip failed:', err.message);
+      return { statusCode: 502, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ok: false, error: 'Could not unpack the zip: ' + err.message }) };
+    }
+  }
+
+  // Single HTML preview, or a FINAL delivery zip (served as a download).
   try {
     await store.set(fileId, fileBuffer, {
-      metadata: { filename: safeName, mimeType, clientId, fileType: fileType || 'preview', uploadedAt: new Date().toISOString() },
+      metadata: { filename: safeName, mimeType, clientId, fileType: ft, uploadedAt: new Date().toISOString() },
     });
   } catch (err) {
     console.error('[upload-preview] blob.set failed:', err.message);
@@ -79,7 +119,6 @@ exports.handler = async (event) => {
     };
   }
 
-  const siteUrl = (process.env.URL || 'https://staticswift.co.uk').replace(/\/$/, '');
   const previewUrl = `${siteUrl}/.netlify/functions/serve-preview?id=${fileId}`;
 
   console.log('[upload-preview] stored', fileId, safeName, fileBuffer.length, 'bytes');
