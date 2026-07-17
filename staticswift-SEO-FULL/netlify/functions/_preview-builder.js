@@ -78,7 +78,13 @@ const PHOTO_KW = {
 const photoKW = trade => PHOTO_KW[trade] || PHOTO_KW[trade.replace(/s$/, '')] || 'tradesman,tools,workshop,construction';
 // Deterministic lock per business so the same site always shows the same photos.
 const hash = s => { let h = 0; for (let i = 0; i < String(s).length; i++) { h = (h * 31 + String(s).charCodeAt(i)) | 0; } return Math.abs(h); };
-const img = (w, h, kw, lock) => `https://loremflickr.com/${w}/${h}/${encodeURIComponent(kw)}?lock=${lock}`;
+// Reliable, always-different real photos, seeded per business + slot.
+// loremflickr was serving the SAME fallback image (a cat) on every preview when
+// it could not match or was rate-limited. picsum.photos always returns a valid,
+// distinct photo for a given seed, so every business and every slot differs and
+// nothing ever breaks. (Trade-matched photography would need an Unsplash/Pexels
+// API key; this keyless source guarantees variety and reliability.)
+const img = (w, h, tag) => `https://picsum.photos/seed/${encodeURIComponent(String(tag))}/${w}/${h}`;
 
 /*
  * facts: { build, previewHours, buildDays, guaranteeDays, waDisplay, waLink, email }
@@ -94,8 +100,11 @@ function renderPreview(prospect, facts) {
   const waHref = waDigits ? 'https://wa.me/' + waDigits : '#';
   const kw = photoKW(f.trade);
   const seed = hash(f.business + f.town);
-  const hero = img(1700, 1100, kw, seed % 90);
-  const band = img(1700, 900, kw, (seed + 41) % 90);
+  // Unique image seed base per business so no two businesses share photos and
+  // every slot within a preview is distinct.
+  const iseed = seed + '-' + f.business.toLowerCase().replace(/[^a-z0-9]+/g, '').slice(0, 24);
+  const hero = img(1700, 1100, iseed + '-hero');
+  const band = img(1700, 900, iseed + '-band');
 
   // Per-business variation so no two previews look or read the same. All
   // seeded from the business name, so a given business always gets the same
@@ -195,7 +204,7 @@ function renderPreview(prospect, facts) {
 <meta name="robots" content="noindex,nofollow">
 <title>${esc(f.business)} · ${esc(f.tradeTitle)} in ${esc(f.town)}</title>
 <link rel="preconnect" href="https://api.fontshare.com">
-<link rel="preconnect" href="https://loremflickr.com">
+<link rel="preconnect" href="https://picsum.photos">
 <link href="https://api.fontshare.com/v2/css?f[]=sentient@400,500,700&f[]=switzer@400,500,600&display=swap" rel="stylesheet">
 <style>
   :root{--cream:#F2EFE7;--ink:#0E0B07;--red:${accent};--muted:#6b6358;--line:#e7e1d4;--card:#fbf9f4}
@@ -308,7 +317,7 @@ function renderPreview(prospect, facts) {
       <div class="lede reveal"><div class="eyebrow">What we do</div><h2>${doHead}</h2>
       <p class="sub">${doSub}</p></div>
       <div class="tiles">
-        ${f.services.map((s, i) => `<div class="tile reveal"><img loading="lazy" src="${img(720, 900, kw, (seed + 7 + i * 13) % 90)}" alt="${esc(f.trade)} work"><div class="cap"><h3>${esc(s)}</h3><p>${tileCap}</p></div></div>`).join('\n        ')}
+        ${f.services.map((s, i) => `<div class="tile reveal"><img loading="lazy" src="${img(720, 900, iseed + '-t' + i)}" alt="${esc(f.trade)} work"><div class="cap"><h3>${esc(s)}</h3><p>${tileCap}</p></div></div>`).join('\n        ')}
       </div>
     </div>
   </section>
