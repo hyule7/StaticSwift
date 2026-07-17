@@ -58,6 +58,7 @@ exports.handler = async (event) => {
   ).sort((a, b) => ((b.meta && b.meta.heat) || 0) - ((a.meta && a.meta.heat) || 0)); // hottest leads first
 
   const { buildRaw, appendMany } = require('./_sentcopy');
+  const { htmlFromText } = require('./_tracking');
   const fromHeader = '"Harry at StaticSwift" <' + fromAddr + '>';
   const sentCopies = []; // raw RFC822 of each sent message, appended to Sent at the end
 
@@ -75,6 +76,7 @@ exports.handler = async (event) => {
         replyTo: fromAddr,
         subject: item.subject,
         text: fullText,
+        html: htmlFromText(fullText, item.to, item.category), // open-tracking pixel keyed by recipient
         headers: { 'List-Unsubscribe': '<' + unsub + '>', 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
       });
       item.status = 'sent'; item.sentAt = new Date().toISOString();

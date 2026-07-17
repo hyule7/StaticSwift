@@ -4065,6 +4065,7 @@ async function loadWfFunnel() {
   const stages = [
     ['Prospects', f.prospects, 'businesses found with a contact'],
     ['Emailed', f.sent, (f.sentToday ? f.sentToday + ' sent today' : 'first-touch emails sent') + (f.lastSentAt ? ', last ' + new Date(f.lastSentAt).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '')],
+    ['Opened', f.opened || 0, 'unique recipients who opened the email'],
     ['Preview views', f.previewViews, (f.previewsSeen || 0) + ' previews opened'],
     ['Replies', f.replies, 'people who wrote back'],
     ['Claims + calls', (f.claims || 0) + (f.bookings || 0), 'said "make it mine" or booked'],

@@ -59,6 +59,7 @@ exports.handler = async (event) => {
     const { readDB } = require('./_db');
     const db = await readDB();
     out.prospects = Array.isArray(db.cronProspects) ? db.cronProspects.length : 0;
+    out.opened = db.prospectOpens ? Object.keys(db.prospectOpens).length : 0; // unique recipients who opened
     const clients = Array.isArray(db.clients) ? db.clients : [];
     out.leads = clients.length;
     const paid = clients.filter(c => c.paid || ['won', 'live', 'paid'].includes((c.stage || '').toLowerCase()));
