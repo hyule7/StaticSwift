@@ -1199,6 +1199,45 @@ img,svg{display:block;max-width:100%;height:auto}
 .skip{position:absolute;left:-9999px;top:8px;background:var(--ink);color:var(--paper);padding:8px 14px;font-family:var(--mono);font-size:12px;z-index:99}
 .skip:focus{left:8px}
 
+/* Before / after slider: the same trade, two websites */
+.ba{padding:clamp(70px,10vw,140px) var(--gutter); border-top:1px solid var(--hair)}
+.ba-head{max-width:1080px; margin:0 auto 40px}
+.ba-head h2{font-family:var(--serif); font-weight:500; font-size:clamp(30px,4.6vw,52px); line-height:1.02; letter-spacing:-.02em; margin:14px 0 12px}
+.ba-head .ba-sub{font-family:var(--sans); color:var(--ink-mid); font-size:clamp(15px,1.6vw,17px); max-width:44ch}
+.ba-stage{position:relative; max-width:1080px; margin:0 auto; aspect-ratio:16/10; border-radius:16px; overflow:hidden; box-shadow:0 30px 70px -40px rgba(14,11,7,.55); border:1px solid var(--hair-soft); user-select:none; touch-action:pan-y}
+.ba-panel{position:absolute; inset:0; overflow:hidden}
+.ba-mock{position:absolute; inset:0; padding:clamp(18px,3vw,40px); display:flex; flex-direction:column}
+/* BEFORE: the dated template most trades settle for */
+.ba-before .ba-mock{background:#0b2b5c; background-image:linear-gradient(135deg,#0b2b5c,#123a7a); font-family:Arial,Helvetica,sans-serif}
+.bad-bar{background:#ffd21f; color:#c00; font-weight:800; text-align:center; padding:6px; font-size:clamp(11px,1.6vw,15px); letter-spacing:.02em; border:2px solid #c00; text-transform:uppercase}
+.bad-h{color:#fff; text-align:center; font-weight:800; font-size:clamp(18px,3.4vw,34px); margin:auto 0 6px; text-shadow:2px 2px 0 #c00; letter-spacing:.01em}
+.bad-h span{color:#ffd21f}
+.bad-p{color:#cfe0ff; text-align:center; font-size:clamp(9px,1.4vw,13px); max-width:40ch; margin:0 auto 10px}
+.bad-row{display:flex; gap:6px; justify-content:center; flex-wrap:wrap; margin-top:auto}
+.bad-btn{background:#1a8f2a; color:#fff; border:2px outset #4bd35d; padding:6px 12px; font-size:clamp(9px,1.4vw,12px); font-weight:700}
+.bad-foot{color:#8fb3e8; text-align:center; font-size:clamp(8px,1.1vw,10px); margin-top:10px; text-decoration:underline}
+/* AFTER: hand-coded, calm, Field Guide */
+.ba-after{clip-path:inset(0 50% 0 0); will-change:clip-path}
+.ba-after .ba-mock{background:var(--paper)}
+.good-mark{font-family:var(--mono); font-size:clamp(8px,1.2vw,11px); letter-spacing:.18em; text-transform:uppercase; color:var(--signal); display:flex; align-items:center; gap:6px}
+.good-mark::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--signal)}
+.good-h{font-family:var(--serif); font-weight:500; font-size:clamp(24px,5vw,54px); line-height:.98; letter-spacing:-.025em; margin:auto 0 10px; color:var(--ink)}
+.good-h em{font-style:italic; color:var(--signal)}
+.good-p{font-family:var(--sans); color:var(--ink-mid); font-size:clamp(10px,1.5vw,15px); max-width:34ch; margin-bottom:16px}
+.good-row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+.good-btn{background:var(--signal); color:#fff; padding:clamp(8px,1.4vw,13px) clamp(14px,2vw,22px); border-radius:100px; font-family:var(--sans); font-weight:600; font-size:clamp(10px,1.5vw,14px)}
+.good-rev{font-family:var(--mono); font-size:clamp(8px,1.1vw,11px); color:var(--bronze); letter-spacing:.06em}
+.good-stars{color:#D4A24A; letter-spacing:1px}
+/* Divider + handle */
+.ba-divider{position:absolute; top:0; bottom:0; left:50%; width:2px; background:rgba(255,255,255,.9); box-shadow:0 0 0 1px rgba(14,11,7,.15); transform:translateX(-1px); pointer-events:none; z-index:5}
+.ba-knob{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:clamp(40px,5vw,54px); height:clamp(40px,5vw,54px); border-radius:50%; background:var(--paper); border:1px solid var(--hair); box-shadow:0 8px 24px -8px rgba(14,11,7,.5); display:flex; align-items:center; justify-content:center; color:var(--ink); font-size:16px; font-family:var(--sans)}
+.ba-knob::before{content:'‹  ›'; letter-spacing:-2px; font-weight:700}
+.ba-tag{position:absolute; top:12px; z-index:4; font-family:var(--mono); font-size:clamp(8px,1.1vw,10px); letter-spacing:.14em; text-transform:uppercase; padding:5px 9px; border-radius:100px; backdrop-filter:blur(4px)}
+.ba-tag.b4{left:12px; background:rgba(11,43,92,.7); color:#fff}
+.ba-tag.aft{right:12px; background:rgba(242,239,231,.85); color:var(--ink)}
+.ba-range{position:absolute; inset:0; width:100%; height:100%; margin:0; opacity:0; cursor:ew-resize; z-index:6}
+.ba-range:focus-visible + .ba-divider{outline:2px solid var(--ink); outline-offset:2px}
+
 </style>
 </head>
 <body>
@@ -1492,6 +1531,45 @@ img,svg{display:block;max-width:100%;height:auto}
     </div>
   </section>
 
+  <!-- THE DIFFERENCE: before/after slider -->
+  <section class="ba" id="difference" data-rv>
+    <div class="ba-head">
+      <p class="sec-mark">The difference</p>
+      <h2>The same trade. Two websites.</h2>
+      <p class="ba-sub">Drag the handle. On the left, the template most trades settle for. On the right, hand-coded. Same business, very different phone.</p>
+    </div>
+    <div class="ba-stage" id="baStage">
+      <div class="ba-panel ba-before">
+        <div class="ba-mock">
+          <div class="bad-bar">★ Welcome to our website ★</div>
+          <h3 class="bad-h">DAVE'S <span>PLUMBING</span><br>&amp; HEATING LTD</h3>
+          <p class="bad-p">We do all types of plumbing jobs no job too big or small please see our services page for more info and contact us today!!!</p>
+          <div class="bad-row">
+            <span class="bad-btn">Click Here</span>
+            <span class="bad-btn">Services</span>
+            <span class="bad-btn">Gallery</span>
+          </div>
+          <p class="bad-foot">Best viewed in Internet Explorer · Under Construction</p>
+        </div>
+      </div>
+      <div class="ba-panel ba-after" id="baAfter">
+        <div class="ba-mock">
+          <p class="good-mark">Dave's Plumbing · Bristol</p>
+          <h3 class="good-h">Bristol's<br><em>boiler people.</em></h3>
+          <p class="good-p">Gas-safe, same-week appointments. No call-out fee inside BS1 to BS9.</p>
+          <div class="good-row">
+            <span class="good-btn">Call 0117 900 123</span>
+            <span class="good-rev"><span class="good-stars">★★★★★</span> 63 reviews</span>
+          </div>
+        </div>
+      </div>
+      <input class="ba-range" id="baRange" type="range" min="0" max="100" value="50" aria-label="Drag to compare the two websites">
+      <div class="ba-divider" id="baDivider"><span class="ba-knob" aria-hidden="true"></span></div>
+      <span class="ba-tag b4">Template</span>
+      <span class="ba-tag aft">Hand-coded</span>
+    </div>
+  </section>
+
   <!-- 04 — HOW IT SHIPS -->
   <section class="ship" id="ship">
     <div class="ship-inner">
@@ -1734,6 +1812,37 @@ img,svg{display:block;max-width:100%;height:auto}
     });
   }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
   document.querySelectorAll('[data-rv], [data-rv-stagger]').forEach(el => io.observe(el));
+})();
+
+/* ss:before-after: drag-to-compare the template vs the hand-coded site.
+   Native range input drives a clip-path reveal (no reflow), plus a one-time
+   auto-hint so visitors notice it is draggable. Keyboard + touch for free. */
+(function beforeAfter(){
+  const stage = document.getElementById('baStage');
+  const after = document.getElementById('baAfter');
+  const divider = document.getElementById('baDivider');
+  const range = document.getElementById('baRange');
+  if (!stage || !after || !divider || !range) return;
+  function set(v){
+    v = Math.max(0, Math.min(100, v));
+    range.value = v;
+    after.style.clipPath = 'inset(0 ' + (100 - v) + '% 0 0)';
+    divider.style.left = v + '%';
+  }
+  set(50);
+  range.addEventListener('input', function(){ set(+range.value); });
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(function(ents){
+      ents.forEach(function(en){
+        if (!en.isIntersecting) return;
+        io.disconnect();
+        const seq = [64, 38, 54, 50]; let i = 0;
+        const tick = function(){ if (i < seq.length) { set(seq[i++]); setTimeout(tick, 300); } };
+        setTimeout(tick, 500);
+      });
+    }, { threshold: 0.45 });
+    io.observe(stage);
+  }
 })();
 
 /* ss:mast-sequence — staggered cinematic entrance for the masthead.
