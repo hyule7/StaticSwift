@@ -3076,7 +3076,27 @@ function deleteProspect(idx) {
   const pane=document.getElementById('prospect-detail-pane');
   if(pane) pane.innerHTML='<div style="flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;padding:40px;text-align:center"><div><div style="font-size:32px;margin-bottom:12px">✉</div><div>Select a prospect</div></div></div>';
 }
-function saveProspects() { localStorage.setItem('ss_prospects', JSON.stringify(prospects)); }
+function saveProspects() {
+  localStorage.setItem('ss_prospects', JSON.stringify(prospects));
+  persistProspectsToServer();
+}
+// Mirror prospects to the server (db.cronProspects) so they survive a cache
+// clear / device switch and actually enter the pipeline. Debounced fire-and-
+// forget: the scanner calls saveProspects() often, so we coalesce writes.
+let _persistProspectsTimer = null;
+function persistProspectsToServer() {
+  clearTimeout(_persistProspectsTimer);
+  _persistProspectsTimer = setTimeout(function () {
+    if (!Array.isArray(prospects) || !prospects.length) return;
+    fetch('/.netlify/functions/sync-prospects', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-admin-password': ADMIN_PW },
+      body: JSON.stringify({ prospects: prospects })
+    }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d && d.ok) { try { const el = document.getElementById('os-synced'); if (el) el.textContent = d.total; } catch (e) {} } })
+      .catch(function () {});
+  }, 2500);
+}
 
 async function sendBatchOutreach() {
   const unsent = prospects.filter(p => p.status === 'new' && p.email);
