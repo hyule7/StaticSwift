@@ -488,9 +488,13 @@ img,svg{display:block;max-width:100%;height:auto}
 .pp1-mark{font-family:var(--mono); font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--bronze); display:flex; align-items:center; gap:6px; margin-bottom:18px}
 .pp1-mark::before{content:''; width:5px; height:5px; border-radius:50%; background:#347537}
 .pp1-h{font-family:var(--serif); font-style:italic; font-weight:500; font-size:30px; line-height:1; letter-spacing:-.025em; margin-bottom:10px}
-.pp1-sub{font-family:var(--sans); font-size:11.5px; line-height:1.4; color:var(--ink-soft); margin-bottom:auto}
-.pp1-cta{display:flex; flex-direction:column; gap:8px; margin-top:18px}
-.pp1-call{background:var(--signal); color:var(--paper); padding:14px 16px; border-radius:8px; text-align:center; font-weight:600; font-size:14px; letter-spacing:.01em; font-family:var(--sans); display:flex; align-items:center; justify-content:center; gap:8px}
+.pp1-sub{font-family:var(--sans); font-size:11.5px; line-height:1.4; color:var(--ink-soft); margin-bottom:0}
+.pp1-cta{display:flex; flex-direction:column; gap:8px; margin-top:auto}
+.pp1-call{background:var(--signal); color:var(--paper); padding:14px 16px; border-radius:8px; text-align:center; font-weight:600; font-size:14px; letter-spacing:.01em; font-family:var(--sans); display:flex; align-items:center; justify-content:center; gap:8px; animation:ppCallPulse 2.8s ease-out infinite}
+.pp1-call-ico{animation:ppRing 2.8s ease-in-out infinite; transform-origin:50% 60%}
+@keyframes ppCallPulse{ 0%{box-shadow:0 0 0 0 rgba(52,117,55,.5)} 60%{box-shadow:0 0 0 10px rgba(52,117,55,0)} 100%{box-shadow:0 0 0 0 rgba(52,117,55,0)} }
+@keyframes ppRing{ 0%,58%,100%{transform:rotate(0)} 62%{transform:rotate(-13deg)} 66%{transform:rotate(11deg)} 70%{transform:rotate(-8deg)} 74%{transform:rotate(6deg)} 78%{transform:rotate(0)} }
+@media(prefers-reduced-motion:reduce){ .pp1-call,.pp1-call-ico{animation:none} }
 .pp1-call-ico{width:14px; height:14px}
 .pp1-book{border:1px solid var(--ink); padding:12px 16px; border-radius:8px; text-align:center; font-weight:500; font-size:12.5px; color:var(--ink); font-family:var(--sans)}
 .pp1-mini{display:flex; justify-content:space-between; font-family:var(--mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze); margin-top:14px; padding-top:12px; border-top:1px solid var(--hair-faint)}
@@ -533,15 +537,22 @@ img,svg{display:block;max-width:100%;height:auto}
 .ppg-tile{width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:8px; background:var(--hair-soft); display:block}
 .ppg-tile.wide{grid-column:1 / -1; aspect-ratio:16/9}
 .ppg-foot{margin-top:auto; padding-top:12px; font-family:var(--mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze)}
-/* Colour glow behind the phone — a warm splash so the cream does not read flat */
-.phone{isolation:isolate}
-.phone-glow{position:absolute; inset:-16% -24%; z-index:-1; pointer-events:none; border-radius:50%; filter:blur(46px); opacity:.55;
-  background:radial-gradient(42% 46% at 30% 22%, rgba(212,162,74,.55), transparent 70%),
-             radial-gradient(46% 50% at 74% 40%, rgba(52,117,55,.42), transparent 72%),
-             radial-gradient(50% 46% at 50% 88%, rgba(156,38,21,.40), transparent 74%);
-  animation:phoneGlow 14s ease-in-out infinite alternate;}
-@keyframes phoneGlow{ from{transform:translateY(-6px) scale(1)} to{transform:translateY(8px) scale(1.05)} }
-@media(prefers-reduced-motion:reduce){ .phone-glow{animation:none} }
+
+/* Photo band inside a phone screen — fills whitespace with real work imagery */
+.pp-photo{position:relative; width:calc(100% + 44px); margin:14px -22px 0; height:158px; overflow:hidden; background:linear-gradient(135deg,#1b1b1b,#2b2b2b)}
+.pp-photo img{width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.04); animation:ppKen 12s ease-out forwards}
+.pp-photo::after{content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,.6) 100%)}
+.pp-photo .pp-photo-cap{position:absolute; left:16px; bottom:12px; z-index:2; color:#fff; font-family:var(--mono); font-size:9px; letter-spacing:.14em; text-transform:uppercase}
+@keyframes ppKen{ from{transform:scale(1.12)} to{transform:scale(1.02)} }
+/* Graceful fallback: if a stock photo fails to load, show a clean colour block */
+.pp-photo.noimg img, .ppg-tile.noimg{visibility:hidden}
+.ppg-tile.noimg{background:linear-gradient(135deg,#20303a,#2c4250)}
+/* Cinematic glass glare that sweeps across the phone as it comes into view */
+.phone-screen::after{content:''; position:absolute; top:-60%; left:-30%; width:60%; height:220%; z-index:6; pointer-events:none;
+  background:linear-gradient(105deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.22) 48%, rgba(255,255,255,0) 60%);
+  transform:translateX(-120%) rotate(2deg); animation:phoneGlare 7s ease-in-out 1.2s infinite}
+@keyframes phoneGlare{ 0%,72%{transform:translateX(-120%) rotate(2deg)} 88%,100%{transform:translateX(320%) rotate(2deg)} }
+@media(prefers-reduced-motion:reduce){ .phone-screen::after{animation:none; opacity:0} }
 
 /* Pinned phone — mobile fallback (no pinning, smaller phone, single inline) */
 @media(max-width:880px){
@@ -1280,7 +1291,6 @@ img,svg{display:block;max-width:100%;height:auto}
       </div>
       <div class="pin-r">
         <div class="phone" aria-hidden="true">
-          <span class="phone-glow"></span>
           <span class="phone-side phone-side-1"></span>
           <span class="phone-side phone-side-2"></span>
           <span class="phone-side phone-side-3"></span>
@@ -1293,6 +1303,10 @@ img,svg{display:block;max-width:100%;height:auto}
                 <p class="pp1-mark">Harrison Electrical · Bristol</p>
                 <h4 class="pp1-h">Power,<br>fixed<br>properly.</h4>
                 <p class="pp1-sub">NICEIC-registered. Same-week appointments across Bristol &amp; Bath. EV charge points, rewires, fault-finding.</p>
+                <div class="pp-photo">
+                  <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=640&q=70" alt="Electrical work" loading="lazy" onerror="this.closest('.pp-photo').classList.add('noimg')">
+                  <span class="pp-photo-cap">On the tools · Clifton rewire</span>
+                </div>
                 <div class="pp1-cta">
                   <div class="pp1-call">
                     <svg class="pp1-call-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -1358,11 +1372,11 @@ img,svg{display:block;max-width:100%;height:auto}
                 <p class="ppg-mark">Recent work</p>
                 <h4 class="ppg-h">Jobs, done<br>and dusted.</h4>
                 <div class="ppg-grid">
-                  <img class="ppg-tile wide" src="https://picsum.photos/seed/ssworkA/560/320" alt="Recent job" loading="lazy">
-                  <img class="ppg-tile" src="https://picsum.photos/seed/ssworkB/300/300" alt="Recent job" loading="lazy">
-                  <img class="ppg-tile" src="https://picsum.photos/seed/ssworkC/300/300" alt="Recent job" loading="lazy">
-                  <img class="ppg-tile" src="https://picsum.photos/seed/ssworkD/300/300" alt="Recent job" loading="lazy">
-                  <img class="ppg-tile" src="https://picsum.photos/seed/ssworkE/300/300" alt="Recent job" loading="lazy">
+                  <img class="ppg-tile wide" src="https://images.unsplash.com/photo-1565608438257-fac3c27beb36?auto=format&fit=crop&w=560&q=70" alt="Consumer unit install" loading="lazy" onerror="this.classList.add('noimg')">
+                  <img class="ppg-tile" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=300&q=70" alt="EV charge point" loading="lazy" onerror="this.classList.add('noimg')">
+                  <img class="ppg-tile" src="https://images.unsplash.com/photo-1621905252507-b35492cc74b4?auto=format&fit=crop&w=300&q=70" alt="Rewire" loading="lazy" onerror="this.classList.add('noimg')">
+                  <img class="ppg-tile" src="https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?auto=format&fit=crop&w=300&q=70" alt="Lighting install" loading="lazy" onerror="this.classList.add('noimg')">
+                  <img class="ppg-tile" src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=300&q=70" alt="Fault finding" loading="lazy" onerror="this.classList.add('noimg')">
                 </div>
                 <p class="ppg-foot">42 jobs · Bristol &amp; Bath</p>
               </div>
