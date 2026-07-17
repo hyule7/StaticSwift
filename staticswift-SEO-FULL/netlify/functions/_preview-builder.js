@@ -122,6 +122,71 @@ function renderPreview(prospect, facts) {
   ];
   const whyPick = [pick(WHY, 0), pick(WHY, 2), pick(WHY, 4)];
 
+  // Layout variant, seeded per business so no two previews share a look. Three
+  // distinct heroes (full-bleed / centred / editorial card) and two "why"
+  // treatments (dark photo band / light cards) give genuinely different-looking
+  // sites, on top of the accent, copy and photo variation above.
+  const variant = seed % 3;
+
+  const heroHTML = variant === 1 ? `
+  <section class="hero v1">
+    <div class="bg"></div><div class="scrim scrim-c"></div>
+    <div class="wrap center">
+      <div class="eyebrow pill">${esc(f.tradeTitle)} · ${esc(f.town)}</div>
+      <h1>${esc(f.business)}</h1>
+      <p>${heroSub}</p>
+      <div class="cta-row center-row">
+        <a class="btn-primary" href="${callHref}">${callLabel}</a>
+        <a class="btn-ghost" href="#contact">${heroCta2}</a>
+      </div>
+    </div>
+  </section>` : variant === 2 ? `
+  <section class="hero v2">
+    <div class="bg"></div><div class="scrim scrim-top"></div>
+    <div class="wrap">
+      <div class="herocard reveal">
+        <div class="eyebrow">${esc(f.tradeTitle)} · ${esc(f.town)}</div>
+        <h1>${esc(f.business)}</h1>
+        <p>${heroSub}</p>
+        <div class="cta-row">
+          <a class="btn-primary dark" href="${callHref}">${callLabel}</a>
+          <a class="btn-ghost dark" href="#contact">${heroCta2}</a>
+        </div>
+      </div>
+    </div>
+  </section>` : `
+  <section class="hero">
+    <div class="bg"></div><div class="scrim"></div>
+    <div class="wrap">
+      <div class="eyebrow">${esc(f.tradeTitle)} · ${esc(f.town)}</div>
+      <h1>${esc(f.business)}</h1>
+      <p>${heroSub}</p>
+      <div class="cta-row">
+        <a class="btn-primary" href="${callHref}">${callLabel}</a>
+        <a class="btn-ghost" href="#contact">${heroCta2}</a>
+      </div>
+    </div>
+  </section>`;
+
+  const whyHTML = variant === 2 ? `
+  <section class="whylight">
+    <div class="wrap">
+      <div class="lede reveal"><div class="eyebrow" style="color:var(--red)">Why us</div><h2>Why ${esc(f.business)}</h2></div>
+      <div class="whycards">
+        ${whyPick.map((w, i) => `<div class="wc reveal"><span class="wn">0${i + 1}</span><b>${esc(w[0])}</b><p>${esc(w[1])}</p></div>`).join('\n        ')}
+      </div>
+    </div>
+  </section>` : `
+  <section class="band">
+    <div class="bg"></div><div class="scrim"></div>
+    <div class="wrap">
+      <div class="lede reveal"><h2>Why ${esc(f.business)}</h2></div>
+      <ul class="points">
+        ${whyPick.map((w, i) => `<li class="reveal"><span class="n">${i + 1}</span><div><b>${esc(w[0])}</b><span class="d">${esc(w[1])}</span></div></li>`).join('\n        ')}
+      </ul>
+    </div>
+  </section>`;
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -203,6 +268,31 @@ function renderPreview(prospect, facts) {
   @media(max-width:640px){.stickycall{display:block}body{padding-bottom:76px}.bar .callbtn{display:none}.band .bg{background-attachment:scroll}.hero{min-height:88vh}}
   @keyframes zoom{to{transform:scale(1)}}
   @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hero .bg{animation:none;transform:none}.reveal{opacity:1;transform:none}}
+  /* Variant 1: centred hero */
+  .hero.v1{align-items:center;text-align:center}
+  .hero.v1 .wrap.center{display:flex;flex-direction:column;align-items:center;padding-top:120px;padding-bottom:74px}
+  .hero.v1 .eyebrow.pill{background:var(--red);opacity:1;padding:8px 18px;border-radius:100px;margin-bottom:22px}
+  .hero.v1 h1{max-width:18ch}
+  .hero.v1 p{margin-left:auto;margin-right:auto}
+  .hero.v1 .center-row{justify-content:center}
+  .scrim-c{background:radial-gradient(ellipse at center,rgba(14,11,7,.32) 0%,rgba(14,11,7,.6) 55%,rgba(14,11,7,.85) 100%)}
+  /* Variant 2: editorial card hero */
+  .hero.v2{align-items:flex-end;min-height:96vh}
+  .scrim-top{background:linear-gradient(180deg,rgba(14,11,7,.5) 0%,rgba(14,11,7,.14) 28%,rgba(14,11,7,.14) 55%,rgba(242,239,231,1) 100%)}
+  .hero.v2 .wrap{padding-bottom:0;padding-top:120px}
+  .hero.v2 .herocard{background:var(--cream);color:var(--ink);border-radius:22px 22px 0 0;padding:clamp(30px,5vw,46px) clamp(26px,4vw,42px);max-width:660px;box-shadow:0 -24px 70px -36px rgba(0,0,0,.45)}
+  .hero.v2 .herocard h1{color:var(--ink);text-shadow:none;font-size:clamp(38px,6.5vw,70px);margin-bottom:18px}
+  .hero.v2 .herocard p{color:var(--muted)}
+  .hero.v2 .herocard .eyebrow{color:var(--red);opacity:1}
+  .btn-primary.dark{background:var(--red);color:#fff !important}
+  .btn-ghost.dark{border-color:rgba(14,11,7,.28);color:var(--ink) !important}
+  /* Variant 2: light "why" cards */
+  .whylight{background:var(--card)}
+  .whycards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-top:40px}
+  .wc{background:var(--cream);border:1px solid var(--line);border-radius:16px;padding:28px 26px}
+  .wc .wn{font-family:'Sentient',serif;color:var(--red);font-size:15px;font-weight:700}
+  .wc b{display:block;font-family:'Sentient',serif;font-size:21px;margin:10px 0 6px;line-height:1.15}
+  .wc p{color:var(--muted);font-size:15px}
 </style>
 </head>
 <body>
@@ -211,18 +301,7 @@ function renderPreview(prospect, facts) {
     <a class="callbtn" href="${callHref}">${callLabel}</a>
   </header>
 
-  <section class="hero">
-    <div class="bg"></div><div class="scrim"></div>
-    <div class="wrap">
-      <div class="eyebrow">${esc(f.tradeTitle)} · ${esc(f.town)}</div>
-      <h1>${esc(f.business)}</h1>
-      <p>${heroSub}</p>
-      <div class="cta-row">
-        <a class="btn-primary" href="${callHref}">${callLabel}</a>
-        <a class="btn-ghost" href="#contact">${heroCta2}</a>
-      </div>
-    </div>
-  </section>
+  ${heroHTML}
 
   <section>
     <div class="wrap">
@@ -234,15 +313,7 @@ function renderPreview(prospect, facts) {
     </div>
   </section>
 
-  <section class="band">
-    <div class="bg"></div><div class="scrim"></div>
-    <div class="wrap">
-      <div class="lede reveal"><h2>Why ${esc(f.business)}</h2></div>
-      <ul class="points">
-        ${whyPick.map((w, i) => `<li class="reveal"><span class="n">${i + 1}</span><div><b>${esc(w[0])}</b><span class="d">${esc(w[1])}</span></div></li>`).join('\n        ')}
-      </ul>
-    </div>
-  </section>
+  ${whyHTML}
 
   <section id="contact" class="contact">
     <div class="wrap reveal">
