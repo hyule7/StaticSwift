@@ -526,6 +526,23 @@ img,svg{display:block;max-width:100%;height:auto}
 .pp4-submit{background:var(--ink); color:var(--paper); padding:13px; border-radius:8px; text-align:center; font-family:var(--sans); font-weight:500; font-size:12.5px}
 .pp4-foot{display:flex; justify-content:space-between; margin-top:14px; padding-top:10px; border-top:1px solid var(--hair-faint); font-family:var(--mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze)}
 
+/* Phone page — recent work gallery (real photos = colour + proof) */
+.ppg-mark{font-family:var(--mono); font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:var(--bronze); margin-bottom:14px}
+.ppg-h{font-family:var(--serif); font-style:italic; font-weight:500; font-size:22px; line-height:1.05; letter-spacing:-.02em; margin-bottom:16px}
+.ppg-grid{display:grid; grid-template-columns:1fr 1fr; gap:6px}
+.ppg-tile{width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:8px; background:var(--hair-soft); display:block}
+.ppg-tile.wide{grid-column:1 / -1; aspect-ratio:16/9}
+.ppg-foot{margin-top:auto; padding-top:12px; font-family:var(--mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze)}
+/* Colour glow behind the phone — a warm splash so the cream does not read flat */
+.phone{isolation:isolate}
+.phone-glow{position:absolute; inset:-16% -24%; z-index:-1; pointer-events:none; border-radius:50%; filter:blur(46px); opacity:.55;
+  background:radial-gradient(42% 46% at 30% 22%, rgba(212,162,74,.55), transparent 70%),
+             radial-gradient(46% 50% at 74% 40%, rgba(52,117,55,.42), transparent 72%),
+             radial-gradient(50% 46% at 50% 88%, rgba(156,38,21,.40), transparent 74%);
+  animation:phoneGlow 14s ease-in-out infinite alternate;}
+@keyframes phoneGlow{ from{transform:translateY(-6px) scale(1)} to{transform:translateY(8px) scale(1.05)} }
+@media(prefers-reduced-motion:reduce){ .phone-glow{animation:none} }
+
 /* Pinned phone — mobile fallback (no pinning, smaller phone, single inline) */
 @media(max-width:880px){
   .pin{ height:auto; border-bottom:1px solid var(--hair) }
@@ -1254,14 +1271,16 @@ img,svg{display:block;max-width:100%;height:auto}
         <h3 class="pp-head">A trade site, top to bottom — <em>scroll to see it move.</em></h3>
         <p class="pp-body">Built for an electrician in Bristol. Loads in 1.8 seconds. Books jobs in 30 seconds. This is the texture of every site we ship — keep scrolling and the phone scrolls with you.</p>
         <ul class="pp-anno" id="ppAnno">
-          <li class="pp-anno-item on" data-start="0" data-end="0.27">Phone number lives in the thumb zone. No menu hunt.</li>
-          <li class="pp-anno-item" data-start="0.27" data-end="0.52">Three services. Three rates. No menu maze.</li>
-          <li class="pp-anno-item" data-start="0.52" data-end="0.77">Reviews pulled straight from your Google Business Profile.</li>
-          <li class="pp-anno-item" data-start="0.77" data-end="1.01">Booking in 30 seconds. Pre-filled. One submit.</li>
+          <li class="pp-anno-item on" data-start="0" data-end="0.21">Phone number lives in the thumb zone. No menu hunt.</li>
+          <li class="pp-anno-item" data-start="0.21" data-end="0.42">Three services. Three rates. No menu maze.</li>
+          <li class="pp-anno-item" data-start="0.42" data-end="0.62">Reviews pulled straight from your Google Business Profile.</li>
+          <li class="pp-anno-item" data-start="0.62" data-end="0.82">Recent work, shown as photos. Proof beats promises.</li>
+          <li class="pp-anno-item" data-start="0.82" data-end="1.01">Booking in 30 seconds. Pre-filled. One submit.</li>
         </ul>
       </div>
       <div class="pin-r">
         <div class="phone" aria-hidden="true">
+          <span class="phone-glow"></span>
           <span class="phone-side phone-side-1"></span>
           <span class="phone-side phone-side-2"></span>
           <span class="phone-side phone-side-3"></span>
@@ -1332,6 +1351,20 @@ img,svg{display:block;max-width:100%;height:auto}
                     <p class="pp3-who">Anna · Bedminster</p>
                   </div>
                 </div>
+              </div>
+
+              <!-- Phone screen — Recent work gallery -->
+              <div class="phone-page">
+                <p class="ppg-mark">Recent work</p>
+                <h4 class="ppg-h">Jobs, done<br>and dusted.</h4>
+                <div class="ppg-grid">
+                  <img class="ppg-tile wide" src="https://picsum.photos/seed/ssworkA/560/320" alt="Recent job" loading="lazy">
+                  <img class="ppg-tile" src="https://picsum.photos/seed/ssworkB/300/300" alt="Recent job" loading="lazy">
+                  <img class="ppg-tile" src="https://picsum.photos/seed/ssworkC/300/300" alt="Recent job" loading="lazy">
+                  <img class="ppg-tile" src="https://picsum.photos/seed/ssworkD/300/300" alt="Recent job" loading="lazy">
+                  <img class="ppg-tile" src="https://picsum.photos/seed/ssworkE/300/300" alt="Recent job" loading="lazy">
+                </div>
+                <p class="ppg-foot">42 jobs · Bristol &amp; Bath</p>
               </div>
 
               <!-- Phone screen 4 — Booking -->
