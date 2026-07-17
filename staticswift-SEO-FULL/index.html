@@ -527,7 +527,12 @@ img,svg{display:block;max-width:100%;height:auto}
 .pp4-fields{display:flex; flex-direction:column; gap:10px; margin-bottom:14px}
 .pp4-field{background:#fff; border:1px solid var(--hair-soft); border-radius:8px; padding:10px 12px; font-family:var(--sans); font-size:11.5px; color:var(--ink-mid)}
 .pp4-field.filled{color:var(--ink); font-weight:500}
-.pp4-submit{background:var(--ink); color:var(--paper); padding:13px; border-radius:8px; text-align:center; font-family:var(--sans); font-weight:500; font-size:12.5px}
+.pp4-field.typing{color:var(--ink); font-weight:500}
+.pp4-field.typing::after{content:''; display:inline-block; width:1.5px; height:1.05em; background:var(--signal); margin-left:1px; vertical-align:-2px; animation:pp4Caret .85s step-end infinite}
+@keyframes pp4Caret{ 50%{opacity:0} }
+.pp4-submit{background:var(--ink); color:var(--paper); padding:13px; border-radius:8px; text-align:center; font-family:var(--sans); font-weight:500; font-size:12.5px; transition:transform .18s ease, background .25s ease}
+.pp4-submit.go{transform:scale(.96); background:var(--signal)}
+@media(prefers-reduced-motion:reduce){ .pp4-field.typing::after{animation:none; opacity:0} .pp4-submit{transition:none} }
 .pp4-foot{display:flex; justify-content:space-between; margin-top:14px; padding-top:10px; border-top:1px solid var(--hair-faint); font-family:var(--mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--bronze)}
 
 /* Phone page — recent work gallery (real photos = colour + proof) */
@@ -1440,12 +1445,12 @@ img,svg{display:block;max-width:100%;height:auto}
               <div class="phone-page">
                 <p class="pp4-mark">Book a callout</p>
                 <h4 class="pp4-h">Send three<br>details, done.</h4>
-                <div class="pp4-fields">
-                  <div class="pp4-field filled">Mark Patterson</div>
-                  <div class="pp4-field filled">07700 900 412</div>
-                  <div class="pp4-field">What's the issue?</div>
+                <div class="pp4-fields" id="pp4Fields">
+                  <div class="pp4-field filled" data-fill="Mark Patterson" data-ph="Your name">Mark Patterson</div>
+                  <div class="pp4-field filled" data-fill="07700 900 412" data-ph="Phone number">07700 900 412</div>
+                  <div class="pp4-field filled" data-fill="Fuse box keeps tripping" data-ph="What's the issue?">Fuse box keeps tripping</div>
                 </div>
-                <div class="pp4-submit">Book my callout →</div>
+                <div class="pp4-submit" id="pp4Submit">Book my callout →</div>
                 <div class="pp4-foot">
                   <span>Reply within 30min</span>
                   <span>Bristol &amp; Bath</span>
@@ -1586,7 +1591,7 @@ img,svg{display:block;max-width:100%;height:auto}
     </div>
   </section>
 
-  <!-- Town marquee — where we build -->
+  <!-- Town marquee: where we build -->
   <div class="townmarquee" aria-label="Towns we build for across the UK">
     <div class="tm-track">
       <span>Manchester</span><span>Bristol</span><span>Leeds</span><span>Sheffield</span><span>Liverpool</span><span>Nottingham</span><span>Newcastle</span><span>Birmingham</span><span>Bath</span><span>Preston</span><span>York</span><span>Bolton</span><span>Stockport</span><span>Salford</span>
@@ -1867,6 +1872,48 @@ img,svg{display:block;max-width:100%;height:auto}
     }, { threshold: 0.45 });
     io.observe(stage);
   }
+})();
+
+/* ss:booking-demo: the phone booking form types itself in, on a loop, while
+   the phone is in view. Fields default to fully filled in the HTML, so with no
+   JS or reduced-motion it simply shows a completed form. Fully defensive: any
+   error just restores the filled defaults. */
+(function bookingDemo(){
+  const wrap = document.getElementById('pp4Fields');
+  const submit = document.getElementById('pp4Submit');
+  const pin = document.querySelector('.pin');
+  if (!wrap || !submit || !pin || !('IntersectionObserver' in window)) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; // keep static filled
+  const fields = Array.prototype.slice.call(wrap.querySelectorAll('.pp4-field'));
+  if (!fields.length) return;
+  let running = false, cancelled = false;
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const fill = () => fields.forEach(f => { f.classList.remove('typing'); f.classList.add('filled'); f.textContent = f.dataset.fill || f.textContent; });
+  function reset(){ fields.forEach(f => { f.classList.remove('filled','typing'); f.textContent = f.dataset.ph || ''; }); }
+  async function type(el, text){
+    el.classList.remove('filled'); el.classList.add('typing'); el.textContent = '';
+    for (let i = 0; i < text.length; i++){ if (cancelled) return; el.textContent += text[i]; await sleep(36 + Math.random() * 46); }
+    el.classList.remove('typing'); el.classList.add('filled');
+  }
+  async function loop(){
+    try {
+      while (!cancelled){
+        reset(); await sleep(750);
+        for (const f of fields){ if (cancelled) break; await type(f, f.dataset.fill || ''); await sleep(300); }
+        if (cancelled) break;
+        submit.classList.add('go'); await sleep(1500); submit.classList.remove('go');
+        await sleep(2800);
+      }
+    } catch(e) { /* fall through */ }
+    fill(); running = false; // always leave it looking complete
+  }
+  const io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){ if (!running){ running = true; cancelled = false; loop(); } }
+      else { cancelled = true; }
+    });
+  }, { threshold: 0.15 });
+  io.observe(pin);
 })();
 
 /* ss:mast-sequence — staggered cinematic entrance for the masthead.
