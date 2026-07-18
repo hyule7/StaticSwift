@@ -6397,7 +6397,54 @@ async function checkDeliverability() {
   } catch (e) { alert('Check failed: ' + e.message); }
 }
 
-['lookupCompaniesHouse','lookupDomainAge','checkDeliverability']
+// ── Backlinks (Link Building agent) ──
+async function loadBacklinks() {
+  const list = document.getElementById('bl-list');
+  const btn = document.getElementById('bl-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Loading…'; }
+  try {
+    const r = await fetch('/.netlify/functions/blitz-backlinks', { headers: { 'x-admin-password': ADMIN_PW } });
+    const d = await r.json();
+    if (!d.ok) throw new Error(d.error || 'failed');
+    renderBacklinks(d);
+  } catch (e) {
+    list.innerHTML = '<div style="padding:12px;color:var(--red);font-size:12px">Could not load: ' + e.message + ' (deploy first).</div>';
+  } finally { if (btn) { btn.disabled = false; btn.textContent = 'Refresh'; } }
+}
+function renderBacklinks(d) {
+  const prog = document.getElementById('bl-progress');
+  if (prog) prog.textContent = d.done + '/' + d.total + ' done';
+  const typeColor = { citation:'#7de8ff', agency:'#a78bfa', trust:'#34d399', social:'#f59e0b', compounding:'#ff8aa8' };
+  const order = { compounding:0, trust:1, agency:2, citation:3, social:4 };
+  const tasks = (d.tasks || []).slice().sort((a,b)=> (a.status==='done')-(b.status==='done') || (a.priority-b.priority));
+  document.getElementById('bl-list').innerHTML = tasks.map(t => {
+    const done = t.status === 'done';
+    return '<div style="border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px;background:var(--dark3);opacity:' + (done?'.55':'1') + '">'
+      + '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">'
+      + '<input type="checkbox" ' + (done?'checked':'') + ' onchange="markBacklink(\'' + t.id + '\', this.checked)" style="width:16px;height:16px;cursor:pointer">'
+      + '<b style="font-size:13px;color:var(--text);' + (done?'text-decoration:line-through':'') + '">' + t.name + '</b>'
+      + '<span style="font-family:\'DM Mono\',monospace;font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:' + (typeColor[t.type]||'#999') + '">' + t.type + '</span>'
+      + '<a href="' + t.url + '" target="_blank" rel="noopener" style="font-size:11px;color:#7de8ff;margin-left:auto">Open ↗</a>'
+      + '<button onclick="copyBacklink(\'' + t.id + '\')" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit">Copy listing</button>'
+      + '</div>'
+      + '<div style="font-size:11px;color:var(--dim);margin-top:5px;line-height:1.5">' + (t.note||'') + '</div>'
+      + '<textarea id="bl-txt-' + t.id + '" readonly style="display:none">' + (t.listing||'').replace(/</g,'&lt;') + '</textarea>'
+      + '</div>';
+  }).join('');
+  window._blTasks = {}; (d.tasks||[]).forEach(t => window._blTasks[t.id] = t.listing);
+}
+async function markBacklink(id, checked) {
+  try {
+    await fetch('/.netlify/functions/blitz-backlinks', { method:'POST', headers:{'Content-Type':'application/json','x-admin-password':ADMIN_PW}, body: JSON.stringify({ action:'set', id, status: checked?'done':'pending' }) });
+    loadBacklinks();
+  } catch(e){}
+}
+function copyBacklink(id) {
+  const txt = (window._blTasks && window._blTasks[id]) || '';
+  navigator.clipboard.writeText(txt).then(() => wfToast ? wfToast('Listing copied — paste it into the directory') : alert('Copied')).catch(() => alert(txt));
+}
+
+['lookupCompaniesHouse','lookupDomainAge','checkDeliverability','loadBacklinks','renderBacklinks','markBacklink','copyBacklink']
   .forEach(fn => { try { if (typeof eval(fn) === 'function') window[fn] = eval(fn); } catch(e){} });
 
 /* ═══════════════════════════════════════════════════════════════

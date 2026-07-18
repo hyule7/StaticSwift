@@ -944,6 +944,21 @@
         </p>
       </div>
 
+      <!-- ════ BACKLINKS — the Link Building agent's checklist ════ -->
+      <div class="outreach-tools" style="border:1px solid rgba(52,211,153,.35);background:linear-gradient(160deg,rgba(52,211,153,.07),rgba(0,0,0,0));margin-bottom:18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:6px">
+          <h3 style="color:#34d399;margin:0">🔗 Backlinks — your Domain Rating climb</h3>
+          <div style="display:flex;gap:8px;align-items:center">
+            <span id="bl-progress" style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted)"></span>
+            <button onclick="loadBacklinks()" id="bl-btn" class="btn-primary" style="background:#34d399;color:#012">Load checklist</button>
+          </div>
+        </div>
+        <p style="margin:0 0 12px;font-size:11px;color:var(--dim);line-height:1.55">
+          Real, high-value UK backlink targets with <b>paste-ready listings</b> so each submit takes seconds. The agent prepares; you submit (quality directories need a real human, and auto-posting links gets you penalised). Every one lifts you off Domain Rating 0.
+        </p>
+        <div id="bl-list"></div>
+      </div>
+
       <!-- ════ SEQUENCE TRAY — follow-ups due now ════ -->
       <div class="outreach-tools" style="padding:0;border:1px solid rgba(167,139,250,.22);overflow:hidden;margin-bottom:18px">
         <div style="padding:14px 16px;background:linear-gradient(160deg,rgba(167,139,250,.06),rgba(0,0,0,0));border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
@@ -1308,6 +1323,6 @@
   </div>
 </div>
 
-<script src="/admin/admin.js?v=39" defer></script>
+<script src="/admin/admin.js?v=40" defer></script>
 </body>
 </html>

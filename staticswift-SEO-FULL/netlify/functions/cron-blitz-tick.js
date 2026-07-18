@@ -63,7 +63,7 @@ exports.handler = async (event) => {
   // that over ~48 seconds the team does EVERYTHING: discover, enrich, draft+send,
   // and recruit partners. Each phase is one bounded call (or a fast pair) that
   // fits the ~10s function limit. The shared DB is never written in parallel.
-  const phase = Math.floor(Date.now() / 12000) % 4;
+  const phase = Math.floor(Date.now() / 12000) % 5;
   const counts = {};
   if (phase === 0) {
     const sc = await fire('blitz-scavenge', 8500);
@@ -75,10 +75,15 @@ exports.handler = async (event) => {
     const pu = await fire('blitz-push', 6000);
     counts.drafted = pu.drafted || 0; counts.queued = pu.drafted || 0;
     await fire('dispatch-approved', 3000);
-  } else {
+  } else if (phase === 3) {
     const af = await fire('affiliate-recruit', 5000);
     counts.partners = af.drafted || 0;
     fire('reply-loop', 1); // best-effort; also on its own 15-min schedule
+  } else {
+    // Link Building agent: refresh the backlink checklist + log the next action.
+    const bl = await fire('blitz-backlinks', 4000);
+    counts.backlinksDone = bl.done != null ? bl.done : undefined;
+    counts.backlinksTotal = bl.total != null ? bl.total : undefined;
   }
 
   // Every tick: keep all desks green and show the running counts (fast).
