@@ -1221,18 +1221,26 @@ img,svg{display:block;max-width:100%;height:auto}
 .bad-row{display:flex; gap:6px; justify-content:center; flex-wrap:wrap; margin-top:auto}
 .bad-btn{background:#1a8f2a; color:#fff; border:2px outset #4bd35d; padding:6px 12px; font-size:clamp(9px,1.4vw,12px); font-weight:700}
 .bad-foot{color:#8fb3e8; text-align:center; font-size:clamp(8px,1.1vw,10px); margin-top:10px; text-decoration:underline}
-/* AFTER: hand-coded, calm, Field Guide */
-.ba-after{clip-path:inset(0 50% 0 0); will-change:clip-path}
-.ba-after .ba-mock{background:var(--paper)}
-.good-mark{font-family:var(--mono); font-size:clamp(8px,1.2vw,11px); letter-spacing:.18em; text-transform:uppercase; color:var(--signal); display:flex; align-items:center; gap:6px}
-.good-mark::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--signal)}
-.good-h{font-family:var(--serif); font-weight:500; font-size:clamp(24px,5vw,54px); line-height:.98; letter-spacing:-.025em; margin:auto 0 10px; color:var(--ink)}
-.good-h em{font-style:italic; color:var(--signal)}
-.good-p{font-family:var(--sans); color:var(--ink-mid); font-size:clamp(10px,1.5vw,15px); max-width:34ch; margin-bottom:16px}
-.good-row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
-.good-btn{background:var(--signal); color:#fff; padding:clamp(8px,1.4vw,13px) clamp(14px,2vw,22px); border-radius:100px; font-family:var(--sans); font-weight:600; font-size:clamp(10px,1.5vw,14px)}
-.good-rev{font-family:var(--mono); font-size:clamp(8px,1.1vw,11px); color:var(--bronze); letter-spacing:.06em}
-.good-stars{color:#D4A24A; letter-spacing:1px}
+/* AFTER: a premium, photo-led site (dark, agency quality, distinct from the cream homepage) */
+.ba-after{clip-path:inset(0 0 0 50%); will-change:clip-path}
+.ba-after .ba-mock{padding:0; background:#0c0e11; overflow:hidden}
+.aft-bg{position:absolute; inset:0; background:#0c0e11 center/cover no-repeat; transform:scale(1.04)}
+.aft-scrim{position:absolute; inset:0; background:linear-gradient(180deg,rgba(8,10,13,.5) 0%,rgba(8,10,13,.15) 32%,rgba(8,10,13,.78) 100%)}
+.aft-nav{position:absolute; top:0; left:0; right:0; z-index:3; display:flex; align-items:center; justify-content:space-between; padding:clamp(12px,2vw,22px) clamp(16px,3vw,34px)}
+.aft-logo{font-family:var(--sans); font-weight:700; letter-spacing:.01em; color:#fff; font-size:clamp(11px,1.7vw,16px); display:flex; align-items:center; gap:7px; white-space:nowrap}
+.aft-logo::before{content:''; width:clamp(9px,1.3vw,13px); height:clamp(9px,1.3vw,13px); border:2px solid #f6c000; border-radius:3px; transform:rotate(45deg)}
+.aft-menu{display:flex; gap:clamp(10px,1.8vw,22px); font-family:var(--sans); font-size:clamp(8px,1.15vw,12px); color:rgba(255,255,255,.72); font-weight:500}
+.aft-quote{border:1px solid rgba(255,255,255,.4); color:#fff; padding:clamp(6px,1vw,9px) clamp(10px,1.6vw,17px); border-radius:100px; font-family:var(--sans); font-size:clamp(8px,1.15vw,12px); font-weight:600; white-space:nowrap}
+.aft-body{position:absolute; left:clamp(16px,3vw,34px); right:clamp(16px,3vw,34px); bottom:clamp(48px,7vw,78px); z-index:3; color:#fff}
+.aft-eyebrow{font-family:var(--mono); font-size:clamp(8px,1.1vw,11px); letter-spacing:.2em; text-transform:uppercase; color:#f6c000; margin-bottom:clamp(8px,1.4vw,14px)}
+.aft-h{font-family:var(--serif); font-weight:500; font-size:clamp(26px,6vw,66px); line-height:.94; letter-spacing:-.03em; margin-bottom:clamp(8px,1.4vw,16px); text-shadow:0 2px 34px rgba(0,0,0,.45)}
+.aft-sub{font-family:var(--sans); font-size:clamp(10px,1.5vw,16px); color:rgba(255,255,255,.84); max-width:32ch; margin-bottom:clamp(12px,2vw,22px)}
+.aft-cta{display:flex; gap:clamp(8px,1.3vw,14px); align-items:center; flex-wrap:wrap}
+.aft-call{background:#fff; color:#0c0e11; padding:clamp(9px,1.4vw,15px) clamp(14px,2.2vw,26px); border-radius:100px; font-family:var(--sans); font-weight:700; font-size:clamp(10px,1.5vw,15px); white-space:nowrap}
+.aft-ghost{border:1.5px solid rgba(255,255,255,.55); color:#fff; padding:clamp(8px,1.3vw,14px) clamp(12px,2vw,22px); border-radius:100px; font-family:var(--sans); font-weight:600; font-size:clamp(10px,1.5vw,15px); white-space:nowrap}
+.aft-trust{position:absolute; left:clamp(16px,3vw,34px); bottom:clamp(16px,2.4vw,26px); z-index:3; display:flex; gap:clamp(10px,2vw,22px); font-family:var(--mono); font-size:clamp(7px,1vw,10px); letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.66); white-space:nowrap}
+.aft-trust b{color:#f6c000; font-weight:500}
+@media(max-width:640px){ .aft-menu{display:none} }
 /* Divider + handle */
 .ba-divider{position:absolute; top:0; bottom:0; left:50%; width:2px; background:rgba(255,255,255,.9); box-shadow:0 0 0 1px rgba(14,11,7,.15); transform:translateX(-1px); pointer-events:none; z-index:5}
 .ba-knob{position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:clamp(40px,5vw,54px); height:clamp(40px,5vw,54px); border-radius:50%; background:var(--paper); border:1px solid var(--hair); box-shadow:0 8px 24px -8px rgba(14,11,7,.5); display:flex; align-items:center; justify-content:center; color:var(--ink); font-size:16px; font-family:var(--sans)}
@@ -1575,13 +1583,20 @@ img,svg{display:block;max-width:100%;height:auto}
       </div>
       <div class="ba-panel ba-after" id="baAfter">
         <div class="ba-mock">
-          <p class="good-mark">Dave's Plumbing · Bristol</p>
-          <h3 class="good-h">Bristol's<br><em>boiler people.</em></h3>
-          <p class="good-p">Gas-safe, same-week appointments. No call-out fee inside BS1 to BS9.</p>
-          <div class="good-row">
-            <span class="good-btn">Call 0117 900 123</span>
-            <span class="good-rev"><span class="good-stars">★★★★★</span> 63 reviews</span>
+          <div class="aft-bg" style="background-image:url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&amp;fit=crop&amp;w=1200&amp;q=72')"></div>
+          <div class="aft-scrim"></div>
+          <div class="aft-nav">
+            <span class="aft-logo">Harrison Electrical</span>
+            <span class="aft-menu"><span>Services</span><span>Our work</span><span>Reviews</span><span>Areas</span></span>
+            <span class="aft-quote">Get a quote</span>
           </div>
+          <div class="aft-body">
+            <p class="aft-eyebrow">NICEIC Registered · Bristol &amp; Bath</p>
+            <h3 class="aft-h">Power,<br>done properly.</h3>
+            <p class="aft-sub">Same-week appointments. EV chargers, rewires, fault-finding. No call-out fee across the BS postcodes.</p>
+            <div class="aft-cta"><span class="aft-call">Call 0117 900 123</span><span class="aft-ghost">Book online</span></div>
+          </div>
+          <div class="aft-trust"><span><span style="color:#f6c000">★★★★★</span> 63 reviews</span><span>24hr response</span><span>Fully insured</span></div>
         </div>
       </div>
       <input class="ba-range" id="baRange" type="range" min="0" max="100" value="50" aria-label="Drag to compare the two websites">
@@ -1855,7 +1870,7 @@ img,svg{display:block;max-width:100%;height:auto}
   function set(v){
     v = Math.max(0, Math.min(100, v));
     range.value = v;
-    after.style.clipPath = 'inset(0 ' + (100 - v) + '% 0 0)';
+    after.style.clipPath = 'inset(0 0 0 ' + v + '%)';
     divider.style.left = v + '%';
   }
   set(50);
