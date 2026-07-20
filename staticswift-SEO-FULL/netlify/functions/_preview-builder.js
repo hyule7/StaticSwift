@@ -369,6 +369,9 @@ function renderPreview(prospect, facts) {
     <b>This is a free preview StaticSwift built for ${esc(f.business)}.</b><br>
     Like it? It is yours, live within ${esc(F.buildDays || 14)} days, ${esc(F.build || 499)} pounds once, with a ${esc(F.guaranteeDays || 60)}-day lead guarantee.
   </div>
+  <div class="site-credit" style="text-align:center;padding:16px;font-family:'Switzer',system-ui,sans-serif;font-size:12px;color:#8a8172;background:var(--cream)">
+    Site by <a href="https://staticswift.co.uk" style="color:#8a8172;font-weight:600">StaticSwift</a>
+  </div>
 
   <div id="ss-modal" class="ss-modal" onclick="if(event.target===this)ssHide()">
     <div class="ss-card">

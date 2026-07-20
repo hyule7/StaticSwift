@@ -87,7 +87,7 @@ function cold(p) {
 
 ${obs}I am Harry, I hand-code websites for ${trade}s around ${town}. I will build you a real working preview in ${F.previewHours} hours, free, no card. If you keep it it is ${F.build} pounds once, and if it does not bring a lead in ${F.guaranteeDays} days you get your money back.
 
-Want me to make you one? Reply here, or start the 60-second brief: https://staticswift.co.uk/order.html?source=blitz&trade=${encodeURIComponent(p.trade || '')}&town=${encodeURIComponent(town)}
+Want it? Just reply "yes", or one tap and your brief opens already filled in: https://staticswift.co.uk/order.html?source=blitz&business=${encodeURIComponent(biz || '')}&trade=${encodeURIComponent(p.trade || p.type || '')}&town=${encodeURIComponent(town)}&email=${encodeURIComponent(p.email || '')}
 
 ${SIG}
 Reason for this email: you run a ${trade} in ${town} and I build sites for that trade. ${sigUnsub(p.email, 'outreach')}`,

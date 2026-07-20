@@ -1145,5 +1145,31 @@ document.addEventListener('click',function(e){var a=e.target&&e.target.closest?e
   }catch(e){}
 })();
 </script>
+<script>
+/* One-tap pre-fill: a cold-email "Yes, build my preview" link carries the
+   prospect's details (?business=&trade=&town=&email=&name=) so the brief opens
+   already filled in. Confirms in one click instead of typing a form. */
+(function prefillBrief(){
+  try{
+    var q=new URLSearchParams(location.search);
+    var map={business:'business_name',town:'location',email:'delivery_email',name:'name',whatsapp:'whatsapp'};
+    var filled=0;
+    Object.keys(map).forEach(function(k){
+      var v=q.get(k); if(!v) return;
+      var el=document.querySelector('[name="'+map[k]+'"]');
+      if(el && !el.value){ el.value=v; filled++; }
+    });
+    var trade=(q.get('trade')||'').toLowerCase();
+    if(trade){
+      var sel=document.querySelector('select[name="business_type"]');
+      if(sel){ for(var i=0;i<sel.options.length;i++){ if(sel.options[i].value===trade){ sel.selectedIndex=i; filled++; break; } } }
+    }
+    if(filled){
+      var f=document.querySelector('form');
+      if(f&&f.parentNode){ var b=document.createElement('div'); b.textContent='We have pre-filled what we already know. Add the rest and your free preview is on its way.'; b.style.cssText='background:#0E0B07;color:#F2EFE7;padding:11px 15px;border-radius:8px;font:14px/1.5 system-ui,sans-serif;margin:0 0 18px;max-width:640px'; f.parentNode.insertBefore(b,f); }
+    }
+  }catch(e){}
+})();
+</script>
 </body>
 </html>
