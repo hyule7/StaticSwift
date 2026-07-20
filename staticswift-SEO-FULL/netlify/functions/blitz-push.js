@@ -15,6 +15,8 @@ const { readDB } = require('./_db');
 const { load, saveItems } = require('./_queue');
 const { isSuppressed, unsubUrl } = require('./_suppression');
 const { renderPreview, fieldsOf } = require('./_preview-builder');
+const { signatureText } = require('./_email-template');
+const SIG = signatureText();
 
 const F = { build: 499, monthly: 49, previewHours: 24, buildDays: 14, guaranteeDays: 60, wa: '07502 731 799', waLink: '+447502731799', email: 'hello@staticswift.co.uk' };
 // Max-capacity draft volume. These cap how much WORK lands in the approval
@@ -47,8 +49,7 @@ You enquired about a website${trade ? ' for your ' + trade : ''}${town ? ' in ' 
 
 Want me to build it? Reply here or message me on WhatsApp ${F.wa}.
 
-Harry
-StaticSwift, Manchester
+${SIG}
 ${sigUnsub(lead.delivery_email, 'reactivation')}`,
   };
 }
@@ -66,8 +67,7 @@ If it is easier, I will just build you a new one. Real working preview in ${F.pr
 
 Reply and I will start tonight.
 
-Harry
-StaticSwift, Manchester
+${SIG}
 ${sigUnsub(rec.email, 'winback')}`,
   };
 }
@@ -89,8 +89,7 @@ ${obs}I am Harry, I hand-code websites for ${trade}s around ${town}. I will buil
 
 Want me to make you one? Reply here, or start the 60-second brief: https://staticswift.co.uk/order.html?source=blitz&trade=${encodeURIComponent(p.trade || '')}&town=${encodeURIComponent(town)}
 
-Harry
-StaticSwift, Manchester
+${SIG}
 Reason for this email: you run a ${trade} in ${town} and I build sites for that trade. ${sigUnsub(p.email, 'outreach')}`,
   };
 }
@@ -115,8 +114,7 @@ It is free and there is no card. If you like it I make it properly yours, live w
 
 Want a change to it, or want it live? Just reply, or message me on WhatsApp ${F.wa}.
 
-Harry
-StaticSwift, Manchester
+${SIG}
 Reason for this email: you run a ${trade} in ${town} and I build sites for that trade. ${sigUnsub(p.email, 'outreach')}`,
   };
 }

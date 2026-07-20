@@ -30,7 +30,7 @@ function createTransporter() {
 }
 
 const LOGO_HTML = `<div style="text-align:center;padding:20px 0 8px;">
-  <span style="font-family:sans-serif;font-size:20px;font-weight:700;color:#00C8E0;letter-spacing:-0.5px;">StaticSwift</span>
+  <span style="font-family:Georgia,serif;font-size:22px;font-weight:700;color:#0E0B07;letter-spacing:-0.3px;">StaticSwift</span>
 </div>`;
 
 const LOGO_HTML_LARGE = LOGO_HTML;
