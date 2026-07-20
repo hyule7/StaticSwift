@@ -17,6 +17,32 @@
 
 const { readDB, writeDB } = require('./_db');
 
+// ── Buying-signal engine ────────────────────────────────────────────────────
+// The point: stop drafting random companies and rank prospects by how READY-TO-
+// BUY they are. A small independent local with no website but an email on file
+// is a perfect £499 target; a national chain is a waste. We score each on the
+// signals OSM actually exposes, filter out chains/big orgs, and rank hottest
+// first so the workforce works the best leads before the rest.
+
+// Chains / franchises / big orgs — never a £499 hand-coded-site buyer. Skipped.
+const CHAINS = /\b(greggs|costa|starbucks|mcdonald|kfc|subway|domino|papa john|pizza hut|nando|wetherspoon|premier inn|travelodge|tesco|sainsbury|asda|morrison|aldi|lidl|co-?op|iceland|boots|superdrug|specsavers|vision express|screwfix|toolstation|b&q|wickes|halfords|kwik fit|national tyres|autoglass|hays travel|timpson|card factory|poundland|home bargains|wh smith|greene king|marston|pret|caffe nero|toni ?& ?guy|regis|snap fitness|puregym|the gym group|anytime fitness|jd gym|david lloyd)\b/i;
+
+function scoreProspect(b) {
+  // b: { name, phone, email, addr, hasWebsite, facebook, brand, startDate }
+  const signals = [];
+  let heat = 0;
+  if (!b.hasWebsite) { heat += 45; signals.push('No website at all'); }
+  if (b.email) { heat += 30; signals.push('Email on file (ready for a cold pitch today)'); }
+  if (b.phone) { heat += 12; signals.push('Phone listed'); }
+  if (b.facebook && !b.hasWebsite) { heat += 15; signals.push('Facebook page but no website'); }
+  if (b.startDate) {
+    const yrs = (Date.now() - Date.parse(b.startDate + '-01-01')) / 3.15576e10;
+    if (yrs >= 0 && yrs <= 2) { heat += 15; signals.push('Recently opened (' + b.startDate + ')'); }
+  }
+  if (!b.brand) { heat += 6; signals.push('Independent local'); }
+  return { heat: Math.max(0, Math.min(100, heat)), signals };
+}
+
 // OSM tag mapping — each "niche" → array of OSM tag/value pairs to OR together
 const NICHE_TAGS = {
   barber:           [['shop','hairdresser'], ['shop','barber'], ['amenity','beauty_salon']],
@@ -151,8 +177,13 @@ exports.handler = async (event) => {
       const t = el.tags || {};
       const name = t.name || t['name:en'] || '';
       if (!name) continue;
+      // Buying-signal filter: skip national chains / big orgs (a brand tag or a
+      // known chain name) — they never buy a £499 hand-coded site.
+      if (t.brand || t['brand:wikidata'] || CHAINS.test(name)) continue;
       const phone = t.phone || t['contact:phone'] || t['contact:mobile'] || '';
       const email = t.email || t['contact:email'] || '';
+      const facebook = t['contact:facebook'] || t.facebook || '';
+      const startDate = (t.start_date || '').slice(0, 4).match(/^\d{4}$/) ? t.start_date.slice(0, 4) : '';
       const addr = [t['addr:housenumber'], t['addr:street'], t['addr:city']].filter(Boolean).join(' ');
       let website = t.website || t['contact:website'] || t.url || '';
       if (website && !/^https?:\/\//i.test(website)) website = 'https://' + website;
@@ -169,7 +200,7 @@ exports.handler = async (event) => {
         const key = (name + '|' + addr).toLowerCase();
         if (seenNoSite.has(key)) continue;
         seenNoSite.add(key);
-        withoutWebsite.push({ name, phone, email, addr });
+        withoutWebsite.push({ name, phone, email, addr, facebook, startDate });
       }
     }
 
@@ -189,10 +220,14 @@ exports.handler = async (event) => {
       });
       added++;
     }
-    // No-website businesses become direct prospects (highest score = 0, biggest opportunity)
+    // No-website businesses become direct prospects. Score each on buying
+    // signals and add HOTTEST first so the workforce works the best leads first.
     let directProspects = 0;
     const existingHosts = new Set(db.cronProspects.map(p => (p.bizname || '') + '|' + (p.location || '')));
-    for (const b of withoutWebsite) {
+    const scored = withoutWebsite
+      .map(b => ({ b, ...scoreProspect({ ...b, hasWebsite: false }) }))
+      .sort((a, z) => z.heat - a.heat); // hottest first
+    for (const { b, heat, signals } of scored) {
       const key = (b.name + '|' + (b.addr || area)).toLowerCase();
       if (existingHosts.has(key)) continue;
       db.cronProspects.unshift({
@@ -205,11 +240,13 @@ exports.handler = async (event) => {
         type: niche,
         siteScore: 0,
         sitePlatform: 'No website',
-        siteIssues: ['No website at all — easiest pitch'],
+        siteIssues: signals,
+        heat,
+        signals,
         status: 'new',
         addedAt: new Date().toISOString(),
         source: 'osm-no-website',
-        notes: 'Found via OSM in ' + area + '. No website — prime pitch target.',
+        notes: 'Buying signals (' + heat + '/100): ' + signals.join(' · '),
       });
       directProspects++;
     }

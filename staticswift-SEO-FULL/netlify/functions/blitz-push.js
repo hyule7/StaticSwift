@@ -190,7 +190,7 @@ exports.handler = async (event) => {
   };
   const clients = (Array.isArray(db.clients) ? db.clients : []).slice().sort((a, b) => clientHeat(b) - clientHeat(a));
   const nurture = (Array.isArray(db.nurture) ? db.nurture : []).slice().sort((a, b) => ageDays(a.addedAt || a.lastSeenAt) - ageDays(b.addedAt || b.lastSeenAt));
-  const prospects = (Array.isArray(db.cronProspects) ? db.cronProspects : []).slice().sort((a, b) => (b.score || 0) - (a.score || 0));
+  const prospects = (Array.isArray(db.cronProspects) ? db.cronProspects : []).slice().sort((a, b) => (b.heat || 0) - (a.heat || 0)); // hottest buying-signals first
   let hot = 0;
   const now = new Date().toISOString();
   const drafts = [];
@@ -245,7 +245,8 @@ exports.handler = async (event) => {
       if (previewUrl) previews++;
     }
     d = previewUrl ? coldWithPreview(p, previewUrl) : cold(p);
-    drafts.push({ to: email, category: 'outreach', subject: d.subject, body: d.body, previewUrl, prospect: { business: p.companyName || p.bizname || p.name, trade: p.trade || p.type, town: p.town || p.location, segment: 'cold', preview: !!previewUrl } });
+    const heat = p.heat || 0;
+    drafts.push({ to: email, category: 'outreach', subject: d.subject, body: d.body, previewUrl, prospect: { business: p.companyName || p.bizname || p.name, trade: p.trade || p.type, town: p.town || p.location, segment: 'cold', heat, hot: heat >= 70, signals: p.signals || [], preview: !!previewUrl } });
     queuedTo.add(email.toLowerCase()); cold_++;
   }
 
